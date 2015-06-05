@@ -1,0 +1,45 @@
+nodes:
+
+- sdl-services-1:
+    roles:
+    - tomcat-sdl
+
+- sdl-services-2:
+    roles:
+    - tomcat-sdl
+
+- sdl-importer:
+    # Config for all roles in this node
+    config:
+      jvm.memory.heapspace.max: 2096m
+    roles:
+    - tomcat-sdl:
+        variants: - sdl-importer
+        # Config only for this role
+        config:
+          topology:
+            connectorUrl: http://tomcat-sdl:8080/libs/sling/topology/connector
+    - tomcat-pdslibrary:
+
+
+# Global configuration
+config:
+  jvm.memory.heapspace.max: 4096m
+  serviceHosts:
+    cmsDam:
+    - vw-ngw-aem6.pvqa.net:4503
+
+
+# Tenant defintions
+tenants:
+- de-pkw:
+    config:
+      website.hostname: www.mysite.de
+- fr-pkw:
+    config:
+      website.hostname: www.mysite.fr
+
+
+# Variables that can be reference anywhere inside the definition
+variables:
+  var1: value1

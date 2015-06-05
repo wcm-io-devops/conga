@@ -1,0 +1,68 @@
+variants:
+- sdlServices   # Services "runtime-requests" to service layer from internal and external applications
+- sdlImporter   # Runs preaching jobs when data versions change to ensure cache is always filled
+
+templateDirectory: templates/tomcat-sdl
+
+# files:
+
+# - webappDescriptor:
+#     name: ROOT.xml
+#     dir: conf/Catalina/localhost
+#     template: ROOT.xml.hbs
+#     validators:
+#     - xml
+
+# - setenv:
+#     name: setenv.sh
+#     dir: bin
+#     template: setenv.sh.hb
+
+# - systemconfig:
+#     name: "systemconfig.txt"
+#     dir: sdl-home/deploy
+#     template: systemconfig.txt.hbs
+#     validators:
+#     - sling-provisioning-model
+#     postProcessors:
+#     - osgi-config-generator
+
+# - systemconfig_importer:
+#     variants:
+#     - sdl-importer  # only generated for sdl-importer variant
+#     name: "systemconfig-importer.txt"
+#     dir: sdl-home/deploy
+#     template: systemconfig-importer.txt.hbs
+#     validators:
+#     - sling-provisioning-model
+#     postProcessors:
+#     - osgi-config-generator
+
+# - virutalHost:
+#     name: "{tenantId}_vhost.conf"
+#     dir: vhosts
+#     template: tenant_vhost.conf.hb
+#     multiply: tenant
+
+
+# Defines configuration parameters and default values
+config:
+
+  tomcat:
+    port: 8080
+    path: /path/to/tomcat
+
+  jvm:
+    heapspace:
+      min: 512m
+      max: 2048m
+    permgenspace:
+      max: 256m
+
+  topologyConnectors:
+    - http://localhost:8080/libs/sling/topology/connector
+
+
+# Variables that can be reference anywhere inside the definition
+variables:
+  var1: value1
