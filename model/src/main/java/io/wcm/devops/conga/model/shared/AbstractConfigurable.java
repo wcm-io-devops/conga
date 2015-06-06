@@ -35,7 +35,7 @@ public abstract class AbstractConfigurable implements Configurable {
   }
 
   public void setConfig(Map<String, Object> config) {
-    this.config = config;
+    this.config = MapExpander.expand(config);
   }
 
   @Override
@@ -44,7 +44,7 @@ public abstract class AbstractConfigurable implements Configurable {
   }
 
   public void setVariables(Map<String, Object> variables) {
-    this.variables = variables;
+    this.variables = MapExpander.expand(variables);
   }
 
 }
