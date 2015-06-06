@@ -53,13 +53,10 @@ public class EnvironmentReaderTest {
     assertEquals(3, environment.getNodes().size());
     assertEquals(2, environment.getTenants().size());
 
-    /*
-    // TODO: implement map expander
     assertEquals(ImmutableMap.of(
         "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "4096m")),
         "topologyConnectors", ImmutableList.of("http://host1/connector", "http://host2/connector")
         ), environment.getConfig());
-     */
 
     assertEquals(ImmutableMap.of("var1", "value1"), environment.getVariables());
   }
@@ -70,10 +67,7 @@ public class EnvironmentReaderTest {
 
     assertEquals("importer", node.getNode());
 
-    /*
-    // TODO: implement map expander
     assertEquals(ImmutableMap.of("jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "2048m"))), node.getConfig());
-     */
 
     assertEquals(2, node.getRoles().size());
   }

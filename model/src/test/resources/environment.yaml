@@ -3,7 +3,7 @@ nodes:
 - node: importer
   # Config for all roles in this node
   config:
-    jvm.memory.heapspace.max: 2096m
+    jvm.heapspace.max: 2048m
   roles:
   - role: tomcat-services
     variant: importer

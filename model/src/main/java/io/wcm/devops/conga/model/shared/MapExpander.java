@@ -46,18 +46,14 @@ final class MapExpander {
 
     for (Map.Entry<String, Object> entry : map.entrySet()) {
       Map.Entry<String, Object> expandedEntry = expandEntry(entry);
-      if (expandedEntry.getValue() instanceof Map) {
-        Object existingEntry = expanded.get(expandedEntry.getKey());
-        if (existingEntry instanceof Map) {
-          ((Map<String, Object>)existingEntry).putAll((Map<String, Object>)expandedEntry.getValue());
-        }
-        else {
-          expanded.put(expandedEntry.getKey(), expandedEntry.getValue());
+      Object value = expandedEntry.getValue();
+      if (value instanceof Map) {
+        Object existingValue = expanded.get(expandedEntry.getKey());
+        if (existingValue instanceof Map) {
+          value = MapMerger.merge((Map<String, Object>)existingValue, (Map<String, Object>)value);
         }
       }
-      else {
-        expanded.put(expandedEntry.getKey(), expandedEntry.getValue());
-      }
+      expanded.put(expandedEntry.getKey(), value);
     }
 
     return expanded;
@@ -87,6 +83,11 @@ final class MapExpander {
       @Override
       public Map<String, Object> setValue(Object value) {
         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public String toString() {
+        return getKey() + "=" + getValue();
       }
     };
   }
