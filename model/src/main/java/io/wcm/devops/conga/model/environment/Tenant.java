@@ -17,43 +17,34 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.role;
+package io.wcm.devops.conga.model.environment;
 
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 import java.util.List;
 
 /**
- * Role definition.
+ * Tenant definition.
  */
-public final class Role extends AbstractConfigurable {
+public final class Tenant extends AbstractConfigurable {
 
-  private List<String> variants;
-  private String templateDir;
-  private List<File> files;
+  private String tenant;
+  private List<String> roles;
 
-  public List<String> getVariants() {
-    return this.variants;
+  public String getTenant() {
+    return this.tenant;
   }
 
-  public void setVariants(List<String> variants) {
-    this.variants = variants;
+  public void setTenant(String tenant) {
+    this.tenant = tenant;
   }
 
-  public String getTemplateDir() {
-    return this.templateDir;
+  public List<String> getRoles() {
+    return this.roles;
   }
 
-  public void setTemplateDir(String templateDirectory) {
-    this.templateDir = templateDirectory;
-  }
-
-  public List<File> getFiles() {
-    return this.files;
-  }
-
-  public void setFiles(List<File> files) {
-    this.files = files;
+  public void setRoles(List<String> roles) {
+    this.roles = roles;
   }
 
 }

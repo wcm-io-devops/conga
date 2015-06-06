@@ -19,25 +19,25 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.environment.Environment;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 /**
- * Reads role definitions.
+ * Reads environment definitions.
  */
-public final class RoleReader extends AbstractReader<Role> {
+public final class EnvironmentReader extends AbstractReader<Environment> {
 
   /**
    * Constructor
    */
-  public RoleReader() {
+  public EnvironmentReader() {
     super(getYaml());
   }
 
   private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Role.class);
+    Constructor constructor = new Constructor(Environment.class);
     return new Yaml(constructor);
   }
 

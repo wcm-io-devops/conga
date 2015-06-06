@@ -17,28 +17,34 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
+package io.wcm.devops.conga.model.shared;
 
-import io.wcm.devops.conga.model.role.Role;
-
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+import java.util.Map;
 
 /**
- * Reads role definitions.
+ * Abstract {@link Configurable} implementation.
  */
-public final class RoleReader extends AbstractReader<Role> {
+public abstract class AbstractConfigurable implements Configurable {
 
-  /**
-   * Constructor
-   */
-  public RoleReader() {
-    super(getYaml());
+  private Map<String, Object> config;
+  private Map<String, Object> variables;
+
+  @Override
+  public Map<String, Object> getConfig() {
+    return this.config;
   }
 
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Role.class);
-    return new Yaml(constructor);
+  public void setConfig(Map<String, Object> config) {
+    this.config = config;
+  }
+
+  @Override
+  public Map<String, Object> getVariables() {
+    return this.variables;
+  }
+
+  public void setVariables(Map<String, Object> variables) {
+    this.variables = variables;
   }
 
 }

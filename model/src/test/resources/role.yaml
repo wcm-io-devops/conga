@@ -6,7 +6,7 @@ templateDir: templates/tomcat-services
 
 files:
 
-- name: "systemconfig-importer.txt"
+- file: "systemconfig-importer.txt"
   dir: data/deploy
   template: systemconfig-importer.txt.hbs
   variants:
@@ -17,17 +17,17 @@ files:
   - osgi-config-generator
   multiply: none
 
-- name: ROOT.xml
+- file: ROOT.xml
   dir: conf/Catalina/localhost
   template: ROOT.xml.hbs
   validators:
   - xml
 
-- name: setenv.sh
+- file: setenv.sh
   dir: bin
   template: setenv.sh.hb
 
-- name: systemconfig.txt
+- file: systemconfig.txt
   dir: data/deploy
   template: systemconfig.txt.hbs
   validators:
@@ -35,7 +35,7 @@ files:
   postProcessors:
   - osgi-config-generator
 
-- name: "{tenantId}_vhost.conf"
+- file: "{tenantId}_vhost.conf"
   dir: vhosts
   template: tenant_vhost.conf.hb
   multiply: tenant

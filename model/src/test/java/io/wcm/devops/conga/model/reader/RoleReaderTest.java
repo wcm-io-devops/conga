@@ -70,7 +70,7 @@ public class RoleReaderTest {
   public void testFile() {
     File file = role.getFiles().get(0);
 
-    assertEquals("systemconfig-importer.txt", file.getName());
+    assertEquals("systemconfig-importer.txt", file.getFile());
     assertEquals("data/deploy", file.getDir());
     assertEquals("systemconfig-importer.txt.hbs", file.getTemplate());
     assertEquals(ImmutableList.of("importer"), file.getVariants());

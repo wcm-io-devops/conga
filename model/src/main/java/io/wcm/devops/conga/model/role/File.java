@@ -26,7 +26,7 @@ import java.util.List;
  */
 public final class File {
 
-  private String name;
+  private String file;
   private String dir;
   private String template;
   private List<String> variants;
@@ -34,12 +34,12 @@ public final class File {
   private List<String> postProcessors;
   private String multiply;
 
-  public String getName() {
-    return this.name;
+  public String getFile() {
+    return this.file;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setFile(String name) {
+    this.file = name;
   }
 
   public String getDir() {
