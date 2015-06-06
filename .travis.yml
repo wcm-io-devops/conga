@@ -27,11 +27,13 @@ branches:
   except:
   - /^.*\-\d+(\.\d+\.\d+)?(\..*|\-.*)?$/
 
+# Cache Maven Repository
 sudo: false
 cache: 
   directories:
   - '$HOME/.m2/repository'
 
+# But remove wcm.io artefacts from repository before cache
 script:
 - rm -rf $HOME/.m2/repository/io/wcm
 
