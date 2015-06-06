@@ -1,0 +1,64 @@
+variants:
+- services
+- importer
+
+templateDir: templates/tomcat-services
+
+files:
+
+- file: "systemconfig-importer.txt"
+  dir: data/deploy
+  template: systemconfig-importer.txt.hbs
+  variants:
+  - importer
+  validators:
+  - sling-provisioning-model
+  postProcessors:
+  - osgi-config-generator
+  multiply: none
+
+- file: ROOT.xml
+  dir: conf/Catalina/localhost
+  template: ROOT.xml.hbs
+  validators:
+  - xml
+
+- file: setenv.sh
+  dir: bin
+  template: setenv.sh.hb
+
+- file: systemconfig.txt
+  dir: data/deploy
+  template: systemconfig.txt.hbs
+  validators:
+  - sling-provisioning-model
+  postProcessors:
+  - osgi-config-generator
+
+- file: "{tenantId}_vhost.conf"
+  dir: vhosts
+  template: tenant_vhost.conf.hb
+  multiply: tenant
+
+
+# Defines configuration parameters and default values
+config:
+
+  tomcat:
+    port: 8080
+    path: /path/to/tomcat
+
+  jvm:
+    heapspace:
+      min: 512m
+      max: 2048m
+    permgenspace:
+      max: 256m
+
+  topologyConnectors:
+    - http://localhost:8080/libs/sling/topology/connector
+
+
+# Variables that can be reference anywhere inside the definition
+variables:
+  var1: value1
