@@ -21,13 +21,13 @@ package io.wcm.devops.conga.model.reader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import io.wcm.devops.conga.model.role.File;
 import io.wcm.devops.conga.model.role.Role;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.List;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,17 +42,20 @@ public class RoleReaderTest {
   public void setUp() throws IOException {
     RoleReader reader = new RoleReader();
     try (InputStream is = getClass().getResourceAsStream("/role.yaml")) {
-      role = reader.read(new InputStreamReader(is, CharEncoding.UTF_8));
-      assertNotNull(role);
+      role = reader.read(is);
     }
+    assertNotNull(role);
   }
 
   @Test
   public void testRole() {
 
-    assertEquals(ImmutableList.of("sdlServices", "sdlImporter"), role.getVariants());
+    assertEquals(ImmutableList.of("services", "importer"), role.getVariants());
 
-    assertEquals("templates/tomcat-sdl", role.getTemplateDirectory());
+    assertEquals("templates/tomcat-services", role.getTemplateDir());
+
+    List<File> files = role.getFiles();
+    assertEquals(5, files.size());
 
     assertEquals(ImmutableMap.of(
         "tomcat", ImmutableMap.of("port", 8080, "path", "/path/to/tomcat"),
@@ -61,6 +64,19 @@ public class RoleReaderTest {
         ), role.getConfig());
 
     assertEquals(ImmutableMap.of("var1", "value1"), role.getVariables());
+  }
+
+  @Test
+  public void testFile() {
+    File file = role.getFiles().get(0);
+
+    assertEquals("systemconfig-importer.txt", file.getName());
+    assertEquals("data/deploy", file.getDir());
+    assertEquals("systemconfig-importer.txt.hbs", file.getTemplate());
+    assertEquals(ImmutableList.of("importer"), file.getVariants());
+    assertEquals(ImmutableList.of("sling-provisioning-model"), file.getValidators());
+    assertEquals(ImmutableList.of("osgi-config-generator"), file.getPostProcessors());
+    assertEquals("none", file.getMultiply());
   }
 
 }

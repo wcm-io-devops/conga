@@ -28,8 +28,8 @@ import java.util.Map;
 public final class Role {
 
   private List<String> variants;
-  private String templateDirectory;
-  private Map<String, File> files;
+  private String templateDir;
+  private List<File> files;
   private Map<String, Object> config;
   private Map<String, Object> variables;
 
@@ -41,19 +41,19 @@ public final class Role {
     this.variants = variants;
   }
 
-  public String getTemplateDirectory() {
-    return this.templateDirectory;
+  public String getTemplateDir() {
+    return this.templateDir;
   }
 
-  public void setTemplateDirectory(String templateDirectory) {
-    this.templateDirectory = templateDirectory;
+  public void setTemplateDir(String templateDirectory) {
+    this.templateDir = templateDirectory;
   }
 
-  public Map<String, File> getFiles() {
+  public List<File> getFiles() {
     return this.files;
   }
 
-  public void setFiles(Map<String, File> files) {
+  public void setFiles(List<File> files) {
     this.files = files;
   }
 

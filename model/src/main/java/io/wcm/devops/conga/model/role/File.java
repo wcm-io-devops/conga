@@ -29,6 +29,7 @@ public final class File {
   private String name;
   private String dir;
   private String template;
+  private List<String> variants;
   private List<String> validators;
   private List<String> postProcessors;
   private String multiply;
@@ -55,6 +56,14 @@ public final class File {
 
   public void setTemplate(String template) {
     this.template = template;
+  }
+
+  public List<String> getVariants() {
+    return this.variants;
+  }
+
+  public void setVariants(List<String> variants) {
+    this.variants = variants;
   }
 
   public List<String> getValidators() {

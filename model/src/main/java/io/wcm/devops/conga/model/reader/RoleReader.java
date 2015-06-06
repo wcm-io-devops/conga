@@ -19,10 +19,8 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import io.wcm.devops.conga.model.role.File;
 import io.wcm.devops.conga.model.role.Role;
 
-import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -40,11 +38,6 @@ public final class RoleReader extends AbstractReader<Role> {
 
   private static Yaml getYaml() {
     Constructor constructor = new Constructor(Role.class);
-
-    TypeDescription fileDesc = new TypeDescription(File.class);
-    fileDesc.putMapPropertyType("files", String.class, File.class);
-    constructor.addTypeDescription(fileDesc);
-
     return new Yaml(constructor);
   }
 

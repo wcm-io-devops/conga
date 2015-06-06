@@ -51,8 +51,18 @@ public abstract class AbstractReader<T> {
    */
   public final T read(File file) throws IOException {
     try (InputStream is = new FileInputStream(file)) {
-      return read(new InputStreamReader(is, CharEncoding.UTF_8));
+      return read(is);
     }
+  }
+
+  /**
+   * Read model
+   * @param is Model file
+   * @return Model object
+   * @throws IOException
+   */
+  public final T read(InputStream is) throws IOException {
+    return read(new InputStreamReader(is, CharEncoding.UTF_8));
   }
 
   /**

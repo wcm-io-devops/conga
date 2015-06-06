@@ -1,48 +1,44 @@
 variants:
-- sdlServices   # Services "runtime-requests" to service layer from internal and external applications
-- sdlImporter   # Runs preaching jobs when data versions change to ensure cache is always filled
+- services
+- importer
 
-templateDirectory: templates/tomcat-sdl
+templateDir: templates/tomcat-services
 
-# files:
+files:
 
-# - webappDescriptor:
-#     name: ROOT.xml
-#     dir: conf/Catalina/localhost
-#     template: ROOT.xml.hbs
-#     validators:
-#     - xml
+- name: "systemconfig-importer.txt"
+  dir: data/deploy
+  template: systemconfig-importer.txt.hbs
+  variants:
+  - importer
+  validators:
+  - sling-provisioning-model
+  postProcessors:
+  - osgi-config-generator
+  multiply: none
 
-# - setenv:
-#     name: setenv.sh
-#     dir: bin
-#     template: setenv.sh.hb
+- name: ROOT.xml
+  dir: conf/Catalina/localhost
+  template: ROOT.xml.hbs
+  validators:
+  - xml
 
-# - systemconfig:
-#     name: "systemconfig.txt"
-#     dir: sdl-home/deploy
-#     template: systemconfig.txt.hbs
-#     validators:
-#     - sling-provisioning-model
-#     postProcessors:
-#     - osgi-config-generator
+- name: setenv.sh
+  dir: bin
+  template: setenv.sh.hb
 
-# - systemconfig_importer:
-#     variants:
-#     - sdl-importer  # only generated for sdl-importer variant
-#     name: "systemconfig-importer.txt"
-#     dir: sdl-home/deploy
-#     template: systemconfig-importer.txt.hbs
-#     validators:
-#     - sling-provisioning-model
-#     postProcessors:
-#     - osgi-config-generator
+- name: systemconfig.txt
+  dir: data/deploy
+  template: systemconfig.txt.hbs
+  validators:
+  - sling-provisioning-model
+  postProcessors:
+  - osgi-config-generator
 
-# - virutalHost:
-#     name: "{tenantId}_vhost.conf"
-#     dir: vhosts
-#     template: tenant_vhost.conf.hb
-#     multiply: tenant
+- name: "{tenantId}_vhost.conf"
+  dir: vhosts
+  template: tenant_vhost.conf.hb
+  multiply: tenant
 
 
 # Defines configuration parameters and default values
