@@ -21,6 +21,7 @@ package io.wcm.devops.conga.model.environment;
 
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ import java.util.List;
 public final class Tenant extends AbstractConfigurable {
 
   private String tenant;
-  private List<String> roles;
+  private List<String> roles = new ArrayList<>();
 
   public String getTenant() {
     return this.tenant;
