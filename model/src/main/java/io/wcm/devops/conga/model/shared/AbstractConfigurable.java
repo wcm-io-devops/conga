@@ -35,6 +35,7 @@ public abstract class AbstractConfigurable implements Configurable {
   }
 
   public void setConfig(Map<String, Object> config) {
+    // Expand shortcut map entries with "." notation to nested maps
     this.config = MapExpander.expand(config);
   }
 
@@ -44,6 +45,7 @@ public abstract class AbstractConfigurable implements Configurable {
   }
 
   public void setVariables(Map<String, Object> variables) {
+    // Expand shortcut map entries with "." notation to nested maps
     this.variables = MapExpander.expand(variables);
   }
 

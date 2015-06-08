@@ -4,13 +4,15 @@ nodes:
   # Config for all roles in this node
   config:
     jvm.heapspace.max: 2048m
+  variables:
+    topologyConnectorPath: /specialConnector
   roles:
   - role: tomcat-services
     variant: importer
     # Config only for this role
     config:
       topologyConnectors:
-      - "http://host3/connector"
+      - "http://host3${topologyConnectorPath}"
   - role: tomcat-backendconnector
 
 - node: services-1
@@ -21,6 +23,10 @@ nodes:
   roles:
   - role: tomcat-services
 
+- node: webserver
+  roles:
+  - role: webserver-routing
+
 
 # Tenant defintions
 tenants:
@@ -30,23 +36,28 @@ tenants:
   - website
   - application
   config:
-    website.hostname: www.mysite.de
+    website.hostname: www.${domain}
+  variables:
+    domain: mysite.de
 
 - tenant: tenant2
   roles:
   - website
   config:
-    website.hostname: www.mysite.fr
+    website.hostname: www.${domain}
+  variables:
+    domain: mysite.fr
+
 
 
 # Global configuration
 config:
   jvm.heapspace.max: 4096m
   topologyConnectors:
-  - "http://host1/connector"
-  - "http://host2/connector"
+  - "http://host1${topologyConnectorPath}"
+  - "http://host2${topologyConnectorPath}"
 
 
 # Variables that can be reference anywhere inside the definition
 variables:
-  var1: value1
+  topologyConnectorPath: /connector
