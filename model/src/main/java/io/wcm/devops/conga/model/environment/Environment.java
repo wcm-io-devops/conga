@@ -21,6 +21,7 @@ package io.wcm.devops.conga.model.environment;
 
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,8 +29,8 @@ import java.util.List;
  */
 public final class Environment extends AbstractConfigurable {
 
-  private List<Node> nodes;
-  private List<Tenant> tenants;
+  private List<Node> nodes = new ArrayList<>();
+  private List<Tenant> tenants = new ArrayList<>();
 
   public List<Node> getNodes() {
     return this.nodes;

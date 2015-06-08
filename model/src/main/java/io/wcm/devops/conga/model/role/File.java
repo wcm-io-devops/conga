@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.model.role;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,9 +30,9 @@ public final class File {
   private String file;
   private String dir;
   private String template;
-  private List<String> variants;
-  private List<String> validators;
-  private List<String> postProcessors;
+  private List<String> variants = new ArrayList<>();
+  private List<String> validators = new ArrayList<>();
+  private List<String> postProcessors = new ArrayList<>();
   private String multiply;
 
   public String getFile() {
