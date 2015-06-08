@@ -20,7 +20,10 @@ language: java
 jdk:
 - oraclejdk8
 install: "mvn -s ./.travis.maven-settings.xml clean"
-script: "mvn -s ./.travis.maven-settings.xml -Pcontinuous-integration -U -Dmaven.javadoc.skip=true install"
+script:
+- "mvn -s ./.travis.maven-settings.xml -Pcontinuous-integration -U -Dmaven.javadoc.skip=true install"
+# Remove wcm.io artefacts from repository before cache
+- rm -rf $HOME/.m2/repository/io/wcm
 
 # exlude release tags like xyz-1.0.0 or xyz-1
 branches:
@@ -28,14 +31,9 @@ branches:
   - /^.*\-\d+(\.\d+\.\d+)?(\..*|\-.*)?$/
 
 # Cache Maven Repository
-sudo: false
 cache: 
   directories:
   - '$HOME/.m2/repository'
-
-# But remove wcm.io artefacts from repository before cache
-script:
-- rm -rf $HOME/.m2/repository/io/wcm
 
 # this will not work yet with a google groups mailing list - see https://github.com/travis-ci/travis-ci/issues/2513
 #notifications:
