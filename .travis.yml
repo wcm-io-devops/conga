@@ -31,7 +31,7 @@ branches:
   - /^.*\-\d+(\.\d+\.\d+)?(\..*|\-.*)?$/
 
 # Cache Maven Repository
-cache: 
+cache:
   directories:
   - '$HOME/.m2/repository'
 
