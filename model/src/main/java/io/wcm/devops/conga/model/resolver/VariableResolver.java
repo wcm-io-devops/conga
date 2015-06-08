@@ -95,13 +95,11 @@ public final class VariableResolver {
   }
 
   private static Map<String, Object> resolveConfigurable(Configurable configurable, Map<String, Object> parentVariables) {
-    if (configurable.isResolved()) {
-      throw new IllegalArgumentException("Object is already resolved.");
-    }
-
     Map<String, Object> variables = new HashMap<>();
     variables.putAll(parentVariables);
-    variables.putAll(configurable.getVariables());
+    if (configurable.getVariables() != null) {
+      variables.putAll(configurable.getVariables());
+    }
     Map<String, Object> resolvedConfig = resolveConfig(configurable.getConfig(), variables);
 
     configurable.resolved(resolvedConfig);

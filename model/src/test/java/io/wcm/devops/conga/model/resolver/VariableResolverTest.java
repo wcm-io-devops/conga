@@ -75,6 +75,24 @@ public class VariableResolverTest {
     VariableResolver.resolve(conf);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testUnknownVariable() {
+
+    SimpleConf conf = new SimpleConf();
+    conf.setConfig(ImmutableMap.of("key1", "${var1}"));
+
+    VariableResolver.resolve(conf);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void testResolveResolved() {
+
+    SimpleConf conf = new SimpleConf();
+
+    VariableResolver.resolve(conf);
+    VariableResolver.resolve(conf);
+  }
+
   @Test
   public void testEscapedVariables() {
 
