@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<file>
+# Java environment to use for the tomcat instance
+JAVA_HOME={{jvm.path}}
 
-  <!-- This is a XML file äöüß€ with UTF-8 encoding for {{tenant}} -->
+# Path where to store PID file
+CATALINA_PID="{{tomcat.path}}/catalinarunning.pid"
 
-  <defaultString>{{defaultString}}</defaultString>
-  <defaultInt>{{defaultInt}}</defaultInt>
-  <defaultBool>{{defaultBool}}</defaultBool>
-  <globalString>{{globalString}}</globalString>
+# Heap space and permgen space memory settings for JVM
+CATALINA_OPTS="-Xms{{jvm.heapspace.min}} -Xmx{{jvm.heapspace.max}} -XX:MaxPermSize={{jvm.permgenspace.max}}"
 
-</file>
+# JVM optimization settings: Enable G1 garbage collector
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseG1GC"

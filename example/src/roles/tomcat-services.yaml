@@ -7,8 +7,18 @@ templateDir: tomcat
 files:
 
 - file: ROOT.xml
+  variants:
+  - services
   dir: conf/Catalina/localhost
   template: ROOT.xml.hbs
+  validators:
+  - xml
+
+- file: ROOT.xml
+  variants:
+  - importer
+  dir: conf/Catalina/localhost
+  template: ROOT_importer.xml.hbs
   validators:
   - xml
 
@@ -27,10 +37,10 @@ variables:
 config:
 
   tomcat:
-    port: 8080
     path: /path/to/tomcat
 
   jvm:
+    path: /path/to/java
     heapspace:
       min: 512m
       max: 2048m

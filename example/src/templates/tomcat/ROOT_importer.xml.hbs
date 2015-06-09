@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context reloadable="false">
 
+  <Parameter name="importer" value="true" />
+
 {{#each topologyConnectors}}
   <Parameter name="topologyConnector_{{@index}}" value="{{this}}" />{{/each}}
 

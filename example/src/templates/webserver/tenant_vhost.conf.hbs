@@ -1,8 +1,7 @@
-{
-  /* This is a JSON file äöüß€ with UTF-8 encoding. */
+# Example virtual host for {{tenant}}
 
-  "defaultString": "{{defaultString}}",
-  "defaultInt": "{{defaultInt}}",
-  "defaultBool": "{{defaultBool}}",
-  "globalString": "{{globalString}}"
-}
+<VirtualHost *:80>
+  DocumentRoot /www/{{tenant}}
+  ServerName {{website.hostname}}
+
+</VirtualHost> 
