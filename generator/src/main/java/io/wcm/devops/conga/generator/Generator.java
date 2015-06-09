@@ -36,6 +36,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -49,6 +51,7 @@ public final class Generator {
   private final File destDir;
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
+  private Logger log = LoggerFactory.getLogger(getClass());
 
   /**
    * @param roleDir Directory with role definitions. Filename without extension = role name.
@@ -62,6 +65,13 @@ public final class Generator {
     this.environments = readModels(environmentDir, new EnvironmentReader());
     this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);
     this.handlebarsManager = new HandlebarsManager(FileUtil.ensureDirExists(templateDir));
+  }
+
+  /**
+   * @param logger Logger to use for generation process logging.
+   */
+  public void setLogger(Logger logger) {
+    log = logger;
   }
 
   private static <T> Map<String, T> readModels(File dir, ModelReader<T> reader) {
@@ -115,7 +125,7 @@ public final class Generator {
       }
       environmentDestDir.mkdir();
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDestDir, pluginManager, handlebarsManager);
+          environmentDestDir, pluginManager, handlebarsManager, log);
       environmentGenerator.generate();
     }
   }

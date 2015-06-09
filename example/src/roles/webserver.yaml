@@ -1,0 +1,18 @@
+templateDir: webserver
+
+files:
+
+# Define a file to be generated per tenant
+- file: "${tenant}_vhost.conf"
+  dir: vhosts
+  template: tenant_vhost.conf.hbs
+  # Mulitply file for each tenant that has the given roles
+  multiply: tenant
+  multiplyOptions:
+    roles:
+    - website
+
+
+# Defines configuration parameters and default values
+config:
+  website.hostname: host

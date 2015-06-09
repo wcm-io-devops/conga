@@ -40,6 +40,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
@@ -56,9 +57,10 @@ class EnvironmentGenerator {
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
+  private final Logger log;
 
   public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
-      File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager) {
+      File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = environment;
@@ -66,19 +68,24 @@ class EnvironmentGenerator {
     this.pluginManager = pluginManager;
     this.handlebarsManager = handlebarsManager;
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
+    this.log = log;
   }
 
   public void generate() {
+    log.info("Genrate environment '{}'...", environmentName);
+
     for (Node node : environment.getNodes()) {
       generateNode(node);
     }
   }
 
   private void generateNode(Node node) {
-
     if (StringUtils.isEmpty(node.getNode())) {
       throw new GeneratorException("Missing node name in " + environmentName + ".");
     }
+
+    log.info("Generate node '{}'...", node.getNode());
+
     for (NodeRole nodeRole : node.getRoles()) {
       Role role = roles.get(nodeRole.getRole());
       if (role == null) {
@@ -142,7 +149,7 @@ class EnvironmentGenerator {
     if (file.exists()) {
       throw new GeneratorException("File exists already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
     }
-    FileGenerator fileGenerator = new FileGenerator(file, roleFile, config, template, pluginManager);
+    FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager, log);
     try {
       fileGenerator.generate();
     }

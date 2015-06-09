@@ -27,12 +27,14 @@ import java.io.File;
 public interface ValidatorPlugin extends Plugin {
 
   /**
+   * @param file File
    * @return true when validation can be applied to the given context.
    */
   boolean accepts(File file);
 
   /**
    * Execute validation operation.
+   * @param file File
    * @throws ValidationException when validation fails
    */
   void validate(File file) throws ValidationException;

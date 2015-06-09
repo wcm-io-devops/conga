@@ -1,0 +1,12 @@
+# Defines a role
+
+templateDir: tomcat
+
+files:
+
+# Define a single file to be generated
+- file: backend-connector.xml
+  dir: conf/Catalina/localhost
+  template: backend-connector.xml.hbs
+  validators:
+  - xml
