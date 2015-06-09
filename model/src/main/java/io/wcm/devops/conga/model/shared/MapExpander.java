@@ -19,7 +19,9 @@
  */
 package io.wcm.devops.conga.model.shared;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -61,45 +63,32 @@ final class MapExpander {
 
   private static Map.Entry<String, Object> expandEntry(Map.Entry<String, Object> entry) {
     if (!StringUtils.contains(entry.getKey(), ".")) {
-      return entry;
+      return new MapEntry<String, Object>(entry.getKey(), expandDeep(entry.getValue()));
     }
 
     String key = StringUtils.substringBefore(entry.getKey(), ".");
     String remaining = StringUtils.substringAfter(entry.getKey(), ".");
 
     Map<String, Object> map = new HashMap<>();
-    map.put(remaining, expandIfMap(entry.getValue()));
+    map.put(remaining, expandDeep(entry.getValue()));
     Map<String, Object> expandedMap = expand(map);
 
-    return new Map.Entry<String, Object>() {
-      @Override
-      public String getKey() {
-        return key;
-      }
-      @Override
-      public Object getValue() {
-        return expandedMap;
-      }
-      @Override
-      public Map<String, Object> setValue(Object value) {
-        throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public String toString() {
-        return getKey() + "=" + getValue();
-      }
-    };
+    return new MapEntry<String, Object>(key, expandedMap);
   }
 
   @SuppressWarnings("unchecked")
-  private static Object expandIfMap(Object object) {
+  private static Object expandDeep(Object object) {
     if (object instanceof Map) {
       return expand((Map<String, Object>)object);
     }
-    else {
-      return object;
+    if (object instanceof List) {
+      List<Object> expandedList = new ArrayList<>();
+      for (Object item : (List)object) {
+        expandedList.add(expandDeep(item));
+      }
+      return expandedList;
     }
+    return object;
   }
 
 }

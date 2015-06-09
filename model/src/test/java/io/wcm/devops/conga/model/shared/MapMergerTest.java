@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 public class MapMergerTest {
@@ -67,6 +68,13 @@ public class MapMergerTest {
     assertEquals(ImmutableMap.of("k1", ImmutableMap.of("k11", "v11", "k12", ImmutableMap.of("k111", "v111", "k112", "v112"))),
         merge(ImmutableMap.of("k1", ImmutableMap.of("k11", "v11", "k12", ImmutableMap.of("k111", "v111"))),
             ImmutableMap.of("k1", ImmutableMap.of("k12", ImmutableMap.of("k112", "v112")))));
+  }
+
+  @Test
+  public void testMergeList() {
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12", ImmutableMap.of("k11", "v12", "k21", "v21"), "v13")),
+        merge(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12")),
+            ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v12", "k21", "v21"), "v13"))));
   }
 
 }

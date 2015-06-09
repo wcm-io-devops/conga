@@ -19,8 +19,10 @@
  */
 package io.wcm.devops.conga.model.shared;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,6 +59,12 @@ final class MapMerger {
         Map<K, Object> m1 = v1 instanceof Map ? (Map<K, Object>)v1 : null;
         Map<K, Object> m2 = v2 instanceof Map ? (Map<K, Object>)v2 : null;
         merged.put(key, merge(m1, m2));
+      }
+      else if (v1 instanceof List && v2 instanceof List) {
+        List<Object> mergedList = new ArrayList<>();
+        mergedList.addAll((List<Object>)v1);
+        mergedList.addAll((List<Object>)v2);
+        merged.put(key, mergedList);
       }
       else if (v1 != null) {
         merged.put(key, v1);
