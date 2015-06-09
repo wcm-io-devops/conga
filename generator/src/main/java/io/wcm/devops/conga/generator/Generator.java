@@ -27,9 +27,11 @@ import io.wcm.devops.conga.model.resolver.ConfigResolver;
 import io.wcm.devops.conga.model.role.Role;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import com.github.jknack.handlebars.Handlebars;
@@ -84,6 +86,7 @@ public final class Generator {
 
   private static Handlebars initHandlebars(File templateDir) {
     TemplateLoader templateLoader = new FileTemplateLoader(templateDir);
+    templateLoader.setSuffix(null);
     return new Handlebars(templateLoader);
   }
 
@@ -109,7 +112,12 @@ public final class Generator {
       File environmentDestDir = new File(destDir, entry.getKey());
       // remove existing directory and it's content if it exists alreday
       if (environmentDestDir.exists()) {
-        environmentDestDir.delete();
+        try {
+          FileUtils.deleteDirectory(environmentDestDir);
+        }
+        catch (IOException ex) {
+          throw new GeneratorException("Unable to delete existing target directory: " + FileUtil.getCanonicalPath(environmentDestDir));
+        }
       }
       environmentDestDir.mkdir();
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),

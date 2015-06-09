@@ -55,6 +55,11 @@ class FileGenerator {
 
   public void generate() throws IOException {
 
+    File dir = file.getParentFile();
+    if (!dir.exists()) {
+      dir.mkdirs();
+    }
+
     // generate file with handlebars template
     try (FileOutputStream fos = new FileOutputStream(file);
         Writer writer = new OutputStreamWriter(fos, roleFile.getCharset())) {
