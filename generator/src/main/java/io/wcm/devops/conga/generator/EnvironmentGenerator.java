@@ -97,27 +97,27 @@ class EnvironmentGenerator {
         nodeDir.mkdir();
       }
       for (RoleFile roleFile : role.getFiles()) {
-
-        // prepare handlebars template
-        String templateFile = roleFile.getTemplate();
-        if (StringUtils.isEmpty(templateFile)) {
-          throw new GeneratorException("No template defined for file: " + nodeRole.getRole() + "/" + roleFile.getFile());
-        }
-        if (StringUtils.isNotEmpty(role.getTemplateDir())) {
-          templateFile = FilenameUtils.concat(role.getTemplateDir(), templateFile);
-        }
-        Template template;
-        try {
-          template = handlebars.compile(templateFile);
-        }
-        catch (IOException ex) {
-          throw new GeneratorException("Unable to compile handlebars template: " + nodeRole.getRole() + "/" + roleFile.getFile(), ex);
-        }
-
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
+          Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
           multiplyFiles(role, roleFile, mergedConfig, nodeDir, template);
         }
       }
+    }
+  }
+
+  private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {
+    String templateFile = roleFile.getTemplate();
+    if (StringUtils.isEmpty(templateFile)) {
+      throw new GeneratorException("No template defined for file: " + nodeRole.getRole() + "/" + roleFile.getFile());
+    }
+    if (StringUtils.isNotEmpty(role.getTemplateDir())) {
+      templateFile = FilenameUtils.concat(role.getTemplateDir(), templateFile);
+    }
+    try {
+      return handlebars.compile(templateFile);
+    }
+    catch (IOException ex) {
+      throw new GeneratorException("Unable to compile handlebars template: " + nodeRole.getRole() + "/" + roleFile.getFile(), ex);
     }
   }
 
