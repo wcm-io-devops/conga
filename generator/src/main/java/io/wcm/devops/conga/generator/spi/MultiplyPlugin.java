@@ -17,27 +17,23 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator;
+package io.wcm.devops.conga.generator.spi;
+
+import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * Exception in generation process.
+ * Plugin that allows to generate multiple files from one template.
  */
-public final class GeneratorException extends RuntimeException {
-  private static final long serialVersionUID = 1L;
+public interface MultiplyPlugin extends Plugin {
 
   /**
-   * @param message Message
+   * Execute multiply operation.
    */
-  public GeneratorException(String message) {
-    super(message);
-  }
-
-  /**
-   * @param message Message
-   * @param cause Cause
-   */
-  public GeneratorException(String message, Throwable cause) {
-    super(message, cause);
-  }
+  List<MultiplyContext> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config);
 
 }

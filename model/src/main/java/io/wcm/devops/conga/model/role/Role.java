@@ -31,7 +31,7 @@ public final class Role extends AbstractConfigurable {
 
   private List<String> variants = new ArrayList<>();
   private String templateDir;
-  private List<File> files = new ArrayList<>();
+  private List<RoleFile> files = new ArrayList<>();
 
   public List<String> getVariants() {
     return this.variants;
@@ -49,11 +49,11 @@ public final class Role extends AbstractConfigurable {
     this.templateDir = templateDirectory;
   }
 
-  public List<File> getFiles() {
+  public List<RoleFile> getFiles() {
     return this.files;
   }
 
-  public void setFiles(List<File> files) {
+  public void setFiles(List<RoleFile> files) {
     this.files = files;
   }
 

@@ -35,7 +35,7 @@ files:
   postProcessors:
   - osgi-config-generator
 
-- file: "{tenantId}_vhost.conf"
+- file: "${tenant}_vhost.conf"
   dir: vhosts
   template: tenant_vhost.conf.hb
   multiply: tenant

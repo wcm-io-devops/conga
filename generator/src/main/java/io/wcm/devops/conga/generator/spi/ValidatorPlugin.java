@@ -17,27 +17,21 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator;
+package io.wcm.devops.conga.generator.spi;
 
 /**
- * Exception in generation process.
+ * Plugin that allows to validate a generate file.
  */
-public final class GeneratorException extends RuntimeException {
-  private static final long serialVersionUID = 1L;
+public interface ValidatorPlugin extends Plugin {
 
   /**
-   * @param message Message
+   * @return true when validation can be applied to the given context.
    */
-  public GeneratorException(String message) {
-    super(message);
-  }
+  boolean accepts();
 
   /**
-   * @param message Message
-   * @param cause Cause
+   * Execute validation operation.
    */
-  public GeneratorException(String message, Throwable cause) {
-    super(message, cause);
-  }
+  void validate();
 
 }

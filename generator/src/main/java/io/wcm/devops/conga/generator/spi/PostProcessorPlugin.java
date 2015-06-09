@@ -17,27 +17,21 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator;
+package io.wcm.devops.conga.generator.spi;
 
 /**
- * Exception in generation process.
+ * Plugin that allows to post-process a generated file.
  */
-public final class GeneratorException extends RuntimeException {
-  private static final long serialVersionUID = 1L;
+public interface PostProcessorPlugin extends Plugin {
 
   /**
-   * @param message Message
+   * @return true when post process can be applied to the given context.
    */
-  public GeneratorException(String message) {
-    super(message);
-  }
+  boolean accepts();
 
   /**
-   * @param message Message
-   * @param cause Cause
+   * Execute post process operation.
    */
-  public GeneratorException(String message, Throwable cause) {
-    super(message, cause);
-  }
+  void postProcess();
 
 }

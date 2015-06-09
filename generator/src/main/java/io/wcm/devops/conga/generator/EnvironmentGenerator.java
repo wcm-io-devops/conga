@@ -19,13 +19,18 @@
  */
 package io.wcm.devops.conga.generator;
 
+import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
+import io.wcm.devops.conga.generator.spi.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,12 +44,17 @@ class EnvironmentGenerator {
   private final String environmentName;
   private final Environment environment;
   private final File destDir;
+  private final PluginManager pluginManager;
+  private final MultiplyPlugin defaultMultiplyPlugin;
 
-  public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment, File destDir) {
+  public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment, File destDir,
+      PluginManager pluginManager) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = environment;
     this.destDir = destDir;
+    this.pluginManager = pluginManager;
+    this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
   }
 
   public void generate() {
@@ -79,9 +89,28 @@ class EnvironmentGenerator {
       if (!nodeDir.exists()) {
         nodeDir.mkdir();
       }
+      for (RoleFile roleFile : role.getFiles()) {
+        if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
+          multiplyFiles(role, roleFile, mergedConfig, nodeDir);
+        }
+      }
+    }
+  }
 
+  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File parentDir) {
+    MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
+    if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
+      multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
     }
 
+    List<MultiplyContext> contexts = multiplyPlugin.multiply(role, roleFile, environment, config);
+    for (MultiplyContext context : contexts) {
+      generateFile(roleFile, context.getDir(), context.getFile(), context.getConfig(), parentDir);
+    }
+  }
+
+  private void generateFile(RoleFile roleFile, String dir, String file, Map<String, Object> config, File parentDir) {
+    // TODO: generate file
   }
 
 }

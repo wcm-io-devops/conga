@@ -38,17 +38,19 @@ import com.google.common.collect.ImmutableMap;
 /**
  * Main entry point for CONGA generator.
  */
-public class Generator {
+public final class Generator {
 
   private final Map<String, Role> roles;
   private final Map<String, Environment> environments;
   private final File destDir;
+  private final PluginManager pluginManager;
 
   /**
    * @param roleDir Directory with role definitions. Filename without extension = role name.
    * @param environmentDir Directory with environment definitions. Filename without extension = environment name.
    */
   public Generator(File roleDir, File environmentDir, File destDir) {
+    this.pluginManager = new PluginManager();
     try {
       this.roles = readModels(roleDir, new RoleReader());
       this.environments = readModels(environmentDir, new EnvironmentReader());
@@ -114,7 +116,8 @@ public class Generator {
         environmentDir.delete();
       }
       environmentDir.mkdir();
-      EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(), environmentDir);
+      EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
+          environmentDir, pluginManager);
       environmentGenerator.generate();
     }
   }

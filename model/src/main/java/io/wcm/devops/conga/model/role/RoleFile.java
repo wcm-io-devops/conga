@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * File definition.
  */
-public final class File {
+public final class RoleFile {
 
   private String file;
   private String dir;

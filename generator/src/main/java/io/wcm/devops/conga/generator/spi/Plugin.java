@@ -17,27 +17,16 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator;
+package io.wcm.devops.conga.generator.spi;
 
 /**
- * Exception in generation process.
+ * Generic plugin interface all other plugins extend from.
  */
-public final class GeneratorException extends RuntimeException {
-  private static final long serialVersionUID = 1L;
+public interface Plugin {
 
   /**
-   * @param message Message
+   * @return Plugin name to be referenced in definition file
    */
-  public GeneratorException(String message) {
-    super(message);
-  }
-
-  /**
-   * @param message Message
-   * @param cause Cause
-   */
-  public GeneratorException(String message, Throwable cause) {
-    super(message, cause);
-  }
+  String getName();
 
 }
