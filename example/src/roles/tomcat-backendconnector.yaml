@@ -1,0 +1,9 @@
+templateDir: tomcat
+
+files:
+
+- file: backend-connector.xml
+  dir: conf/Catalina/localhost
+  template: backend-connector.xml.hbs
+  validators:
+  - xml

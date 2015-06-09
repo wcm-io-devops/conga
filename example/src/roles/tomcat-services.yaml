@@ -1,0 +1,41 @@
+variants:
+- services
+- importer
+
+templateDir: tomcat
+
+files:
+
+- file: ROOT.xml
+  dir: conf/Catalina/localhost
+  template: ROOT.xml.hbs
+  validators:
+  - xml
+
+- file: setenv.sh
+  dir: bin
+  template: setenv.sh.hbs
+  charset: ISO-8859-1
+
+
+# Variables that can be reference anywhere inside the definition
+variables:
+  var1: value1
+
+
+# Defines configuration parameters and default values
+config:
+
+  tomcat:
+    port: 8080
+    path: /path/to/tomcat
+
+  jvm:
+    heapspace:
+      min: 512m
+      max: 2048m
+    permgenspace:
+      max: 256m
+
+  topologyConnectors:
+    - http://localhost:8080/libs/sling/topology/connector

@@ -1,0 +1,11 @@
+templateDir: webserver
+
+files:
+
+- file: "${tenant}_vhost.conf"
+  dir: vhosts
+  template: tenant_vhost.conf.hbs
+  multiply: tenant
+  multiplyOptions:
+    roles:
+    - website
