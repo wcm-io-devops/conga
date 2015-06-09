@@ -1,0 +1,27 @@
+variants:
+- variant11
+- variant12
+
+templateDir: role1
+
+files:
+
+- file: "test.txt"
+  dir: text
+  template: test.txt.hbs
+  variants:
+  - variant11
+  charset: ISO-8859-1
+
+- file: "test.${tenant}.xml"
+  dir: xml
+  template: test.xml.hbs
+  multiply: tenant
+  multiplyOptions:
+    roles:
+    - tenantRole1
+
+config:
+  defaultString: value1 äöüß€
+  defaultInt: 55
+  defaultBool: true

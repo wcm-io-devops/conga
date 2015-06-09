@@ -1,0 +1,73 @@
+# Defines an environment
+
+nodes:
+
+# Example node with 2 roles
+- node: services-1
+  # Config for all roles in this node
+  config:
+    jvm.heapspace.max: 2048m
+  variables:
+    topologyConnectorPath: /specialConnector
+  roles:
+  - role: tomcat-services
+    # Variants allow to pic a specific sub-configuration of a role
+    variant: importer
+    # Config only for this role
+    config:
+      topologyConnectors:
+      - "http://host3${topologyConnectorPath}"
+  - role: tomcat-backendconnector
+
+# Example node with 1 role
+- node: services-2
+  roles:
+  - role: tomcat-services
+    variant: services
+
+# Example node with 1 role
+- node: webserver
+  roles:
+  - role: webserver
+
+
+# Variables that can be reference anywhere inside the definition
+variables:
+  topologyConnectorPath: /connector
+
+
+# Global configuration
+config:
+  # It is possible to use a shortcut definition for nested maps.
+  #   jvm.heapspace.max: 4096m
+  # is equivalent to
+  #   jvm:
+  #     heapspace:
+  #       max: 4096m
+  jvm.heapspace.max: 4096m
+  topologyConnectors:
+  - "http://host1${topologyConnectorPath}"
+  - "http://host2${topologyConnectorPath}"
+
+
+# Tenant defintions
+tenants:
+
+# Tenant with two tenant roles (can be used for filtering file multiply)
+- tenant: tenant1
+  roles:
+  - website
+  - application
+  config:
+    website.hostname: www.${domain}
+  variables:
+    domain: mysite.de
+
+# Tenant with one tenant roles
+- tenant: tenant2
+  roles:
+  - website
+  config:
+    website.hostname: www.${domain}
+  variables:
+    domain: mysite.fr
