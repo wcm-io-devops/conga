@@ -22,7 +22,7 @@ jdk:
 install: "mvn -s ./.travis.maven-settings.xml clean"
 script:
 - "mvn -s ./.travis.maven-settings.xml -Pcontinuous-integration -U -Dmaven.javadoc.skip=true install"
-- "mvn -s ./.travis.maven-settings.xml -Pcontinuous-integration -U -Dmaven.javadoc.skip=true install" -f example
+- "mvn -s ./.travis.maven-settings.xml -Pcontinuous-integration -U -Dmaven.javadoc.skip=true install -f example"
 # Remove wcm.io artefacts from repository before cache
 - rm -rf $HOME/.m2/repository/io/wcm
 
