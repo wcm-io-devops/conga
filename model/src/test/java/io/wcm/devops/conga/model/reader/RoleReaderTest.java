@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.commons.lang3.CharEncoding;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -77,6 +78,7 @@ public class RoleReaderTest {
     assertEquals(ImmutableList.of("sling-provisioning-model"), file.getValidators());
     assertEquals(ImmutableList.of("osgi-config-generator"), file.getPostProcessors());
     assertEquals("none", file.getMultiply());
+    assertEquals(CharEncoding.UTF_8, file.getCharset());
   }
 
 }

@@ -21,26 +21,28 @@ package io.wcm.devops.conga.generator;
 
 import io.wcm.devops.conga.generator.spi.Plugin;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.ServiceLoader;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Manages registered plugin. Plugins are registered using the {@link ServiceLoader} concept.
  */
 public final class PluginManager {
 
-  private final LoadingCache<Class<Plugin>, Map<String, Plugin>> pluginCache =
-      CacheBuilder.newBuilder().build(new CacheLoader<Class<Plugin>, Map<String, Plugin>>() {
+  private final LoadingCache<Class<Plugin>, SortedMap<String, Plugin>> pluginCache =
+      CacheBuilder.newBuilder().build(new CacheLoader<Class<Plugin>, SortedMap<String, Plugin>>() {
         @Override
-        public Map<String, Plugin> load(Class<Plugin> pluginClass) throws Exception {
+        public SortedMap<String, Plugin> load(Class<Plugin> pluginClass) throws Exception {
           ServiceLoader<Plugin> loadedPlugins = ServiceLoader.load(pluginClass);
-          Map<String, Plugin> pluginMap = new HashMap<>();
+          SortedMap<String, Plugin> pluginMap = new TreeMap<>();
           for (Plugin plugin : loadedPlugins) {
             if (pluginMap.containsKey(plugin.getName())) {
               throw new GeneratorException("Plugin name '" + plugin.getName() + "' is not unique. "
@@ -67,6 +69,22 @@ public final class PluginManager {
         throw new GeneratorException(pluginClass.getSimpleName() + " not found: '" + name + "'");
       }
       return (T)plugin;
+    }
+    catch (ExecutionException ex) {
+      throw new GeneratorException("Untable to build plugin cache for " + pluginClass.getName(), ex);
+    }
+  }
+
+  /**
+   * Get all plugin instance.
+   * @param pluginClass Plugin class
+   * @return Plugin instances.
+   * @throws GeneratorException When plugin could not be loaded.
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends Plugin> List<T> getAll(Class<T> pluginClass) throws GeneratorException {
+    try {
+      return (List<T>)ImmutableList.copyOf(pluginCache.get((Class<Plugin>)pluginClass).values());
     }
     catch (ExecutionException ex) {
       throw new GeneratorException("Untable to build plugin cache for " + pluginClass.getName(), ex);

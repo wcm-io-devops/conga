@@ -17,24 +17,36 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.spi;
+package io.wcm.devops.conga.generator.plugins.validation;
+
+import io.wcm.devops.conga.generator.spi.ValidationException;
+import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 
 import java.io.File;
 
 /**
- * Plugin that allows to validate a generate file.
+ * Does no validation.
  */
-public interface ValidatorPlugin extends Plugin {
+public final class NoneValidator implements ValidatorPlugin {
 
   /**
-   * @return true when validation can be applied to the given context.
+   * Plugin name
    */
-  boolean accepts(File file);
+  public static final String NAME = "none";
 
-  /**
-   * Execute validation operation.
-   * @throws ValidationException when validation fails
-   */
-  void validate(File file) throws ValidationException;
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
+  @Override
+  public boolean accepts(File file) {
+    return true;
+  }
+
+  @Override
+  public void validate(File file) throws ValidationException {
+    // no validation
+  }
 
 }

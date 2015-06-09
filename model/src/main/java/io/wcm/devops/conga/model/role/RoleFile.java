@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.CharEncoding;
+
 /**
  * File definition.
  */
@@ -37,6 +39,7 @@ public final class RoleFile {
   private List<String> postProcessors = new ArrayList<>();
   private String multiply;
   private Map<String, Object> multiplyOptions = new HashMap<>();
+  private String charset = CharEncoding.UTF_8;
 
   public String getFile() {
     return this.file;
@@ -100,6 +103,14 @@ public final class RoleFile {
 
   public void setMultiplyOptions(Map<String, Object> multiplyOptions) {
     this.multiplyOptions = multiplyOptions;
+  }
+
+  public String getCharset() {
+    return this.charset;
+  }
+
+  public void setCharset(String charset) {
+    this.charset = charset;
   }
 
 }

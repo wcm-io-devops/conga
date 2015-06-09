@@ -32,6 +32,9 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.io.FileTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -41,9 +44,9 @@ public final class Generator {
 
   private final Map<String, Role> roles;
   private final Map<String, Environment> environments;
-  private final File templateDir;
   private final File destDir;
   private final PluginManager pluginManager;
+  private final Handlebars handlebars;
 
   /**
    * @param roleDir Directory with role definitions. Filename without extension = role name.
@@ -55,8 +58,8 @@ public final class Generator {
     this.pluginManager = new PluginManager();
     this.roles = readModels(roleDir, new RoleReader());
     this.environments = readModels(environmentDir, new EnvironmentReader());
-    this.templateDir = templateDir;
     this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);
+    this.handlebars = initHandlebars(FileUtil.ensureDirExists(templateDir));
   }
 
   private static <T> Map<String, T> readModels(File dir, ModelReader<T> reader) {
@@ -77,6 +80,11 @@ public final class Generator {
       }
     }
     return ImmutableMap.copyOf(models);
+  }
+
+  private static Handlebars initHandlebars(File templateDir) {
+    TemplateLoader templateLoader = new FileTemplateLoader(templateDir);
+    return new Handlebars(templateLoader);
   }
 
   /**
@@ -105,7 +113,7 @@ public final class Generator {
       }
       environmentDestDir.mkdir();
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          templateDir, environmentDestDir, pluginManager);
+          environmentDestDir, pluginManager, handlebars);
       environmentGenerator.generate();
     }
   }

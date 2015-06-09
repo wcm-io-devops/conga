@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
+import java.io.File;
+
 /**
  * Plugin that allows to post-process a generated file.
  */
@@ -27,11 +29,11 @@ public interface PostProcessorPlugin extends Plugin {
   /**
    * @return true when post process can be applied to the given context.
    */
-  boolean accepts();
+  boolean accepts(File file);
 
   /**
    * Execute post process operation.
    */
-  void postProcess();
+  void postProcess(File file);
 
 }

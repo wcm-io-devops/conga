@@ -19,13 +19,19 @@
  */
 package io.wcm.devops.conga.generator;
 
+import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
+import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.model.role.RoleFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Map;
+import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.jknack.handlebars.Template;
 
 /**
  * Generates file for one environment.
@@ -35,25 +41,51 @@ class FileGenerator {
   private final File file;
   private final RoleFile roleFile;
   private final Map<String, Object> config;
-  private final File roleTemplateDir;
+  private final Template template;
   private final PluginManager pluginManager;
 
   public FileGenerator(File file, RoleFile roleFile, Map<String, Object> config,
-      File roleTemplateDir, PluginManager pluginManager) {
+      Template template, PluginManager pluginManager) {
     this.file = file;
     this.roleFile = roleFile;
     this.config = config;
-    this.roleTemplateDir = roleTemplateDir;
+    this.template = template;
     this.pluginManager = pluginManager;
   }
 
   public void generate() throws IOException {
-    if (StringUtils.isEmpty(roleFile.getTemplate())) {
-      throw new GeneratorException("No template defined for file: " + FileUtil.getCanonicalPath(file));
-    }
-    File templateFile = FileUtil.ensureFileExists(new File(roleTemplateDir, roleFile.getTemplate()));
 
-    // TODO: generate file
+    // generate file with handlebars template
+    try (FileOutputStream fos = new FileOutputStream(file);
+        Writer writer = new OutputStreamWriter(fos, roleFile.getCharset())) {
+      template.apply(config, writer);
+      writer.flush();
+    }
+
+    // validate and post-process generated file
+    validateFile();
+    postProcessFile();
+  }
+
+  private void validateFile() {
+    Stream<ValidatorPlugin> validators;
+    if (roleFile.getValidators().isEmpty()) {
+      // auto-detect matching validators if none are defined
+      validators = pluginManager.getAll(ValidatorPlugin.class).stream()
+          .filter(validator -> validator.accepts(file));
+    }
+    else {
+      // otherwise apply selected validators
+      validators = roleFile.getValidators().stream()
+          .map(name -> pluginManager.get(name, ValidatorPlugin.class));
+    }
+    validators.forEach(validator -> validator.validate(file));
+  }
+
+  private void postProcessFile() {
+    roleFile.getPostProcessors().stream()
+    .map(name -> pluginManager.get(name, PostProcessorPlugin.class))
+    .forEach(postProcessor -> postProcessor.postProcess(file));
   }
 
 }

@@ -19,22 +19,25 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
-import java.io.File;
-
 /**
- * Plugin that allows to validate a generate file.
+ * Validation failed exception.
  */
-public interface ValidatorPlugin extends Plugin {
+public final class ValidationException extends RuntimeException {
+  private static final long serialVersionUID = 1L;
 
   /**
-   * @return true when validation can be applied to the given context.
+   * @param message Message
    */
-  boolean accepts(File file);
+  public ValidationException(String message) {
+    super(message);
+  }
 
   /**
-   * Execute validation operation.
-   * @throws ValidationException when validation fails
+   * @param message Message
+   * @param cause Cause
    */
-  void validate(File file) throws ValidationException;
+  public ValidationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
 }

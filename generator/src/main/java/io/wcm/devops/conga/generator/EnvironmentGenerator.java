@@ -30,11 +30,15 @@ import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
 
 /**
  * Generates file for one environment.
@@ -45,18 +49,18 @@ class EnvironmentGenerator {
   private final String environmentName;
   private final Environment environment;
   private final File destDir;
-  private final File templateDir;
   private final PluginManager pluginManager;
+  private final Handlebars handlebars;
   private final MultiplyPlugin defaultMultiplyPlugin;
 
   public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
-      File templatedir, File destDir, PluginManager pluginManager) {
+      File destDir, PluginManager pluginManager, Handlebars handlebars) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = environment;
     this.destDir = destDir;
-    this.templateDir = templatedir;
     this.pluginManager = pluginManager;
+    this.handlebars = handlebars;
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
   }
 
@@ -82,11 +86,6 @@ class EnvironmentGenerator {
         throw new GeneratorException("Variant '" + variant + "' for role '" + nodeRole.getRole() + "' "
             + "from " + environmentName + "/" + node.getNode() + " does not exist.");
       }
-      File roleTemplateDir = templateDir;
-      if (StringUtils.isNotEmpty(role.getTemplateDir())) {
-        roleTemplateDir = new File(templateDir, role.getTemplateDir());
-      }
-      roleTemplateDir = FileUtil.ensureDirExists(roleTemplateDir);
 
       // merge default values to config
       Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), role.getConfig());
@@ -97,15 +96,31 @@ class EnvironmentGenerator {
         nodeDir.mkdir();
       }
       for (RoleFile roleFile : role.getFiles()) {
+
+        // prepare handlebars template
+        String templateFile = roleFile.getTemplate();
+        if (StringUtils.isEmpty(templateFile)) {
+          throw new GeneratorException("No template defined for file: " + nodeRole.getRole() + "/" + roleFile.getFile());
+        }
+        if (StringUtils.isNotEmpty(role.getTemplateDir())) {
+          templateFile = FilenameUtils.concat(role.getTemplateDir(), templateFile);
+        }
+        Template template;
+        try {
+          template = handlebars.compile(templateFile);
+        }
+        catch (IOException ex) {
+          throw new GeneratorException("Unable to compile handlebars template: " + nodeRole.getRole() + "/" + roleFile.getFile(), ex);
+        }
+
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
-          multiplyFiles(role, roleFile, mergedConfig, nodeDir, roleTemplateDir);
+          multiplyFiles(role, roleFile, mergedConfig, nodeDir, template);
         }
       }
     }
   }
 
-  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config,
-      File nodeDir, File roleTemplateDir) {
+  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
@@ -113,17 +128,16 @@ class EnvironmentGenerator {
 
     List<MultiplyContext> contexts = multiplyPlugin.multiply(role, roleFile, environment, config);
     for (MultiplyContext context : contexts) {
-      generateFile(roleFile, context.getDir(), context.getFile(), context.getConfig(), nodeDir, roleTemplateDir);
+      generateFile(roleFile, context.getDir(), context.getFile(), context.getConfig(), nodeDir, template);
     }
   }
 
-  private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config,
-      File nodeDir, File roleTemplateDir) {
+  private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template) {
     File file = new File(nodeDir, FilenameUtils.concat(dir, fileName));
     if (file.exists()) {
       throw new GeneratorException("File exists already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
     }
-    FileGenerator fileGenerator = new FileGenerator(file, roleFile, config, roleTemplateDir, pluginManager);
+    FileGenerator fileGenerator = new FileGenerator(file, roleFile, config, template, pluginManager);
     try {
       fileGenerator.generate();
     }

@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.multiply;
 
+import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -36,10 +37,10 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Multiplies a file for each tenant with a matching tenant role.
  */
-public class TenantMultiply implements MultiplyPlugin {
+public final class TenantMultiply implements MultiplyPlugin {
 
   /**
-   * Plugin name:
+   * Plugin name
    */
   public static final String NAME = "tenant";
 
@@ -57,7 +58,7 @@ public class TenantMultiply implements MultiplyPlugin {
 
     for (Tenant tenant : environment.getTenants()) {
       if (StringUtils.isEmpty(tenant.getTenant())) {
-        throw new RuntimeException("Tenant without tenant name detected.");
+        throw new GeneratorException("Tenant without tenant name detected.");
       }
       if (acceptTenant(tenant, roleFile.getMultiplyOptions())) {
         // replace placeholders in filename and merge tenant config for each tenant
@@ -80,7 +81,7 @@ public class TenantMultiply implements MultiplyPlugin {
   @SuppressWarnings("unchecked")
   private boolean acceptTenant(Tenant tenant, Map<String, Object> multiplyOptions) {
     List<String> roles = (List<String>)multiplyOptions.get(ROLES_PROPERTY);
-    if (roles != null && roles.size() > 0) {
+    if (roles != null && !roles.isEmpty()) {
       for (String role : roles) {
         if (tenant.getRoles().contains(role)) {
           return true;

@@ -33,10 +33,10 @@ import com.google.common.collect.ImmutableList;
 /**
  * Multiplier that does not multiply but generate the file once.
  */
-public class NoneMultiply implements MultiplyPlugin {
+public final class NoneMultiply implements MultiplyPlugin {
 
   /**
-   * Plugin name:
+   * Plugin name
    */
   public static final String NAME = "none";
 

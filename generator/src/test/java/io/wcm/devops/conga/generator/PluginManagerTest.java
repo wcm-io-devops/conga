@@ -19,9 +19,13 @@
  */
 package io.wcm.devops.conga.generator;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.plugins.multiply.TenantMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +48,15 @@ public class PluginManagerTest {
   @Test(expected = GeneratorException.class)
   public void testNonExistingPlugin() {
     underTest.get("unknown", MultiplyPlugin.class);
+  }
+
+  @Test
+  public void testGetAll() {
+    List<MultiplyPlugin> plugins = underTest.getAll(MultiplyPlugin.class);
+    assertEquals(2, plugins.size());
+
+    assertTrue(plugins.get(0) instanceof NoneMultiply);
+    assertTrue(plugins.get(1) instanceof TenantMultiply);
   }
 
 }

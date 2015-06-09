@@ -16,6 +16,7 @@ files:
   postProcessors:
   - osgi-config-generator
   multiply: none
+  charset: UTF-8
 
 - file: ROOT.xml
   dir: conf/Catalina/localhost
@@ -26,6 +27,7 @@ files:
 - file: setenv.sh
   dir: bin
   template: setenv.sh.hb
+  charset: ISO-8859-1
 
 - file: systemconfig.txt
   dir: data/deploy
