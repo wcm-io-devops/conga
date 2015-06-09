@@ -21,9 +21,9 @@ package io.wcm.devops.conga.generator.plugins.multiply;
 
 import static org.junit.Assert.assertEquals;
 import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.PluginManager;
 import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Tenant;
 import io.wcm.devops.conga.model.role.Role;
@@ -92,12 +92,12 @@ public class TenantMultiplyTest {
     MultiplyContext context1 = contexts.get(0);
     assertEquals("my_tenant1_file", context1.getFile());
     assertEquals("my_tenant1_dir", context1.getDir());
-    assertEquals(ImmutableMap.of("var1", "v11", "var2", "v2", "var3", "v33"), context1.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v11", "var2", "v2", "var3", "v33", "tenant", "tenant1"), context1.getConfig());
 
     MultiplyContext context2 = contexts.get(1);
     assertEquals("my_tenant2_file", context2.getFile());
     assertEquals("my_tenant2_dir", context2.getDir());
-    assertEquals(ImmutableMap.of("var1", "v1", "var2", "v2"), context2.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1", "var2", "v2", "tenant", "tenant2"), context2.getConfig());
   }
 
   @Test

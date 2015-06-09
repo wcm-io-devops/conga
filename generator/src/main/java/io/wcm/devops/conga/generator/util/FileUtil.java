@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator;
+package io.wcm.devops.conga.generator.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,12 +25,17 @@ import java.io.IOException;
 /**
  * Utility methods for file handling.
  */
-final class FileUtil {
+public final class FileUtil {
 
   private FileUtil() {
     // static methods only
   }
 
+  /**
+   * Get canoncial path of file
+   * @param file File
+   * @return Canonical path
+   */
   public static String getCanonicalPath(File file) {
     try {
       return file.getCanonicalPath();
@@ -40,6 +45,11 @@ final class FileUtil {
     }
   }
 
+  /**
+   * Ensure that file exists.
+   * @param file File
+   * @return File
+   */
   public static File ensureFileExists(File file) {
     if (!file.exists() || !file.isFile()) {
       throw new IllegalArgumentException("File not found: " + getCanonicalPath(file));
@@ -47,6 +57,11 @@ final class FileUtil {
     return file;
   }
 
+  /**
+   * Ensure that directory exists.
+   * @param dir Directory
+   * @return Directory
+   */
   public static File ensureDirExists(File dir) {
     if (!dir.exists() || !dir.isDirectory()) {
       throw new IllegalArgumentException("Directory not found: " + getCanonicalPath(dir));
@@ -54,6 +69,11 @@ final class FileUtil {
     return dir;
   }
 
+  /**
+   * Ensure that directory exists and create it if not.
+   * @param dir Directory
+   * @return Directory
+   */
   public static File ensureDirExistsAutocreate(File dir) {
     if (!dir.exists()) {
       dir.mkdirs();

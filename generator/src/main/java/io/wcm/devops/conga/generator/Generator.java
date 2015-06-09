@@ -19,6 +19,9 @@
  */
 package io.wcm.devops.conga.generator;
 
+import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.ModelReader;
@@ -34,9 +37,6 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.io.FileTemplateLoader;
-import com.github.jknack.handlebars.io.TemplateLoader;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -48,7 +48,7 @@ public final class Generator {
   private final Map<String, Environment> environments;
   private final File destDir;
   private final PluginManager pluginManager;
-  private final Handlebars handlebars;
+  private final HandlebarsManager handlebarsManager;
 
   /**
    * @param roleDir Directory with role definitions. Filename without extension = role name.
@@ -61,7 +61,7 @@ public final class Generator {
     this.roles = readModels(roleDir, new RoleReader());
     this.environments = readModels(environmentDir, new EnvironmentReader());
     this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);
-    this.handlebars = initHandlebars(FileUtil.ensureDirExists(templateDir));
+    this.handlebarsManager = new HandlebarsManager(FileUtil.ensureDirExists(templateDir));
   }
 
   private static <T> Map<String, T> readModels(File dir, ModelReader<T> reader) {
@@ -82,12 +82,6 @@ public final class Generator {
       }
     }
     return ImmutableMap.copyOf(models);
-  }
-
-  private static Handlebars initHandlebars(File templateDir) {
-    TemplateLoader templateLoader = new FileTemplateLoader(templateDir);
-    templateLoader.setSuffix(null);
-    return new Handlebars(templateLoader);
   }
 
   /**
@@ -121,7 +115,7 @@ public final class Generator {
       }
       environmentDestDir.mkdir();
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDestDir, pluginManager, handlebars);
+          environmentDestDir, pluginManager, handlebarsManager);
       environmentGenerator.generate();
     }
   }

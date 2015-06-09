@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator;
 
 import static org.junit.Assert.assertTrue;
+import io.wcm.devops.conga.generator.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,17 +55,36 @@ public class GeneratorTest {
     File node1Dir = assertDirectory(destDir, "env1/node1");
 
     File text1 = assertFile(node1Dir, "text/test.txt");
+    assertContains(text1, "textfile äöüß with ISO-8859-1 encoding", CharEncoding.ISO_8859_1);
     assertContains(text1, "defaultString: value1 äöüß", CharEncoding.ISO_8859_1);
+    assertContains(text1, "globalString: globalValue äöüß", CharEncoding.ISO_8859_1);
 
     File json1 = assertFile(node1Dir, "json/test.json");
+    assertContains(json1, "JSON file äöüß€ with UTF-8 encoding");
+    assertContains(json1, "\"defaultString\": \"value2\"");
+    assertContains(json1, "\"globalString\": \"globalValue äöüß€\"");
 
     File xml1tenant1 = assertFile(node1Dir, "xml/test.tenant1.xml");
+    assertContains(xml1tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
+    assertContains(xml1tenant1, "<defaultString>value1 äöüß€</defaultString>");
+    assertContains(xml1tenant1, "<globalString>globalValue äöüß€</globalString>");
+
     File xml1tenant2 = assertFile(node1Dir, "xml/test.tenant2.xml");
+    assertContains(xml1tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");
+    assertContains(xml1tenant2, "<defaultString>defaultFromTenant2</defaultString>");
+    assertContains(xml1tenant2, "<globalString>globalFromTenant2</globalString>");
 
     File node2Dir = assertDirectory(destDir, "env1/node2");
 
     File xml2tenant1 = assertFile(node2Dir, "xml/test.tenant1.xml");
+    assertContains(xml2tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
+    assertContains(xml2tenant1, "<defaultString>defaultFromNode2Role1</defaultString>");
+    assertContains(xml2tenant1, "<globalString>globalValue äöüß€</globalString>");
+
     File xml2tenant2 = assertFile(node2Dir, "xml/test.tenant2.xml");
+    assertContains(xml2tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");
+    assertContains(xml2tenant2, "<defaultString>defaultFromTenant2</defaultString>");
+    assertContains(xml2tenant2, "<globalString>globalFromTenant2</globalString>");
   }
 
   private File assertDirectory(File assertBaseDir, String path) {
@@ -91,11 +111,6 @@ public class GeneratorTest {
     catch (IOException ex) {
       throw new RuntimeException("Unable to read contents from: " + FileUtil.getCanonicalPath(file), ex);
     }
-  }
-
-  @Test
-  public void testOneEnvironments() {
-    underTest.generate("env1");
   }
 
   @Test(expected = GeneratorException.class)

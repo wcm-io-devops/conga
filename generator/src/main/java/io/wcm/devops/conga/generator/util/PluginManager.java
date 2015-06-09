@@ -17,8 +17,9 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator;
+package io.wcm.devops.conga.generator.util;
 
+import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.Plugin;
 
 import java.util.List;

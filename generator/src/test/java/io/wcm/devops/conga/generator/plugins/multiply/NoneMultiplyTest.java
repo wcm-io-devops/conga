@@ -20,9 +20,9 @@
 package io.wcm.devops.conga.generator.plugins.multiply;
 
 import static org.junit.Assert.assertEquals;
-import io.wcm.devops.conga.generator.PluginManager;
 import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;

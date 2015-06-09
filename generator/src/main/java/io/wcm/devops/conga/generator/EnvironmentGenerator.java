@@ -19,10 +19,13 @@
  */
 package io.wcm.devops.conga.generator;
 
+import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
+import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
@@ -51,17 +54,17 @@ class EnvironmentGenerator {
   private final Environment environment;
   private final File destDir;
   private final PluginManager pluginManager;
-  private final Handlebars handlebars;
+  private final HandlebarsManager handlebarsManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
 
   public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
-      File destDir, PluginManager pluginManager, Handlebars handlebars) {
+      File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = environment;
     this.destDir = destDir;
     this.pluginManager = pluginManager;
-    this.handlebars = handlebars;
+    this.handlebarsManager = handlebarsManager;
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
   }
 
@@ -114,6 +117,7 @@ class EnvironmentGenerator {
       templateFile = FilenameUtils.concat(role.getTemplateDir(), templateFile);
     }
     try {
+      Handlebars handlebars = handlebarsManager.get(roleFile.getCharset());
       return handlebars.compile(templateFile);
     }
     catch (IOException ex) {

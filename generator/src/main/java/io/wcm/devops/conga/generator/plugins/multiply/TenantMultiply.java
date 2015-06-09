@@ -45,6 +45,7 @@ public final class TenantMultiply implements MultiplyPlugin {
   public static final String NAME = "tenant";
 
   static final String ROLES_PROPERTY = "roles";
+  static final String KEY_TENANT = "tenant";
   static final String TENANT_PLACEHOLDER = "${tenant}";
 
   @Override
@@ -64,7 +65,10 @@ public final class TenantMultiply implements MultiplyPlugin {
         // replace placeholders in filename and merge tenant config for each tenant
         String file = StringUtils.replace(roleFile.getFile(), TENANT_PLACEHOLDER, tenant.getTenant());
         String dir = StringUtils.replace(roleFile.getDir(), TENANT_PLACEHOLDER, tenant.getTenant());
+
         Map<String, Object> mergedConfig = MapMerger.merge(tenant.getConfig(), config);
+        mergedConfig.put(KEY_TENANT, tenant.getTenant());
+
         contexts.add(new MultiplyContext(file, dir, mergedConfig));
       }
     }

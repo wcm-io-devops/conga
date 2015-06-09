@@ -21,6 +21,8 @@ package io.wcm.devops.conga.generator;
 
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.role.RoleFile;
 
 import java.io.File;
@@ -84,13 +86,27 @@ class FileGenerator {
       validators = roleFile.getValidators().stream()
           .map(name -> pluginManager.get(name, ValidatorPlugin.class));
     }
-    validators.forEach(validator -> validator.validate(file));
+    validators.forEach(this::validateFile);
+  }
+
+  private void validateFile(ValidatorPlugin validator) {
+    if (!validator.accepts(file)) {
+      throw new GeneratorException("Validator '" + validator.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
+    }
+    validator.validate(file);
   }
 
   private void postProcessFile() {
     roleFile.getPostProcessors().stream()
     .map(name -> pluginManager.get(name, PostProcessorPlugin.class))
-    .forEach(postProcessor -> postProcessor.postProcess(file));
+    .forEach(this::postProcessFile);
+  }
+
+  private void postProcessFile(PostProcessorPlugin postProcessor) {
+    if (!postProcessor.accepts(file)) {
+      throw new GeneratorException("Post processor '" + postProcessor.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
+    }
+    postProcessor.postProcess(file);
   }
 
 }
