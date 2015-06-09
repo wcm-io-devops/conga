@@ -59,6 +59,7 @@ public final class PluginManager {
    * Get plugin instance.
    * @param name Plugin name
    * @param pluginClass Plugin class
+   * @param <T> Plugin type
    * @return Plugin instance.
    * @throws GeneratorException When plugin is not found.
    */
@@ -79,6 +80,7 @@ public final class PluginManager {
   /**
    * Get all plugin instance.
    * @param pluginClass Plugin class
+   * @param <T> Plugin type
    * @return Plugin instances.
    * @throws GeneratorException When plugin could not be loaded.
    */

@@ -17,26 +17,22 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.spi;
+package io.wcm.devops.conga.tooling.maven.plugin;
 
-import java.io.File;
+import static io.wcm.devops.conga.tooling.maven.plugin.MavenSlf4jLogFacade.formatMessage;
+import static org.junit.Assert.assertEquals;
 
-/**
- * Plugin that allows to validate a generate file.
- */
-public interface ValidatorPlugin extends Plugin {
+import org.junit.Test;
 
-  /**
-   * @param file File
-   * @return true when validation can be applied to the given context.
-   */
-  boolean accepts(File file);
 
-  /**
-   * Execute validation operation.
-   * @param file File
-   * @throws ValidationException when validation fails
-   */
-  void validate(File file) throws ValidationException;
+public class MavenSlf4jLogFacadeTest {
+
+  @Test
+  public void testFormatMessage() {
+    assertEquals("Der", formatMessage("Der"));
+    assertEquals("Der {}", formatMessage("Der {}"));
+    assertEquals("Der Jodelkaiser", formatMessage("Der {}", "Jodelkaiser"));
+    assertEquals("Der Jodelkaiser aus dem Ötztal", formatMessage("Der {} aus dem {}", "Jodelkaiser", "Ötztal"));
+  }
 
 }

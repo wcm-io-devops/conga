@@ -49,6 +49,9 @@
     <module>parent</module>
     <module>model</module>
     <module>generator</module>
+    <module>tooling/conga-cli</module>
+    <module>tooling/conga-maven-plugin</module>
+    <module>example</module>
   </modules>
 
   <build>

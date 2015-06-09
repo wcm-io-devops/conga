@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator;
 
+import io.wcm.devops.conga.generator.plugins.validation.NoneValidator;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.util.FileUtil;
@@ -33,6 +34,9 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 import com.github.jknack.handlebars.Template;
 
 /**
@@ -40,22 +44,27 @@ import com.github.jknack.handlebars.Template;
  */
 class FileGenerator {
 
+  private final File nodeDir;
   private final File file;
   private final RoleFile roleFile;
   private final Map<String, Object> config;
   private final Template template;
   private final PluginManager pluginManager;
+  private final Logger log;
 
-  public FileGenerator(File file, RoleFile roleFile, Map<String, Object> config,
-      Template template, PluginManager pluginManager) {
+  public FileGenerator(File nodeDir, File file, RoleFile roleFile, Map<String, Object> config,
+      Template template, PluginManager pluginManager, Logger log) {
+    this.nodeDir = nodeDir;
     this.file = file;
     this.roleFile = roleFile;
     this.config = config;
     this.template = template;
     this.pluginManager = pluginManager;
+    this.log = log;
   }
 
   public void generate() throws IOException {
+    log.info("Generate file {}", getFilenameForLog());
 
     File dir = file.getParentFile();
     if (!dir.exists()) {
@@ -90,9 +99,13 @@ class FileGenerator {
   }
 
   private void validateFile(ValidatorPlugin validator) {
+    if (StringUtils.equals(validator.getName(), NoneValidator.NAME)) {
+      return;
+    }
     if (!validator.accepts(file)) {
       throw new GeneratorException("Validator '" + validator.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
+    log.info("Validate {} for file {}", validator.getName(), getFilenameForLog());
     validator.validate(file);
   }
 
@@ -106,7 +119,12 @@ class FileGenerator {
     if (!postProcessor.accepts(file)) {
       throw new GeneratorException("Post processor '" + postProcessor.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
+    log.info("Post-process {} for file {}", postProcessor.getName(), getFilenameForLog());
     postProcessor.postProcess(file);
+  }
+
+  private String getFilenameForLog() {
+    return StringUtils.substring(FileUtil.getCanonicalPath(file), FileUtil.getCanonicalPath(nodeDir).length() + 1);
   }
 
 }

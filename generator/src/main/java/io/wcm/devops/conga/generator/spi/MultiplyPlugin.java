@@ -33,6 +33,11 @@ public interface MultiplyPlugin extends Plugin {
 
   /**
    * Execute multiply operation.
+   * @param role Role
+   * @param roleFile Role file
+   * @param environment Environment
+   * @param config Configuration
+   * @return List of contexts for each file to generate
    */
   List<MultiplyContext> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config);
 

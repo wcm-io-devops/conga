@@ -27,12 +27,14 @@ import java.io.File;
 public interface PostProcessorPlugin extends Plugin {
 
   /**
+   * @param file File
    * @return true when post process can be applied to the given context.
    */
   boolean accepts(File file);
 
   /**
    * Execute post process operation.
+   * @param file File
    */
   void postProcess(File file);
 
