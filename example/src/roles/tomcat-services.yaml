@@ -6,14 +6,18 @@ templateDir: tomcat
 
 files:
 
+# Define a single file to be generated for role variant 'services'
 - file: ROOT.xml
   variants:
   - services
   dir: conf/Catalina/localhost
   template: ROOT.xml.hbs
+  # Allows to define speciyl validators.
+  # If missing the best-match validator is picked automatically.
   validators:
   - xml
 
+# Define a single file to be generated for role variant 'importer'
 - file: ROOT.xml
   variants:
   - importer
@@ -22,9 +26,11 @@ files:
   validators:
   - xml
 
+# Define a single file to be generated for all role variants
 - file: setenv.sh
   dir: bin
   template: setenv.sh.hbs
+  # Default charset ist UTF-8 unless specified otherwise
   charset: ISO-8859-1
 
 
