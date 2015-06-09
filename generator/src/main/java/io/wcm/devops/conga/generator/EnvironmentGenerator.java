@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
+import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
@@ -141,8 +142,11 @@ class EnvironmentGenerator {
     try {
       fileGenerator.generate();
     }
+    catch (ValidationException ex) {
+      throw new GeneratorException("File validation failed " + FileUtil.getCanonicalPath(file) + " - " + ex.getMessage());
+    }
     catch (Throwable ex) {
-      throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file), ex);
+      throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file) + "", ex);
     }
   }
 
