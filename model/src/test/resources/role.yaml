@@ -2,7 +2,7 @@ variants:
 - services
 - importer
 
-templateDir: templates/tomcat-services
+templateDir: tomcat-services
 
 files:
 

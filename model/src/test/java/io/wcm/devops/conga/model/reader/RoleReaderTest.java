@@ -21,8 +21,8 @@ package io.wcm.devops.conga.model.reader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +52,7 @@ public class RoleReaderTest {
 
     assertEquals(ImmutableList.of("services", "importer"), role.getVariants());
 
-    assertEquals("templates/tomcat-services", role.getTemplateDir());
+    assertEquals("tomcat-services", role.getTemplateDir());
 
     List<RoleFile> files = role.getFiles();
     assertEquals(5, files.size());

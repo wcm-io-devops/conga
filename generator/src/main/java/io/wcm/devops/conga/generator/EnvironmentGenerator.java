@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -44,15 +45,17 @@ class EnvironmentGenerator {
   private final String environmentName;
   private final Environment environment;
   private final File destDir;
+  private final File templateDir;
   private final PluginManager pluginManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
 
-  public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment, File destDir,
-      PluginManager pluginManager) {
+  public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
+      File templatedir, File destDir, PluginManager pluginManager) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = environment;
     this.destDir = destDir;
+    this.templateDir = templatedir;
     this.pluginManager = pluginManager;
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
   }
@@ -65,7 +68,6 @@ class EnvironmentGenerator {
 
   private void generateNode(Node node) {
 
-    // validate node
     if (StringUtils.isEmpty(node.getNode())) {
       throw new GeneratorException("Missing node name in " + environmentName + ".");
     }
@@ -80,6 +82,11 @@ class EnvironmentGenerator {
         throw new GeneratorException("Variant '" + variant + "' for role '" + nodeRole.getRole() + "' "
             + "from " + environmentName + "/" + node.getNode() + " does not exist.");
       }
+      File roleTemplateDir = templateDir;
+      if (StringUtils.isNotEmpty(role.getTemplateDir())) {
+        roleTemplateDir = new File(templateDir, role.getTemplateDir());
+      }
+      roleTemplateDir = FileUtil.ensureDirExists(roleTemplateDir);
 
       // merge default values to config
       Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), role.getConfig());
@@ -91,13 +98,14 @@ class EnvironmentGenerator {
       }
       for (RoleFile roleFile : role.getFiles()) {
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
-          multiplyFiles(role, roleFile, mergedConfig, nodeDir);
+          multiplyFiles(role, roleFile, mergedConfig, nodeDir, roleTemplateDir);
         }
       }
     }
   }
 
-  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File parentDir) {
+  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config,
+      File nodeDir, File roleTemplateDir) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
@@ -105,12 +113,23 @@ class EnvironmentGenerator {
 
     List<MultiplyContext> contexts = multiplyPlugin.multiply(role, roleFile, environment, config);
     for (MultiplyContext context : contexts) {
-      generateFile(roleFile, context.getDir(), context.getFile(), context.getConfig(), parentDir);
+      generateFile(roleFile, context.getDir(), context.getFile(), context.getConfig(), nodeDir, roleTemplateDir);
     }
   }
 
-  private void generateFile(RoleFile roleFile, String dir, String file, Map<String, Object> config, File parentDir) {
-    // TODO: generate file
+  private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config,
+      File nodeDir, File roleTemplateDir) {
+    File file = new File(nodeDir, FilenameUtils.concat(dir, fileName));
+    if (file.exists()) {
+      throw new GeneratorException("File exists already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
+    }
+    FileGenerator fileGenerator = new FileGenerator(file, roleFile, config, roleTemplateDir, pluginManager);
+    try {
+      fileGenerator.generate();
+    }
+    catch (Throwable ex) {
+      throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file), ex);
+    }
   }
 
 }

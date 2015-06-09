@@ -27,7 +27,6 @@ import io.wcm.devops.conga.model.resolver.ConfigResolver;
 import io.wcm.devops.conga.model.role.Role;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,28 +41,27 @@ public final class Generator {
 
   private final Map<String, Role> roles;
   private final Map<String, Environment> environments;
+  private final File templateDir;
   private final File destDir;
   private final PluginManager pluginManager;
 
   /**
    * @param roleDir Directory with role definitions. Filename without extension = role name.
    * @param environmentDir Directory with environment definitions. Filename without extension = environment name.
+   * @param templateDir Template base directory
+   * @param destDir Destination directory for generated file
    */
-  public Generator(File roleDir, File environmentDir, File destDir) {
+  public Generator(File roleDir, File environmentDir, File templateDir, File destDir) {
     this.pluginManager = new PluginManager();
-    try {
-      this.roles = readModels(roleDir, new RoleReader());
-      this.environments = readModels(environmentDir, new EnvironmentReader());
-      this.destDir = validateDestDir(destDir);
-    }
-    catch (IOException ex) {
-      throw new GeneratorException("Unable to set up generator.", ex);
-    }
+    this.roles = readModels(roleDir, new RoleReader());
+    this.environments = readModels(environmentDir, new EnvironmentReader());
+    this.templateDir = templateDir;
+    this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);
   }
 
-  private static <T> Map<String, T> readModels(File dir, ModelReader<T> reader) throws IOException {
+  private static <T> Map<String, T> readModels(File dir, ModelReader<T> reader) {
     if (!dir.exists() || !dir.isDirectory()) {
-      throw new IllegalArgumentException("Expected directory: " + dir.getCanonicalPath());
+      throw new IllegalArgumentException("Expected directory: " + FileUtil.getCanonicalPath(dir));
     }
     Map<String, T> models = new HashMap<>();
     for (File file : dir.listFiles()) {
@@ -74,21 +72,11 @@ public final class Generator {
           models.put(FilenameUtils.getBaseName(file.getName()), model);
         }
         catch (Throwable ex) {
-          throw new GeneratorException("Unable to read definition: " + file.getCanonicalPath(), ex);
+          throw new GeneratorException("Unable to read definition: " + FileUtil.getCanonicalPath(file), ex);
         }
       }
     }
     return ImmutableMap.copyOf(models);
-  }
-
-  private static File validateDestDir(File dir) throws IOException {
-    if (!dir.exists()) {
-      dir.mkdirs();
-    }
-    if (!dir.isDirectory()) {
-      throw new IllegalArgumentException("Expected directory: " + dir.getCanonicalPath());
-    }
-    return dir;
   }
 
   /**
@@ -110,14 +98,14 @@ public final class Generator {
     }
 
     for (Map.Entry<String, Environment> entry : selectedEnvironments.entrySet()) {
-      File environmentDir = new File(destDir, entry.getKey());
+      File environmentDestDir = new File(destDir, entry.getKey());
       // remove existing directory and it's content if it exists alreday
-      if (environmentDir.exists()) {
-        environmentDir.delete();
+      if (environmentDestDir.exists()) {
+        environmentDestDir.delete();
       }
-      environmentDir.mkdir();
+      environmentDestDir.mkdir();
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDir, pluginManager);
+          templateDir, environmentDestDir, pluginManager);
       environmentGenerator.generate();
     }
   }
