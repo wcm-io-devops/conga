@@ -17,9 +17,9 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.shared;
+package io.wcm.devops.conga.model.util;
 
-import static io.wcm.devops.conga.model.shared.MapExpander.expand;
+import static io.wcm.devops.conga.model.util.MapExpander.expand;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;

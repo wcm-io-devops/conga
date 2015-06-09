@@ -28,6 +28,19 @@ nodes:
   - role: webserver-routing
 
 
+# Variables that can be reference anywhere inside the definition
+variables:
+  topologyConnectorPath: /connector
+
+
+# Global configuration
+config:
+  jvm.heapspace.max: 4096m
+  topologyConnectors:
+  - "http://host1${topologyConnectorPath}"
+  - "http://host2${topologyConnectorPath}"
+
+
 # Tenant defintions
 tenants:
 
@@ -47,17 +60,3 @@ tenants:
     website.hostname: www.${domain}
   variables:
     domain: mysite.fr
-
-
-
-# Global configuration
-config:
-  jvm.heapspace.max: 4096m
-  topologyConnectors:
-  - "http://host1${topologyConnectorPath}"
-  - "http://host2${topologyConnectorPath}"
-
-
-# Variables that can be reference anywhere inside the definition
-variables:
-  topologyConnectorPath: /connector

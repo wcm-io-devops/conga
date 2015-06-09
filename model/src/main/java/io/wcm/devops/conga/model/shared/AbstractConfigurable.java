@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.model.shared;
 
+import io.wcm.devops.conga.model.util.MapExpander;
+
 import java.util.HashMap;
 import java.util.Map;
 

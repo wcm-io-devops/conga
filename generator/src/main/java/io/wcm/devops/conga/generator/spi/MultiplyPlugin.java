@@ -17,28 +17,23 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
+package io.wcm.devops.conga.generator.spi;
 
 import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
 
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Reads environment definitions.
+ * Plugin that allows to generate multiple files from one template.
  */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
+public interface MultiplyPlugin extends Plugin {
 
   /**
-   * Constructor
+   * Execute multiply operation.
    */
-  public EnvironmentReader() {
-    super(getYaml());
-  }
-
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
-  }
+  List<MultiplyContext> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config);
 
 }

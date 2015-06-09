@@ -17,28 +17,38 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
+package io.wcm.devops.conga.model.util;
 
-import io.wcm.devops.conga.model.environment.Environment;
+import java.util.Map;
 
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+class MapEntry<K, V> implements Map.Entry<K, V> {
 
-/**
- * Reads environment definitions.
- */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
+  private final K key;
+  private final V value;
 
-  /**
-   * Constructor
-   */
-  public EnvironmentReader() {
-    super(getYaml());
+  public MapEntry(K key, V value) {
+    this.key = key;
+    this.value = value;
   }
 
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
+  @Override
+  public K getKey() {
+    return key;
+  }
+
+  @Override
+  public V getValue() {
+    return value;
+  }
+
+  @Override
+  public V setValue(V newValue) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public String toString() {
+    return getKey() + "=" + getValue();
   }
 
 }

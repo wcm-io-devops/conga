@@ -17,28 +17,24 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
+package io.wcm.devops.conga.generator.spi;
 
-import io.wcm.devops.conga.model.environment.Environment;
-
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+import java.io.File;
 
 /**
- * Reads environment definitions.
+ * Plugin that allows to validate a generate file.
  */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
+public interface ValidatorPlugin extends Plugin {
 
   /**
-   * Constructor
+   * @return true when validation can be applied to the given context.
    */
-  public EnvironmentReader() {
-    super(getYaml());
-  }
+  boolean accepts(File file);
 
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
-  }
+  /**
+   * Execute validation operation.
+   * @throws ValidationException when validation fails
+   */
+  void validate(File file) throws ValidationException;
 
 }

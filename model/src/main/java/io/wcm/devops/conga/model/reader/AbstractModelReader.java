@@ -25,51 +25,48 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.CharEncoding;
 import org.yaml.snakeyaml.Yaml;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
- * Shared functionality for readers.
+ * Shared functionality for model readers.
  */
-public abstract class AbstractReader<T> {
+public abstract class AbstractModelReader<T> implements ModelReader<T> {
+
+  private static final Set<String> SUPPORTED_EXTENSIONS = ImmutableSet.of("yaml");
 
   private final Yaml yaml;
 
   /**
    * @param yaml YAML
    */
-  public AbstractReader(Yaml yaml) {
+  public AbstractModelReader(Yaml yaml) {
     this.yaml = yaml;
   }
 
-  /**
-   * Read model
-   * @param file Model file
-   * @return Model object
-   * @throws IOException
-   */
+  @Override
+  public boolean accepts(File file) {
+    return (file.isFile() && SUPPORTED_EXTENSIONS.contains(FilenameUtils.getExtension(file.getName())));
+  }
+
+  @Override
   public final T read(File file) throws IOException {
     try (InputStream is = new FileInputStream(file)) {
       return read(is);
     }
   }
 
-  /**
-   * Read model
-   * @param is Model file
-   * @return Model object
-   * @throws IOException
-   */
+  @Override
   public final T read(InputStream is) throws IOException {
     return read(new InputStreamReader(is, CharEncoding.UTF_8));
   }
 
-  /**
-   * Read model
-   * @param reader Model file
-   * @return Model object
-   */
+  @Override
   @SuppressWarnings("unchecked")
   public final T read(Reader reader) {
     return (T)yaml.load(reader);

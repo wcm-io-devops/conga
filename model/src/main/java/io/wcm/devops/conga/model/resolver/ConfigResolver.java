@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.model.resolver;
 
 import io.wcm.devops.conga.model.shared.Configurable;
+import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -36,15 +37,15 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Resolve variables in all model levels including inheritance of variable contexts.
- * On any object implementing {@link Configurable} variables in the "config" section are resolved.
+ * Iterates over all {@link Configurable} items in the object tree.
+ * Configuration from parent objects is inherited to client objects and variables are resolved.
  */
-public final class VariableResolver {
+public final class ConfigResolver {
 
   private static final Pattern VARIABLE_PATTERN = Pattern.compile("(\\\\?\\$)\\{([^\\}\\{\\$]+)\\}");
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
-  private VariableResolver() {
+  private ConfigResolver() {
     // static methods only
   }
 
@@ -53,39 +54,43 @@ public final class VariableResolver {
    * @param model Model with variables at any nested level.
    */
   public static void resolve(Object model) {
-    resolve(model, new HashMap<>());
+    resolve(model, new HashMap<>(), new HashMap<>());
   }
 
-  private static void resolve(Object object, Map<String, Object> parentVariables) {
+  private static void resolve(Object object, Map<String, Object> parentConfig, Map<String, Object> parentVariables) {
     if (object instanceof Map) {
       for (Object child : ((Map)object).values()) {
-        resolve(child, parentVariables);
+        resolve(child, parentConfig, parentVariables);
       }
       return;
     }
     if (object instanceof List) {
       for (Object child : (List)object) {
-        resolve(child, parentVariables);
+        resolve(child, parentConfig, parentVariables);
       }
       return;
     }
+    Map<String, Object> config;
     Map<String, Object> variables;
     if (object instanceof Configurable) {
-      variables = resolveConfigurable((Configurable)object, parentVariables);
+      Configurable configurable = (Configurable)object;
+      config = MapMerger.merge(configurable.getConfig(), parentConfig);
+      variables = resolveConfigurable(configurable, parentConfig, parentVariables);
     }
     else {
-      variables = new HashMap<>();
+      config = parentConfig;
+      variables = parentVariables;
     }
-    resolveNestedObjects(object, variables);
+    resolveNestedObjects(object, config, variables);
   }
 
-  private static void resolveNestedObjects(Object model, Map<String, Object> parentVariables) {
+  private static void resolveNestedObjects(Object model, Map<String, Object> parentConfig, Map<String, Object> parentVariables) {
     try {
       Map<String, String> description = BeanUtils.describe(model);
       for (String propertyName : description.keySet()) {
         Object propertyValue = PropertyUtils.getProperty(model, propertyName);
         if (!StringUtils.equals(propertyName, "class")) {
-          resolve(propertyValue, parentVariables);
+          resolve(propertyValue, parentConfig, parentVariables);
         }
       }
     }
@@ -94,13 +99,16 @@ public final class VariableResolver {
     }
   }
 
-  private static Map<String, Object> resolveConfigurable(Configurable configurable, Map<String, Object> parentVariables) {
+  private static Map<String, Object> resolveConfigurable(Configurable configurable, Map<String, Object> parentConfig, Map<String, Object> parentVariables) {
     Map<String, Object> variables = new HashMap<>();
     variables.putAll(parentVariables);
     if (configurable.getVariables() != null) {
       variables.putAll(configurable.getVariables());
     }
-    Map<String, Object> resolvedConfig = resolveConfig(configurable.getConfig(), variables);
+
+    Map<String, Object> mergedConfig = MapMerger.merge(configurable.getConfig(), parentConfig);
+
+    Map<String, Object> resolvedConfig = resolveConfig(mergedConfig, variables);
 
     configurable.resolved(resolvedConfig);
 

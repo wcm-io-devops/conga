@@ -2,7 +2,7 @@ variants:
 - services
 - importer
 
-templateDir: templates/tomcat-services
+templateDir: tomcat-services
 
 files:
 
@@ -16,6 +16,7 @@ files:
   postProcessors:
   - osgi-config-generator
   multiply: none
+  charset: UTF-8
 
 - file: ROOT.xml
   dir: conf/Catalina/localhost
@@ -26,6 +27,7 @@ files:
 - file: setenv.sh
   dir: bin
   template: setenv.sh.hb
+  charset: ISO-8859-1
 
 - file: systemconfig.txt
   dir: data/deploy
@@ -35,10 +37,18 @@ files:
   postProcessors:
   - osgi-config-generator
 
-- file: "{tenantId}_vhost.conf"
+- file: "${tenant}_vhost.conf"
   dir: vhosts
   template: tenant_vhost.conf.hb
   multiply: tenant
+  multiplyOptions:
+    roles:
+    - website
+
+
+# Variables that can be reference anywhere inside the definition
+variables:
+  var1: value1
 
 
 # Defines configuration parameters and default values
@@ -57,8 +67,3 @@ config:
 
   topologyConnectors:
     - http://localhost:8080/libs/sling/topology/connector
-
-
-# Variables that can be reference anywhere inside the definition
-variables:
-  var1: value1

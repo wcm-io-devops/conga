@@ -21,13 +21,14 @@ package io.wcm.devops.conga.model.reader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import io.wcm.devops.conga.model.role.File;
 import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.commons.lang3.CharEncoding;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,9 +53,9 @@ public class RoleReaderTest {
 
     assertEquals(ImmutableList.of("services", "importer"), role.getVariants());
 
-    assertEquals("templates/tomcat-services", role.getTemplateDir());
+    assertEquals("tomcat-services", role.getTemplateDir());
 
-    List<File> files = role.getFiles();
+    List<RoleFile> files = role.getFiles();
     assertEquals(5, files.size());
 
     assertEquals(ImmutableMap.of(
@@ -68,7 +69,7 @@ public class RoleReaderTest {
 
   @Test
   public void testFile() {
-    File file = role.getFiles().get(0);
+    RoleFile file = role.getFiles().get(0);
 
     assertEquals("systemconfig-importer.txt", file.getFile());
     assertEquals("data/deploy", file.getDir());
@@ -77,6 +78,7 @@ public class RoleReaderTest {
     assertEquals(ImmutableList.of("sling-provisioning-model"), file.getValidators());
     assertEquals(ImmutableList.of("osgi-config-generator"), file.getPostProcessors());
     assertEquals("none", file.getMultiply());
+    assertEquals(CharEncoding.UTF_8, file.getCharset());
   }
 
 }

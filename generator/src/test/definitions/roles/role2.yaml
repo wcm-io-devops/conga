@@ -1,0 +1,10 @@
+files:
+
+- file: "test.json"
+  dir: json
+  template: shared/test.json.hbs
+  validators:
+  - json
+
+config:
+  defaultString: value2

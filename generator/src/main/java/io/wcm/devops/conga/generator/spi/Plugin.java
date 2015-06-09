@@ -17,28 +17,16 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
-
-import io.wcm.devops.conga.model.environment.Environment;
-
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+package io.wcm.devops.conga.generator.spi;
 
 /**
- * Reads environment definitions.
+ * Generic plugin interface all other plugins extend from.
  */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
+public interface Plugin {
 
   /**
-   * Constructor
+   * @return Plugin name to be referenced in definition file
    */
-  public EnvironmentReader() {
-    super(getYaml());
-  }
-
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
-  }
+  String getName();
 
 }

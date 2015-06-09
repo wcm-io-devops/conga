@@ -20,12 +20,16 @@
 package io.wcm.devops.conga.model.role;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.CharEncoding;
 
 /**
  * File definition.
  */
-public final class File {
+public final class RoleFile {
 
   private String file;
   private String dir;
@@ -34,6 +38,8 @@ public final class File {
   private List<String> validators = new ArrayList<>();
   private List<String> postProcessors = new ArrayList<>();
   private String multiply;
+  private Map<String, Object> multiplyOptions = new HashMap<>();
+  private String charset = CharEncoding.UTF_8;
 
   public String getFile() {
     return this.file;
@@ -89,6 +95,22 @@ public final class File {
 
   public void setMultiply(String multiply) {
     this.multiply = multiply;
+  }
+
+  public Map<String, Object> getMultiplyOptions() {
+    return this.multiplyOptions;
+  }
+
+  public void setMultiplyOptions(Map<String, Object> multiplyOptions) {
+    this.multiplyOptions = multiplyOptions;
+  }
+
+  public String getCharset() {
+    return this.charset;
+  }
+
+  public void setCharset(String charset) {
+    this.charset = charset;
   }
 
 }

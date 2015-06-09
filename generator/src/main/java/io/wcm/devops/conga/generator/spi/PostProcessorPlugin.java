@@ -17,28 +17,23 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
+package io.wcm.devops.conga.generator.spi;
 
-import io.wcm.devops.conga.model.environment.Environment;
-
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+import java.io.File;
 
 /**
- * Reads environment definitions.
+ * Plugin that allows to post-process a generated file.
  */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
+public interface PostProcessorPlugin extends Plugin {
 
   /**
-   * Constructor
+   * @return true when post process can be applied to the given context.
    */
-  public EnvironmentReader() {
-    super(getYaml());
-  }
+  boolean accepts(File file);
 
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
-  }
+  /**
+   * Execute post process operation.
+   */
+  void postProcess(File file);
 
 }

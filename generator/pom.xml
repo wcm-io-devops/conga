@@ -29,42 +29,37 @@
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>io.wcm.devops.conga.model</artifactId>
+  <artifactId>io.wcm.devops.conga.generator</artifactId>
   <packaging>jar</packaging>
 
-  <name>CONGA Model</name>
-  <description>CONGA Model classes for java representation of definition files.</description>
+  <name>CONGA Generator</name>
+  <description>CONGA Configuration Generator.</description>
 
   <dependencies>
 
     <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
+      <groupId>io.wcm.devops.conga</groupId>
+      <artifactId>io.wcm.devops.conga.model</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.github.jknack</groupId>
+      <artifactId>handlebars</artifactId>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <scope>compile</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

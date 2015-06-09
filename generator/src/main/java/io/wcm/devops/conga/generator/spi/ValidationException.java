@@ -17,28 +17,27 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
-
-import io.wcm.devops.conga.model.environment.Environment;
-
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+package io.wcm.devops.conga.generator.spi;
 
 /**
- * Reads environment definitions.
+ * Validation failed exception.
  */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
+public final class ValidationException extends RuntimeException {
+  private static final long serialVersionUID = 1L;
 
   /**
-   * Constructor
+   * @param message Message
    */
-  public EnvironmentReader() {
-    super(getYaml());
+  public ValidationException(String message) {
+    super(message);
   }
 
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
+  /**
+   * @param message Message
+   * @param cause Cause
+   */
+  public ValidationException(String message, Throwable cause) {
+    super(message, cause);
   }
 
 }

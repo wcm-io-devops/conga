@@ -17,28 +17,36 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
+package io.wcm.devops.conga.generator.plugins.validation;
 
-import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.generator.spi.ValidationException;
+import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+import java.io.File;
 
 /**
- * Reads environment definitions.
+ * Does no validation.
  */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
+public final class NoneValidator implements ValidatorPlugin {
 
   /**
-   * Constructor
+   * Plugin name
    */
-  public EnvironmentReader() {
-    super(getYaml());
+  public static final String NAME = "none";
+
+  @Override
+  public String getName() {
+    return NAME;
   }
 
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
+  @Override
+  public boolean accepts(File file) {
+    return true;
+  }
+
+  @Override
+  public void validate(File file) throws ValidationException {
+    // no validation
   }
 
 }
