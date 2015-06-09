@@ -357,7 +357,7 @@ class MavenSlf4jLogFacade implements Logger {
       else {
         value = "{}";
       }
-      matcher.appendReplacement(sb, value);
+      matcher.appendReplacement(sb, Matcher.quoteReplacement(value));
       index++;
     }
     matcher.appendTail(sb);
