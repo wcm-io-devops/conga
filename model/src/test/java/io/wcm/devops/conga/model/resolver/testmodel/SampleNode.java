@@ -17,28 +17,18 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
+package io.wcm.devops.conga.model.resolver.testmodel;
 
-import io.wcm.devops.conga.model.environment.Environment;
+public class SampleNode {
 
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+  private SimpleConf simple;
 
-/**
- * Reads environment definitions.
- */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
-
-  /**
-   * Constructor
-   */
-  public EnvironmentReader() {
-    super(getYaml());
+  public SimpleConf getSimple() {
+    return this.simple;
   }
 
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
+  public void setSimple(SimpleConf simple) {
+    this.simple = simple;
   }
 
 }

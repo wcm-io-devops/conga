@@ -17,28 +17,27 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
-
-import io.wcm.devops.conga.model.environment.Environment;
-
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+package io.wcm.devops.conga.generator;
 
 /**
- * Reads environment definitions.
+ * Exception in generation process.
  */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
+public class GeneratorException extends RuntimeException {
+  private static final long serialVersionUID = 1L;
 
   /**
-   * Constructor
+   * @param message Message
    */
-  public EnvironmentReader() {
-    super(getYaml());
+  public GeneratorException(String message) {
+    super(message);
   }
 
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
+  /**
+   * @param message Message
+   * @param cause Cause
+   */
+  public GeneratorException(String message, Throwable cause) {
+    super(message, cause);
   }
 
 }

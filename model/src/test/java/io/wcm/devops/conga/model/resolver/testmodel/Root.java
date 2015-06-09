@@ -17,28 +17,37 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.reader;
+package io.wcm.devops.conga.model.resolver.testmodel;
 
-import io.wcm.devops.conga.model.environment.Environment;
 
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+public class Root {
 
-/**
- * Reads environment definitions.
- */
-public final class EnvironmentReader extends AbstractModelReader<Environment> {
+  private String prop1;
+  private Integer prop2;
+  private ConfScope1 scope1;
 
-  /**
-   * Constructor
-   */
-  public EnvironmentReader() {
-    super(getYaml());
+  public String getProp1() {
+    return this.prop1;
   }
 
-  private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class);
-    return new Yaml(constructor);
+  public void setProp1(String prop1) {
+    this.prop1 = prop1;
+  }
+
+  public Integer getProp2() {
+    return this.prop2;
+  }
+
+  public void setProp2(Integer prop2) {
+    this.prop2 = prop2;
+  }
+
+  public ConfScope1 getScope1() {
+    return this.scope1;
+  }
+
+  public void setScope1(ConfScope1 scope1) {
+    this.scope1 = scope1;
   }
 
 }

@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.shared;
+package io.wcm.devops.conga.model.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,12 +32,17 @@ import org.apache.commons.lang3.StringUtils;
  * to
  * {jvm: {heapspace: {max: 4096m}}}
  */
-final class MapExpander {
+public final class MapExpander {
 
   private MapExpander() {
     // static methods only
   }
 
+  /**
+   * Expands shortcut keys
+   * @param map Unexpanded map
+   * @return Expanded amp
+   */
   @SuppressWarnings("unchecked")
   public static Map<String, Object> expand(Map<String, Object> map) {
     if (map == null) {

@@ -27,7 +27,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 /**
  * Reads role definitions.
  */
-public final class RoleReader extends AbstractReader<Role> {
+public final class RoleReader extends AbstractModelReader<Role> {
 
   /**
    * Constructor

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,38 +17,20 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.shared;
+package io.wcm.devops.conga.model.resolver.testmodel;
 
-import java.util.Map;
+import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
-class MapEntry<K, V> implements Map.Entry<K, V> {
+public class ConfScope3 extends AbstractConfigurable {
 
-  private final K key;
-  private final V value;
+  private String prop3;
 
-  public MapEntry(K key, V value) {
-    this.key = key;
-    this.value = value;
+  public String getProp3() {
+    return this.prop3;
   }
 
-  @Override
-  public K getKey() {
-    return key;
-  }
-
-  @Override
-  public V getValue() {
-    return value;
-  }
-
-  @Override
-  public V setValue(V newValue) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public String toString() {
-    return getKey() + "=" + getValue();
+  public void setProp3(String prop3) {
+    this.prop3 = prop3;
   }
 
 }

@@ -20,7 +20,9 @@
 package io.wcm.devops.conga.model.role;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * File definition.
@@ -34,6 +36,7 @@ public final class File {
   private List<String> validators = new ArrayList<>();
   private List<String> postProcessors = new ArrayList<>();
   private String multiply;
+  private Map<String, Object> multiplyOptions = new HashMap<>();
 
   public String getFile() {
     return this.file;
@@ -89,6 +92,14 @@ public final class File {
 
   public void setMultiply(String multiply) {
     this.multiply = multiply;
+  }
+
+  public Map<String, Object> getMultiplyOptions() {
+    return this.multiplyOptions;
+  }
+
+  public void setMultiplyOptions(Map<String, Object> multiplyOptions) {
+    this.multiplyOptions = multiplyOptions;
   }
 
 }

@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.shared;
+package io.wcm.devops.conga.model.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,14 +29,20 @@ import java.util.Set;
 /**
  * Deep merges two maps.
  */
-final class MapMerger {
+public final class MapMerger {
 
   private MapMerger() {
     // static methods only
   }
 
+  /**
+   * Deep merges two maps. Map1 has higher priority.
+   * @param map1 Map 1
+   * @param map2 Map 2
+   * @return Merged map
+   */
   @SuppressWarnings("unchecked")
-  static <K> Map<K, Object> merge(Map<K, Object> map1, Map<K, Object> map2) {
+  public static <K> Map<K, Object> merge(Map<K, Object> map1, Map<K, Object> map2) {
     Map<K, Object> merged = new HashMap<>();
     if (map1 == null || map2 == null) {
       if (map1 != null) {

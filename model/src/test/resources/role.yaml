@@ -39,6 +39,14 @@ files:
   dir: vhosts
   template: tenant_vhost.conf.hb
   multiply: tenant
+  multiplyOptions:
+    roles:
+    - website
+
+
+# Variables that can be reference anywhere inside the definition
+variables:
+  var1: value1
 
 
 # Defines configuration parameters and default values
@@ -57,8 +65,3 @@ config:
 
   topologyConnectors:
     - http://localhost:8080/libs/sling/topology/connector
-
-
-# Variables that can be reference anywhere inside the definition
-variables:
-  var1: value1
