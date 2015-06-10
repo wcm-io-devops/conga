@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.model.util;
 
+import static io.wcm.devops.conga.model.util.MapMerger.LIST_MERGE_ENTRY;
 import static io.wcm.devops.conga.model.util.MapMerger.merge;
 import static org.junit.Assert.assertEquals;
 
@@ -72,9 +73,30 @@ public class MapMergerTest {
 
   @Test
   public void testMergeList() {
-    assertEquals(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12", ImmutableMap.of("k11", "v12", "k21", "v21"), "v13")),
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12")),
         merge(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12")),
             ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v12", "k21", "v21"), "v13"))));
+  }
+
+  @Test
+  public void testMergeList_MergeLeft() {
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12", ImmutableMap.of("k11", "v12", "k21", "v21"), "v13")),
+        merge(ImmutableMap.of("k1", ImmutableList.of(LIST_MERGE_ENTRY, ImmutableMap.of("k11", "v11"), "v12")),
+            ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v12", "k21", "v21"), "v13"))));
+  }
+
+  @Test
+  public void testMergeList_MergeRight() {
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12", ImmutableMap.of("k11", "v12", "k21", "v21"), "v13")),
+        merge(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12")),
+            ImmutableMap.of("k1", ImmutableList.of(LIST_MERGE_ENTRY, ImmutableMap.of("k11", "v12", "k21", "v21"), "v13"))));
+  }
+
+  @Test
+  public void testMergeList_MergeBoth() {
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12", ImmutableMap.of("k11", "v12", "k21", "v21"), "v13")),
+        merge(ImmutableMap.of("k1", ImmutableList.of(LIST_MERGE_ENTRY, ImmutableMap.of("k11", "v11"), "v12")),
+            ImmutableMap.of("k1", ImmutableList.of(LIST_MERGE_ENTRY, ImmutableMap.of("k11", "v12", "k21", "v21"), "v13"))));
   }
 
 }

@@ -1,0 +1,6 @@
+# name of the dispatcher
+/name "internet-server"
+ 
+# each farm configures a set off (loadbalanced) renders
+/farms-äöüß
+ {

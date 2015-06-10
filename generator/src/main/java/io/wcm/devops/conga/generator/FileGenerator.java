@@ -88,7 +88,7 @@ class FileGenerator {
     if (roleFile.getValidators().isEmpty()) {
       // auto-detect matching validators if none are defined
       validators = pluginManager.getAll(ValidatorPlugin.class).stream()
-          .filter(validator -> validator.accepts(file));
+          .filter(validator -> validator.accepts(file, roleFile.getCharset()));
     }
     else {
       // otherwise apply selected validators
@@ -102,11 +102,11 @@ class FileGenerator {
     if (StringUtils.equals(validator.getName(), NoneValidator.NAME)) {
       return;
     }
-    if (!validator.accepts(file)) {
+    if (!validator.accepts(file, roleFile.getCharset())) {
       throw new GeneratorException("Validator '" + validator.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
     log.info("Validate {} for file {}", validator.getName(), getFilenameForLog());
-    validator.validate(file);
+    validator.validate(file, roleFile.getCharset());
   }
 
   private void postProcessFile() {
@@ -116,11 +116,11 @@ class FileGenerator {
   }
 
   private void postProcessFile(PostProcessorPlugin postProcessor) {
-    if (!postProcessor.accepts(file)) {
+    if (!postProcessor.accepts(file, roleFile.getCharset())) {
       throw new GeneratorException("Post processor '" + postProcessor.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
     log.info("Post-process {} for file {}", postProcessor.getName(), getFilenameForLog());
-    postProcessor.postProcess(file);
+    postProcessor.postProcess(file, roleFile.getCharset(), log);
   }
 
   private String getFilenameForLog() {

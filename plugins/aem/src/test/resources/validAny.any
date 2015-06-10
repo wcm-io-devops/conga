@@ -1,0 +1,63 @@
+# name of the dispatcher
+/name "internet-server"
+ 
+# each farm configures a set off (loadbalanced) renders
+/farms
+ {
+  # first farm entry (label is not important, just for your convenience)
+   /website 
+     {  
+     /clientheaders
+       {
+       # List of headers that are passed on
+       }
+     /virtualhosts
+       {
+       # List of URLs for this Web site
+       }
+     /sessionmanagement 
+       {
+       # settings for user authentification
+       }
+     /renders
+       {
+       # List of AEM instances that render the documents
+       }
+     /filter
+       {
+       # List of filters
+       }
+     /vanityUrls
+       {
+       # List of vanity URLs
+       }
+     /cache
+       {
+       # Cache configuration
+       /rules
+         {
+         # List of cachable documents
+         }
+       /invalidate
+         {
+         # List of auto-invalidated documents
+         }
+       }
+     /statistics
+       {
+       /categories
+         {
+         # The document categories that are used for load balancing estimates
+         }
+       }
+     /stickyConnectionsFor "/myFolder"
+     /health_check
+       {
+       # Page gets contacted when an instance returns a 500
+       }
+     /retryDelay "1"
+     /numberOfRetries "5"
+     /unavailablePenalty "1"
+     /failover "1"
+     }
+ }

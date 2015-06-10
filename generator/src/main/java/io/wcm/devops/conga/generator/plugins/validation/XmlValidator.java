@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator.plugins.validation;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,8 +31,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.SAXException;
 
 /**
@@ -67,12 +66,12 @@ public final class XmlValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(File file) {
-    return StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(file.getName()), FILE_EXTENSION);
+  public boolean accepts(File file, String charset) {
+    return FileUtil.matchesExtension(file, FILE_EXTENSION);
   }
 
   @Override
-  public void validate(File file) throws ValidationException {
+  public void validate(File file, String charset) throws ValidationException {
     try {
       documentBuilder.parse(file);
     }

@@ -40,12 +40,12 @@ public final class NoneValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(File file) {
+  public boolean accepts(File file, String charset) {
     return true;
   }
 
   @Override
-  public void validate(File file) throws ValidationException {
+  public void validate(File file, String charset) throws ValidationException {
     // no validation
   }
 
