@@ -25,3 +25,9 @@ sample> mvn clean install
 ```
 
 on the command line.
+
+
+
+## Issue Tracking
+
+Issue tracking in wcm.io JIRA: https://wcm-io.atlassian.net/projects/WDCONGA
