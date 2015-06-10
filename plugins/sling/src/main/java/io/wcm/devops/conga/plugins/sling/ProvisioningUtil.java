@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.plugins.sling;
 
+import io.wcm.devops.conga.generator.util.FileUtil;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,7 +29,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.provisioning.model.Model;
 import org.apache.sling.provisioning.model.ModelUtility;
@@ -43,7 +44,7 @@ final class ProvisioningUtil {
 
   public static boolean isProvisioningFile(File file, String charset) {
     try {
-      return StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(file.getName()), FILE_EXTENSION)
+      return FileUtil.matchesExtension(file, FILE_EXTENSION)
           && StringUtils.contains(FileUtils.readFileToString(file, charset), "[feature ");
     }
     catch (IOException ex) {

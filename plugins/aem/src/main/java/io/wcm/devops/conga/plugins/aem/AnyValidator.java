@@ -17,48 +17,36 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.validation;
+package io.wcm.devops.conga.plugins.aem;
 
-import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.InputSource;
 
-import org.xml.sax.SAXException;
+import com.day.any.BaseHandler;
+import com.day.any.ParseException;
+import com.day.any.Parser;
 
 /**
- * Validates XML syntax.
+ * Validates Day ANY files.
  */
-public final class XmlValidator implements ValidatorPlugin {
-
-  private final DocumentBuilder documentBuilder;
+public class AnyValidator implements ValidatorPlugin {
 
   /**
    * Plugin name
    */
-  public static final String NAME = "xml";
+  public static final String NAME = "any";
 
-  private static final String FILE_EXTENSION = "xml";
-
-  /**
-   * Constructor.
-   */
-  public XmlValidator() {
-    try {
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      documentBuilder = factory.newDocumentBuilder();
-    }
-    catch (ParserConfigurationException ex) {
-      throw new GeneratorException("Unable to initialize validator.", ex);
-    }
-  }
+  private static final String FILE_EXTENSION = "any";
 
   @Override
   public String getName() {
@@ -72,11 +60,13 @@ public final class XmlValidator implements ValidatorPlugin {
 
   @Override
   public void validate(File file, String charset) throws ValidationException {
-    try {
-      documentBuilder.parse(file);
+    Parser parser = new Parser(new BaseHandler());
+    try (InputStream is = new FileInputStream(file);
+        Reader reader = new InputStreamReader(is, charset)) {
+      parser.parse(new InputSource(reader));
     }
-    catch (SAXException | IOException ex) {
-      throw new ValidationException("XML file is not valid: " + ex.getMessage(), ex);
+    catch (Throwable ex) {
+      throw new ValidationException("ANY file is not valid: " + ex.getMessage(), ex);
     }
   }
 

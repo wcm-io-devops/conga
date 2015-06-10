@@ -3,7 +3,7 @@
   #%L
   wcm.io
   %%
-  Copyright (C) 2015 wcm.io
+  Copyright (C) 2014 wcm.io
   %%
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -33,6 +33,19 @@
           <id>central</id>
           <url>http://repo1.maven.org/maven2/</url>
           <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+
+        <repository>
+          <id>adobe-public-releases</id>
+          <name>Adobe Public Repository</name>
+          <url>https://repo.adobe.com/nexus/content/groups/public/</url>
           <releases>
             <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>
@@ -89,6 +102,19 @@
           <id>central</id>
           <url>http://repo1.maven.org/maven2/</url>
           <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+
+        <pluginRepository>
+          <id>adobe-public-releases</id>
+          <name>Adobe Public Repository</name>
+          <url>https://repo.adobe.com/nexus/content/groups/public/</url>
           <releases>
             <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>

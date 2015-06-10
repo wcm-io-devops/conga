@@ -22,6 +22,9 @@ package io.wcm.devops.conga.generator.util;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Utility methods for file handling.
  */
@@ -82,6 +85,16 @@ public final class FileUtil {
       throw new IllegalArgumentException("Path is not a directory: " + getCanonicalPath(dir));
     }
     return dir;
+  }
+
+  /**
+   * Checks file extension
+   * @param file File
+   * @param extension File extension
+   * @return true if file extension matches
+   */
+  public static boolean matchesExtension(File file, String extension) {
+    return StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(file.getName()), extension);
   }
 
 }
