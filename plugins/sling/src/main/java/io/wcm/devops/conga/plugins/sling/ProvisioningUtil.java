@@ -30,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.provisioning.model.Model;
+import org.apache.sling.provisioning.model.ModelUtility;
 import org.apache.sling.provisioning.model.io.ModelReader;
 
 final class ProvisioningUtil {
@@ -53,7 +54,9 @@ final class ProvisioningUtil {
   public static Model getModel(File file, String charset) throws IOException {
     try (InputStream is = new FileInputStream(file);
         Reader reader = new InputStreamReader(is, charset)) {
-      return ModelReader.read(reader, null);
+      Model model = ModelReader.read(reader, null);
+      model = ModelUtility.getEffectiveModel(model, null);
+      return model;
     }
   }
 
