@@ -1,0 +1,24 @@
+[feature name=test]
+
+[configurations]
+
+  mypid
+    stringProperty="value1"
+    stringArrayProperty=["v1","v2","v3"]
+    booleanProperty=B"true"
+    longProperty=L"999999999999"
+
+  myfactory-mypid
+    stringProperty="value2"
+
+
+[configurations runModes=mode1]
+
+  myfactory-mypid2
+    stringProperty="value3"
+
+
+[configurations runModes=mode2]
+
+  mypid2
+    stringProperty="value4"

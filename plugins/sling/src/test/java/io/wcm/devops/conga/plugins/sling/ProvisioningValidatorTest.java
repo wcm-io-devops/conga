@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.validation;
+package io.wcm.devops.conga.plugins.sling;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,37 +27,37 @@ import io.wcm.devops.conga.generator.util.PluginManager;
 
 import java.io.File;
 
+import org.apache.commons.lang3.CharEncoding;
 import org.junit.Before;
 import org.junit.Test;
 
-
-public class JsonValidatorTest {
+public class ProvisioningValidatorTest {
 
   private ValidatorPlugin underTest;
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(JsonValidator.NAME, ValidatorPlugin.class);
+    underTest = new PluginManager().get(ProvisioningValidator.NAME, ValidatorPlugin.class);
   }
 
   @Test
-  public void testValidJson() throws Exception {
-    File file = new File(getClass().getResource("/validators/json/validJson.json").toURI());
-    assertTrue(underTest.accepts(file, null));
-    underTest.validate(file, null);
+  public void testValidProvisioning() throws Exception {
+    File file = new File(getClass().getResource("/validProvisioning.txt").toURI());
+    assertTrue(underTest.accepts(file, CharEncoding.UTF_8));
+    underTest.validate(file, CharEncoding.UTF_8);
   }
 
   @Test(expected = ValidationException.class)
-  public void testInvalidJson() throws Exception {
-    File file = new File(getClass().getResource("/validators/json/invalidJson.json").toURI());
-    assertTrue(underTest.accepts(file, null));
-    underTest.validate(file, null);
+  public void testInvalidProvisioning() throws Exception {
+    File file = new File(getClass().getResource("/invalidProvisioning.txt").toURI());
+    assertTrue(underTest.accepts(file, CharEncoding.UTF_8));
+    underTest.validate(file, CharEncoding.UTF_8);
   }
 
   @Test
-  public void testNoJson() throws Exception {
-    File file = new File(getClass().getResource("/validators/json/noJson.txt").toURI());
-    assertFalse(underTest.accepts(file, null));
+  public void testNoProvisioning() throws Exception {
+    File file = new File(getClass().getResource("/noProvisioning.txt").toURI());
+    assertFalse(underTest.accepts(file, CharEncoding.UTF_8));
   }
 
 }

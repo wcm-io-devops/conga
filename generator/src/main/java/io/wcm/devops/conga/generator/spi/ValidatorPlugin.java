@@ -28,15 +28,17 @@ public interface ValidatorPlugin extends Plugin {
 
   /**
    * @param file File
+   * @param charset File charset
    * @return true when validation can be applied to the given context.
    */
-  boolean accepts(File file);
+  boolean accepts(File file, String charset);
 
   /**
    * Execute validation operation.
    * @param file File
+   * @param charset File charset
    * @throws ValidationException when validation fails
    */
-  void validate(File file) throws ValidationException;
+  void validate(File file, String charset) throws ValidationException;
 
 }

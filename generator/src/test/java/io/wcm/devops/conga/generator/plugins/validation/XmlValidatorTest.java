@@ -43,21 +43,21 @@ public class XmlValidatorTest {
   @Test
   public void testValidXml() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/validXml.xml").toURI());
-    assertTrue(underTest.accepts(file));
-    underTest.validate(file);
+    assertTrue(underTest.accepts(file, null));
+    underTest.validate(file, null);
   }
 
   @Test(expected = ValidationException.class)
   public void testInvalidXml() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/invalidXml.xml").toURI());
-    assertTrue(underTest.accepts(file));
-    underTest.validate(file);
+    assertTrue(underTest.accepts(file, null));
+    underTest.validate(file, null);
   }
 
   @Test
   public void testNoXml() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/noXml.txt").toURI());
-    assertFalse(underTest.accepts(file));
+    assertFalse(underTest.accepts(file, null));
   }
 
 }
