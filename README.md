@@ -14,14 +14,11 @@ It targets DevOps teams where developers are responsible for defining the roles 
 The generator can be executed from the command line or via a maven plugin. The defintion files are writen in [YAML 1.1](http://yaml.org/) format. The templates use [Handlebars](http://handlebarsjs.com/) as scripting language.
 
 
-## Example
+## Examples
 
 See [example/](example/) for a commented example with role, environment definntions and template.
 
- You can generate the sample configuration by executing
 
-```
-sample> mvn clean install
-```
+## Issue Tracking
 
-on the command line.
+Issue tracking in wcm.io JIRA: https://wcm-io.atlassian.net/projects/WDCONGA
