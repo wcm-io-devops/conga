@@ -64,12 +64,12 @@ public final class JsonValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(File file) {
+  public boolean accepts(File file, String charset) {
     return StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(file.getName()), FILE_EXTENSION);
   }
 
   @Override
-  public void validate(File file) throws ValidationException {
+  public void validate(File file, String charset) throws ValidationException {
     try (InputStream is = new FileInputStream(file);
         Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
       jsonParser.parse(reader);

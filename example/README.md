@@ -4,7 +4,7 @@ CONGA Example
 You can generate the sample configuration by executing
 
 ```
-sample> mvn clean install
+sample> mvn clean generate-resources
 ```
 
 on the command line.

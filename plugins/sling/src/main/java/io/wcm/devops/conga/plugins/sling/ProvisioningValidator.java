@@ -17,22 +17,23 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.validation;
+package io.wcm.devops.conga.plugins.sling;
 
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
- * Does no validation.
+ * Validates Sling Provisioning Model files.
  */
-public final class NoneValidator implements ValidatorPlugin {
+public class ProvisioningValidator implements ValidatorPlugin {
 
   /**
    * Plugin name
    */
-  public static final String NAME = "none";
+  public static final String NAME = "sling-provisioning";
 
   @Override
   public String getName() {
@@ -41,12 +42,17 @@ public final class NoneValidator implements ValidatorPlugin {
 
   @Override
   public boolean accepts(File file, String charset) {
-    return true;
+    return ProvisioningUtil.isProvisioningFile(file, charset);
   }
 
   @Override
   public void validate(File file, String charset) throws ValidationException {
-    // no validation
+    try {
+      ProvisioningUtil.getModel(file, charset);
+    }
+    catch (IOException ex) {
+      throw new ValidationException("Sling Provision Model is invalid: " + ex.getMessage(), ex);
+    }
   }
 
 }

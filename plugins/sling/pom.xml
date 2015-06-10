@@ -30,11 +30,11 @@
     <relativePath>../../parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>io.wcm.devops.conga.tooling.cli</artifactId>
+  <artifactId>io.wcm.devops.conga.plugins.sling</artifactId>
   <packaging>jar</packaging>
 
-  <name>CONGA Command Line Interface</name>
-  <description>CONGA - CONfiguration GenerAtor</description>
+  <name>CONGA Sling Plugin</name>
+  <description>CONfiguration GenerAtor Plugin for Apache Sling</description>
 
   <dependencies>
 
@@ -45,21 +45,19 @@
       <scope>compile</scope>
     </dependency>
 
+    <!-- Place this dependency always before the provisiong.model because this includes ConfigurationHandler as well -->
     <dependency>
-      <groupId>commons-cli</groupId>
-      <artifactId>commons-cli</artifactId>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.configadmin</artifactId>
+      <!-- Not use version 1.8.6 or above because arrays with multiple lines are not supported by older configadmin versions -->
+      <version>1.8.4</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
+      <groupId>org.apache.sling</groupId>
+      <artifactId>org.apache.sling.provisioning.model</artifactId>
+      <version>1.2.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
 
@@ -74,36 +72,6 @@
         <configuration>
           <addVersionToProjectName>false</addVersionToProjectName>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/dist.xml</descriptor>
-          </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attached</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
     </plugins>
