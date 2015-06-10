@@ -31,6 +31,12 @@ import java.util.Set;
  */
 public final class MapMerger {
 
+  /**
+   * Special list entry the results in merging two lists inside a map instead of keeping only the list from the first
+   * map.
+   */
+  static final String LIST_MERGE_ENTRY = "_merge_";
+
   private MapMerger() {
     // static methods only
   }
@@ -67,10 +73,18 @@ public final class MapMerger {
         merged.put(key, merge(m1, m2));
       }
       else if (v1 instanceof List && v2 instanceof List) {
-        List<Object> mergedList = new ArrayList<>();
-        mergedList.addAll((List<Object>)v1);
-        mergedList.addAll((List<Object>)v2);
-        merged.put(key, mergedList);
+        List<Object> l1 = (List<Object>)v1;
+        List<Object> l2 = (List<Object>)v2;
+        if (l1.contains(LIST_MERGE_ENTRY) || l2.contains(LIST_MERGE_ENTRY)) {
+          List<Object> mergedList = new ArrayList<>();
+          mergedList.addAll(l1);
+          mergedList.addAll(l2);
+          mergedList.removeIf(item -> LIST_MERGE_ENTRY.equals(item));
+          merged.put(key, mergedList);
+        }
+        else {
+          merged.put(key, l1);
+        }
       }
       else if (v1 != null) {
         merged.put(key, v1);
