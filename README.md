@@ -11,12 +11,12 @@ It supports any file type that can be generated using a text-based template. Add
 
 It targets DevOps teams where developers are responsible for defining the roles and templates, and operations defines the environments with the nodes and tenants.
 
-The generator can be executed from the command line or via a maven plugin. The defintion files are writen in [YAML 1.1](http://yaml.org/) format. The templates use [Handlebars](http://handlebarsjs.com/) as scripting language.
+The generator can be executed from the command line or via a maven plugin. The definition files are written in [YAML 1.1](http://yaml.org/) format. The templates use [Handlebars](http://handlebarsjs.com/) as scripting language.
 
 
 ## Examples
 
-See [example/](example/) for a commented example with role, environment definntions and template.
+See [example/](example/) for a commented example with role, environment definitions and template.
 
 
 ## Issue Tracking
