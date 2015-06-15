@@ -22,3 +22,10 @@ See [example/](example/) for a commented example with role, environment definiti
 ## Issue Tracking
 
 Issue tracking in wcm.io JIRA: https://wcm-io.atlassian.net/projects/WDCONGA
+
+
+## Plugins
+
+Plugins for CONGA developed by the CONGA team:
+
+* [CONGA Plugins for Apache Sling and AEM](https://github.com/wcm-io-devops/wcm-io-devops-conga-plugins-aem)
