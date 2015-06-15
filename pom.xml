@@ -49,8 +49,6 @@
     <module>parent</module>
     <module>model</module>
     <module>generator</module>
-    <module>plugins/sling</module>
-    <module>plugins/aem</module>
     <module>tooling/conga-cli</module>
     <module>tooling/conga-maven-plugin</module>
   </modules>
