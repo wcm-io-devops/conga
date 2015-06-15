@@ -51,19 +51,6 @@
             </goals>
           </execution>
         </executions>
-        <!-- Activate further CONGA plugins for special file types -->
-        <dependencies>
-          <dependency>
-            <groupId>io.wcm.devops.conga</groupId>
-            <artifactId>io.wcm.devops.conga.plugins.sling</artifactId>            
-            <version>${conga.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>io.wcm.devops.conga</groupId>
-            <artifactId>io.wcm.devops.conga.plugins.aem</artifactId>            
-            <version>${conga.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
     </plugins>
