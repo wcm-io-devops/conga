@@ -26,31 +26,25 @@ import java.util.Map;
  */
 public final class MultiplyContext {
 
-  private final String file;
-  private final String dir;
   private final Map<String, Object> config;
+  private final Map<String, Object> contextVariables;
 
   /**
-   * @param file File
-   * @param dir Directory
    * @param config Configuration
+   * @param contextVariables Context variables used for placeholders in filenames
+   *          and additional configuration properties.
    */
-  public MultiplyContext(String file, String dir, Map<String, Object> config) {
-    this.file = file;
-    this.dir = dir;
+  public MultiplyContext(Map<String, Object> config, Map<String, Object> contextVariables) {
     this.config = config;
-  }
-
-  public String getFile() {
-    return this.file;
-  }
-
-  public String getDir() {
-    return this.dir;
+    this.contextVariables = contextVariables;
   }
 
   public Map<String, Object> getConfig() {
     return this.config;
+  }
+
+  public Map<String, Object> getContextVariables() {
+    return this.contextVariables;
   }
 
 }

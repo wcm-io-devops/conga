@@ -46,8 +46,9 @@ public final class NoneMultiply implements MultiplyPlugin {
   }
 
   @Override
-  public List<MultiplyContext> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config) {
-    return ImmutableList.of(new MultiplyContext(roleFile.getFile(), roleFile.getDir(), config));
+  public List<MultiplyContext> multiply(Role role, RoleFile roleFile, Environment environment,
+      Map<String, Object> config, Map<String, Object> contextVariables) {
+    return ImmutableList.of(new MultiplyContext(config, contextVariables));
   }
 
 }

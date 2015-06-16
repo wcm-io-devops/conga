@@ -28,12 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -41,9 +38,6 @@ import org.apache.commons.lang3.StringUtils;
  * Configuration from parent objects is inherited to client objects and variables are resolved.
  */
 public final class ConfigResolver {
-
-  private static final Pattern VARIABLE_PATTERN = Pattern.compile("(\\\\?\\$)\\{([^\\}\\{\\$]+)\\}");
-  private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
   private ConfigResolver() {
     // static methods only
@@ -124,7 +118,7 @@ public final class ConfigResolver {
       return resolveConfig((List<Object>)object, variables);
     }
     if (object instanceof String) {
-      return resolveConfig((String)object, variables);
+      return VariableResolver.replaceVariables((String)object, variables);
     }
     return object;
   }
@@ -143,47 +137,6 @@ public final class ConfigResolver {
       resolvedList.add(resolveConfig(object, variables));
     }
     return resolvedList;
-  }
-
-  private static String resolveConfig(String value, Map<String, Object> variables) {
-    String resolvedString = resolveConfig_ReplaceVariables(value, variables, 0);
-
-    // de-escaped escaped variables
-    resolvedString = VARIABLE_PATTERN.matcher(resolvedString).replaceAll("\\$\\{$2\\}");
-
-    return resolvedString;
-  }
-
-  private static String resolveConfig_ReplaceVariables(String value, Map<String, Object> variables, int iterationCount) {
-    if (iterationCount >= REPLACEMENT_MAX_ITERATIONS) {
-      throw new IllegalArgumentException("Cyclic dependencies in varaible string detected: " + value);
-    }
-
-    Matcher matcher = VARIABLE_PATTERN.matcher(value);
-    StringBuffer sb = new StringBuffer();
-    boolean replacedAny = false;
-    while (matcher.find()) {
-      boolean escapedVariable = StringUtils.equals(matcher.group(1), "\\$");
-      String variable = matcher.group(2);
-      if (escapedVariable) {
-        matcher.appendReplacement(sb, Matcher.quoteReplacement("\\${" + variable + "}"));
-      }
-      else if (variables.containsKey(variable)) {
-        Object variableValue = ObjectUtils.defaultIfNull(variables.get(variable), "");
-        matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
-        replacedAny = true;
-      }
-      else {
-        throw new IllegalArgumentException("Unknown variable: " + variable);
-      }
-    }
-    matcher.appendTail(sb);
-    if (replacedAny) {
-      return resolveConfig_ReplaceVariables(sb.toString(), variables, iterationCount + 1);
-    }
-    else {
-      return sb.toString();
-    }
   }
 
 }

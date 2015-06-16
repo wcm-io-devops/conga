@@ -6,14 +6,14 @@ templateDir: role1
 
 files:
 
-- file: "test.txt"
+- file: "test-${nodeRole}.${nodeRoleVariant}.${environment}.${node}.txt"
   dir: text
-  template: test.txt.hbs
+  template: "test.txt.hbs"
   variants:
   - variant11
   charset: ISO-8859-1
 
-- file: "test.${tenant}.xml"
+- file: "test.${tenant}.${tenantRoles}.${environment}.xml"
   dir: xml
   template: test.xml.hbs
   multiply: tenant

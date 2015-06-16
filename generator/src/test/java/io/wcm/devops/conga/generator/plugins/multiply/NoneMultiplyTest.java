@@ -42,6 +42,7 @@ public class NoneMultiplyTest {
   private Role role;
   private RoleFile roleFile;
   private Map<String, Object> config;
+  private Map<String, Object> contextVariables;
   private Environment environment;
 
   @Before
@@ -50,24 +51,22 @@ public class NoneMultiplyTest {
 
     role = new Role();
     roleFile = new RoleFile();
-    roleFile.setFile("myfile");
-    roleFile.setDir("mydir");
 
     config = ImmutableMap.of("var1", "v1");
+    contextVariables = ImmutableMap.of("ctxvar1", "ctxv1");
 
     environment = new Environment();
   }
 
   @Test
   public void testMultiply() {
-    List<MultiplyContext> contexts = underTest.multiply(role, roleFile, environment, config);
+    List<MultiplyContext> contexts = underTest.multiply(role, roleFile, environment, config, contextVariables);
 
     assertEquals(1, contexts.size());
 
     MultiplyContext context = contexts.get(0);
-    assertEquals(roleFile.getFile(), context.getFile());
-    assertEquals(roleFile.getDir(), context.getDir());
     assertEquals(config, context.getConfig());
+    assertEquals(contextVariables, context.getContextVariables());
   }
 
 }

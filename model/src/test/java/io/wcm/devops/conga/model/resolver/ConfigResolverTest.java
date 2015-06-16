@@ -34,6 +34,9 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+/**
+ * Tests {@link ConfigResolver} and {@link VariableResolver}.
+ */
 public class ConfigResolverTest {
 
   @Test
@@ -104,6 +107,30 @@ public class ConfigResolverTest {
     ConfigResolver.resolve(conf);
 
     assertEquals(ImmutableMap.of("key1", "${var1},${var1}v1,${var1}v1v1"), conf.getConfig());
+  }
+
+  @Test
+  public void testListVariable() {
+
+    SimpleConf conf = new SimpleConf();
+    conf.setVariables(ImmutableMap.of("var1", ImmutableList.of("v1", "v2", ImmutableList.of("v31", "v32"))));
+    conf.setConfig(ImmutableMap.of("key1", "The ${var1}"));
+
+    ConfigResolver.resolve(conf);
+
+    assertEquals(ImmutableMap.of("key1", "The v1,v2,v31,v32"), conf.getConfig());
+  }
+
+  @Test
+  public void testMapVariable() {
+
+    SimpleConf conf = new SimpleConf();
+    conf.setVariables(ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22"))));
+    conf.setConfig(ImmutableMap.of("key1", "The ${var1}"));
+
+    ConfigResolver.resolve(conf);
+
+    assertEquals(ImmutableMap.of("key1", "The k1=v1,k2=k21=v21,k22=v22"), conf.getConfig());
   }
 
   @Test
