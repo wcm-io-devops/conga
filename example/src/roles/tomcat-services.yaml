@@ -34,11 +34,6 @@ files:
   charset: ISO-8859-1
 
 
-# Variables that can be reference anywhere inside the definition
-variables:
-  var1: value1
-
-
 # Defines configuration parameters and default values
 config:
 
