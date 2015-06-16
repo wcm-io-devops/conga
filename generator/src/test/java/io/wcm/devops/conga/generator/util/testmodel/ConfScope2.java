@@ -17,41 +17,29 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.resolver.testmodel;
+package io.wcm.devops.conga.generator.util.testmodel;
 
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
-import java.util.List;
-import java.util.Map;
+public class ConfScope2 extends AbstractConfigurable {
 
-public class ConfScope1 extends AbstractConfigurable {
+  private ConfScope3 scope31;
+  private ConfScope3 scope32;
 
-  private List<ConfScope2> scope2;
-  private Map<String, Object> map;
-  private SampleNode sample;
-
-  public List<ConfScope2> getScope2() {
-    return this.scope2;
+  public ConfScope3 getScope31() {
+    return this.scope31;
   }
 
-  public void setScope2(List<ConfScope2> scope2) {
-    this.scope2 = scope2;
+  public void setScope31(ConfScope3 scope31) {
+    this.scope31 = scope31;
   }
 
-  public Map<String, Object> getMap() {
-    return this.map;
+  public ConfScope3 getScope32() {
+    return this.scope32;
   }
 
-  public void setMap(Map<String, Object> map) {
-    this.map = map;
-  }
-
-  public SampleNode getSample() {
-    return this.sample;
-  }
-
-  public void setSample(SampleNode sample) {
-    this.sample = sample;
+  public void setScope32(ConfScope3 scope32) {
+    this.scope32 = scope32;
   }
 
 }

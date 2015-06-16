@@ -19,8 +19,8 @@
  */
 package io.wcm.devops.conga.generator.plugins.multiply;
 
+import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Tenant;
@@ -45,8 +45,6 @@ public final class TenantMultiply implements MultiplyPlugin {
   public static final String NAME = "tenant";
 
   static final String ROLES_PROPERTY = "roles";
-  static final String KEY_TENANT = "tenant";
-  static final String TENANT_PLACEHOLDER = "${tenant}";
 
   @Override
   public String getName() {
@@ -54,22 +52,21 @@ public final class TenantMultiply implements MultiplyPlugin {
   }
 
   @Override
-  public List<MultiplyContext> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config) {
-    List<MultiplyContext> contexts = new ArrayList<>();
+  public List<Map<String, Object>> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config) {
+    List<Map<String, Object>> contexts = new ArrayList<>();
 
     for (Tenant tenant : environment.getTenants()) {
       if (StringUtils.isEmpty(tenant.getTenant())) {
         throw new GeneratorException("Tenant without tenant name detected.");
       }
       if (acceptTenant(tenant, roleFile.getMultiplyOptions())) {
-        // replace placeholders in filename and merge tenant config for each tenant
-        String file = StringUtils.replace(roleFile.getFile(), TENANT_PLACEHOLDER, tenant.getTenant());
-        String dir = StringUtils.replace(roleFile.getDir(), TENANT_PLACEHOLDER, tenant.getTenant());
-
         Map<String, Object> mergedConfig = MapMerger.merge(tenant.getConfig(), config);
-        mergedConfig.put(KEY_TENANT, tenant.getTenant());
 
-        contexts.add(new MultiplyContext(file, dir, mergedConfig));
+        // set tenant-specific context variables
+        mergedConfig.put(ContextProperties.TENANT, tenant.getTenant());
+        mergedConfig.put(ContextProperties.TENANT_ROLES, tenant.getRoles());
+
+        contexts.add(mergedConfig);
       }
     }
 

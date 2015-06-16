@@ -20,7 +20,6 @@
 package io.wcm.devops.conga.generator.plugins.multiply;
 
 import static org.junit.Assert.assertEquals;
-import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -50,8 +49,6 @@ public class NoneMultiplyTest {
 
     role = new Role();
     roleFile = new RoleFile();
-    roleFile.setFile("myfile");
-    roleFile.setDir("mydir");
 
     config = ImmutableMap.of("var1", "v1");
 
@@ -60,14 +57,11 @@ public class NoneMultiplyTest {
 
   @Test
   public void testMultiply() {
-    List<MultiplyContext> contexts = underTest.multiply(role, roleFile, environment, config);
+    List<Map<String, Object>> configs = underTest.multiply(role, roleFile, environment, config);
 
-    assertEquals(1, contexts.size());
+    assertEquals(1, configs.size());
 
-    MultiplyContext context = contexts.get(0);
-    assertEquals(roleFile.getFile(), context.getFile());
-    assertEquals(roleFile.getDir(), context.getDir());
-    assertEquals(config, context.getConfig());
+    assertEquals(config, configs.get(0));
   }
 
 }

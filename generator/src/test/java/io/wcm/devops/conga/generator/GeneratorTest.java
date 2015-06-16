@@ -54,48 +54,60 @@ public class GeneratorTest {
 
     File node1Dir = assertDirectory(destDir, "env1/node1");
 
-    File text1 = assertFile(node1Dir, "text/test.txt");
+    File text1 = assertFile(node1Dir, "text/test-role1.variant11.env1.node1.txt");
     assertContains(text1, "textfile äöüß with ISO-8859-1 encoding", CharEncoding.ISO_8859_1);
     assertContains(text1, "defaultString: value1 äöüß", CharEncoding.ISO_8859_1);
     assertContains(text1, "globalString: globalValue äöüß", CharEncoding.ISO_8859_1);
+    assertContains(text1, "variableString: The v1", CharEncoding.ISO_8859_1);
+
+    assertContains(text1, ContextProperties.ENVIRONMENT + ": env1", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.NODE + ": node1", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.ROLE + ": role1", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.ROLE_VARIANT + ": variant1", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.TENANTS + ": tenant1,tenant2,tenant3", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.TENANTS_BY_ROLE + ": tenant1,tenant2", CharEncoding.ISO_8859_1);
 
     File json1 = assertFile(node1Dir, "json/test.json");
     assertContains(json1, "JSON file äöüß€ with UTF-8 encoding");
     assertContains(json1, "\"defaultString\": \"value2\"");
     assertContains(json1, "\"globalString\": \"globalValue äöüß€\"");
 
-    File xml1tenant1 = assertFile(node1Dir, "xml/test.tenant1.xml");
+    File xml1tenant1 = assertFile(node1Dir, "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml");
     assertContains(xml1tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
     assertContains(xml1tenant1, "<defaultString>value1 äöüß€</defaultString>");
     assertContains(xml1tenant1, "<globalString>globalValue äöüß€</globalString>");
+    assertContains(xml1tenant1, "<variableString>The v1</variableString>");
 
-    File xml1tenant2 = assertFile(node1Dir, "xml/test.tenant2.xml");
+    File xml1tenant2 = assertFile(node1Dir, "xml/test.tenant2.tenantRole1.env1.xml");
     assertContains(xml1tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");
     assertContains(xml1tenant2, "<defaultString>defaultFromTenant2</defaultString>");
     assertContains(xml1tenant2, "<globalString>globalFromTenant2</globalString>");
+    assertContains(xml1tenant2, "<variableString>The v1-tenant2</variableString>");
 
     File node2Dir = assertDirectory(destDir, "env1/node2");
 
-    File xml2tenant1 = assertFile(node2Dir, "xml/test.tenant1.xml");
+    File xml2tenant1 = assertFile(node2Dir, "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml");
     assertContains(xml2tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
     assertContains(xml2tenant1, "<defaultString>defaultFromNode2Role1</defaultString>");
     assertContains(xml2tenant1, "<globalString>globalValue äöüß€</globalString>");
+    assertContains(xml2tenant1, "<variableString>The v1-node2</variableString>");
 
-    File xml2tenant2 = assertFile(node2Dir, "xml/test.tenant2.xml");
+    File xml2tenant2 = assertFile(node2Dir, "xml/test.tenant2.tenantRole1.env1.xml");
     assertContains(xml2tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");
     assertContains(xml2tenant2, "<defaultString>defaultFromTenant2</defaultString>");
     assertContains(xml2tenant2, "<globalString>globalFromTenant2</globalString>");
+    assertContains(xml2tenant2, "<variableString>The v1-tenant2</variableString>");
   }
 
   private File assertDirectory(File assertBaseDir, String path) {
     File dir = new File(assertBaseDir, path);
-    assertTrue("Directory exists: " + FileUtil.getCanonicalPath(dir), dir.exists() && dir.isDirectory());
+    assertTrue("Directory does not exist: " + FileUtil.getCanonicalPath(dir), dir.exists() && dir.isDirectory());
     return dir;
   }
 
   private File assertFile(File assertBaseDir, String path) {
     File file = new File(assertBaseDir, path);
-    assertTrue("File exists: " + FileUtil.getCanonicalPath(file), file.exists() && file.isFile());
+    assertTrue("File does not exist: " + FileUtil.getCanonicalPath(file), file.exists() && file.isFile());
     return file;
   }
 
@@ -106,7 +118,7 @@ public class GeneratorTest {
   private void assertContains(File file, String contains, String charset) {
     try {
       String fileContent = FileUtils.readFileToString(file, charset);
-      assertTrue("File " + FileUtil.getCanonicalPath(file) + " contains: " + contains, StringUtils.contains(fileContent, contains));
+      assertTrue("File " + FileUtil.getCanonicalPath(file) + " does not contain: " + contains, StringUtils.contains(fileContent, contains));
     }
     catch (IOException ex) {
       throw new RuntimeException("Unable to read contents from: " + FileUtil.getCanonicalPath(file), ex);
