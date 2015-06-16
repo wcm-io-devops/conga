@@ -51,6 +51,11 @@ public final class ContextProperties {
   public static final String NODE = "node";
 
   /**
+   * List of all tenants with their configurations.
+   */
+  public static final String TENANTS = "tenants";
+
+  /**
    * Tenant name.
    * This is only set if the {@link io.wcm.devops.conga.generator.plugins.multiply.TenantMultiply} plugin is used.
    */

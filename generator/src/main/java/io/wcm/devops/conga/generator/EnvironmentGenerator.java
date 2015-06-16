@@ -101,11 +101,7 @@ class EnvironmentGenerator {
       }
 
       // define variable map for filename placeholders (only default properties)
-      Map<String, Object> contextVariables = new HashMap<>();
-      contextVariables.put(ContextProperties.ROLE, nodeRole.getRole());
-      contextVariables.put(ContextProperties.ROLE_VARIANT, nodeRole.getVariant());
-      contextVariables.put(ContextProperties.ENVIRONMENT, environmentName);
-      contextVariables.put(ContextProperties.NODE, node.getNode());
+      Map<String, Object> contextVariables = populateContextVariables(node, nodeRole);
 
       // merge default values to config
       Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), role.getConfig());
@@ -122,6 +118,16 @@ class EnvironmentGenerator {
         }
       }
     }
+  }
+
+  private Map<String, Object> populateContextVariables(Node node, NodeRole nodeRole) {
+    Map<String, Object> contextVariables = new HashMap<>();
+    contextVariables.put(ContextProperties.ROLE, nodeRole.getRole());
+    contextVariables.put(ContextProperties.ROLE_VARIANT, nodeRole.getVariant());
+    contextVariables.put(ContextProperties.ENVIRONMENT, environmentName);
+    contextVariables.put(ContextProperties.NODE, node.getNode());
+    contextVariables.put(ContextProperties.TENANTS, environment.getTenants());
+    return contextVariables;
   }
 
   private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {

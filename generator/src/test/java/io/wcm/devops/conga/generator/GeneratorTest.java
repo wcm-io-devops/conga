@@ -63,6 +63,7 @@ public class GeneratorTest {
     assertContains(text1, ContextProperties.NODE + ": node1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.ROLE + ": role1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.ROLE_VARIANT + ": variant1", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.TENANTS + ": tenant1,tenant2,tenant3", CharEncoding.ISO_8859_1);
 
     File json1 = assertFile(node1Dir, "json/test.json");
     assertContains(json1, "JSON file äöüß€ with UTF-8 encoding");
