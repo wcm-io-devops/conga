@@ -7,6 +7,8 @@ nodes:
   - role: role2
 
 - node: node2
+  config:
+    var1: v1-node2
   roles:
   - role: role1
     config:
@@ -31,6 +33,7 @@ tenants:
   roles:
   - tenantRole1
   config:
+    var1: v1-tenant2
     globalString: globalFromTenant2
     defaultString: defaultFromTenant2
 

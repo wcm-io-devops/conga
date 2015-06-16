@@ -22,7 +22,6 @@ package io.wcm.devops.conga.generator.plugins.multiply;
 import static org.junit.Assert.assertEquals;
 import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -47,7 +46,6 @@ public class TenantMultiplyTest {
   private Role role;
   private RoleFile roleFile;
   private Map<String, Object> config;
-  private Map<String, Object> contextVariables;
   private Environment environment;
 
   @Before
@@ -58,22 +56,21 @@ public class TenantMultiplyTest {
     roleFile = new RoleFile();
 
     config = ImmutableMap.of("var1", "v1", "var2", "v2");
-    contextVariables = ImmutableMap.of("ctxvar1", "ctxv1");
 
     environment = new Environment();
   }
 
   @Test
   public void testNoTenants() {
-    List<MultiplyContext> contexts = underTest.multiply(role, roleFile, environment, config, contextVariables);
-    assertEquals(0, contexts.size());
+    List<Map<String, Object>> configs = underTest.multiply(role, roleFile, environment, config);
+    assertEquals(0, configs.size());
   }
 
   @Test(expected = GeneratorException.class)
   public void testTenantWithoutName() {
     environment.getTenants().add(new Tenant());
 
-    underTest.multiply(role, roleFile, environment, config, contextVariables);
+    underTest.multiply(role, roleFile, environment, config);
   }
 
   @Test
@@ -87,20 +84,18 @@ public class TenantMultiplyTest {
     tenant2.setTenant("tenant2");
     environment.getTenants().add(tenant2);
 
-    List<MultiplyContext> contexts = underTest.multiply(role, roleFile, environment, config, contextVariables);
-    assertEquals(2, contexts.size());
+    List<Map<String, Object>> configs = underTest.multiply(role, roleFile, environment, config);
+    assertEquals(2, configs.size());
 
-    MultiplyContext context1 = contexts.get(0);
-    assertEquals(ImmutableMap.of("var1", "v11", "var2", "v2", "var3", "v33"), context1.getConfig());
-    assertEquals(ImmutableMap.of("ctxvar1", "ctxv1",
+    Map<String, Object> config1 = configs.get(0);
+    assertEquals(ImmutableMap.of("var1", "v11", "var2", "v2", "var3", "v33",
         ContextProperties.TENANT, "tenant1",
-        ContextProperties.TENANT_ROLES, ImmutableList.of()), context1.getContextVariables());
+        ContextProperties.TENANT_ROLES, ImmutableList.of()), config1);
 
-    MultiplyContext context2 = contexts.get(1);
-    assertEquals(config, context2.getConfig());
-    assertEquals(ImmutableMap.of("ctxvar1", "ctxv1",
+    Map<String, Object> config2 = configs.get(1);
+    assertEquals(ImmutableMap.of("var1", "v1", "var2", "v2",
         ContextProperties.TENANT, "tenant2",
-        ContextProperties.TENANT_ROLES, ImmutableList.of()), context2.getContextVariables());
+        ContextProperties.TENANT_ROLES, ImmutableList.of()), config2);
   }
 
   @Test
@@ -121,20 +116,18 @@ public class TenantMultiplyTest {
 
     roleFile.setMultiplyOptions(ImmutableMap.of(TenantMultiply.ROLES_PROPERTY, ImmutableList.of("role1", "role3")));
 
-    List<MultiplyContext> contexts = underTest.multiply(role, roleFile, environment, config, contextVariables);
-    assertEquals(2, contexts.size());
+    List<Map<String, Object>> configs = underTest.multiply(role, roleFile, environment, config);
+    assertEquals(2, configs.size());
 
-    MultiplyContext context1 = contexts.get(0);
-    assertEquals(config, context1.getConfig());
-    assertEquals(ImmutableMap.of("ctxvar1", "ctxv1",
+    Map<String, Object> config1 = configs.get(0);
+    assertEquals(ImmutableMap.of("var1", "v1", "var2", "v2",
         ContextProperties.TENANT, "tenant2",
-        ContextProperties.TENANT_ROLES, ImmutableList.of("role1", "role2")), context1.getContextVariables());
+        ContextProperties.TENANT_ROLES, ImmutableList.of("role1", "role2")), config1);
 
-    MultiplyContext context2 = contexts.get(1);
-    assertEquals(config, context2.getConfig());
-    assertEquals(ImmutableMap.of("ctxvar1", "ctxv1",
+    Map<String, Object> config2 = configs.get(1);
+    assertEquals(ImmutableMap.of("var1", "v1", "var2", "v2",
         ContextProperties.TENANT, "tenant3",
-        ContextProperties.TENANT_ROLES, ImmutableList.of("role1")), context2.getContextVariables());
+        ContextProperties.TENANT_ROLES, ImmutableList.of("role1")), config2);
   }
 
 }

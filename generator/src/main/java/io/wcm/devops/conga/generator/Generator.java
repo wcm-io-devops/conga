@@ -26,7 +26,7 @@ import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.model.reader.RoleReader;
-import io.wcm.devops.conga.model.resolver.ConfigResolver;
+import io.wcm.devops.conga.model.resolver.ConfigInheritanceResolver;
 import io.wcm.devops.conga.model.role.Role;
 
 import java.io.File;
@@ -83,7 +83,7 @@ public final class Generator {
       if (reader.accepts(file)) {
         try {
           T model = reader.read(file);
-          ConfigResolver.resolve(model);
+          ConfigInheritanceResolver.resolve(model);
           models.put(FilenameUtils.getBaseName(file.getName()), model);
         }
         catch (Throwable ex) {

@@ -26,30 +26,31 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Resolve variables.
+ * Resolve variables in a string referencing entries from a map.
  */
-public final class VariableResolver {
+public final class VariableStringResolver {
 
   private static final Pattern VARIABLE_PATTERN = Pattern.compile("(\\\\?\\$)\\{([^\\}\\{\\$]+)\\}");
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
-  private VariableResolver() {
+  private VariableStringResolver() {
     // static methods only
   }
 
   /**
-   * Replace variable placeholders with syntax ${key} with values from a map.
+   * Replace variable placeholders in a string with syntax ${key} with values from a map.
    * The variables can recursively reference each other.
    * @param value Value with variable placeholders
    * @param variables Variable map
    * @return Value with variable placeholders resolved.
    * @throws IllegalArgumentException when a variable name could not be resolve.d
    */
-  public static String replaceVariables(String value, Map<String, Object> variables) {
-    String resolvedString = replaceVariables(value, variables, 0);
+  public static String resolve(String value, Map<String, Object> variables) {
+    String resolvedString = resolve(value, variables, 0);
 
     // de-escaped escaped variables
     resolvedString = VARIABLE_PATTERN.matcher(resolvedString).replaceAll("\\$\\{$2\\}");
@@ -57,9 +58,9 @@ public final class VariableResolver {
     return resolvedString;
   }
 
-  private static String replaceVariables(String value, Map<String, Object> variables, int iterationCount) {
+  private static String resolve(String value, Map<String, Object> variables, int iterationCount) {
     if (iterationCount >= REPLACEMENT_MAX_ITERATIONS) {
-      throw new IllegalArgumentException("Cyclic dependencies in varaible string detected: " + value);
+      throw new IllegalArgumentException("Cyclic dependencies in variable string detected: " + value);
     }
 
     Matcher matcher = VARIABLE_PATTERN.matcher(value);
@@ -69,24 +70,45 @@ public final class VariableResolver {
       boolean escapedVariable = StringUtils.equals(matcher.group(1), "\\$");
       String variable = matcher.group(2);
       if (escapedVariable) {
+        // keept escaped variables intact
         matcher.appendReplacement(sb, Matcher.quoteReplacement("\\${" + variable + "}"));
       }
-      else if (variables.containsKey(variable)) {
-        String variableValue = valueToString(variables.get(variable));
-        matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
-        replacedAny = true;
-      }
       else {
-        throw new IllegalArgumentException("Unknown variable: " + variable);
+        Object valueObject = getDeep(variables, variable);
+        if (valueObject != null) {
+          String variableValue = valueToString(valueObject);
+          matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
+          replacedAny = true;
+        }
+        else {
+          throw new IllegalArgumentException("Unknown variable: " + variable);
+        }
       }
     }
     matcher.appendTail(sb);
     if (replacedAny) {
-      return replaceVariables(sb.toString(), variables, iterationCount + 1);
+      // try again until all nested references are resolved
+      return resolve(sb.toString(), variables, iterationCount + 1);
     }
     else {
       return sb.toString();
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static Object getDeep(Map<String, Object> variables, String key) {
+    if (variables.containsKey(key)) {
+      return ObjectUtils.defaultIfNull(variables.get(key), "");
+    }
+    if (StringUtils.contains(key, ".")) {
+      String keyPart = StringUtils.substringBefore(key, ".");
+      String keySuffix = StringUtils.substringAfter(key, ".");
+      Object resultKeyPart = variables.get(keyPart);
+      if (resultKeyPart != null && resultKeyPart instanceof Map) {
+        return getDeep((Map<String, Object>)resultKeyPart, keySuffix);
+      }
+    }
+    return null;
   }
 
   @SuppressWarnings("unchecked")

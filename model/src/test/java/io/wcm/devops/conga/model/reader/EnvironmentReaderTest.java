@@ -90,7 +90,7 @@ public class EnvironmentReaderTest {
     assertEquals("tenant1", tenant.getTenant());
 
     assertEquals(ImmutableList.of("website", "application"), tenant.getRoles());
-    assertEquals(ImmutableMap.of("domain", "mysite.de", "website", ImmutableMap.of("hostname", "www.mysite.de")), tenant.getConfig());
+    assertEquals(ImmutableMap.of("domain", "mysite.de", "website", ImmutableMap.of("hostname", "www.${domain}")), tenant.getConfig());
   }
 
 }

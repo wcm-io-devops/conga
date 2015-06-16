@@ -23,11 +23,9 @@ import io.wcm.devops.conga.model.shared.Configurable;
 import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -35,11 +33,12 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * Iterates over all {@link Configurable} items in the object tree.
- * Configuration from parent objects is inherited to client objects and variables are resolved.
+ * Configuration from parent objects is inherited to client objects.
+ * Variables are not resolved though, this is done during configuration generation process.
  */
-public final class ConfigResolver {
+public final class ConfigInheritanceResolver {
 
-  private ConfigResolver() {
+  private ConfigInheritanceResolver() {
     // static methods only
   }
 
@@ -48,19 +47,19 @@ public final class ConfigResolver {
    * @param model Model with variables at any nested level.
    */
   public static void resolve(Object model) {
-    resolve(model, new HashMap<>(), new HashMap<>());
+    resolve(model, new HashMap<>());
   }
 
-  private static void resolve(Object object, Map<String, Object> parentConfig, Map<String, Object> parentVariables) {
+  private static void resolve(Object object, Map<String, Object> parentConfig) {
     if (object instanceof Map) {
       for (Object child : ((Map)object).values()) {
-        resolve(child, parentConfig, parentVariables);
+        resolve(child, parentConfig);
       }
       return;
     }
     if (object instanceof List) {
       for (Object child : (List)object) {
-        resolve(child, parentConfig, parentVariables);
+        resolve(child, parentConfig);
       }
       return;
     }
@@ -81,7 +80,7 @@ public final class ConfigResolver {
       for (String propertyName : description.keySet()) {
         Object propertyValue = PropertyUtils.getProperty(model, propertyName);
         if (!StringUtils.equals(propertyName, "class")) {
-          resolve(propertyValue, parentConfig, parentConfig);
+          resolve(propertyValue, parentConfig);
         }
       }
     }
@@ -93,41 +92,9 @@ public final class ConfigResolver {
   private static Map<String, Object> resolveConfigurable(Configurable configurable, Map<String, Object> parentConfig) {
     Map<String, Object> mergedConfig = MapMerger.merge(configurable.getConfig(), parentConfig);
 
-    Map<String, Object> resolvedConfig = resolveConfig(mergedConfig, mergedConfig);
-
-    configurable.resolved(resolvedConfig);
+    configurable.setConfig(mergedConfig);
 
     return mergedConfig;
-  }
-
-  @SuppressWarnings("unchecked")
-  private static Object resolveConfig(Object object, Map<String, Object> variables) {
-    if (object instanceof Map) {
-      return resolveConfig((Map<String, Object>)object, variables);
-    }
-    if (object instanceof List) {
-      return resolveConfig((List<Object>)object, variables);
-    }
-    if (object instanceof String) {
-      return VariableResolver.replaceVariables((String)object, variables);
-    }
-    return object;
-  }
-
-  private static Map<String, Object> resolveConfig(Map<String, Object> map, Map<String, Object> variables) {
-    Map<String, Object> resolvedMap = new HashMap<>();
-    for (Entry<String, Object> entry : map.entrySet()) {
-      resolvedMap.put(entry.getKey(), resolveConfig(entry.getValue(), variables));
-    }
-    return resolvedMap;
-  }
-
-  private static List<Object> resolveConfig(List<Object> list, Map<String, Object> variables) {
-    List<Object> resolvedList = new ArrayList<>();
-    for (Object object : list) {
-      resolvedList.add(resolveConfig(object, variables));
-    }
-    return resolvedList;
   }
 
 }
