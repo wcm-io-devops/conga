@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.resolver;
+package io.wcm.devops.conga.generator.util;
 
 import io.wcm.devops.conga.model.shared.Configurable;
 import io.wcm.devops.conga.model.util.MapMerger;

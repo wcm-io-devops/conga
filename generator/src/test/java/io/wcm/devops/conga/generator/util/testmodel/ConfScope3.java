@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.resolver.testmodel;
+package io.wcm.devops.conga.generator.util.testmodel;
 
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 

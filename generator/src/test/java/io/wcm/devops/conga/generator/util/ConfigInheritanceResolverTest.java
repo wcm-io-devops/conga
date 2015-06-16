@@ -17,15 +17,15 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.resolver;
+package io.wcm.devops.conga.generator.util;
 
 import static org.junit.Assert.assertEquals;
-import io.wcm.devops.conga.model.resolver.testmodel.ConfScope1;
-import io.wcm.devops.conga.model.resolver.testmodel.ConfScope2;
-import io.wcm.devops.conga.model.resolver.testmodel.ConfScope3;
-import io.wcm.devops.conga.model.resolver.testmodel.Root;
-import io.wcm.devops.conga.model.resolver.testmodel.SampleNode;
-import io.wcm.devops.conga.model.resolver.testmodel.SimpleConf;
+import io.wcm.devops.conga.generator.util.testmodel.ConfScope1;
+import io.wcm.devops.conga.generator.util.testmodel.ConfScope2;
+import io.wcm.devops.conga.generator.util.testmodel.ConfScope3;
+import io.wcm.devops.conga.generator.util.testmodel.Root;
+import io.wcm.devops.conga.generator.util.testmodel.SampleNode;
+import io.wcm.devops.conga.generator.util.testmodel.SimpleConf;
 
 import org.junit.Test;
 

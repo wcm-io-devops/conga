@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.resolver;
+package io.wcm.devops.conga.generator.util;
 
 import static org.junit.Assert.assertEquals;
 

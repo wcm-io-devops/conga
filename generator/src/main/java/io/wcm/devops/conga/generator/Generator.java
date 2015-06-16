@@ -20,13 +20,13 @@
 package io.wcm.devops.conga.generator;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.model.reader.RoleReader;
-import io.wcm.devops.conga.model.resolver.ConfigInheritanceResolver;
 import io.wcm.devops.conga.model.role.Role;
 
 import java.io.File;
