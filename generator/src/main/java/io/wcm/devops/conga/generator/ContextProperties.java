@@ -51,9 +51,16 @@ public final class ContextProperties {
   public static final String NODE = "node";
 
   /**
-   * List of all tenants with their configurations.
+   * List of all tenants.
+   * Each tenant has properties as defined in the {@link io.wcm.devops.conga.model.environment.Tenant} class.
    */
   public static final String TENANTS = "tenants";
+
+  /**
+   * Map with tenant roles with each entry containing a list of all tenants with this role.
+   * Each tenant has properties as defined in the {@link io.wcm.devops.conga.model.environment.Tenant} class.
+   */
+  public static final String TENANTS_BY_ROLE = "tenantsByRole";
 
   /**
    * Tenant name.

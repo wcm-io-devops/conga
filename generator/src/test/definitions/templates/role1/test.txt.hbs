@@ -10,3 +10,4 @@ nodeRoleVariant: {{nodeRoleVariant}}
 environment: {{environment}}
 node: {{node}}
 tenants: {{#each tenants}}{{this.tenant}}{{#unless @last}},{{/unless}}{{/each}}
+tenantsByRole: {{#each tenantsByRole.tenantRole1}}{{this.tenant}}{{#unless @last}},{{/unless}}{{/each}}

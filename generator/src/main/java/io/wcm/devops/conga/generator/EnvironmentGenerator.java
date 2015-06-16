@@ -29,6 +29,7 @@ import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
+import io.wcm.devops.conga.model.environment.Tenant;
 import io.wcm.devops.conga.model.resolver.VariableResolver;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
@@ -36,6 +37,7 @@ import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,6 +129,20 @@ class EnvironmentGenerator {
     contextVariables.put(ContextProperties.ENVIRONMENT, environmentName);
     contextVariables.put(ContextProperties.NODE, node.getNode());
     contextVariables.put(ContextProperties.TENANTS, environment.getTenants());
+
+    Map<String, List<Tenant>> tenantsByRole = new HashMap<>();
+    for (Tenant tenant : environment.getTenants()) {
+      for (String tenantRole : tenant.getRoles()) {
+        List<Tenant> tenants = tenantsByRole.get(tenantRole);
+        if (tenants == null) {
+          tenants = new ArrayList<>();
+          tenantsByRole.put(tenantRole, tenants);
+        }
+        tenants.add(tenant);
+      }
+    }
+    contextVariables.put(ContextProperties.TENANTS_BY_ROLE, tenantsByRole);
+
     return contextVariables;
   }
 
