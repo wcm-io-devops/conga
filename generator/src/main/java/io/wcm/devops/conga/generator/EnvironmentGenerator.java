@@ -21,7 +21,6 @@ package io.wcm.devops.conga.generator;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
-import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.util.FileUtil;
@@ -30,7 +29,8 @@ import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.environment.Tenant;
-import io.wcm.devops.conga.model.resolver.VariableResolver;
+import io.wcm.devops.conga.model.resolver.VariableMapResolver;
+import io.wcm.devops.conga.model.resolver.VariableStringResolver;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.model.util.MapMerger;
@@ -102,11 +102,11 @@ class EnvironmentGenerator {
             + "from " + environmentName + "/" + node.getNode() + " does not exist.");
       }
 
-      // define variable map for filename placeholders (only default properties)
-      Map<String, Object> contextVariables = populateContextVariables(node, nodeRole);
-
       // merge default values to config
       Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), role.getConfig());
+
+      // additionally set context variables
+      putContextVariables(mergedConfig, node, nodeRole);
 
       // generate files
       File nodeDir = new File(destDir, node.getNode());
@@ -116,19 +116,18 @@ class EnvironmentGenerator {
       for (RoleFile roleFile : role.getFiles()) {
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
-          multiplyFiles(role, roleFile, mergedConfig, contextVariables, nodeDir, template);
+          multiplyFiles(role, roleFile, mergedConfig, nodeDir, template);
         }
       }
     }
   }
 
-  private Map<String, Object> populateContextVariables(Node node, NodeRole nodeRole) {
-    Map<String, Object> contextVariables = new HashMap<>();
-    contextVariables.put(ContextProperties.ROLE, nodeRole.getRole());
-    contextVariables.put(ContextProperties.ROLE_VARIANT, nodeRole.getVariant());
-    contextVariables.put(ContextProperties.ENVIRONMENT, environmentName);
-    contextVariables.put(ContextProperties.NODE, node.getNode());
-    contextVariables.put(ContextProperties.TENANTS, environment.getTenants());
+  private void putContextVariables(Map<String, Object> map, Node node, NodeRole nodeRole) {
+    map.put(ContextProperties.ROLE, nodeRole.getRole());
+    map.put(ContextProperties.ROLE_VARIANT, nodeRole.getVariant());
+    map.put(ContextProperties.ENVIRONMENT, environmentName);
+    map.put(ContextProperties.NODE, node.getNode());
+    map.put(ContextProperties.TENANTS, environment.getTenants());
 
     Map<String, List<Tenant>> tenantsByRole = new HashMap<>();
     for (Tenant tenant : environment.getTenants()) {
@@ -141,9 +140,7 @@ class EnvironmentGenerator {
         tenants.add(tenant);
       }
     }
-    contextVariables.put(ContextProperties.TENANTS_BY_ROLE, tenantsByRole);
-
-    return contextVariables;
+    map.put(ContextProperties.TENANTS_BY_ROLE, tenantsByRole);
   }
 
   private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {
@@ -163,24 +160,23 @@ class EnvironmentGenerator {
     }
   }
 
-  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, Map<String,Object> contextVariables,
-      File nodeDir, Template template) {
+  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
     }
 
-    List<MultiplyContext> contexts = multiplyPlugin.multiply(role, roleFile, environment, config, contextVariables);
-    for (MultiplyContext context : contexts) {
+    List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(role, roleFile, environment, config);
+    for (Map<String, Object> muliplyConfig : muliplyConfigs) {
+
+      // resolve variables
+      Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig);
 
       // replace placeholders in dir/filename with context variables
-      String dir = VariableResolver.replaceVariables(roleFile.getDir(), context.getContextVariables());
-      String file = VariableResolver.replaceVariables(roleFile.getFile(), context.getContextVariables());
+      String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
+      String file = VariableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
 
-      // merge context variables in configuration
-      Map<String, Object> mergedConfig = MapMerger.merge(context.getContextVariables(), context.getConfig());
-
-      generateFile(roleFile, dir, file, mergedConfig, nodeDir, template);
+      generateFile(roleFile, dir, file, resolvedConfig, nodeDir, template);
     }
   }
 

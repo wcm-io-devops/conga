@@ -32,20 +32,8 @@ public interface Configurable {
   Map<String, Object> getConfig();
 
   /**
-   * @return Variables.
+   * @param config Configuration parameters
    */
-  Map<String, Object> getVariables();
-
-  /**
-   * Set configurable to resolved when variables were applied to config. Clears all variables.
-   * It is not possible to un-resolve an object.
-   * @param config resolved configuration
-   */
-  void resolved(Map<String, Object> config);
-
-  /**
-   * @return true if object was resolved
-   */
-  boolean isResolved();
+  void setConfig(Map<String, Object> config);
 
 }

@@ -21,7 +21,6 @@ package io.wcm.devops.conga.generator.plugins.multiply;
 
 import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Tenant;
@@ -34,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Multiplies a file for each tenant with a matching tenant role.
@@ -55,9 +52,8 @@ public final class TenantMultiply implements MultiplyPlugin {
   }
 
   @Override
-  public List<MultiplyContext> multiply(Role role, RoleFile roleFile, Environment environment,
-      Map<String, Object> config, Map<String, Object> contextVariables) {
-    List<MultiplyContext> contexts = new ArrayList<>();
+  public List<Map<String, Object>> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config) {
+    List<Map<String, Object>> contexts = new ArrayList<>();
 
     for (Tenant tenant : environment.getTenants()) {
       if (StringUtils.isEmpty(tenant.getTenant())) {
@@ -66,12 +62,11 @@ public final class TenantMultiply implements MultiplyPlugin {
       if (acceptTenant(tenant, roleFile.getMultiplyOptions())) {
         Map<String, Object> mergedConfig = MapMerger.merge(tenant.getConfig(), config);
 
-        Map<String, Object> mergedContextVariables = MapMerger.merge(ImmutableMap.<String, Object>builder()
-            .put(ContextProperties.TENANT, tenant.getTenant())
-            .put(ContextProperties.TENANT_ROLES, tenant.getRoles())
-            .build(), contextVariables);
+        // set tenant-specific context variables
+        mergedConfig.put(ContextProperties.TENANT, tenant.getTenant());
+        mergedConfig.put(ContextProperties.TENANT_ROLES, tenant.getRoles());
 
-        contexts.add(new MultiplyContext(mergedConfig, mergedContextVariables));
+        contexts.add(mergedConfig);
       }
     }
 

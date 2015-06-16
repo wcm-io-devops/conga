@@ -7,7 +7,6 @@ nodes:
   # Config for all roles in this node
   config:
     jvm.heapspace.max: 2048m
-  variables:
     topologyConnectorPath: /specialConnector
   roles:
   - role: tomcat-services
@@ -31,11 +30,6 @@ nodes:
   - role: webserver
 
 
-# Variables that can be reference anywhere inside the definition
-variables:
-  topologyConnectorPath: /connector
-
-
 # Global configuration
 config:
   # It is possible to use a shortcut definition for nested maps.
@@ -45,6 +39,8 @@ config:
   #     heapspace:
   #       max: 4096m
   jvm.heapspace.max: 4096m
+  # Configuration entries can be used as variables for other entries
+  topologyConnectorPath: /connector
   topologyConnectors:
   - "http://host1${topologyConnectorPath}"
   - "http://host2${topologyConnectorPath}"
@@ -59,15 +55,13 @@ tenants:
   - website
   - application
   config:
-    website.hostname: www.${domain}
-  variables:
     domain: mysite.de
+    website.hostname: www.${domain}
 
 # Tenant with one tenant roles
 - tenant: tenant2
   roles:
   - website
   config:
-    website.hostname: www.${domain}
-  variables:
     domain: mysite.fr
+    website.hostname: www.${domain}

@@ -46,13 +46,9 @@ files:
     - website
 
 
-# Variables that can be reference anywhere inside the definition
-variables:
-  var1: value1
-
-
 # Defines configuration parameters and default values
 config:
+  var1: value1
 
   tomcat:
     port: 8080
