@@ -54,11 +54,10 @@ public class EnvironmentReaderTest {
     assertEquals(2, environment.getTenants().size());
 
     assertEquals(ImmutableMap.of(
+        "topologyConnectorPath", "/connector",
         "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "4096m")),
         "topologyConnectors", ImmutableList.of("http://host1${topologyConnectorPath}", "http://host2${topologyConnectorPath}")
         ), environment.getConfig());
-
-    assertEquals(ImmutableMap.of("topologyConnectorPath", "/connector"), environment.getVariables());
   }
 
   @Test
@@ -67,9 +66,8 @@ public class EnvironmentReaderTest {
 
     assertEquals("importer", node.getNode());
 
-    assertEquals(ImmutableMap.of("jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "2048m"))), node.getConfig());
-
-    assertEquals(ImmutableMap.of("topologyConnectorPath", "/specialConnector"), node.getVariables());
+    assertEquals(ImmutableMap.of("topologyConnectorPath", "/specialConnector",
+        "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "2048m"))), node.getConfig());
 
     assertEquals(2, node.getRoles().size());
   }
@@ -92,8 +90,7 @@ public class EnvironmentReaderTest {
     assertEquals("tenant1", tenant.getTenant());
 
     assertEquals(ImmutableList.of("website", "application"), tenant.getRoles());
-
-    assertEquals(ImmutableMap.of("domain", "mysite.de"), tenant.getVariables());
+    assertEquals(ImmutableMap.of("domain", "mysite.de", "website", ImmutableMap.of("hostname", "www.mysite.de")), tenant.getConfig());
   }
 
 }

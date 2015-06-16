@@ -59,12 +59,11 @@ public class RoleReaderTest {
     assertEquals(5, files.size());
 
     assertEquals(ImmutableMap.of(
+        "var1", "value1",
         "tomcat", ImmutableMap.of("port", 8080, "path", "/path/to/tomcat"),
         "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("min", "512m", "max", "2048m"), "permgenspace", ImmutableMap.of("max", "256m")),
         "topologyConnectors", ImmutableList.of("http://localhost:8080/libs/sling/topology/connector")
         ), role.getConfig());
-
-    assertEquals(ImmutableMap.of("var1", "value1"), role.getVariables());
   }
 
   @Test

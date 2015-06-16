@@ -20,7 +20,6 @@
 package io.wcm.devops.conga.model.resolver;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import io.wcm.devops.conga.model.resolver.testmodel.ConfScope1;
 import io.wcm.devops.conga.model.resolver.testmodel.ConfScope2;
@@ -43,38 +42,39 @@ public class ConfigResolverTest {
   public void testConfigListMap() {
 
     SimpleConf conf = new SimpleConf();
-    conf.setVariables(ImmutableMap.of("var1", "v1", "var2", 55, "var3", true));
-    conf.setConfig(ImmutableMap.of("key1", "${var1}", "list", ImmutableList.of(
-        ImmutableMap.of("key2", "${var2}", "map", ImmutableMap.of("key3", "${var3}"))
-        )));
+    conf.setConfig(ImmutableMap.of("var1", "v1", "var2", 55, "var3", true,
+        "key1", "${var1}", "list", ImmutableList.of(
+            ImmutableMap.of("key2", "${var2}", "map", ImmutableMap.of("key3", "${var3}"))
+            )));
 
     ConfigResolver.resolve(conf);
 
     assertTrue(conf.isResolved());
-    assertNull(conf.getVariables());
-    assertEquals(ImmutableMap.of("key1", "v1", "list", ImmutableList.of(
-        ImmutableMap.of("key2", "55", "map", ImmutableMap.of("key3", "true"))
-        )), conf.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1", "var2", 55, "var3", true,
+        "key1", "v1", "list", ImmutableList.of(
+            ImmutableMap.of("key2", "55", "map", ImmutableMap.of("key3", "true"))
+            )), conf.getConfig());
   }
 
   @Test
   public void testNestedVariables() {
 
     SimpleConf conf = new SimpleConf();
-    conf.setVariables(ImmutableMap.of("var1", "v1", "var2", "${var1}${var1}", "var3", "${var2}${var1}"));
-    conf.setConfig(ImmutableMap.of("key1", "${var1},${var2},${var3}"));
+    conf.setConfig(ImmutableMap.of("var1", "v1", "var2", "${var1}${var1}", "var3", "${var2}${var1}",
+        "key1", "${var1},${var2},${var3}"));
 
     ConfigResolver.resolve(conf);
 
-    assertEquals(ImmutableMap.of("key1", "v1,v1v1,v1v1v1"), conf.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1", "var2", "v1v1", "var3", "v1v1v1",
+        "key1", "v1,v1v1,v1v1v1"), conf.getConfig());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNestedVariables_IllegalRecursion() {
 
     SimpleConf conf = new SimpleConf();
-    conf.setVariables(ImmutableMap.of("var1", "${var2}", "var2", "${var1}"));
-    conf.setConfig(ImmutableMap.of("key1", "${var1}"));
+    conf.setConfig(ImmutableMap.of("var1", "${var2}", "var2", "${var1}",
+        "key1", "${var1}"));
 
     ConfigResolver.resolve(conf);
   }
@@ -101,36 +101,39 @@ public class ConfigResolverTest {
   public void testEscapedVariables() {
 
     SimpleConf conf = new SimpleConf();
-    conf.setVariables(ImmutableMap.of("var1", "v1", "var2", "\\${var1}${var1}", "var3", "${var2}${var1}"));
-    conf.setConfig(ImmutableMap.of("key1", "\\${var1},${var2},${var3}"));
+    conf.setConfig(ImmutableMap.of("var1", "v1", "var2", "\\${var1}${var1}", "var3", "${var2}${var1}",
+        "key1", "\\${var1},${var2},${var3}"));
 
     ConfigResolver.resolve(conf);
 
-    assertEquals(ImmutableMap.of("key1", "${var1},${var1}v1,${var1}v1v1"), conf.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1", "var2", "${var1}v1", "var3", "${var1}v1v1",
+        "key1", "${var1},${var1}v1,${var1}v1v1"), conf.getConfig());
   }
 
   @Test
   public void testListVariable() {
 
     SimpleConf conf = new SimpleConf();
-    conf.setVariables(ImmutableMap.of("var1", ImmutableList.of("v1", "v2", ImmutableList.of("v31", "v32"))));
-    conf.setConfig(ImmutableMap.of("key1", "The ${var1}"));
+    conf.setConfig(ImmutableMap.of("var1", ImmutableList.of("v1", "v2", ImmutableList.of("v31", "v32")),
+        "key1", "The ${var1}"));
 
     ConfigResolver.resolve(conf);
 
-    assertEquals(ImmutableMap.of("key1", "The v1,v2,v31,v32"), conf.getConfig());
+    assertEquals(ImmutableMap.of("var1", ImmutableList.of("v1", "v2", ImmutableList.of("v31", "v32")),
+        "key1", "The v1,v2,v31,v32"), conf.getConfig());
   }
 
   @Test
   public void testMapVariable() {
 
     SimpleConf conf = new SimpleConf();
-    conf.setVariables(ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22"))));
-    conf.setConfig(ImmutableMap.of("key1", "The ${var1}"));
+    conf.setConfig(ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22")),
+        "key1", "The ${var1}"));
 
     ConfigResolver.resolve(conf);
 
-    assertEquals(ImmutableMap.of("key1", "The k1=v1,k2=k21=v21,k22=v22"), conf.getConfig());
+    assertEquals(ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22")),
+        "key1", "The k1=v1,k2=k21=v21,k22=v22"), conf.getConfig());
   }
 
   @Test
@@ -171,27 +174,27 @@ public class ConfigResolverTest {
     root.setProp1("${var1} variable");
     root.setProp2(55);
 
-    scope1.setVariables(ImmutableMap.of("var1", "v1"));
-    scope1.setConfig(ImmutableMap.of("conf", "${var1} variable"));
+    scope1.setConfig(ImmutableMap.of("var1", "v1",
+        "conf", "${var1} variable"));
 
-    scope21.setVariables(ImmutableMap.of("var21", "v21"));
-    scope21.setConfig(ImmutableMap.of("conf2", "${var1} ${var21} variables"));
+    scope21.setConfig(ImmutableMap.of("var21", "v21",
+        "conf2", "${var1} ${var21} variables"));
 
-    scope22.setVariables(ImmutableMap.of("var22", "v22"));
-    scope22.setConfig(ImmutableMap.of("conf", "${var1} ${var22} variables"));
+    scope22.setConfig(ImmutableMap.of("var22", "v22",
+        "conf", "${var1} ${var22} variables"));
 
     scope31.setProp3("${var1} variable");
-    scope31.setVariables(ImmutableMap.of("var1", "v31"));
-    scope31.setConfig(ImmutableMap.of("conf2", "${var1} ${var21} variables"));
+    scope31.setConfig(ImmutableMap.of("var1", "v31",
+        "conf2", "${var1} ${var21} variables"));
 
-    scope32.setVariables(ImmutableMap.of("var21", "v32"));
-    scope32.setConfig(ImmutableMap.of("conf3", "${var1} ${var21} variables"));
+    scope32.setConfig(ImmutableMap.of("var21", "v32",
+        "conf3", "${var1} ${var21} variables"));
 
-    simple1.setVariables(ImmutableMap.of("var21", "v21"));
-    simple1.setConfig(ImmutableMap.of("conf", "${var1} ${var21} variables"));
+    simple1.setConfig(ImmutableMap.of("var21", "v21",
+        "conf", "${var1} ${var21} variables"));
 
-    simple2.setVariables(ImmutableMap.of("var1", "v99"));
-    simple2.setConfig(ImmutableMap.of("conf2", "${var1} variable"));
+    simple2.setConfig(ImmutableMap.of("var1", "v99",
+        "conf2", "${var1} variable"));
 
 
     ConfigResolver.resolve(root);
@@ -199,27 +202,27 @@ public class ConfigResolverTest {
     assertEquals("${var1} variable", root.getProp1());
     assertEquals((Integer)55, root.getProp2());
 
-    assertNull(scope1.getVariables());
-    assertEquals(ImmutableMap.of("conf", "v1 variable"), scope1.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1",
+        "conf", "v1 variable"), scope1.getConfig());
 
-    assertNull(scope21.getVariables());
-    assertEquals(ImmutableMap.of("conf", "v1 variable", "conf2", "v1 v21 variables"), scope21.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1", "var21", "v21",
+        "conf", "v1 variable", "conf2", "v1 v21 variables"), scope21.getConfig());
 
-    assertNull(scope22.getVariables());
-    assertEquals(ImmutableMap.of("conf", "v1 v22 variables"), scope22.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1", "var22", "v22",
+        "conf", "v1 v22 variables"), scope22.getConfig());
 
     assertEquals("${var1} variable", scope31.getProp3());
-    assertNull(scope31.getVariables());
-    assertEquals(ImmutableMap.of("conf", "v31 variable", "conf2", "v31 v21 variables"), scope31.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v31", "var21", "v21",
+        "conf", "v31 variable", "conf2", "v31 v21 variables"), scope31.getConfig());
 
-    assertNull(scope32.getVariables());
-    assertEquals(ImmutableMap.of("conf", "v1 variable", "conf2", "v1 v32 variables", "conf3", "v1 v32 variables"), scope32.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1", "var21", "v32",
+        "conf", "v1 variable", "conf2", "v1 v32 variables", "conf3", "v1 v32 variables"), scope32.getConfig());
 
-    assertNull(simple1.getVariables());
-    assertEquals(ImmutableMap.of("conf", "v1 v21 variables"), simple1.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1", "var21", "v21",
+        "conf", "v1 v21 variables"), simple1.getConfig());
 
-    assertNull(simple2.getVariables());
-    assertEquals(ImmutableMap.of("conf", "v99 variable", "conf2", "v99 variable"), simple2.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v99",
+        "conf", "v99 variable", "conf2", "v99 variable"), simple2.getConfig());
   }
 
 }

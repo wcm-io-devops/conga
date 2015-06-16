@@ -30,7 +30,6 @@ import java.util.Map;
 public abstract class AbstractConfigurable implements Configurable {
 
   private Map<String, Object> config = new HashMap<>();
-  private Map<String, Object> variables = new HashMap<>();
   private boolean resolved;
 
   @Override
@@ -50,29 +49,12 @@ public abstract class AbstractConfigurable implements Configurable {
   }
 
   @Override
-  public final Map<String, Object> getVariables() {
-    return this.variables;
-  }
-
-  /**
-   * @param variables Variables
-   */
-  public final void setVariables(Map<String, Object> variables) {
-    if (resolved) {
-      throw new IllegalStateException("Model is already resolved.");
-    }
-    // Expand shortcut map entries with "." notation to nested maps
-    this.variables = MapExpander.expand(variables);
-  }
-
-  @Override
   public final void resolved(Map<String, Object> resolvedConfig) {
     if (resolved) {
       throw new IllegalStateException("Model is already resolved.");
     }
     resolved = true;
     this.config = resolvedConfig;
-    this.variables = null;
   }
 
   @Override

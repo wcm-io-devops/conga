@@ -65,26 +65,23 @@ public final class ConfigResolver {
       return;
     }
     Map<String, Object> config;
-    Map<String, Object> variables;
     if (object instanceof Configurable) {
       Configurable configurable = (Configurable)object;
-      config = MapMerger.merge(configurable.getConfig(), parentConfig);
-      variables = resolveConfigurable(configurable, parentConfig, parentVariables);
+      config = resolveConfigurable(configurable, parentConfig);
     }
     else {
       config = parentConfig;
-      variables = parentVariables;
     }
-    resolveNestedObjects(object, config, variables);
+    resolveNestedObjects(object, config);
   }
 
-  private static void resolveNestedObjects(Object model, Map<String, Object> parentConfig, Map<String, Object> parentVariables) {
+  private static void resolveNestedObjects(Object model, Map<String, Object> parentConfig) {
     try {
       Map<String, String> description = BeanUtils.describe(model);
       for (String propertyName : description.keySet()) {
         Object propertyValue = PropertyUtils.getProperty(model, propertyName);
         if (!StringUtils.equals(propertyName, "class")) {
-          resolve(propertyValue, parentConfig, parentVariables);
+          resolve(propertyValue, parentConfig, parentConfig);
         }
       }
     }
@@ -93,20 +90,14 @@ public final class ConfigResolver {
     }
   }
 
-  private static Map<String, Object> resolveConfigurable(Configurable configurable, Map<String, Object> parentConfig, Map<String, Object> parentVariables) {
-    Map<String, Object> variables = new HashMap<>();
-    variables.putAll(parentVariables);
-    if (configurable.getVariables() != null) {
-      variables.putAll(configurable.getVariables());
-    }
-
+  private static Map<String, Object> resolveConfigurable(Configurable configurable, Map<String, Object> parentConfig) {
     Map<String, Object> mergedConfig = MapMerger.merge(configurable.getConfig(), parentConfig);
 
-    Map<String, Object> resolvedConfig = resolveConfig(mergedConfig, variables);
+    Map<String, Object> resolvedConfig = resolveConfig(mergedConfig, mergedConfig);
 
     configurable.resolved(resolvedConfig);
 
-    return variables;
+    return mergedConfig;
   }
 
   @SuppressWarnings("unchecked")
