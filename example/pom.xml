@@ -31,10 +31,6 @@
   <name>CONGA Example</name>
   <description>Example definitions and templates.</description>
   
-  <properties>
-    <conga.version>1.0.0-SNAPSHOT</conga.version>
-  </properties>
-
   <build>
 
     <plugins>
@@ -43,7 +39,7 @@
       <plugin>
         <groupId>io.wcm.devops.conga</groupId>
         <artifactId>conga-maven-plugin</artifactId>
-        <version>${conga.version}</version>
+        <version>1.0.0-SNAPSHOT</version>
         <executions>
           <execution>
             <goals>
