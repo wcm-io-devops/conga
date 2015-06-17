@@ -21,19 +21,23 @@ package io.wcm.devops.conga.generator.util;
 
 import io.wcm.devops.conga.model.shared.Configurable;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Iterates over all {@link Configurable} items in the object tree
  * and resolves all variables using {@link VariableMapResolver}.
  */
-public final class VariableObjectTreeResolver {
+public final class VariableObjectTreeResolver extends AbstractConfigurableObjectTreeProcessor<Object> {
+
+  // payload not used for this processor
+  private static final ConfigurableProcessor<Object> PROCESSOR = new ConfigurableProcessor<Object>() {
+    @Override
+    public Object process(Configurable configurable, Object payload) {
+      Map<String, Object> resolvedconfig = VariableMapResolver.resolve(configurable.getConfig());
+      configurable.setConfig(resolvedconfig);
+      return null;
+    }
+  };
 
   private VariableObjectTreeResolver() {
     // static methods only
@@ -44,43 +48,7 @@ public final class VariableObjectTreeResolver {
    * @param object Model with {@link Configurable} instances at any nested level.
    */
   public static void resolve(Object object) {
-    if (object instanceof Map) {
-      for (Object child : ((Map)object).values()) {
-        resolve(child);
-      }
-      return;
-    }
-    if (object instanceof List) {
-      for (Object child : (List)object) {
-        resolve(child);
-      }
-      return;
-    }
-    if (object instanceof Configurable) {
-      Configurable configurable = (Configurable)object;
-      resolveConfigurable(configurable);
-    }
-    resolveNestedObjects(object);
-  }
-
-  private static void resolveNestedObjects(Object model) {
-    try {
-      Map<String, String> description = BeanUtils.describe(model);
-      for (String propertyName : description.keySet()) {
-        Object propertyValue = PropertyUtils.getProperty(model, propertyName);
-        if (!StringUtils.equals(propertyName, "class")) {
-          resolve(propertyValue);
-        }
-      }
-    }
-    catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
-      throw new RuntimeException("Unable to get bean properties from '" + model.getClass().getName() + "'.", ex);
-    }
-  }
-
-  private static void resolveConfigurable(Configurable configurable) {
-    Map<String, Object> resolvedconfig = VariableMapResolver.resolve(configurable.getConfig());
-    configurable.setConfig(resolvedconfig);
+    new VariableObjectTreeResolver().process(object, PROCESSOR, null);
   }
 
 }
