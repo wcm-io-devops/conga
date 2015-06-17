@@ -21,40 +21,19 @@ package io.wcm.devops.conga.model.role;
 
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Role definition.
+ * Role variant definition.
  */
-public final class Role extends AbstractConfigurable {
+public final class RoleVariant extends AbstractConfigurable {
 
-  private List<RoleVariant> variants = new ArrayList<>();
-  private String templateDir;
-  private List<RoleFile> files = new ArrayList<>();
+  private String variant;
 
-  public List<RoleVariant> getVariants() {
-    return this.variants;
+  public String getVariant() {
+    return this.variant;
   }
 
-  public void setVariants(List<RoleVariant> variants) {
-    this.variants = variants;
-  }
-
-  public String getTemplateDir() {
-    return this.templateDir;
-  }
-
-  public void setTemplateDir(String templateDirectory) {
-    this.templateDir = templateDirectory;
-  }
-
-  public List<RoleFile> getFiles() {
-    return this.files;
-  }
-
-  public void setFiles(List<RoleFile> files) {
-    this.files = files;
+  public void setVariant(String variant) {
+    this.variant = variant;
   }
 
 }

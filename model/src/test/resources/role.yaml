@@ -1,6 +1,8 @@
 variants:
-- services
-- importer
+- variant: services
+  config:
+    var1: value1_service
+- variant: importer
 
 templateDir: tomcat-services
 

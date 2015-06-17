@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.role.RoleVariant;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +52,8 @@ public class RoleReaderTest {
   @Test
   public void testRole() {
 
-    assertEquals(ImmutableList.of("services", "importer"), role.getVariants());
+    List<RoleVariant> variants = role.getVariants();
+    assertEquals(2, variants.size());
 
     assertEquals("tomcat-services", role.getTemplateDir());
 
@@ -64,6 +66,14 @@ public class RoleReaderTest {
         "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("min", "512m", "max", "2048m"), "permgenspace", ImmutableMap.of("max", "256m")),
         "topologyConnectors", ImmutableList.of("http://localhost:8080/libs/sling/topology/connector")
         ), role.getConfig());
+  }
+
+  @Test
+  public void testVariant() {
+    RoleVariant variant = role.getVariants().get(0);
+
+    assertEquals("services", variant.getVariant());
+    assertEquals(ImmutableMap.of("var1", "value1_service"), variant.getConfig());
   }
 
   @Test
