@@ -32,6 +32,7 @@ import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.role.RoleVariant;
 import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.io.File;
@@ -99,13 +100,11 @@ class EnvironmentGenerator {
             + "from " + environmentName + "/" + node.getNode() + " does not exist.");
       }
       String variant = nodeRole.getVariant();
-      if (StringUtils.isNotEmpty(variant) && !role.getVariants().contains(variant)) {
-        throw new GeneratorException("Variant '" + variant + "' for role '" + nodeRole.getRole() + "' "
-            + "from " + environmentName + "/" + node.getNode() + " does not exist.");
-      }
+      RoleVariant roleVariant = getRoleVariant(role, variant, nodeRole.getRole(), node);
 
       // merge default values to config
-      Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), role.getConfig());
+      Map<String, Object> baseConfig = roleVariant != null ? roleVariant.getConfig() : role.getConfig();
+      Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), baseConfig);
 
       // additionally set context variables
       mergedConfig.putAll(environmentContextProperties);
@@ -123,6 +122,19 @@ class EnvironmentGenerator {
         }
       }
     }
+  }
+
+  private RoleVariant getRoleVariant(Role role, String variant, String roleName, Node node) {
+    if (StringUtils.isEmpty(variant)) {
+      return null;
+    }
+    for (RoleVariant roleVariant : role.getVariants()) {
+      if (StringUtils.equals(variant, roleVariant.getVariant())) {
+        return roleVariant;
+      }
+    }
+    throw new GeneratorException("Variant '" + variant + "' for role '" + roleName + "' "
+        + "from " + environmentName + "/" + node.getNode() + " does not exist.");
   }
 
   private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {

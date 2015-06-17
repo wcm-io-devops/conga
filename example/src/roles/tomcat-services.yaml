@@ -1,6 +1,6 @@
 variants:
-- services
-- importer
+- variant: services
+- variant: importer
 
 templateDir: tomcat
 
