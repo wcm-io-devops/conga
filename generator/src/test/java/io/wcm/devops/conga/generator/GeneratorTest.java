@@ -64,6 +64,9 @@ public class GeneratorTest {
     assertContains(text1, ContextProperties.NODE + ": node1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.ROLE + ": role1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.ROLE_VARIANT + ": variant1", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.NODES + ": node1,node2", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.NODES_BY_ROLE + ": node1,node2", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.NODES_BY_ROLE_VARIANT + ": node1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.TENANTS + ": tenant1,tenant2,tenant3", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.TENANTS_BY_ROLE + ": tenant1,tenant2", CharEncoding.ISO_8859_1);
 

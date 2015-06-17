@@ -31,12 +31,12 @@ public final class ContextProperties {
   }
 
   /**
-   * Node role name
+   * Current node role name
    */
   public static final String ROLE = "nodeRole";
 
   /**
-   * Role variant name
+   * Current node role variant name
    */
   public static final String ROLE_VARIANT = "nodeRoleVariant";
 
@@ -46,30 +46,49 @@ public final class ContextProperties {
   public static final String ENVIRONMENT = "environment";
 
   /**
-   * Node name
+   * Current node name
    */
   public static final String NODE = "node";
 
   /**
+   * List of all nodes.
+   * Each node has properties as defined in {@link io.wcm.devops.conga.model.environment.Node}.
+   */
+  public static final String NODES = "nodes";
+
+  /**
+   * Map with node roles with each entry containing a list of all nodes with this role.
+   * Each node has properties as defined in {@link io.wcm.devops.conga.model.environment.Node}.
+   */
+  public static final String NODES_BY_ROLE = "nodesByRole";
+
+  /**
+   * Map with node roles with each entry containing a map with node role variants each entry containing a list of all
+   * nodes with this role and variant.
+   * Each node has properties as defined in {@link io.wcm.devops.conga.model.environment.Node}.
+   */
+  public static final String NODES_BY_ROLE_VARIANT = "nodesByRoleVariant";
+
+  /**
    * List of all tenants.
-   * Each tenant has properties as defined in the {@link io.wcm.devops.conga.model.environment.Tenant} class.
+   * Each tenant has properties as defined in {@link io.wcm.devops.conga.model.environment.Tenant}.
    */
   public static final String TENANTS = "tenants";
 
   /**
    * Map with tenant roles with each entry containing a list of all tenants with this role.
-   * Each tenant has properties as defined in the {@link io.wcm.devops.conga.model.environment.Tenant} class.
+   * Each tenant has properties as defined in {@link io.wcm.devops.conga.model.environment.Tenant}.
    */
   public static final String TENANTS_BY_ROLE = "tenantsByRole";
 
   /**
-   * Tenant name.
+   * Current tenant name.
    * This is only set if the {@link io.wcm.devops.conga.generator.plugins.multiply.TenantMultiply} plugin is used.
    */
   public static final String TENANT = "tenant";
 
   /**
-   * List of tenant role names
+   * List of current tenant's role names
    * This is only set if the {@link io.wcm.devops.conga.generator.plugins.multiply.TenantMultiply} plugin is used.
    */
   public static final String TENANT_ROLES = "tenantRoles";

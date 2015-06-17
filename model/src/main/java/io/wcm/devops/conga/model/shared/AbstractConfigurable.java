@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Abstract {@link Configurable} implementation.
  */
-public abstract class AbstractConfigurable implements Configurable {
+public abstract class AbstractConfigurable implements Configurable, Cloneable {
 
   private Map<String, Object> config = new HashMap<>();
 

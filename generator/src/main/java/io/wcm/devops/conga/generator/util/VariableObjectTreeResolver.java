@@ -20,10 +20,8 @@
 package io.wcm.devops.conga.generator.util;
 
 import io.wcm.devops.conga.model.shared.Configurable;
-import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,55 +30,46 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Iterates over all {@link Configurable} items in the object tree.
- * Configuration from parent objects is inherited to client objects.
- * Variables are not resolved though, this is done during configuration generation process.
+ * Iterates over all {@link Configurable} items in the object tree
+ * and resolves all variables using {@link VariableMapResolver}.
  */
-public final class ConfigInheritanceResolver {
+public final class VariableObjectTreeResolver {
 
-  private ConfigInheritanceResolver() {
+  private VariableObjectTreeResolver() {
     // static methods only
   }
 
   /**
-   * Inherit all configurations.
-   * @param model Model with {@link Configurable} instances at any nested level.
+   * Resolve all variables.
+   * @param object Model with {@link Configurable} instances at any nested level.
    */
-  public static void resolve(Object model) {
-    resolve(model, new HashMap<>());
-  }
-
-  private static void resolve(Object object, Map<String, Object> parentConfig) {
+  public static void resolve(Object object) {
     if (object instanceof Map) {
       for (Object child : ((Map)object).values()) {
-        resolve(child, parentConfig);
+        resolve(child);
       }
       return;
     }
     if (object instanceof List) {
       for (Object child : (List)object) {
-        resolve(child, parentConfig);
+        resolve(child);
       }
       return;
     }
-    Map<String, Object> config;
     if (object instanceof Configurable) {
       Configurable configurable = (Configurable)object;
-      config = resolveConfigurable(configurable, parentConfig);
+      resolveConfigurable(configurable);
     }
-    else {
-      config = parentConfig;
-    }
-    resolveNestedObjects(object, config);
+    resolveNestedObjects(object);
   }
 
-  private static void resolveNestedObjects(Object model, Map<String, Object> parentConfig) {
+  private static void resolveNestedObjects(Object model) {
     try {
       Map<String, String> description = BeanUtils.describe(model);
       for (String propertyName : description.keySet()) {
         Object propertyValue = PropertyUtils.getProperty(model, propertyName);
         if (!StringUtils.equals(propertyName, "class")) {
-          resolve(propertyValue, parentConfig);
+          resolve(propertyValue);
         }
       }
     }
@@ -89,12 +78,9 @@ public final class ConfigInheritanceResolver {
     }
   }
 
-  private static Map<String, Object> resolveConfigurable(Configurable configurable, Map<String, Object> parentConfig) {
-    Map<String, Object> mergedConfig = MapMerger.merge(configurable.getConfig(), parentConfig);
-
-    configurable.setConfig(mergedConfig);
-
-    return mergedConfig;
+  private static void resolveConfigurable(Configurable configurable) {
+    Map<String, Object> resolvedconfig = VariableMapResolver.resolve(configurable.getConfig());
+    configurable.setConfig(resolvedconfig);
   }
 
 }
