@@ -79,7 +79,7 @@ public class GeneratorTest {
     assertContains(xml1tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
     assertContains(xml1tenant1, "<defaultString>value1 äöüß€</defaultString>");
     assertContains(xml1tenant1, "<globalString>globalValue äöüß€</globalString>");
-    assertContains(xml1tenant1, "<variableString>The v1</variableString>");
+    assertContains(xml1tenant1, "<variableString>The v1-role1-variant11</variableString>");
 
     File xml1tenant2 = assertFile(node1Dir, "xml/test.tenant2.tenantRole1.env1.xml");
     assertContains(xml1tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");

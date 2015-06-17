@@ -1,6 +1,9 @@
 variants:
-- variant11
-- variant12
+- variant: variant11
+  config:
+    var1: v1-role1-variant11
+- variant: variant12
+
 
 templateDir: role1
 
