@@ -19,11 +19,17 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.model.environment.Node;
+import io.wcm.devops.conga.model.environment.NodeRole;
+import io.wcm.devops.conga.model.environment.RoleConfig;
 import io.wcm.devops.conga.model.shared.Configurable;
 import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Iterates over all {@link Configurable} items in the object tree.
@@ -50,7 +56,41 @@ public final class ConfigInheritanceResolver extends AbstractConfigurableObjectT
    * @param model Model with {@link Configurable} instances at any nested level.
    */
   public static void resolve(Object model) {
+    if (model instanceof Environment) {
+      resolveEnvironment((Environment)model);
+    }
     new ConfigInheritanceResolver().process(model, PROCESSOR, new HashMap<>());
+  }
+
+  /**
+   * Special handling for environment objects concerning global role configuration.
+   * @param environment Environment
+   */
+  private static void resolveEnvironment(Environment environment) {
+    ConfigInheritanceResolver resolver = new ConfigInheritanceResolver();
+
+    Map<String, Object> rootConfig = environment.getConfig();
+    resolver.process(environment.getTenants(), PROCESSOR, rootConfig);
+    resolver.process(environment.getRoleConfig(), PROCESSOR, rootConfig);
+
+    for (Node node : environment.getNodes()) {
+      Map<String, Object> rawNodeConfig = node.getConfig();
+      PROCESSOR.process(node, rootConfig);
+      for (NodeRole nodeRole : node.getRoles()) {
+        Map<String, Object> globalRoleConfig = getGlobalRoleConfig(environment, nodeRole.getRole());
+        Map<String, Object> mergedConfig = MapMerger.merge(rawNodeConfig, MapMerger.merge(globalRoleConfig, rootConfig));
+        resolver.process(nodeRole, PROCESSOR, mergedConfig);
+      }
+    }
+  }
+
+  private static Map<String, Object> getGlobalRoleConfig(Environment environment, String roleName) {
+    for (RoleConfig roleConfig : environment.getRoleConfig()) {
+      if (StringUtils.equals(roleConfig.getRole(), roleName)) {
+        return roleConfig.getConfig();
+      }
+    }
+    return new HashMap<>();
   }
 
 }

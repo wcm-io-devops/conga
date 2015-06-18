@@ -103,8 +103,8 @@ class EnvironmentGenerator {
       RoleVariant roleVariant = getRoleVariant(role, variant, nodeRole.getRole(), node);
 
       // merge default values to config
-      Map<String, Object> baseConfig = roleVariant != null ? roleVariant.getConfig() : role.getConfig();
-      Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), baseConfig);
+      Map<String, Object> roleConfig = roleVariant != null ? roleVariant.getConfig() : role.getConfig();
+      Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), roleConfig);
 
       // additionally set context variables
       mergedConfig.putAll(environmentContextProperties);

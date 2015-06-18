@@ -21,40 +21,19 @@ package io.wcm.devops.conga.model.environment;
 
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Environment definition.
+ * Global role-specific configuration.
  */
-public final class Environment extends AbstractConfigurable {
+public final class RoleConfig extends AbstractConfigurable {
 
-  private List<Node> nodes = new ArrayList<>();
-  private List<RoleConfig> roleConfig = new ArrayList<>();
-  private List<Tenant> tenants = new ArrayList<>();
+  private String role;
 
-  public List<Node> getNodes() {
-    return this.nodes;
+  public String getRole() {
+    return this.role;
   }
 
-  public void setNodes(List<Node> nodes) {
-    this.nodes = nodes;
-  }
-
-  public List<RoleConfig> getRoleConfig() {
-    return this.roleConfig;
-  }
-
-  public void setRoleConfig(List<RoleConfig> roleConfig) {
-    this.roleConfig = roleConfig;
-  }
-
-  public List<Tenant> getTenants() {
-    return this.tenants;
-  }
-
-  public void setTenants(List<Tenant> tenants) {
-    this.tenants = tenants;
+  public void setRole(String role) {
+    this.role = role;
   }
 
 }
