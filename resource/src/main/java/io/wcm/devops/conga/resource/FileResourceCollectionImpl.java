@@ -28,12 +28,16 @@ import com.google.common.collect.ImmutableList;
 
 class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCollection {
 
-  public FileResourceCollectionImpl(String path) {
+  private final ResourceLoader resourceLoader;
+
+  public FileResourceCollectionImpl(String path, ResourceLoader resourceLoader) {
     super(path);
+    this.resourceLoader = resourceLoader;
   }
 
-  public FileResourceCollectionImpl(File file) {
+  public FileResourceCollectionImpl(File file, ResourceLoader resourceLoader) {
     super(file);
+    this.resourceLoader = resourceLoader;
   }
 
   @Override
@@ -44,7 +48,20 @@ class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCol
   }
 
   @Override
+  public Resource getResource(String path) {
+    return resourceLoader.getResource(this, path);
+  }
+
+  @Override
+  public ResourceCollection getResourceCollection(String path) {
+    return resourceLoader.getResourceCollection(this, path);
+  }
+
+  @Override
   public List<Resource> getResources() {
+    if (!exists()) {
+      return ImmutableList.of();
+    }
     return ImmutableList.copyOf(Arrays.stream(file.listFiles())
         .filter(child -> child.isFile())
         .map(child -> new FileResourceImpl(child))
@@ -53,9 +70,12 @@ class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCol
 
   @Override
   public List<ResourceCollection> getResourceCollections() {
+    if (!exists()) {
+      return ImmutableList.of();
+    }
     return ImmutableList.copyOf(Arrays.stream(file.listFiles())
         .filter(child -> child.isDirectory())
-        .map(child -> new FileResourceCollectionImpl(child))
+        .map(child -> new FileResourceCollectionImpl(child, resourceLoader))
         .collect(Collectors.toList()));
   }
 

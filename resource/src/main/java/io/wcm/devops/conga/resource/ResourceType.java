@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.resource;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -27,23 +28,23 @@ import java.util.function.Function;
 enum ResourceType {
 
   FILE(ResourceLoader.FILE_PREFIX,
-      path -> new FileResourceImpl(path),
-      path -> new FileResourceCollectionImpl(path),
+      (path, resourceLoader) -> new FileResourceImpl(path),
+      (path, resourceLoader) -> new FileResourceCollectionImpl(path, resourceLoader),
       resource -> resource instanceof AbstractFileResourceInfoImpl),
 
       CLASSPATH(ResourceLoader.CLASSPATH_PREFIX,
-          path -> new ClasspathResourceImpl(path),
-          path -> new ClasspathResourceCollectionImpl(path),
+          (path, resourceLoader) -> new ClasspathResourceImpl(path, resourceLoader),
+          (path, resourceLoader) -> new ClasspathResourceCollectionImpl(path, resourceLoader),
           resource -> resource instanceof AbstractClasspathResourceImpl);
 
   private final String prefix;
-  private final Function<String, Resource> resourceFactory;
-  private final Function<String, ResourceCollection> resourceCollectionFactory;
+  private final BiFunction<String, ResourceLoader, Resource> resourceFactory;
+  private final BiFunction<String, ResourceLoader, ResourceCollection> resourceCollectionFactory;
   private final Function<ResourceInfo, Boolean> resourceMatcher;
 
   private ResourceType(String prefix,
-      Function<String, Resource> resourceFactory,
-      Function<String, ResourceCollection> resourceCollectionFactory,
+      BiFunction<String, ResourceLoader, Resource> resourceFactory,
+      BiFunction<String, ResourceLoader, ResourceCollection> resourceCollectionFactory,
       Function<ResourceInfo, Boolean> resourceMatcher) {
     this.prefix = prefix;
     this.resourceFactory = resourceFactory;
@@ -56,12 +57,12 @@ enum ResourceType {
   }
 
   @SuppressWarnings("unchecked")
-  public <T extends ResourceInfo> T create(String path, Class<T> resourceClass) {
+  public <T extends ResourceInfo> T create(String path, Class<T> resourceClass, ResourceLoader resourceLoader) {
     if (resourceClass == Resource.class) {
-      return (T)resourceFactory.apply(path);
+      return (T)resourceFactory.apply(path, resourceLoader);
     }
     if (resourceClass == ResourceCollection.class) {
-      return (T)resourceCollectionFactory.apply(path);
+      return (T)resourceCollectionFactory.apply(path, resourceLoader);
     }
     throw new IllegalArgumentException("Class not supported: " + resourceClass.getName());
   }

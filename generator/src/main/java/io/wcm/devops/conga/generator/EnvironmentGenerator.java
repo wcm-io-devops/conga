@@ -37,8 +37,10 @@ import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -63,6 +65,7 @@ class EnvironmentGenerator {
   private final Logger log;
 
   private final Map<String, Object> environmentContextProperties;
+  private final Set<String> generatedFilePaths = new HashSet<>();
 
   public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
       File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager, Logger log) {
@@ -176,12 +179,16 @@ class EnvironmentGenerator {
 
   private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template) {
     File file = new File(nodeDir, FilenameUtils.concat(dir, fileName));
+    if (generatedFilePaths.contains(FileUtil.getCanonicalPath(file))) {
+      throw new GeneratorException("File was generated already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
+    }
     if (file.exists()) {
-      throw new GeneratorException("File exists already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
+      file.delete();
     }
     FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager, log);
     try {
       fileGenerator.generate();
+      generatedFilePaths.add(FileUtil.getCanonicalPath(file));
     }
     catch (ValidationException ex) {
       throw new GeneratorException("File validation failed " + FileUtil.getCanonicalPath(file) + " - " + ex.getMessage());

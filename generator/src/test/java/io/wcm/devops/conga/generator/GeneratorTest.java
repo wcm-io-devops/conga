@@ -33,6 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
+
 public class GeneratorTest {
 
   private Generator underTest;
@@ -41,12 +43,13 @@ public class GeneratorTest {
 
   @Before
   public void setUp() {
-    baseDir = ResourceLoader.getResourceCollection("src/test/definitions");
+    ResourceLoader resourceLoader = new ResourceLoader();
+    baseDir = resourceLoader.getResourceCollection("src/test/definitions");
     destDir = new File("target/generation-test");
     underTest = new Generator(
-        ResourceLoader.getResourceCollection(baseDir, "roles"),
-        ResourceLoader.getResourceCollection(baseDir, "environments"),
-        ResourceLoader.getResourceCollection(baseDir, "templates"),
+        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")),
+        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")),
+        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")),
         destDir);
   }
 

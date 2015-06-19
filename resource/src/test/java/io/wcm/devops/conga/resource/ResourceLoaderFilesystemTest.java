@@ -30,15 +30,25 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
 
 public class ResourceLoaderFilesystemTest {
 
   private static final String ROOT = "src/test/resources/test-files";
 
+  private ResourceLoader underTest;
+
+  @Before
+  public void setUp() {
+    underTest = new ResourceLoader();
+  }
+
   @Test
   public void testResource() throws Exception {
-    Resource resource = ResourceLoader.getResource(FILE_PREFIX + ROOT + "/folder1/file1.txt");
+    Resource resource = underTest.getResource(FILE_PREFIX + ROOT + "/folder1/file1.txt");
 
     assertTrue(resource.exists());
     assertEquals("file1.txt", resource.getName());
@@ -56,7 +66,7 @@ public class ResourceLoaderFilesystemTest {
 
   @Test
   public void testResourceCollection() throws Exception {
-    ResourceCollection col = ResourceLoader.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
+    ResourceCollection col = underTest.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
 
     assertTrue(col.exists());
     assertEquals("folder1", col.getName());
@@ -80,37 +90,45 @@ public class ResourceLoaderFilesystemTest {
 
   @Test
   public void testResourceAutoDetect() throws Exception {
-    Resource resource = ResourceLoader.getResource(ROOT + "/folder1/file1.txt");
+    Resource resource = underTest.getResource(ROOT + "/folder1/file1.txt");
     assertTrue(resource.exists());
     assertEquals("file1.txt", resource.getName());
   }
 
   @Test
   public void testNonExistingResource() throws Exception {
-    Resource resource = ResourceLoader.getResource(FILE_PREFIX + ROOT + "/folder1/invalid.txt");
+    Resource resource = underTest.getResource(FILE_PREFIX + ROOT + "/folder1/invalid.txt");
     assertFalse(resource.exists());
     assertTrue(resource instanceof FileResourceImpl);
   }
 
   @Test
   public void testNonExistingResourceAutoDetect() throws Exception {
-    Resource resource = ResourceLoader.getResource(ROOT + "/folder1/invalid.txt");
+    Resource resource = underTest.getResource(ROOT + "/folder1/invalid.txt");
     assertFalse(resource.exists());
     assertTrue(resource instanceof FileResourceImpl);
   }
 
   @Test
+  public void testNonExistingResourceCollection() throws Exception {
+    ResourceCollection col = underTest.getResourceCollection(FILE_PREFIX + ROOT + "/invalidFolder");
+    assertFalse(col.exists());
+    assertEquals(ImmutableList.of(), col.getResources());
+    assertEquals(ImmutableList.of(), col.getResourceCollections());
+  }
+
+  @Test
   public void testResourceByParentFolder() throws Exception {
-    ResourceCollection col = ResourceLoader.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
-    Resource resource = ResourceLoader.getResource(col, "folder2/file3.txt");
+    ResourceCollection col = underTest.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
+    Resource resource = underTest.getResource(col, "folder2/file3.txt");
     assertTrue(resource.exists());
     assertEquals("file3.txt", resource.getName());
   }
 
   @Test
   public void testResourceCollectionByParentFolder() throws Exception {
-    ResourceCollection colParent = ResourceLoader.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
-    ResourceCollection col = ResourceLoader.getResourceCollection(colParent, "folder2");
+    ResourceCollection colParent = underTest.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
+    ResourceCollection col = underTest.getResourceCollection(colParent, "folder2");
     assertTrue(col.exists());
     assertEquals("folder2", col.getName());
   }

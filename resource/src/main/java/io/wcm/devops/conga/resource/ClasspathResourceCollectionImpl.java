@@ -35,13 +35,15 @@ class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl impl
 
   private final List<URL> fileUrls = new ArrayList<>();
   private final List<String> folderPaths = new ArrayList<>();
+  private final ResourceLoader resourceLoader;
 
-  public ClasspathResourceCollectionImpl(String path) {
-    super(path);
+  public ClasspathResourceCollectionImpl(String path, ResourceLoader resourceLoader) {
+    super(path, resourceLoader.getClassLoader());
+    this.resourceLoader = resourceLoader;
 
     try {
       PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(this.classLoader);
-      org.springframework.core.io.Resource[] classpathResources = resolver.getResources(convertPath(path) + "/*");
+      org.springframework.core.io.Resource[] classpathResources = resolver.getResources("classpath:" + convertPath(path) + "/*");
       for (org.springframework.core.io.Resource resource : classpathResources) {
         if (isFolder(resource)) {
           folderPaths.add(path + "/" + resource.getFilename());
@@ -69,16 +71,26 @@ class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl impl
   }
 
   @Override
+  public Resource getResource(String childPath) {
+    return resourceLoader.getResource(this, childPath);
+  }
+
+  @Override
+  public ResourceCollection getResourceCollection(String childPath) {
+    return resourceLoader.getResourceCollection(this, childPath);
+  }
+
+  @Override
   public List<Resource> getResources() {
     return ImmutableList.copyOf(fileUrls.stream()
-        .map(url -> new ClasspathResourceImpl(url))
+        .map(url -> new ClasspathResourceImpl(url, resourceLoader))
         .collect(Collectors.toList()));
   }
 
   @Override
   public List<ResourceCollection> getResourceCollections() {
     return ImmutableList.copyOf(folderPaths.stream()
-        .map(folderPath -> new ClasspathResourceCollectionImpl(folderPath))
+        .map(folderPath -> new ClasspathResourceCollectionImpl(folderPath, resourceLoader))
         .collect(Collectors.toList()));
   }
 

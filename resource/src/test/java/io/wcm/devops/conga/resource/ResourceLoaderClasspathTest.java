@@ -29,15 +29,25 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.CharEncoding;
+import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
 
 public class ResourceLoaderClasspathTest {
 
   private static final String ROOT = "/test-files";
 
+  private ResourceLoader underTest;
+
+  @Before
+  public void setUp() {
+    underTest = new ResourceLoader();
+  }
+
   @Test
   public void testResource() throws Exception {
-    Resource resource = ResourceLoader.getResource(CLASSPATH_PREFIX + ROOT + "/folder1/file1.txt");
+    Resource resource = underTest.getResource(CLASSPATH_PREFIX + ROOT + "/folder1/file1.txt");
 
     assertTrue(resource.exists());
     assertEquals("file1.txt", resource.getName());
@@ -54,7 +64,7 @@ public class ResourceLoaderClasspathTest {
 
   @Test
   public void testResourceCollection() throws Exception {
-    ResourceCollection col = ResourceLoader.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
+    ResourceCollection col = underTest.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
 
     assertTrue(col.exists());
     assertEquals("folder1", col.getName());
@@ -77,7 +87,7 @@ public class ResourceLoaderClasspathTest {
 
   @Test
   public void testResourceAutoDetect() throws Exception {
-    Resource resource = ResourceLoader.getResource(ROOT + "/folder1/file1.txt");
+    Resource resource = underTest.getResource(ROOT + "/folder1/file1.txt");
 
     assertTrue(resource.exists());
     assertEquals("file1.txt", resource.getName());
@@ -93,24 +103,46 @@ public class ResourceLoaderClasspathTest {
 
   @Test
   public void testNonExistingResource() throws Exception {
-    Resource resource = ResourceLoader.getResource(CLASSPATH_PREFIX + ROOT + "/folder1/invalid.txt");
+    Resource resource = underTest.getResource(CLASSPATH_PREFIX + ROOT + "/folder1/invalid.txt");
     assertFalse(resource.exists());
     assertTrue(resource instanceof ClasspathResourceImpl);
   }
 
   @Test
+  public void testNonExistingResourceCollection() throws Exception {
+    ResourceCollection col = underTest.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/invalidFolder");
+    assertFalse(col.exists());
+    assertEquals(ImmutableList.of(), col.getResources());
+    assertEquals(ImmutableList.of(), col.getResourceCollections());
+  }
+
+  @Test
   public void testResourceByParentFolder() throws Exception {
-    ResourceCollection col = ResourceLoader.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
-    Resource resource = ResourceLoader.getResource(col, "folder2/file3.txt");
+    ResourceCollection col = underTest.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
+    Resource resource = underTest.getResource(col, "folder2/file3.txt");
     assertTrue(resource.exists());
     assertEquals("file3.txt", resource.getName());
   }
 
   @Test
   public void testResourceCollectionByParentFolder() throws Exception {
-    ResourceCollection colParent = ResourceLoader.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
-    ResourceCollection col = ResourceLoader.getResourceCollection(colParent, "folder2");
+    ResourceCollection colParent = underTest.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
+    ResourceCollection col = underTest.getResourceCollection(colParent, "folder2");
     assertTrue(col.exists());
     assertEquals("folder2", col.getName());
   }
+
+  @Test
+  public void testResourceFromExternalJar() throws Exception {
+    Resource resource = underTest.getResource(CLASSPATH_PREFIX + "/META-INF/maven/org.apache.commons/commons-lang3/pom.xml");
+    assertTrue(resource.exists());
+  }
+
+  @Test
+  public void testResourceCollectionFromExternalJar() throws Exception {
+    ResourceCollection col = underTest.getResourceCollection(CLASSPATH_PREFIX + "/META-INF/maven/org.apache.commons/commons-lang3");
+    assertTrue(col.exists());
+    assertEquals(2, col.getResources().size());
+  }
+
 }

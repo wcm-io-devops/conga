@@ -24,44 +24,29 @@ import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Generates configuration using CONGA generator.
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresProject = true, threadSafe = true)
-public class GenerateMojo extends AbstractMojo {
-
-  /**
-   * Source path with templates.
-   */
-  @Parameter(defaultValue = "${basedir}/src/templates")
-  private String templateDir;
-
-  /**
-   * Source path with role definitions.
-   */
-  @Parameter(defaultValue = "${basedir}/src/roles")
-  private String roleDir;
-
-  /**
-   * Source path with environment definitions.
-   */
-  @Parameter(defaultValue = "${basedir}/src/environments")
-  private String environmentDir;
-
-  /**
-   * Target path for the generated configuration files.
-   */
-  @Parameter(defaultValue = "${project.build.directory}/configuration")
-  private String target;
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresProject = true, threadSafe = true,
+requiresDependencyResolution = ResolutionScope.COMPILE)
+public class GenerateMojo extends AbstractCongaMojo {
 
   /**
    * Selected environments to generate.
@@ -78,17 +63,47 @@ public class GenerateMojo extends AbstractMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
+  private ResourceLoader resourceLoader;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    ResourceCollection templateDirectory = ResourceLoader.getResourceCollection(templateDir);
-    ResourceCollection roleDirecotry = ResourceLoader.getResourceCollection(roleDir);
-    ResourceCollection environmentDirecotry = ResourceLoader.getResourceCollection(environmentDir);
-    File targetDirecotry = new File(target);
+    resourceLoader = new ResourceLoader(buildDependencyClassLoader());
 
-    Generator generator = new Generator(roleDirecotry, environmentDirecotry, templateDirectory, targetDirecotry);
+    List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ROLES_DIR));
+    List<ResourceCollection> templateDirs = ImmutableList.of(getTemplateDir(),
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.TEMPLATES_DIR));
+    List<ResourceCollection> environmentDirs = ImmutableList.of(getEnvironmentDir(),
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ENVIRONMENTS_DIR));
+
+    Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
     generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
     generator.generate(environments);
+  }
+
+  /**
+   * Build class loader from dependency of current maven project - to allow referencing definitions
+   * from artifacts build with "conga-definition" package type.
+   * @return Class loader
+   * @throws MojoExecutionException
+   */
+  private ClassLoader buildDependencyClassLoader() throws MojoExecutionException {
+    try {
+      List<URL> classLoaderUrls = new ArrayList<>();
+      for (String path : project.getCompileClasspathElements()) {
+        classLoaderUrls.add(new File(path).toURI().toURL());
+      }
+      return new URLClassLoader(classLoaderUrls.toArray(new URL[classLoaderUrls.size()]));
+    }
+    catch (MalformedURLException | DependencyResolutionRequiredException ex) {
+      throw new MojoExecutionException("Unable to get classpath elements for class loader.", ex);
+    }
+  }
+
+  @Override
+  protected ResourceLoader getResourceLoader() {
+    return resourceLoader;
   }
 
 }

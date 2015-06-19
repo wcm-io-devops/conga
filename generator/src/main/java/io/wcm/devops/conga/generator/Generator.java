@@ -34,6 +34,7 @@ import io.wcm.devops.conga.resource.ResourceCollection;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -57,17 +58,17 @@ public final class Generator {
   private boolean deleteBeforeGenerate;
 
   /**
-   * @param roleDir Directory with role definitions. Filename without extension = role name.
-   * @param environmentDir Directory with environment definitions. Filename without extension = environment name.
-   * @param templateDir Template base directory
+   * @param roleDirs Directories with role definitions. Filename without extension = role name.
+   * @param templateDirs Template base directories
+   * @param environmentDirs Directories with environment definitions. Filename without extension = environment name.
    * @param destDir Destination directory for generated file
    */
-  public Generator(ResourceCollection roleDir, ResourceCollection environmentDir, ResourceCollection templateDir, File destDir) {
+  public Generator(List<ResourceCollection> roleDirs, List<ResourceCollection> templateDirs, List<ResourceCollection> environmentDirs, File destDir) {
     this.pluginManager = new PluginManager();
-    this.roles = readModels(roleDir, new RoleReader());
-    this.environments = readModels(environmentDir, new EnvironmentReader());
+    this.roles = readModels(roleDirs, new RoleReader());
+    this.environments = readModels(environmentDirs, new EnvironmentReader());
     this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);
-    this.handlebarsManager = new HandlebarsManager(FileUtil.ensureDirExists(templateDir));
+    this.handlebarsManager = new HandlebarsManager(templateDirs);
   }
 
   /**
@@ -85,20 +86,19 @@ public final class Generator {
     this.deleteBeforeGenerate = deleteBeforeGenerate;
   }
 
-  private static <T> Map<String, T> readModels(ResourceCollection dir, ModelReader<T> reader) {
-    if (!dir.exists()) {
-      throw new IllegalArgumentException("Expected directory: " + dir.getCanonicalPath());
-    }
+  private static <T> Map<String, T> readModels(List<ResourceCollection> dirs, ModelReader<T> reader) {
     Map<String, T> models = new HashMap<>();
-    for (Resource file : dir.getResources()) {
-      if (reader.accepts(file)) {
-        try {
-          T model = reader.read(file);
-          ConfigInheritanceResolver.resolve(model);
-          models.put(FilenameUtils.getBaseName(file.getName()), model);
-        }
-        catch (Throwable ex) {
-          throw new GeneratorException("Unable to read definition: " + file.getCanonicalPath(), ex);
+    for (ResourceCollection dir : dirs) {
+      for (Resource file : dir.getResources()) {
+        if (reader.accepts(file)) {
+          try {
+            T model = reader.read(file);
+            ConfigInheritanceResolver.resolve(model);
+            models.put(FilenameUtils.getBaseName(file.getName()), model);
+          }
+          catch (Throwable ex) {
+            throw new GeneratorException("Unable to read definition: " + file.getCanonicalPath(), ex);
+          }
         }
       }
     }

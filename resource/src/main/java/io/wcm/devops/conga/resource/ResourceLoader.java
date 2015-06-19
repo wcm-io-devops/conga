@@ -40,8 +40,20 @@ public final class ResourceLoader {
    */
   public static final String CLASSPATH_PREFIX = "classpath:";
 
-  private ResourceLoader() {
-    // static methods only
+  private final ClassLoader classLoader;
+
+  /**
+   * Constructor.
+   */
+  public ResourceLoader() {
+    this(ResourceLoader.class.getClassLoader());
+  }
+
+  /**
+   * @param classLoader Class loader
+   */
+  public ResourceLoader(ClassLoader classLoader) {
+    this.classLoader = classLoader;
   }
 
   /**
@@ -49,7 +61,7 @@ public final class ResourceLoader {
    * @param path Path
    * @return Resource or null if not found
    */
-  public static Resource getResource(String path) {
+  public Resource getResource(String path) {
     return getResource(path, Resource.class);
   }
 
@@ -59,7 +71,7 @@ public final class ResourceLoader {
    * @param path Resource path relative to parent directory
    * @return Resource or null if not found
    */
-  public static Resource getResource(ResourceCollection dir, String path) {
+  public Resource getResource(ResourceCollection dir, String path) {
     return getResource(getPrefix(dir) + dir.getPath() + "/" + path);
   }
 
@@ -68,7 +80,7 @@ public final class ResourceLoader {
    * @param path Path
    * @return Resource or null if not found
    */
-  public static ResourceCollection getResourceCollection(String path) {
+  public ResourceCollection getResourceCollection(String path) {
     return getResource(path, ResourceCollection.class);
   }
 
@@ -78,7 +90,7 @@ public final class ResourceLoader {
    * @param path Resource path relative to parent directory
    * @return Resource or null if not found
    */
-  public static ResourceCollection getResourceCollection(ResourceCollection dir, String path) {
+  public ResourceCollection getResourceCollection(ResourceCollection dir, String path) {
     return getResource(getPrefix(dir) + dir.getPath() + "/" + path, ResourceCollection.class);
   }
 
@@ -88,11 +100,11 @@ public final class ResourceLoader {
    * @param resourceClass Resource class
    * @return Resource instance
    */
-  private static <T extends ResourceInfo> T getResource(String path, Class<T> resourceClass) {
+  private <T extends ResourceInfo> T getResource(String path, Class<T> resourceClass) {
     List<ResourceType> resourceTypes = getSupportedResourceTypes(path);
     T firstResource = null;
     for (ResourceType resourceType : resourceTypes) {
-      T resource = resourceType.create(removePrefix(path), resourceClass);
+      T resource = resourceType.create(removePrefix(path), resourceClass, this);
       if (resource.exists()) {
         return resource;
       }
@@ -108,7 +120,7 @@ public final class ResourceLoader {
    * @param path Path
    * @return Supported resource types
    */
-  private static List<ResourceType> getSupportedResourceTypes(String path) {
+  private List<ResourceType> getSupportedResourceTypes(String path) {
 
     // check for explicit path specification
     for (ResourceType resourceType : ResourceType.values()) {
@@ -119,6 +131,10 @@ public final class ResourceLoader {
 
     // otherwise check all resource types in order of definition in enum
     return ImmutableList.copyOf(ResourceType.values());
+  }
+
+  ClassLoader getClassLoader() {
+    return classLoader;
   }
 
   /**

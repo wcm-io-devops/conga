@@ -24,8 +24,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import org.apache.commons.io.FilenameUtils;
-
 class FileResourceImpl extends AbstractFileResourceInfoImpl implements Resource {
 
   public FileResourceImpl(String path) {
@@ -41,11 +39,6 @@ class FileResourceImpl extends AbstractFileResourceInfoImpl implements Resource 
     if (file.exists() && !this.file.isFile()) {
       throw new IllegalArgumentException("File is not a file but a directory: " + file.getPath());
     }
-  }
-
-  @Override
-  public String getFileExtension() {
-    return FilenameUtils.getExtension(getName());
   }
 
   @Override

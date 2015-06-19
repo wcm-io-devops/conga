@@ -27,6 +27,20 @@ import java.util.List;
 public interface ResourceCollection extends ResourceInfo {
 
   /**
+   * Get child resource.
+   * @param path Resource path relative to resource collection
+   * @return Resource or null if not found
+   */
+  Resource getResource(String path);
+
+  /**
+   * Get child resource collection.
+   * @param path Resource path relative to resource collection
+   * @return Resource collection or null if not found
+   */
+  ResourceCollection getResourceCollection(String path);
+
+  /**
    * @return Resources in this collections.
    */
   List<Resource> getResources();
