@@ -21,12 +21,15 @@ package io.wcm.devops.conga.tooling.maven.plugin;
 
 import io.wcm.devops.conga.resource.ResourceLoader;
 
+import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.zeroturnaround.zip.ZipUtil;
 
 /**
  * Packages the generated configurations in a ZIP file.
@@ -43,7 +46,15 @@ public class PackageMojo extends AbstractCongaMojo {
   public void execute() throws MojoExecutionException, MojoFailureException {
     resourceLoader = new ResourceLoader();
 
-    // TODO: implement
+    File configRootDir = getTargetDir();
+    File outputFile = new File(project.getBuild().getDirectory(), project.getBuild().getFinalName() + ".zip");
+    outputFile.getParentFile().mkdirs();
+
+    getLog().info("Package " + outputFile.getName());
+
+    ZipUtil.pack(configRootDir, outputFile);
+
+    project.getArtifact().setFile(outputFile);
   }
 
   @Override

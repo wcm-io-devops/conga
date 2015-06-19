@@ -45,7 +45,7 @@ import com.google.common.collect.ImmutableList;
  * Generates configuration using CONGA generator.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, threadSafe = true,
-    requiresDependencyResolution = ResolutionScope.COMPILE)
+requiresDependencyResolution = ResolutionScope.COMPILE)
 public class GenerateMojo extends AbstractCongaMojo {
 
   /**
@@ -70,11 +70,11 @@ public class GenerateMojo extends AbstractCongaMojo {
     resourceLoader = new ResourceLoader(buildDependencyClassLoader());
 
     List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + "/" + DefinitionPreparePackageMojo.ROLES_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ROLES_DIR));
     List<ResourceCollection> templateDirs = ImmutableList.of(getTemplateDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + "/" + DefinitionPreparePackageMojo.TEMPLATES_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.TEMPLATES_DIR));
     List<ResourceCollection> environmentDirs = ImmutableList.of(getEnvironmentDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + "/" + DefinitionPreparePackageMojo.ENVIRONMENTS_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ENVIRONMENTS_DIR));
 
     Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
@@ -82,6 +82,12 @@ public class GenerateMojo extends AbstractCongaMojo {
     generator.generate(environments);
   }
 
+  /**
+   * Build class loader from dependency of current maven project - to allow referencing definitions
+   * from artifacts build with "conga-definition" package type.
+   * @return Class loader
+   * @throws MojoExecutionException
+   */
   private ClassLoader buildDependencyClassLoader() throws MojoExecutionException {
     try {
       List<URL> classLoaderUrls = new ArrayList<>();

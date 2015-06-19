@@ -88,6 +88,14 @@ public class DefinitionPreparePackageMojo extends AbstractCongaMojo {
     }
   }
 
+  /**
+   * Copy definitions and template files to classes folder to include them in JAR artifacte.
+   * @param sourceDir Definition/Template source folder
+   * @param rootOutputDir Classes root folder
+   * @param parentTargetDir Parent target folder within classes folder
+   * @param dirName Directory name
+   * @throws IOException
+   */
   private void copyDefinitions(ResourceCollection sourceDir, File rootOutputDir, File parentTargetDir, String dirName) throws IOException {
     if (!sourceDir.exists()) {
       return;

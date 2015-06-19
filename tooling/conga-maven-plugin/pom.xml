@@ -66,6 +66,13 @@
       <artifactId>maven-plugin-annotations</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.zeroturnaround</groupId>
+      <artifactId>zt-zip</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
 
   <dependencyManagement>
