@@ -19,8 +19,6 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
-import io.wcm.devops.conga.generator.Generator;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -29,32 +27,17 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 /**
- * Generates configuration using CONGA generator.
+ * Packages the generated configurations in a ZIP file.
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresProject = true, threadSafe = true)
-public class GenerateMojo extends AbstractCongaMojo {
-
-  /**
-   * Selected environments to generate.
-   */
-  @Parameter
-  private String[] environments;
-
-  /**
-   * Delete folders of environments before generating the new files.
-   */
-  @Parameter(defaultValue = "false")
-  private boolean deleteBeforeGenerate;
+@Mojo(name = "config-package", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
+public class ConfigPackageMojo extends AbstractCongaMojo {
 
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    Generator generator = new Generator(getRoleDir(), getEnvironmentDir(), getTemplateDir(), getTargetDir());
-    generator.setLogger(new MavenSlf4jLogFacade(getLog()));
-    generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
-    generator.generate(environments);
+    // TODO: implement
   }
 
 }
