@@ -30,8 +30,7 @@
           <lifecycle>
             <id>default</id>
             <phases>
-              <prepare-package>io.wcm.devops.conga:conga-maven-plugin:definition-prepare-package</prepare-package>
-              <package>org.apache.maven.plugins:maven-jar-plugin:jar</package>
+              <package>io.wcm.devops.conga:conga-maven-plugin:definition-package</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>
               <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
             </phases>

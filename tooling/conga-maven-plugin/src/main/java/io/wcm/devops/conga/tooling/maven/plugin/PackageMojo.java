@@ -60,10 +60,11 @@ public class PackageMojo extends AbstractCongaMojo {
         project.getBuild().getFinalName() + "." + FILE_EXTENSION_CONFIGURATION);
     outputFile.getParentFile().mkdirs();
 
+    // pack generated configuration in ZIP file
     getLog().info("Package " + outputFile.getName());
-
     ZipUtil.pack(configRootDir, outputFile);
 
+    // set or attach ZIP artifact
     if (StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
       project.getArtifact().setFile(outputFile);
     }

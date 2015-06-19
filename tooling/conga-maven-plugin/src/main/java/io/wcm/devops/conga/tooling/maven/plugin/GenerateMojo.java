@@ -70,11 +70,11 @@ public class GenerateMojo extends AbstractCongaMojo {
     resourceLoader = new ResourceLoader(buildDependencyClassLoader());
 
     List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ROLES_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPackageMojo.ROLES_DIR));
     List<ResourceCollection> templateDirs = ImmutableList.of(getTemplateDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.TEMPLATES_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPackageMojo.TEMPLATES_DIR));
     List<ResourceCollection> environmentDirs = ImmutableList.of(getEnvironmentDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ENVIRONMENTS_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPackageMojo.ENVIRONMENTS_DIR));
 
     Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
