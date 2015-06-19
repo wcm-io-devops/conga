@@ -48,7 +48,7 @@
           <lifecycle>
             <id>default</id>
             <phases>
-              <prepare-package>io.wcm.devops.conga:conga-maven-plugin:generate</prepare-package>
+              <generate-resources>io.wcm.devops.conga:conga-maven-plugin:generate</generate-resources>
               <package>io.wcm.devops.conga:conga-maven-plugin:package</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>
               <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>

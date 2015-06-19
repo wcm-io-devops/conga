@@ -44,7 +44,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Generates configuration using CONGA generator.
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, threadSafe = true,
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresProject = true, threadSafe = true,
 requiresDependencyResolution = ResolutionScope.COMPILE)
 public class GenerateMojo extends AbstractCongaMojo {
 
