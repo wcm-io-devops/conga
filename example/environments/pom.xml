@@ -25,17 +25,28 @@
   
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
-    <artifactId>io.wcm.devops.conga.example.packaging</artifactId>
+    <artifactId>io.wcm.devops.conga.example</artifactId>
     <version>1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
   <groupId>io.wcm.devops.conga</groupId>
-  <artifactId>io.wcm.devops.conga.example.packaging.definitions</artifactId>
-  <packaging>conga-definition</packaging>
+  <artifactId>io.wcm.devops.conga.example.environments</artifactId>
+  <packaging>conga-configuration</packaging>
   <version>1-SNAPSHOT</version>
 
-  <name>CONGA Packaging Example: Definitions</name>
-  <description>Example role definitions and templates.</description>
+  <name>CONGA Packaging Example: Environments</name>
+  <description>Contains environment definitions and generates the configuration.</description>
+  
+  <dependencies>
+  
+    <!-- Reference role and template definitions from maven artifact -->
+    <dependency>
+      <groupId>io.wcm.devops.conga</groupId>
+      <artifactId>io.wcm.devops.conga.example.definitions</artifactId>
+      <version>1-SNAPSHOT</version>
+    </dependency>
+
+  </dependencies>
   
 </project>
