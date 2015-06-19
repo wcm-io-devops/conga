@@ -30,6 +30,13 @@ nodes:
   - role: webserver
 
 
+# Role-specific global configuration
+roleConfig:
+- role: role1
+  config:
+    var1: v1
+
+
 # Global configuration
 config:
   # It is possible to use a shortcut definition for nested maps.

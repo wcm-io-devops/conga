@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
+import io.wcm.devops.conga.model.environment.RoleConfig;
 import io.wcm.devops.conga.model.environment.Tenant;
 
 import java.io.IOException;
@@ -51,6 +52,7 @@ public class EnvironmentReaderTest {
   @Test
   public void testEnvironment() {
     assertEquals(4, environment.getNodes().size());
+    assertEquals(1, environment.getRoleConfig().size());
     assertEquals(2, environment.getTenants().size());
 
     assertEquals(ImmutableMap.of(
@@ -81,6 +83,15 @@ public class EnvironmentReaderTest {
     assertEquals("importer", role.getVariant());
 
     assertEquals(ImmutableMap.of("topologyConnectors", ImmutableList.of("http://host3${topologyConnectorPath}")), role.getConfig());
+  }
+
+  @Test
+  public void testRoleConfig() {
+    RoleConfig roleConfig = environment.getRoleConfig().get(0);
+
+    assertEquals("tomcat-backendconnector", roleConfig.getRole());
+
+    assertEquals(ImmutableMap.of("jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "1024m"))), roleConfig.getConfig());
   }
 
   @Test

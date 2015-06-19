@@ -57,13 +57,16 @@ public class GeneratorTest {
     File text1 = assertFile(node1Dir, "text/test-role1.variant11.env1.node1.txt");
     assertContains(text1, "textfile äöüß with ISO-8859-1 encoding", CharEncoding.ISO_8859_1);
     assertContains(text1, "defaultString: value1 äöüß", CharEncoding.ISO_8859_1);
-    assertContains(text1, "globalString: globalValue äöüß", CharEncoding.ISO_8859_1);
+    assertContains(text1, "globalString: globalFromRole1", CharEncoding.ISO_8859_1);
     assertContains(text1, "variableString: The v1", CharEncoding.ISO_8859_1);
 
     assertContains(text1, ContextProperties.ENVIRONMENT + ": env1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.NODE + ": node1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.ROLE + ": role1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.ROLE_VARIANT + ": variant1", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.NODES + ": node1,node2", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.NODES_BY_ROLE + ": node1,node2", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.NODES_BY_ROLE_VARIANT + ": node1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.TENANTS + ": tenant1,tenant2,tenant3", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.TENANTS_BY_ROLE + ": tenant1,tenant2", CharEncoding.ISO_8859_1);
 
@@ -76,7 +79,7 @@ public class GeneratorTest {
     assertContains(xml1tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
     assertContains(xml1tenant1, "<defaultString>value1 äöüß€</defaultString>");
     assertContains(xml1tenant1, "<globalString>globalValue äöüß€</globalString>");
-    assertContains(xml1tenant1, "<variableString>The v1</variableString>");
+    assertContains(xml1tenant1, "<variableString>The v1-role1-variant11</variableString>");
 
     File xml1tenant2 = assertFile(node1Dir, "xml/test.tenant2.tenantRole1.env1.xml");
     assertContains(xml1tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");

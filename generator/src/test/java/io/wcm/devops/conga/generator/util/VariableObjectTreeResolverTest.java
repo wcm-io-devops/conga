@@ -32,7 +32,8 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-public class ConfigInheritanceResolverTest {
+
+public class VariableObjectTreeResolverTest {
 
   @Test
   public void testResolve() {
@@ -69,37 +70,37 @@ public class ConfigInheritanceResolverTest {
     sample.setSimple(simple2);
     scope1.setSample(sample);
 
-    scope1.setConfig(ImmutableMap.of("conf", "s1"));
+    scope1.setConfig(ImmutableMap.of("var1", "v1", "conf", "${var1}"));
 
-    scope21.setConfig(ImmutableMap.of("conf2", "s21"));
+    scope21.setConfig(ImmutableMap.of("var21", "v21", "conf21", "${var21}"));
 
-    scope22.setConfig(ImmutableMap.of("conf", "s22"));
+    scope22.setConfig(ImmutableMap.of("var22", "v22", "conf22", "${var22}"));
 
-    scope31.setConfig(ImmutableMap.of("conf2", "s31"));
+    scope31.setConfig(ImmutableMap.of("var31", "v31", "conf31", "${var31}"));
 
-    scope32.setConfig(ImmutableMap.of("conf3", "s32"));
+    scope32.setConfig(ImmutableMap.of("var32", "v32", "conf32", "${var32}"));
 
-    simple1.setConfig(ImmutableMap.of("conf", "simple1"));
+    simple1.setConfig(ImmutableMap.of("varS1", "vS1", "confS1", "${varS1}"));
 
-    simple2.setConfig(ImmutableMap.of("conf2", "simple2"));
-
-
-    ConfigInheritanceResolver.resolve(root);
+    simple2.setConfig(ImmutableMap.of("varS2", "vS2", "confS2", "${varS2}"));
 
 
-    assertEquals(ImmutableMap.of("conf", "s1"), scope1.getConfig());
+    VariableObjectTreeResolver.resolve(root);
 
-    assertEquals(ImmutableMap.of("conf", "s1", "conf2", "s21"), scope21.getConfig());
 
-    assertEquals(ImmutableMap.of("conf", "s22"), scope22.getConfig());
+    assertEquals(ImmutableMap.of("var1", "v1", "conf", "v1"), scope1.getConfig());
 
-    assertEquals(ImmutableMap.of("conf", "s1", "conf2", "s31"), scope31.getConfig());
+    assertEquals(ImmutableMap.of("var21", "v21", "conf21", "v21"), scope21.getConfig());
 
-    assertEquals(ImmutableMap.of("conf", "s1", "conf2", "s21", "conf3", "s32"), scope32.getConfig());
+    assertEquals(ImmutableMap.of("var22", "v22", "conf22", "v22"), scope22.getConfig());
 
-    assertEquals(ImmutableMap.of("conf", "simple1"), simple1.getConfig());
+    assertEquals(ImmutableMap.of("var31", "v31", "conf31", "v31"), scope31.getConfig());
 
-    assertEquals(ImmutableMap.of("conf", "s1", "conf2", "simple2"), simple2.getConfig());
+    assertEquals(ImmutableMap.of("var32", "v32", "conf32", "v32"), scope32.getConfig());
+
+    assertEquals(ImmutableMap.of("varS1", "vS1", "confS1", "vS1"), simple1.getConfig());
+
+    assertEquals(ImmutableMap.of("varS2", "vS2", "confS2", "vS2"), simple2.getConfig());
   }
 
 }

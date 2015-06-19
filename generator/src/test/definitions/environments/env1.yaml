@@ -16,6 +16,13 @@ nodes:
       defaultString: defaultFromNode2Role1
 
 
+# Role-specific global configuration
+roleConfig:
+- role: role1
+  config:
+    globalString: globalFromRole1
+
+
 # Global configuration
 config:
   globalString: globalValue äöüß€

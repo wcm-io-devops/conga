@@ -29,7 +29,7 @@ import org.apache.commons.lang3.CharEncoding;
 /**
  * File definition.
  */
-public final class RoleFile {
+public final class RoleFile implements Cloneable {
 
   private String file;
   private String dir;

@@ -17,31 +17,23 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.shared;
+package io.wcm.devops.conga.model.environment;
 
-import io.wcm.devops.conga.model.util.MapExpander;
-
-import java.util.HashMap;
-import java.util.Map;
+import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 /**
- * Abstract {@link Configurable} implementation.
+ * Global role-specific configuration.
  */
-public abstract class AbstractConfigurable implements Configurable, Cloneable {
+public final class RoleConfig extends AbstractConfigurable {
 
-  private Map<String, Object> config = new HashMap<>();
+  private String role;
 
-  @Override
-  public final Map<String, Object> getConfig() {
-    return this.config;
+  public String getRole() {
+    return this.role;
   }
 
-  /**
-   * @param config Config
-   */
-  @Override
-  public final void setConfig(Map<String, Object> config) {
-    this.config = MapExpander.expand(config);
+  public void setRole(String role) {
+    this.role = role;
   }
 
 }

@@ -27,6 +27,13 @@ nodes:
   - role: webserver-routing
 
 
+# Role-specific global configuration
+roleConfig:
+- role: tomcat-backendconnector
+  config:
+    jvm.heapspace.max: 1024m
+
+
 # Global configuration
 config:
   topologyConnectorPath: /connector

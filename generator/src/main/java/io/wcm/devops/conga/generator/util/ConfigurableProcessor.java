@@ -17,31 +17,16 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.shared;
+package io.wcm.devops.conga.generator.util;
 
-import io.wcm.devops.conga.model.util.MapExpander;
-
-import java.util.HashMap;
-import java.util.Map;
+import io.wcm.devops.conga.model.shared.Configurable;
 
 /**
- * Abstract {@link Configurable} implementation.
+ * Process a {@link Configurable} item and optionally build a payload respecting a payload from a parent configurable.
+ * @param <T> Payload type
  */
-public abstract class AbstractConfigurable implements Configurable, Cloneable {
+interface ConfigurableProcessor<T> {
 
-  private Map<String, Object> config = new HashMap<>();
-
-  @Override
-  public final Map<String, Object> getConfig() {
-    return this.config;
-  }
-
-  /**
-   * @param config Config
-   */
-  @Override
-  public final void setConfig(Map<String, Object> config) {
-    this.config = MapExpander.expand(config);
-  }
+  T process(Configurable configurable, T payload);
 
 }

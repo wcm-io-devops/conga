@@ -30,15 +30,13 @@ import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
-import io.wcm.devops.conga.model.environment.Tenant;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.role.RoleVariant;
 import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +46,7 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Generates file for one environment.
@@ -63,6 +62,8 @@ class EnvironmentGenerator {
   private final MultiplyPlugin defaultMultiplyPlugin;
   private final Logger log;
 
+  private final Map<String, Object> environmentContextProperties;
+
   public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
       File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager, Logger log) {
     this.roles = roles;
@@ -73,6 +74,8 @@ class EnvironmentGenerator {
     this.handlebarsManager = handlebarsManager;
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
     this.log = log;
+    this.environmentContextProperties = ImmutableMap.copyOf(
+        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, environment));
   }
 
   public void generate() {
@@ -97,16 +100,15 @@ class EnvironmentGenerator {
             + "from " + environmentName + "/" + node.getNode() + " does not exist.");
       }
       String variant = nodeRole.getVariant();
-      if (StringUtils.isNotEmpty(variant) && !role.getVariants().contains(variant)) {
-        throw new GeneratorException("Variant '" + variant + "' for role '" + nodeRole.getRole() + "' "
-            + "from " + environmentName + "/" + node.getNode() + " does not exist.");
-      }
+      RoleVariant roleVariant = getRoleVariant(role, variant, nodeRole.getRole(), node);
 
       // merge default values to config
-      Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), role.getConfig());
+      Map<String, Object> roleConfig = roleVariant != null ? roleVariant.getConfig() : role.getConfig();
+      Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), roleConfig);
 
       // additionally set context variables
-      putContextVariables(mergedConfig, node, nodeRole);
+      mergedConfig.putAll(environmentContextProperties);
+      mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
       // generate files
       File nodeDir = new File(destDir, node.getNode());
@@ -122,25 +124,17 @@ class EnvironmentGenerator {
     }
   }
 
-  private void putContextVariables(Map<String, Object> map, Node node, NodeRole nodeRole) {
-    map.put(ContextProperties.ROLE, nodeRole.getRole());
-    map.put(ContextProperties.ROLE_VARIANT, nodeRole.getVariant());
-    map.put(ContextProperties.ENVIRONMENT, environmentName);
-    map.put(ContextProperties.NODE, node.getNode());
-    map.put(ContextProperties.TENANTS, environment.getTenants());
-
-    Map<String, List<Tenant>> tenantsByRole = new HashMap<>();
-    for (Tenant tenant : environment.getTenants()) {
-      for (String tenantRole : tenant.getRoles()) {
-        List<Tenant> tenants = tenantsByRole.get(tenantRole);
-        if (tenants == null) {
-          tenants = new ArrayList<>();
-          tenantsByRole.put(tenantRole, tenants);
-        }
-        tenants.add(tenant);
+  private RoleVariant getRoleVariant(Role role, String variant, String roleName, Node node) {
+    if (StringUtils.isEmpty(variant)) {
+      return null;
+    }
+    for (RoleVariant roleVariant : role.getVariants()) {
+      if (StringUtils.equals(variant, roleVariant.getVariant())) {
+        return roleVariant;
       }
     }
-    map.put(ContextProperties.TENANTS_BY_ROLE, tenantsByRole);
+    throw new GeneratorException("Variant '" + variant + "' for role '" + roleName + "' "
+        + "from " + environmentName + "/" + node.getNode() + " does not exist.");
   }
 
   private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {

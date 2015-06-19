@@ -30,6 +30,7 @@ import java.util.List;
 public final class Environment extends AbstractConfigurable {
 
   private List<Node> nodes = new ArrayList<>();
+  private List<RoleConfig> roleConfig = new ArrayList<>();
   private List<Tenant> tenants = new ArrayList<>();
 
   public List<Node> getNodes() {
@@ -38,6 +39,14 @@ public final class Environment extends AbstractConfigurable {
 
   public void setNodes(List<Node> nodes) {
     this.nodes = nodes;
+  }
+
+  public List<RoleConfig> getRoleConfig() {
+    return this.roleConfig;
+  }
+
+  public void setRoleConfig(List<RoleConfig> roleConfig) {
+    this.roleConfig = roleConfig;
   }
 
   public List<Tenant> getTenants() {
