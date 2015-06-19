@@ -24,32 +24,46 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>io.wcm.devops.conga</groupId>
-  <artifactId>io.wcm.devops.conga.example.simple</artifactId>
+  <artifactId>io.wcm.devops.conga.example.packaging</artifactId>
   <packaging>pom</packaging>
   <version>1-SNAPSHOT</version>
 
-  <name>CONGA Simple Example</name>
-  <description>Example project with both conatining definitions and environments for generating the configuration.</description>
+  <name>CONGA Packaging Example</name>
+  <description>Set of example projects with separation of definitions and environments.</description>
+  
+  <modules>
+    <module>definitions</module>
+    <module>environments</module>
+  </modules>
   
   <build>
-
     <plugins>
 
-      <!-- Generate configuration -->
+      <!-- do not deploy this hierarchy pom into maven repository -->
       <plugin>
-        <groupId>io.wcm.devops.conga</groupId>
-        <artifactId>conga-maven-plugin</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.8.2</version>
+        <inherited>false</inherited>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
 
     </plugins>
+    <pluginManagement>
+      <plugins>
+
+        <!-- Configure CONGA maven plugin to support CONGA-specific packaging types -->
+        <plugin>
+          <groupId>io.wcm.devops.conga</groupId>
+          <artifactId>conga-maven-plugin</artifactId>
+          <version>1.0.0-SNAPSHOT</version>
+          <extensions>true</extensions>
+        </plugin>
+  
+      </plugins>
+    </pluginManagement>
   </build>
 
 </project>
