@@ -57,19 +57,21 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   private String environmentDir;
 
   protected ResourceCollection getTemplateDir() {
-    return ResourceLoader.getResourceCollection(templateDir);
+    return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + templateDir);
   }
 
   protected ResourceCollection getRoleDir() {
-    return ResourceLoader.getResourceCollection(roleDir);
+    return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + roleDir);
   }
 
   protected ResourceCollection getEnvironmentDir() {
-    return ResourceLoader.getResourceCollection(environmentDir);
+    return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + environmentDir);
   }
 
   protected File getTargetDir() {
     return new File(target);
   }
+
+  protected abstract ResourceLoader getResourceLoader();
 
 }

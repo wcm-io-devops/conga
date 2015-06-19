@@ -43,12 +43,13 @@ public class GeneratorTest {
 
   @Before
   public void setUp() {
-    baseDir = ResourceLoader.getResourceCollection("src/test/definitions");
+    ResourceLoader resourceLoader = new ResourceLoader();
+    baseDir = resourceLoader.getResourceCollection("src/test/definitions");
     destDir = new File("target/generation-test");
     underTest = new Generator(
-        ImmutableList.of(ResourceLoader.getResourceCollection(baseDir, "roles")),
-        ImmutableList.of(ResourceLoader.getResourceCollection(baseDir, "templates")),
-        ImmutableList.of(ResourceLoader.getResourceCollection(baseDir, "environments")),
+        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")),
+        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")),
+        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")),
         destDir);
   }
 

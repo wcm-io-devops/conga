@@ -21,6 +21,7 @@ package io.wcm.devops.conga.tooling.maven.plugin;
 
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,8 +62,11 @@ public class DefinitionPreparePackageMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
+  private ResourceLoader resourceLoader;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    resourceLoader = new ResourceLoader();
 
     File outputDir = new File(project.getBuild().getOutputDirectory());
     if (!outputDir.exists()) {
@@ -126,6 +130,11 @@ public class DefinitionPreparePackageMojo extends AbstractCongaMojo {
 
   private String unifySlashes(String path) {
     return StringUtils.replace(path, "\\", "/");
+  }
+
+  @Override
+  protected ResourceLoader getResourceLoader() {
+    return resourceLoader;
   }
 
 }

@@ -30,13 +30,13 @@ class ClasspathResourceImpl extends AbstractClasspathResourceImpl implements Res
 
   private final URL url;
 
-  public ClasspathResourceImpl(String path) {
-    super(path);
+  public ClasspathResourceImpl(String path, ResourceLoader resourceLoader) {
+    super(path, resourceLoader.getClassLoader());
     this.url = this.classLoader.getResource(convertPath(path));
   }
 
-  public ClasspathResourceImpl(URL url) {
-    super(url.getPath());
+  public ClasspathResourceImpl(URL url, ResourceLoader resourceLoader) {
+    super(url.getPath(), resourceLoader.getClassLoader());
     this.url = url;
   }
 

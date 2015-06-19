@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import io.wcm.devops.conga.resource.ResourceLoader;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -35,9 +37,18 @@ public class PackageMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
+  private ResourceLoader resourceLoader;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    resourceLoader = new ResourceLoader();
+
     // TODO: implement
+  }
+
+  @Override
+  protected ResourceLoader getResourceLoader() {
+    return resourceLoader;
   }
 
 }

@@ -80,9 +80,10 @@ public final class CongaCli {
     String targetDir = commandLine.getOptionValue("target", "target");
     String[] environments = StringUtils.split(commandLine.getOptionValue("environments", null), ",");
 
-    List<ResourceCollection> roleDirs = ImmutableList.of(ResourceLoader.getResourceCollection(roleDir));
-    List<ResourceCollection> templateDirs = ImmutableList.of(ResourceLoader.getResourceCollection(templateDir));
-    List<ResourceCollection> environmentDirs = ImmutableList.of(ResourceLoader.getResourceCollection(environmentDir));
+    ResourceLoader resourceLoader = new ResourceLoader();
+    List<ResourceCollection> roleDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + roleDir));
+    List<ResourceCollection> templateDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + templateDir));
+    List<ResourceCollection> environmentDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + environmentDir));
     File targetDirecotry = new File(targetDir);
 
     Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, targetDirecotry);

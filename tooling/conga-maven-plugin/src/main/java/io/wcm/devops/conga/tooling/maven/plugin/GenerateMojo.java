@@ -23,13 +23,20 @@ import io.wcm.devops.conga.generator.Generator;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import com.google.common.collect.ImmutableList;
@@ -37,7 +44,8 @@ import com.google.common.collect.ImmutableList;
 /**
  * Generates configuration using CONGA generator.
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresProject = true, threadSafe = true)
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, threadSafe = true,
+    requiresDependencyResolution = ResolutionScope.COMPILE)
 public class GenerateMojo extends AbstractCongaMojo {
 
   /**
@@ -55,19 +63,41 @@ public class GenerateMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
+  private ResourceLoader resourceLoader;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    resourceLoader = new ResourceLoader(buildDependencyClassLoader());
+
     List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
-        ResourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ROLES_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + "/" + DefinitionPreparePackageMojo.ROLES_DIR));
     List<ResourceCollection> templateDirs = ImmutableList.of(getTemplateDir(),
-        ResourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.TEMPLATES_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + "/" + DefinitionPreparePackageMojo.TEMPLATES_DIR));
     List<ResourceCollection> environmentDirs = ImmutableList.of(getEnvironmentDir(),
-        ResourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ENVIRONMENTS_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + "/" + DefinitionPreparePackageMojo.ENVIRONMENTS_DIR));
 
     Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
     generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
     generator.generate(environments);
+  }
+
+  private ClassLoader buildDependencyClassLoader() throws MojoExecutionException {
+    try {
+      List<URL> classLoaderUrls = new ArrayList<>();
+      for (String path : project.getCompileClasspathElements()) {
+        classLoaderUrls.add(new File(path).toURI().toURL());
+      }
+      return new URLClassLoader(classLoaderUrls.toArray(new URL[classLoaderUrls.size()]));
+    }
+    catch (MalformedURLException | DependencyResolutionRequiredException ex) {
+      throw new MojoExecutionException("Unable to get classpath elements for class loader.", ex);
+    }
+  }
+
+  @Override
+  protected ResourceLoader getResourceLoader() {
+    return resourceLoader;
   }
 
 }

@@ -27,9 +27,9 @@ abstract class AbstractClasspathResourceImpl implements ResourceInfo {
   protected final String path;
   protected final ClassLoader classLoader;
 
-  public AbstractClasspathResourceImpl(String path) {
+  public AbstractClasspathResourceImpl(String path, ClassLoader classLoader) {
     this.path = path;
-    this.classLoader = getClass().getClassLoader();
+    this.classLoader = classLoader;
   }
 
   @Override
@@ -48,7 +48,7 @@ abstract class AbstractClasspathResourceImpl implements ResourceInfo {
   }
 
   protected static String convertPath(String path) {
-    return StringUtils.removeStart(path, "/");
+    return StringUtils.replace(StringUtils.removeStart(path, "/"), "\\", "/");
   }
 
   @Override

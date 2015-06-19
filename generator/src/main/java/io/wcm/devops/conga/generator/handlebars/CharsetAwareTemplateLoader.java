@@ -21,7 +21,6 @@ package io.wcm.devops.conga.generator.handlebars;
 
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class CharsetAwareTemplateLoader extends AbstractTemplateLoader {
   @Override
   public TemplateSource sourceAt(String location) throws IOException {
     for (ResourceCollection templateDir : templateDirs) {
-      Resource file = ResourceLoader.getResource(templateDir, location);
+      Resource file = templateDir.getResource(location);
       if (file.exists()) {
         return new CharsetAwareTemplateSource(file, charset, location);
       }
