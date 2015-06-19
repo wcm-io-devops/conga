@@ -28,4 +28,5 @@ Issue tracking in wcm.io JIRA: https://wcm-io.atlassian.net/projects/WDCONGA
 
 Plugins for CONGA developed by the CONGA team:
 
-* [CONGA Plugins for Apache Sling and AEM](https://github.com/wcm-io-devops/wcm-io-devops-conga-plugins-aem)
+* [CONGA Plugin for Apache Sling](https://github.com/wcm-io-devops/wcm-io-devops-conga-sling-plugin)
+* [CONGA Plugin for AEM (Adobe Experience Manager)](https://github.com/wcm-io-devops/wcm-io-devops-conga-aem-plugin)
