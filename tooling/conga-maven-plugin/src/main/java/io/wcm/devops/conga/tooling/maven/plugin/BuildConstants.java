@@ -60,4 +60,19 @@ public final class BuildConstants {
    */
   public static final String FILE_EXTENSION_CONFIGURATION = "zip";
 
+  /**
+   * Classpath directory in JAR file for roles
+   */
+  public static final String CLASSPATH_ROLES_DIR = "CONGA-INF/roles";
+
+  /**
+   * Classpath directory in JAR file for roles
+   */
+  public static final String CLASSPATH_TEMPLATES_DIR = "CONGA-INF/templates";
+
+  /**
+   * Classpath directory in JAR file for roles
+   */
+  public static final String CLASSPATH_ENVIRONMENTS_DIR = "CONGA-INF/environments";
+
 }

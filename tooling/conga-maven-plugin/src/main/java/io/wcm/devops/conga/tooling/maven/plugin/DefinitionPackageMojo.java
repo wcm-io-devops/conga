@@ -20,6 +20,9 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSIFIER_DEFINITION;
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ENVIRONMENTS_DIR;
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ROLES_DIR;
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_TEMPLATES_DIR;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.FILE_EXTENSION_DEFINITION;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_DEFINITION;
 import io.wcm.devops.conga.resource.Resource;
@@ -58,21 +61,6 @@ import org.codehaus.plexus.archiver.jar.ManifestException;
 public class DefinitionPackageMojo extends AbstractCongaMojo {
 
   /**
-   * Target directory in JAR file for roles
-   */
-  public static final String ROLES_DIR = "CONGA-INF/roles";
-
-  /**
-   * Target directory in JAR file for roles
-   */
-  public static final String TEMPLATES_DIR = "CONGA-INF/templates";
-
-  /**
-   * Target directory in JAR file for roles
-   */
-  public static final String ENVIRONMENTS_DIR = "CONGA-INF/environments";
-
-  /**
    * The archive configuration to use.
    * See <a href="http://maven.apache.org/shared/maven-archiver/index.html">Maven Archiver Reference</a>.
    */
@@ -82,7 +70,7 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
-  @Parameter(defaultValue = "${session}", readonly = true, required = true)
+  @Parameter(defaultValue = "${session}", required = true, readonly = true)
   private MavenSession session;
 
   @Component
@@ -132,7 +120,7 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
       archiver.createArchive(session, project, archive);
     }
     catch (ArchiverException | ManifestException | IOException | DependencyResolutionRequiredException ex) {
-      throw new MojoExecutionException("Unable to build JAR file " + jarFile.getPath() + ": " + ex.getMessage(), ex);
+      throw new MojoExecutionException("Unable to build file " + jarFile.getPath() + ": " + ex.getMessage(), ex);
     }
 
     return jarFile;
@@ -154,9 +142,9 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
 
     // copy definitions
     try {
-      copyDefinitions(roleDir, outputDir, outputDir, ROLES_DIR);
-      copyDefinitions(templateDir, outputDir, outputDir, TEMPLATES_DIR);
-      copyDefinitions(environmentDir, outputDir, outputDir, ENVIRONMENTS_DIR);
+      copyDefinitions(roleDir, outputDir, outputDir, CLASSPATH_ROLES_DIR);
+      copyDefinitions(templateDir, outputDir, outputDir, CLASSPATH_TEMPLATES_DIR);
+      copyDefinitions(environmentDir, outputDir, outputDir, CLASSPATH_ENVIRONMENTS_DIR);
     }
     catch (IOException ex) {
       throw new MojoExecutionException("Unable to copy definitions:" + ex.getMessage(), ex);

@@ -19,6 +19,9 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ENVIRONMENTS_DIR;
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ROLES_DIR;
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_TEMPLATES_DIR;
 import io.wcm.devops.conga.generator.Generator;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
@@ -70,11 +73,11 @@ public class GenerateMojo extends AbstractCongaMojo {
     resourceLoader = new ResourceLoader(buildDependencyClassLoader());
 
     List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPackageMojo.ROLES_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_ROLES_DIR));
     List<ResourceCollection> templateDirs = ImmutableList.of(getTemplateDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPackageMojo.TEMPLATES_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_TEMPLATES_DIR));
     List<ResourceCollection> environmentDirs = ImmutableList.of(getEnvironmentDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPackageMojo.ENVIRONMENTS_DIR));
+        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_ENVIRONMENTS_DIR));
 
     Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));

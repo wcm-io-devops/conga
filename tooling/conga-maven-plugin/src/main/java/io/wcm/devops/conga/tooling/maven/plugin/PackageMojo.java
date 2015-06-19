@@ -25,8 +25,10 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_
 import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -35,7 +37,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
-import org.zeroturnaround.zip.ZipUtil;
+import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 /**
  * Packages the generated configurations in a ZIP file.
@@ -46,8 +50,14 @@ public class PackageMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
+  @Parameter(defaultValue = "${session}", required = true, readonly = true)
+  private MavenSession session;
+
   @Component
   protected MavenProjectHelper projectHelper;
+
+  @Component(role = Archiver.class, hint = "zip")
+  private ZipArchiver zipArchiver;
 
   private ResourceLoader resourceLoader;
 
@@ -56,13 +66,9 @@ public class PackageMojo extends AbstractCongaMojo {
     resourceLoader = new ResourceLoader();
 
     File configRootDir = getTargetDir();
-    File outputFile = new File(project.getBuild().getDirectory(),
-        project.getBuild().getFinalName() + "." + FILE_EXTENSION_CONFIGURATION);
-    outputFile.getParentFile().mkdirs();
 
     // pack generated configuration in ZIP file
-    getLog().info("Package " + outputFile.getName());
-    ZipUtil.pack(configRootDir, outputFile);
+    File outputFile = buildZipFile(configRootDir);
 
     // set or attach ZIP artifact
     if (StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
@@ -71,6 +77,28 @@ public class PackageMojo extends AbstractCongaMojo {
     else {
       projectHelper.attachArtifact(project, outputFile, CLASSIFIER_CONFIGURATION);
     }
+  }
+
+  /**
+   * Build JAR file with definitions.
+   * @param contentDirectory Content directory for JAR file
+   * @return JAR file
+   * @throws MojoExecutionException
+   */
+  private File buildZipFile(File contentDirectory) throws MojoExecutionException {
+    File zipFile = new File(project.getBuild().getDirectory(),
+        project.getBuild().getFinalName() + "." + FILE_EXTENSION_CONFIGURATION);
+
+    zipArchiver.addDirectory(contentDirectory);
+    zipArchiver.setDestFile(zipFile);
+    try {
+      zipArchiver.createArchive();
+    }
+    catch (ArchiverException | IOException ex) {
+      throw new MojoExecutionException("Unable to build file " + zipFile.getPath() + ": " + ex.getMessage(), ex);
+    }
+
+    return zipFile;
   }
 
   @Override
