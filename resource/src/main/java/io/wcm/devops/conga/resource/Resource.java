@@ -21,15 +21,12 @@ package io.wcm.devops.conga.resource;
 
 import java.io.InputStream;
 
+import org.apache.commons.io.FilenameUtils;
+
 /**
  * Abstraction for one single resource from filesystem or classpath.
  */
 public interface Resource extends ResourceInfo {
-
-  /**
-   * @return File extension
-   */
-  String getFileExtension();
 
   /**
    * @return Last modification date
@@ -40,5 +37,12 @@ public interface Resource extends ResourceInfo {
    * @return File content as input stream
    */
   InputStream getInputStream();
+
+  /**
+   * @return File extension
+   */
+  default String getFileExtension() {
+    return FilenameUtils.getExtension(getName());
+  }
 
 }
