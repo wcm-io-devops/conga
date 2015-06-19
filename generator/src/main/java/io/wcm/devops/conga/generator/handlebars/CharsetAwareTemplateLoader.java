@@ -25,6 +25,7 @@ import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import com.github.jknack.handlebars.io.AbstractTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
@@ -34,25 +35,27 @@ import com.github.jknack.handlebars.io.TemplateSource;
  */
 public class CharsetAwareTemplateLoader extends AbstractTemplateLoader {
 
-  private final ResourceCollection templateDir;
+  private final List<ResourceCollection> templateDirs;
   private final String charset;
 
   /**
-   * @param templateDir Template base directory
+   * @param templateDirs Template base directories
    * @param charset Charset for reading template files
    */
-  public CharsetAwareTemplateLoader(ResourceCollection templateDir, String charset) {
-    this.templateDir = templateDir;
+  public CharsetAwareTemplateLoader(List<ResourceCollection> templateDirs, String charset) {
+    this.templateDirs = templateDirs;
     this.charset = charset;
   }
 
   @Override
   public TemplateSource sourceAt(String location) throws IOException {
-    Resource file = ResourceLoader.getResource(templateDir, location);
-    if (!file.exists()) {
-      throw new FileNotFoundException("File not found: " + file.getCanonicalPath());
+    for (ResourceCollection templateDir : templateDirs) {
+      Resource file = ResourceLoader.getResource(templateDir, location);
+      if (file.exists()) {
+        return new CharsetAwareTemplateSource(file, charset, location);
+      }
     }
-    return new CharsetAwareTemplateSource(file, charset, location);
+    throw new FileNotFoundException("Tempalte file not found: " + location);
   }
 
 }

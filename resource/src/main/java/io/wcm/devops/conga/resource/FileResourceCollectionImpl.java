@@ -45,6 +45,9 @@ class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCol
 
   @Override
   public List<Resource> getResources() {
+    if (!exists()) {
+      return ImmutableList.of();
+    }
     return ImmutableList.copyOf(Arrays.stream(file.listFiles())
         .filter(child -> child.isFile())
         .map(child -> new FileResourceImpl(child))
@@ -53,6 +56,9 @@ class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCol
 
   @Override
   public List<ResourceCollection> getResourceCollections() {
+    if (!exists()) {
+      return ImmutableList.of();
+    }
     return ImmutableList.copyOf(Arrays.stream(file.listFiles())
         .filter(child -> child.isDirectory())
         .map(child -> new FileResourceCollectionImpl(child))

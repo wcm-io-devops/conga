@@ -43,6 +43,21 @@ import org.apache.maven.project.MavenProject;
 @Mojo(name = "definition-prepare-package", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresProject = true, threadSafe = true)
 public class DefinitionPreparePackageMojo extends AbstractCongaMojo {
 
+  /**
+   * Target directory in JAR file for roles
+   */
+  public static final String ROLES_DIR = "CONGA-INF/roles";
+
+  /**
+   * Target directory in JAR file for roles
+   */
+  public static final String TEMPLATES_DIR = "CONGA-INF/templates";
+
+  /**
+   * Target directory in JAR file for roles
+   */
+  public static final String ENVIRONMENTS_DIR = "CONGA-INF/environments";
+
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
@@ -54,11 +69,15 @@ public class DefinitionPreparePackageMojo extends AbstractCongaMojo {
       outputDir.mkdirs();
     }
 
+    ResourceCollection roleDir = getRoleDir();
+    ResourceCollection templateDir = getTemplateDir();
+    ResourceCollection environmentDir = getEnvironmentDir();
+
     // copy definitions
     try {
-      copyDefinitions(getRoleDir(), outputDir, outputDir, "roles");
-      copyDefinitions(getTemplateDir(), outputDir, outputDir, "templates");
-      copyDefinitions(getEnvironmentDir(), outputDir, outputDir, "environments");
+      copyDefinitions(roleDir, outputDir, outputDir, ROLES_DIR);
+      copyDefinitions(templateDir, outputDir, outputDir, TEMPLATES_DIR);
+      copyDefinitions(environmentDir, outputDir, outputDir, ENVIRONMENTS_DIR);
     }
     catch (IOException ex) {
       throw new MojoExecutionException("Unable to copy definitions:" + ex.getMessage(), ex);
@@ -100,9 +119,13 @@ public class DefinitionPreparePackageMojo extends AbstractCongaMojo {
   }
 
   private String getPathForLog(File rootOutputDir, File file) throws IOException {
-    String path = StringUtils.replace(file.getCanonicalPath(), "\\", "/");
-    String rootPath = StringUtils.replace(rootOutputDir.getCanonicalPath(), "\\", "/") + "/";
+    String path = unifySlashes(file.getCanonicalPath());
+    String rootPath = unifySlashes(rootOutputDir.getCanonicalPath()) + "/";
     return StringUtils.substringAfter(path, rootPath);
+  }
+
+  private String unifySlashes(String path) {
+    return StringUtils.replace(path, "\\", "/");
   }
 
 }

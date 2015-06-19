@@ -62,4 +62,9 @@ abstract class AbstractFileResourceInfoImpl implements ResourceInfo {
     }
   }
 
+  @Override
+  public String toString() {
+    return getPath();
+  }
+
 }

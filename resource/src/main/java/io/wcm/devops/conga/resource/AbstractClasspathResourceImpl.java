@@ -51,4 +51,9 @@ abstract class AbstractClasspathResourceImpl implements ResourceInfo {
     return StringUtils.removeStart(path, "/");
   }
 
+  @Override
+  public String toString() {
+    return getPath();
+  }
+
 }

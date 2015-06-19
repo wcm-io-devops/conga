@@ -20,6 +20,10 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import io.wcm.devops.conga.generator.Generator;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
+
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -27,6 +31,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Generates configuration using CONGA generator.
@@ -51,7 +57,14 @@ public class GenerateMojo extends AbstractCongaMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    Generator generator = new Generator(getRoleDir(), getEnvironmentDir(), getTemplateDir(), getTargetDir());
+    List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
+        ResourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ROLES_DIR));
+    List<ResourceCollection> templateDirs = ImmutableList.of(getTemplateDir(),
+        ResourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.TEMPLATES_DIR));
+    List<ResourceCollection> environmentDirs = ImmutableList.of(getEnvironmentDir(),
+        ResourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + DefinitionPreparePackageMojo.ENVIRONMENTS_DIR));
+
+    Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
     generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
     generator.generate(environments);

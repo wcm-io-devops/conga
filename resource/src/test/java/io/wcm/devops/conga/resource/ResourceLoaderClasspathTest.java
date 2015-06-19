@@ -31,6 +31,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.CharEncoding;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
+
 public class ResourceLoaderClasspathTest {
 
   private static final String ROOT = "/test-files";
@@ -96,6 +98,14 @@ public class ResourceLoaderClasspathTest {
     Resource resource = ResourceLoader.getResource(CLASSPATH_PREFIX + ROOT + "/folder1/invalid.txt");
     assertFalse(resource.exists());
     assertTrue(resource instanceof ClasspathResourceImpl);
+  }
+
+  @Test
+  public void testNonExistingResourceCollection() throws Exception {
+    ResourceCollection col = ResourceLoader.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/invalidFolder");
+    assertFalse(col.exists());
+    assertEquals(ImmutableList.of(), col.getResources());
+    assertEquals(ImmutableList.of(), col.getResourceCollections());
   }
 
   @Test

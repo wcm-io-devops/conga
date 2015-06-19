@@ -48,8 +48,8 @@
           <lifecycle>
             <id>default</id>
             <phases>
-              <prepare-package>io.wcm.devops.conga:conga-maven-plugin:config-prepare-package</prepare-package>
-              <package>org.apache.maven.plugins:maven-jar-plugin:jar</package>
+              <generate-resources>io.wcm.devops.conga:conga-maven-plugin:generate</generate-resources>
+              <package>io.wcm.devops.conga:conga-maven-plugin:package</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>
               <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
             </phases>
