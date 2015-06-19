@@ -32,7 +32,7 @@
   
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.example.packaging.definitions</artifactId>
-  <packaging>pom</packaging>
+  <packaging>conga-definition</packaging>
   <version>1-SNAPSHOT</version>
 
   <name>CONGA Packaging Example: Definitions</name>

@@ -29,8 +29,8 @@ import org.apache.maven.project.MavenProject;
 /**
  * Packages the generated configurations in a ZIP file.
  */
-@Mojo(name = "config-package", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
-public class ConfigPackageMojo extends AbstractCongaMojo {
+@Mojo(name = "config-prepare-package", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
+public class ConfigPreparePackageMojo extends AbstractCongaMojo {
 
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;

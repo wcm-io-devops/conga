@@ -30,7 +30,8 @@
           <lifecycle>
             <id>default</id>
             <phases>
-              <package>io.wcm.devops.conga:io.wcm.devops.conga.parent:definition-package</package>
+              <prepare-package>io.wcm.devops.conga:conga-maven-plugin:definition-prepare-package</prepare-package>
+              <package>org.apache.maven.plugins:maven-jar-plugin:jar</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>
               <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
             </phases>
@@ -47,7 +48,8 @@
           <lifecycle>
             <id>default</id>
             <phases>
-              <package>io.wcm.devops.conga:io.wcm.devops.conga.parent:config-package</package>
+              <prepare-package>io.wcm.devops.conga:conga-maven-plugin:config-prepare-package</prepare-package>
+              <package>org.apache.maven.plugins:maven-jar-plugin:jar</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>
               <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
             </phases>

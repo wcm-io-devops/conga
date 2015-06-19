@@ -113,6 +113,20 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>generate-metadata</id>
+            <goals>
+              <goal>generate-metadata</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
@@ -165,6 +179,19 @@
                       </pluginExecutionFilter>
                       <action>
                         <ignore />
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-component-metadata</artifactId>
+                        <versionRange>[1.6,)</versionRange>
+                        <goals>
+                          <goal>generate-metadata</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore></ignore>
                       </action>
                     </pluginExecution>
                   </pluginExecutions>
