@@ -20,6 +20,8 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import io.wcm.devops.conga.generator.Generator;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
 
@@ -67,18 +69,25 @@ public class GenerateMojo extends AbstractMojo {
   @Parameter
   private String[] environments;
 
+  /**
+   * Delete folders of environments before generating the new files.
+   */
+  @Parameter(defaultValue = "false")
+  private boolean deleteBeforeGenerate;
+
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    File templateDirectory = new File(templateDir);
-    File roleDirecotry = new File(roleDir);
-    File environmentDirecotry = new File(environmentDir);
+    ResourceCollection templateDirectory = ResourceLoader.getResourceCollection(templateDir);
+    ResourceCollection roleDirecotry = ResourceLoader.getResourceCollection(roleDir);
+    ResourceCollection environmentDirecotry = ResourceLoader.getResourceCollection(environmentDir);
     File targetDirecotry = new File(target);
 
     Generator generator = new Generator(roleDirecotry, environmentDirecotry, templateDirectory, targetDirecotry);
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
+    generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
     generator.generate(environments);
   }
 

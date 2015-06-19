@@ -19,9 +19,10 @@
  */
 package io.wcm.devops.conga.generator.handlebars;
 
-import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.resource.Resource;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -33,23 +34,23 @@ import com.github.jknack.handlebars.io.TemplateSource;
  */
 public class CharsetAwareTemplateLoader extends AbstractTemplateLoader {
 
-  private final File templateDir;
+  private final ResourceCollection templateDir;
   private final String charset;
 
   /**
    * @param templateDir Template base directory
    * @param charset Charset for reading template files
    */
-  public CharsetAwareTemplateLoader(File templateDir, String charset) {
+  public CharsetAwareTemplateLoader(ResourceCollection templateDir, String charset) {
     this.templateDir = templateDir;
     this.charset = charset;
   }
 
   @Override
   public TemplateSource sourceAt(String location) throws IOException {
-    File file = new File(templateDir, location);
-    if (!file.exists() || !file.isFile()) {
-      throw new FileNotFoundException("File not found: " + FileUtil.getCanonicalPath(file));
+    Resource file = ResourceLoader.getResource(templateDir, location);
+    if (!file.exists()) {
+      throw new FileNotFoundException("File not found: " + file.getCanonicalPath());
     }
     return new CharsetAwareTemplateSource(file, charset, location);
   }

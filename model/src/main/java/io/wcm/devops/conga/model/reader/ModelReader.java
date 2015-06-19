@@ -19,7 +19,8 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import java.io.File;
+import io.wcm.devops.conga.resource.Resource;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -35,7 +36,7 @@ public interface ModelReader<T> {
    * @param file File
    * @return true if accepted
    */
-  boolean accepts(File file);
+  boolean accepts(Resource file);
 
   /**
    * Read model
@@ -43,7 +44,7 @@ public interface ModelReader<T> {
    * @return Model object
    * @throws IOException
    */
-  T read(File file) throws IOException;
+  T read(Resource file) throws IOException;
 
   /**
    * Read model

@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import io.wcm.devops.conga.resource.ResourceCollection;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -65,9 +67,9 @@ public final class FileUtil {
    * @param dir Directory
    * @return Directory
    */
-  public static File ensureDirExists(File dir) {
-    if (!dir.exists() || !dir.isDirectory()) {
-      throw new IllegalArgumentException("Directory not found: " + getCanonicalPath(dir));
+  public static ResourceCollection ensureDirExists(ResourceCollection dir) {
+    if (!dir.exists()) {
+      throw new IllegalArgumentException("Directory not found: " + dir.getCanonicalPath());
     }
     return dir;
   }
