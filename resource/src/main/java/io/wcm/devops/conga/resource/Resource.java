@@ -27,6 +27,11 @@ import java.io.InputStream;
 public interface Resource extends ResourceInfo {
 
   /**
+   * @return File extension
+   */
+  String getFileExtension();
+
+  /**
    * @return Last modification date
    */
   long getLastModified();

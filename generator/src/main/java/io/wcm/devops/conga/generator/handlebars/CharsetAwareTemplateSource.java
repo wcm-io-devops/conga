@@ -19,10 +19,12 @@
  */
 package io.wcm.devops.conga.generator.handlebars;
 
-import java.io.File;
-import java.io.IOException;
+import io.wcm.devops.conga.resource.Resource;
 
-import org.apache.commons.io.FileUtils;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
 
 import com.github.jknack.handlebars.io.AbstractTemplateSource;
 
@@ -31,11 +33,11 @@ import com.github.jknack.handlebars.io.AbstractTemplateSource;
  */
 class CharsetAwareTemplateSource extends AbstractTemplateSource {
 
-  private final File file;
+  private final Resource file;
   private final String charset;
   private final String location;
 
-  public CharsetAwareTemplateSource(File file, String charset, String location) {
+  public CharsetAwareTemplateSource(Resource file, String charset, String location) {
     this.file = file;
     this.charset = charset;
     this.location = location;
@@ -43,7 +45,9 @@ class CharsetAwareTemplateSource extends AbstractTemplateSource {
 
   @Override
   public String content() throws IOException {
-    return FileUtils.readFileToString(file, charset);
+    try (InputStream is = file.getInputStream()) {
+      return IOUtils.toString(is, charset);
+    }
   }
 
   @Override
@@ -53,7 +57,7 @@ class CharsetAwareTemplateSource extends AbstractTemplateSource {
 
   @Override
   public long lastModified() {
-    return file.lastModified();
+    return file.getLastModified();
   }
 
 }

@@ -26,20 +26,29 @@ import java.util.function.Function;
  */
 enum ResourceType {
 
-  FILE(ResourceLoader.FILE_PREFIX, path -> new FileResourceImpl(path), path -> new FileResourceCollectionImpl(path)),
+  FILE(ResourceLoader.FILE_PREFIX,
+      path -> new FileResourceImpl(path),
+      path -> new FileResourceCollectionImpl(path),
+      resource -> resource instanceof AbstractFileResourceInfoImpl),
 
-  CLASSPATH(ResourceLoader.CLASSPATH_PREFIX, path -> new ClasspathResourceImpl(path), path -> new ClasspathResourceCollectionImpl(path));
+      CLASSPATH(ResourceLoader.CLASSPATH_PREFIX,
+          path -> new ClasspathResourceImpl(path),
+          path -> new ClasspathResourceCollectionImpl(path),
+          resource -> resource instanceof AbstractClasspathResourceImpl);
 
   private final String prefix;
   private final Function<String, Resource> resourceFactory;
   private final Function<String, ResourceCollection> resourceCollectionFactory;
+  private final Function<ResourceInfo, Boolean> resourceMatcher;
 
   private ResourceType(String prefix,
       Function<String, Resource> resourceFactory,
-      Function<String, ResourceCollection> resourceCollectionFactory) {
+      Function<String, ResourceCollection> resourceCollectionFactory,
+      Function<ResourceInfo, Boolean> resourceMatcher) {
     this.prefix = prefix;
     this.resourceFactory = resourceFactory;
     this.resourceCollectionFactory = resourceCollectionFactory;
+    this.resourceMatcher = resourceMatcher;
   }
 
   public String getPrefix() {
@@ -55,6 +64,10 @@ enum ResourceType {
       return (T)resourceCollectionFactory.apply(path);
     }
     throw new IllegalArgumentException("Class not supported: " + resourceClass.getName());
+  }
+
+  public boolean is(ResourceInfo resource) {
+    return resourceMatcher.apply(resource);
   }
 
 }

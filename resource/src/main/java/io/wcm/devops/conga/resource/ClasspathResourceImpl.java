@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 
+import org.apache.commons.io.FilenameUtils;
+
 class ClasspathResourceImpl extends AbstractClasspathResourceImpl implements Resource {
 
   private static final long CLASS_LOADING_TIME = new Date().getTime();
@@ -38,6 +40,11 @@ class ClasspathResourceImpl extends AbstractClasspathResourceImpl implements Res
   public ClasspathResourceImpl(URL url) {
     super(url.getPath());
     this.url = url;
+  }
+
+  @Override
+  public String getFileExtension() {
+    return FilenameUtils.getExtension(getName());
   }
 
   @Override

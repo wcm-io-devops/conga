@@ -54,12 +54,32 @@ public final class ResourceLoader {
   }
 
   /**
+   * Get resource from filesystem (preferred) or classpath.
+   * @param dir Parent directory
+   * @param path Resource path relative to parent directory
+   * @return Resource or null if not found
+   */
+  public static Resource getResource(ResourceCollection dir, String path) {
+    return getResource(getPrefix(dir) + dir.getPath() + "/" + path);
+  }
+
+  /**
    * Get resource collection from filesystem (preferred) or classpath.
    * @param path Path
    * @return Resource or null if not found
    */
   public static ResourceCollection getResourceCollection(String path) {
     return getResource(path, ResourceCollection.class);
+  }
+
+  /**
+   * Get resource collection from filesystem (preferred) or classpath.
+   * @param dir Parent directory
+   * @param path Resource path relative to parent directory
+   * @return Resource or null if not found
+   */
+  public static ResourceCollection getResourceCollection(ResourceCollection dir, String path) {
+    return getResource(getPrefix(dir) + dir.getPath() + "/" + path, ResourceCollection.class);
   }
 
   /**
@@ -113,6 +133,15 @@ public final class ResourceLoader {
       }
     }
     return path;
+  }
+
+  private static String getPrefix(ResourceInfo resource) {
+    for (ResourceType resourceType : ResourceType.values()) {
+      if (resourceType.is(resource)) {
+        return resourceType.getPrefix();
+      }
+    }
+    throw new IllegalArgumentException("Unknown resource implementation: " + resource.getClass());
   }
 
 }

@@ -21,6 +21,8 @@ package io.wcm.devops.conga.generator;
 
 import static org.junit.Assert.assertTrue;
 import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,17 +36,17 @@ import org.junit.Test;
 public class GeneratorTest {
 
   private Generator underTest;
-  private File baseDir;
+  private ResourceCollection baseDir;
   private File destDir;
 
   @Before
   public void setUp() {
-    baseDir = new File("src/test/definitions");
+    baseDir = ResourceLoader.getResourceCollection("src/test/definitions");
     destDir = new File("target/generation-test");
     underTest = new Generator(
-        new File(baseDir, "roles"),
-        new File(baseDir, "environments"),
-        new File(baseDir, "templates"),
+        ResourceLoader.getResourceCollection(baseDir, "roles"),
+        ResourceLoader.getResourceCollection(baseDir, "environments"),
+        ResourceLoader.getResourceCollection(baseDir, "templates"),
         destDir);
   }
 

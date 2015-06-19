@@ -28,6 +28,8 @@ import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.model.reader.RoleReader;
 import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.resource.Resource;
+import io.wcm.devops.conga.resource.ResourceCollection;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +54,7 @@ public final class Generator {
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
   private Logger log = LoggerFactory.getLogger(getClass());
+  private boolean deleteBeforeGenerate;
 
   /**
    * @param roleDir Directory with role definitions. Filename without extension = role name.
@@ -59,7 +62,7 @@ public final class Generator {
    * @param templateDir Template base directory
    * @param destDir Destination directory for generated file
    */
-  public Generator(File roleDir, File environmentDir, File templateDir, File destDir) {
+  public Generator(ResourceCollection roleDir, ResourceCollection environmentDir, ResourceCollection templateDir, File destDir) {
     this.pluginManager = new PluginManager();
     this.roles = readModels(roleDir, new RoleReader());
     this.environments = readModels(environmentDir, new EnvironmentReader());
@@ -74,12 +77,20 @@ public final class Generator {
     log = logger;
   }
 
-  private static <T> Map<String, T> readModels(File dir, ModelReader<T> reader) {
-    if (!dir.exists() || !dir.isDirectory()) {
-      throw new IllegalArgumentException("Expected directory: " + FileUtil.getCanonicalPath(dir));
+  /**
+   * @param deleteBeforeGenerate Set to true when the generate should delete the environment folders before generating
+   *          new (default: false)
+   */
+  public void setDeleteBeforeGenerate(boolean deleteBeforeGenerate) {
+    this.deleteBeforeGenerate = deleteBeforeGenerate;
+  }
+
+  private static <T> Map<String, T> readModels(ResourceCollection dir, ModelReader<T> reader) {
+    if (!dir.exists()) {
+      throw new IllegalArgumentException("Expected directory: " + dir.getCanonicalPath());
     }
     Map<String, T> models = new HashMap<>();
-    for (File file : dir.listFiles()) {
+    for (Resource file : dir.getResources()) {
       if (reader.accepts(file)) {
         try {
           T model = reader.read(file);
@@ -87,7 +98,7 @@ public final class Generator {
           models.put(FilenameUtils.getBaseName(file.getName()), model);
         }
         catch (Throwable ex) {
-          throw new GeneratorException("Unable to read definition: " + FileUtil.getCanonicalPath(file), ex);
+          throw new GeneratorException("Unable to read definition: " + file.getCanonicalPath(), ex);
         }
       }
     }
@@ -115,7 +126,7 @@ public final class Generator {
     for (Map.Entry<String, Environment> entry : selectedEnvironments.entrySet()) {
       File environmentDestDir = new File(destDir, entry.getKey());
       // remove existing directory and it's content if it exists alreday
-      if (environmentDestDir.exists()) {
+      if (deleteBeforeGenerate && environmentDestDir.exists()) {
         try {
           FileUtils.deleteDirectory(environmentDestDir);
         }
@@ -123,7 +134,9 @@ public final class Generator {
           throw new GeneratorException("Unable to delete existing target directory: " + FileUtil.getCanonicalPath(environmentDestDir));
         }
       }
-      environmentDestDir.mkdir();
+      if (!environmentDestDir.exists()) {
+        environmentDestDir.mkdir();
+      }
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
           environmentDestDir, pluginManager, handlebarsManager, log);
       environmentGenerator.generate();

@@ -41,6 +41,7 @@ public class ResourceLoaderClasspathTest {
 
     assertTrue(resource.exists());
     assertEquals("file1.txt", resource.getName());
+    assertEquals("txt", resource.getFileExtension());
     assertEquals(ROOT + "/folder1/file1.txt", resource.getPath());
     assertEquals(CLASSPATH_PREFIX + ROOT + "/folder1/file1.txt", resource.getCanonicalPath());
 
@@ -97,4 +98,19 @@ public class ResourceLoaderClasspathTest {
     assertTrue(resource instanceof ClasspathResourceImpl);
   }
 
+  @Test
+  public void testResourceByParentFolder() throws Exception {
+    ResourceCollection col = ResourceLoader.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
+    Resource resource = ResourceLoader.getResource(col, "folder2/file3.txt");
+    assertTrue(resource.exists());
+    assertEquals("file3.txt", resource.getName());
+  }
+
+  @Test
+  public void testResourceCollectionByParentFolder() throws Exception {
+    ResourceCollection colParent = ResourceLoader.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
+    ResourceCollection col = ResourceLoader.getResourceCollection(colParent, "folder2");
+    assertTrue(col.exists());
+    assertEquals("folder2", col.getName());
+  }
 }

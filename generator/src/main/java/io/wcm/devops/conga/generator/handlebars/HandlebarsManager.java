@@ -20,8 +20,8 @@
 package io.wcm.devops.conga.generator.handlebars;
 
 import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.resource.ResourceCollection;
 
-import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 import com.github.jknack.handlebars.Handlebars;
@@ -35,7 +35,7 @@ import com.google.common.cache.LoadingCache;
  */
 public class HandlebarsManager {
 
-  private final File templateDir;
+  private final ResourceCollection templateDir;
 
   private final LoadingCache<String, Handlebars> handlebarsCache =
       CacheBuilder.newBuilder().build(new CacheLoader<String, Handlebars>() {
@@ -49,7 +49,7 @@ public class HandlebarsManager {
   /**
    * @param templateDir Template base directory
    */
-  public HandlebarsManager(File templateDir) {
+  public HandlebarsManager(ResourceCollection templateDir) {
     this.templateDir = templateDir;
   }
 

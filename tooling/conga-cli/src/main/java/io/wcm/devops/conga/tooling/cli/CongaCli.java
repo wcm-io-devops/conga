@@ -20,6 +20,8 @@
 package io.wcm.devops.conga.tooling.cli;
 
 import io.wcm.devops.conga.generator.Generator;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
 
@@ -75,12 +77,13 @@ public final class CongaCli {
     String targetDir = commandLine.getOptionValue("target", "target");
     String[] environments = StringUtils.split(commandLine.getOptionValue("environments", null), ",");
 
-    File templateDirectory = new File(templateDir);
-    File roleDirecotry = new File(roleDir);
-    File environmentDirecotry = new File(environmentDir);
+    ResourceCollection templateDirectory = ResourceLoader.getResourceCollection(templateDir);
+    ResourceCollection roleDirecotry = ResourceLoader.getResourceCollection(roleDir);
+    ResourceCollection environmentDirecotry = ResourceLoader.getResourceCollection(environmentDir);
     File targetDirecotry = new File(targetDir);
 
     Generator generator = new Generator(roleDirecotry, environmentDirecotry, templateDirectory, targetDirecotry);
+    generator.setDeleteBeforeGenerate(true);
     generator.generate(environments);
   }
 

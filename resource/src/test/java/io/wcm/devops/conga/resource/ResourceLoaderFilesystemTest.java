@@ -42,6 +42,7 @@ public class ResourceLoaderFilesystemTest {
 
     assertTrue(resource.exists());
     assertEquals("file1.txt", resource.getName());
+    assertEquals("txt", resource.getFileExtension());
     assertEquals(ROOT + "/folder1/file1.txt", unifySlashes(resource.getPath()));
     assertTrue("Canonical path " + unifySlashes(resource.getCanonicalPath()) + " does not end with /" + ROOT + "/folder1/file1.txt",
         StringUtils.endsWith(unifySlashes(resource.getCanonicalPath()), "/" + ROOT + "/folder1/file1.txt"));
@@ -80,7 +81,6 @@ public class ResourceLoaderFilesystemTest {
   @Test
   public void testResourceAutoDetect() throws Exception {
     Resource resource = ResourceLoader.getResource(ROOT + "/folder1/file1.txt");
-
     assertTrue(resource.exists());
     assertEquals("file1.txt", resource.getName());
   }
@@ -97,6 +97,22 @@ public class ResourceLoaderFilesystemTest {
     Resource resource = ResourceLoader.getResource(ROOT + "/folder1/invalid.txt");
     assertFalse(resource.exists());
     assertTrue(resource instanceof FileResourceImpl);
+  }
+
+  @Test
+  public void testResourceByParentFolder() throws Exception {
+    ResourceCollection col = ResourceLoader.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
+    Resource resource = ResourceLoader.getResource(col, "folder2/file3.txt");
+    assertTrue(resource.exists());
+    assertEquals("file3.txt", resource.getName());
+  }
+
+  @Test
+  public void testResourceCollectionByParentFolder() throws Exception {
+    ResourceCollection colParent = ResourceLoader.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
+    ResourceCollection col = ResourceLoader.getResourceCollection(colParent, "folder2");
+    assertTrue(col.exists());
+    assertEquals("folder2", col.getName());
   }
 
   private String unifySlashes(String path) {
