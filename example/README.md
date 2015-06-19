@@ -1,10 +1,10 @@
 CONGA Example
 =============
 
-You can generate the sample configuration by executing
+You can generate the sample configuration and packages by executing
 
 ```
-sample> mvn clean generate-resources
+example> mvn clean package
 ```
 
 on the command line.
