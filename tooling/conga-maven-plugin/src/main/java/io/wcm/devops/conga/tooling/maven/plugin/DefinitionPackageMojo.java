@@ -158,8 +158,8 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
       return;
     }
     List<Resource> files = sourceDir.getResources();
-    List<ResourceCollection> folders = sourceDir.getResourceCollections();
-    if (files.isEmpty() && folders.isEmpty()) {
+    List<ResourceCollection> dirs = sourceDir.getResourceCollections();
+    if (files.isEmpty() && dirs.isEmpty()) {
       return;
     }
 
@@ -182,8 +182,8 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
       }
     }
 
-    for (ResourceCollection folder : folders) {
-      copyDefinitions(folder, rootOutputDir, targetDir, folder.getName());
+    for (ResourceCollection dir : dirs) {
+      copyDefinitions(dir, rootOutputDir, targetDir, dir.getName());
     }
   }
 

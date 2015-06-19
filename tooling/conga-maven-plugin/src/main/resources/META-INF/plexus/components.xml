@@ -30,6 +30,7 @@
           <lifecycle>
             <id>default</id>
             <phases>
+              <validate>io.wcm.devops.conga:conga-maven-plugin:definition-validate</validate>
               <package>io.wcm.devops.conga:conga-maven-plugin:definition-package</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>
               <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
