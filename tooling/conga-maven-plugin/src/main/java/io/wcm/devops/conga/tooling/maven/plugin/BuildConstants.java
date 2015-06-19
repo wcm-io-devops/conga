@@ -31,13 +31,13 @@ public final class BuildConstants {
   /**
    * Builds a JAR artifact with definition files (roles, templates, environments are possible).
    */
-  public static final String PACKAGING_DEFINITION = "conga-definition";
+  public static final String PACKAGING_DEFINITION = "config-definition";
 
   /**
    * Classifier for JAR artifact with definition files (roles, templates, environments are possible).
    * This is only used if the packing type of the maven project is not {@link #PACKAGING_DEFINITION}.
    */
-  public static final String CLASSIFIER_DEFINITION = "definition";
+  public static final String CLASSIFIER_DEFINITION = "config-definition";
 
   /**
    * File extension for the artifact with definition files (roles, templates, environments are possible).
@@ -47,13 +47,13 @@ public final class BuildConstants {
   /**
    * Builds a ZIP artifact with the generated configuration.
    */
-  public static final String PACKAGING_CONFIGURATION = "conga-configuration";
+  public static final String PACKAGING_CONFIGURATION = "config";
 
   /**
    * Classifier for ZIP artifact with the generated configuration.
    * This is only used if the packing type of the maven project is not {@link #PACKAGING_CONFIGURATION}.
    */
-  public static final String CLASSIFIER_CONFIGURATION = "configuration";
+  public static final String CLASSIFIER_CONFIGURATION = "config";
 
   /**
    * File extension for artifact with the generated configuration.

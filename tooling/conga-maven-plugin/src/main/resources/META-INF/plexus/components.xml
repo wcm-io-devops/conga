@@ -23,7 +23,7 @@
   <components>
     <component>
       <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
-      <role-hint>conga-definition</role-hint>
+      <role-hint>config-definition</role-hint>
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <lifecycles>
@@ -41,7 +41,7 @@
     </component>
     <component>
       <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
-      <role-hint>conga-configuration</role-hint>
+      <role-hint>config</role-hint>
       <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
       <configuration>
         <lifecycles>
@@ -59,10 +59,10 @@
     </component>
     <component>
       <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-      <role-hint>conga-definition</role-hint>
+      <role-hint>config-definition</role-hint>
       <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
       <configuration>
-        <type>conga-definition</type>
+        <type>config-definition</type>
         <includesDependencies>false</includesDependencies>
         <language>java</language>
         <extension>jar</extension>
@@ -71,10 +71,10 @@
     </component>
     <component>
       <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
-      <role-hint>conga-configuration</role-hint>
+      <role-hint>config</role-hint>
       <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
       <configuration>
-        <type>conga-configuration</type>
+        <type>config</type>
         <includesDependencies>false</includesDependencies>
         <language>config</language>
         <extension>zip</extension>

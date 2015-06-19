@@ -61,6 +61,12 @@ import org.codehaus.plexus.archiver.jar.ManifestException;
 public class DefinitionPackageMojo extends AbstractCongaMojo {
 
   /**
+   * Target path for the prepared definition files.
+   */
+  @Parameter(defaultValue = "${project.build.directory}/definitions")
+  private String definitionTarget;
+
+  /**
    * The archive configuration to use.
    * See <a href="http://maven.apache.org/shared/maven-archiver/index.html">Maven Archiver Reference</a>.
    */
@@ -107,8 +113,7 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
    * @throws MojoExecutionException
    */
   private File buildJarFile(File contentDirectory) throws MojoExecutionException {
-    File jarFile = new File(project.getBuild().getDirectory(),
-        project.getBuild().getFinalName() + "." + FILE_EXTENSION_DEFINITION);
+    File jarFile = new File(project.getBuild().getDirectory(), buildJarFileName());
 
     MavenArchiver archiver = new MavenArchiver();
     archiver.setArchiver(jarArchiver);
@@ -126,12 +131,22 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
     return jarFile;
   }
 
+  private String buildJarFileName() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(project.getBuild().getFinalName());
+    if (!StringUtils.equals(project.getPackaging(), PACKAGING_DEFINITION)) {
+      sb.append("-").append(CLASSIFIER_DEFINITION);
+    }
+    sb.append(".").append(FILE_EXTENSION_DEFINITION);
+    return sb.toString();
+  }
+
   /**
    * Copy definitions and template files to classes folder to include them in JAR artifact.
    * @throws MojoExecutionException
    */
   private File copyDefinitions() throws MojoExecutionException {
-    File outputDir = new File(project.getBuild().getOutputDirectory());
+    File outputDir = new File(definitionTarget);
     if (!outputDir.exists()) {
       outputDir.mkdirs();
     }

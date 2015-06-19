@@ -32,7 +32,7 @@
   
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.example.environments</artifactId>
-  <packaging>conga-configuration</packaging>
+  <packaging>config</packaging>
   <version>1-SNAPSHOT</version>
 
   <name>CONGA Packaging Example: Environments</name>

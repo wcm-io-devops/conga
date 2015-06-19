@@ -86,8 +86,7 @@ public class PackageMojo extends AbstractCongaMojo {
    * @throws MojoExecutionException
    */
   private File buildZipFile(File contentDirectory) throws MojoExecutionException {
-    File zipFile = new File(project.getBuild().getDirectory(),
-        project.getBuild().getFinalName() + "." + FILE_EXTENSION_CONFIGURATION);
+    File zipFile = new File(project.getBuild().getDirectory(), buildZipFileName());
 
     zipArchiver.addDirectory(contentDirectory);
     zipArchiver.setDestFile(zipFile);
@@ -99,6 +98,16 @@ public class PackageMojo extends AbstractCongaMojo {
     }
 
     return zipFile;
+  }
+
+  private String buildZipFileName() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(project.getBuild().getFinalName());
+    if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
+      sb.append("-").append(CLASSIFIER_CONFIGURATION);
+    }
+    sb.append(".").append(FILE_EXTENSION_CONFIGURATION);
+    return sb.toString();
   }
 
   @Override
