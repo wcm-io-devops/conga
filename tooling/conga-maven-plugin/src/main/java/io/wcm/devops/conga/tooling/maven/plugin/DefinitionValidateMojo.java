@@ -50,7 +50,6 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     resourceLoader = new ResourceLoader();
-
     validateDefinitions();
   }
 
@@ -59,7 +58,6 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     ResourceCollection templateDir = getTemplateDir();
     ResourceCollection environmentDir = getEnvironmentDir();
 
-    // copy definitions
     validateFiles(roleDir, roleDir, new ModelValidator("Role", new RoleReader()));
     validateFiles(templateDir, templateDir, new TemplateValidator(templateDir));
     validateFiles(environmentDir, environmentDir, new ModelValidator("Environment", new EnvironmentReader()));
@@ -99,6 +97,9 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     return resourceLoader;
   }
 
+  /**
+   * Resource validator
+   */
   private interface Validator {
     void validate(Resource resource, String pathForLog) throws MojoFailureException;
   }
@@ -129,9 +130,11 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
   }
 
   /**
-   * Validates Handlebars template by compiling it.
+   * Validates Handlebars templates by compiling it.
    */
   private static class TemplateValidator implements Validator {
+
+    private static final String FILE_EXTENSION = "hbs";
 
     private final ResourceCollection templateDir;
     private final HandlebarsManager handlebarsManager;
@@ -143,7 +146,7 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
 
     @Override
     public void validate(Resource resource, String pathForLog) throws MojoFailureException {
-      if (StringUtils.equalsIgnoreCase(resource.getFileExtension(), "hbs")) {
+      if (StringUtils.equalsIgnoreCase(resource.getFileExtension(), FILE_EXTENSION)) {
         String templatePath = StringUtils.substringAfter(unifySlashes(resource.getCanonicalPath()),
             unifySlashes(templateDir.getCanonicalPath()) + "/");
         Handlebars handlebars = handlebarsManager.get(CharEncoding.UTF_8);

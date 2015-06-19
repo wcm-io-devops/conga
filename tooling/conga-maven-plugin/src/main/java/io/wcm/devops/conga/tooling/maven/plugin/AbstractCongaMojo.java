@@ -35,13 +35,13 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   /**
    * Source path with templates.
    */
-  @Parameter(defaultValue = "${basedir}/src/templates")
+  @Parameter(defaultValue = "${basedir}/src/main/templates")
   private String templateDir;
 
   /**
    * Source path with role definitions.
    */
-  @Parameter(defaultValue = "${basedir}/src/roles")
+  @Parameter(defaultValue = "${basedir}/src/main/roles")
   private String roleDir;
 
   /**
@@ -53,7 +53,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   /**
    * Source path with environment definitions.
    */
-  @Parameter(defaultValue = "${basedir}/src/environments")
+  @Parameter(defaultValue = "${basedir}/src/main/environments")
   private String environmentDir;
 
   protected ResourceCollection getTemplateDir() {
