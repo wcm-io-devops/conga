@@ -19,15 +19,14 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import java.io.File;
-import java.io.FileInputStream;
+import io.wcm.devops.conga.resource.Resource;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Set;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.CharEncoding;
 import org.yaml.snakeyaml.Yaml;
 
@@ -38,7 +37,8 @@ import com.google.common.collect.ImmutableSet;
  */
 public abstract class AbstractModelReader<T> implements ModelReader<T> {
 
-  private static final Set<String> SUPPORTED_EXTENSIONS = ImmutableSet.of("yaml");
+  private static final String YAML_EXTENSION = "yaml";
+  private static final Set<String> SUPPORTED_EXTENSIONS = ImmutableSet.of(YAML_EXTENSION);
 
   private final Yaml yaml;
 
@@ -50,13 +50,13 @@ public abstract class AbstractModelReader<T> implements ModelReader<T> {
   }
 
   @Override
-  public boolean accepts(File file) {
-    return (file.isFile() && SUPPORTED_EXTENSIONS.contains(FilenameUtils.getExtension(file.getName())));
+  public boolean accepts(Resource file) {
+    return SUPPORTED_EXTENSIONS.contains(file.getFileExtension().toLowerCase());
   }
 
   @Override
-  public final T read(File file) throws IOException {
-    try (InputStream is = new FileInputStream(file)) {
+  public final T read(Resource file) throws IOException {
+    try (InputStream is = file.getInputStream()) {
       return read(is);
     }
   }

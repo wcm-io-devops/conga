@@ -21,6 +21,8 @@ package io.wcm.devops.conga.generator;
 
 import static org.junit.Assert.assertTrue;
 import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,20 +33,23 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
+
 public class GeneratorTest {
 
   private Generator underTest;
-  private File baseDir;
+  private ResourceCollection baseDir;
   private File destDir;
 
   @Before
   public void setUp() {
-    baseDir = new File("src/test/definitions");
+    ResourceLoader resourceLoader = new ResourceLoader();
+    baseDir = resourceLoader.getResourceCollection("src/test/definitions");
     destDir = new File("target/generation-test");
     underTest = new Generator(
-        new File(baseDir, "roles"),
-        new File(baseDir, "environments"),
-        new File(baseDir, "templates"),
+        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")),
+        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")),
+        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")),
         destDir);
   }
 

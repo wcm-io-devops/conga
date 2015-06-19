@@ -20,14 +20,19 @@
 package io.wcm.devops.conga.tooling.cli;
 
 import io.wcm.devops.conga.generator.Generator;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * CONGA command line interface.
@@ -75,12 +80,14 @@ public final class CongaCli {
     String targetDir = commandLine.getOptionValue("target", "target");
     String[] environments = StringUtils.split(commandLine.getOptionValue("environments", null), ",");
 
-    File templateDirectory = new File(templateDir);
-    File roleDirecotry = new File(roleDir);
-    File environmentDirecotry = new File(environmentDir);
+    ResourceLoader resourceLoader = new ResourceLoader();
+    List<ResourceCollection> roleDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + roleDir));
+    List<ResourceCollection> templateDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + templateDir));
+    List<ResourceCollection> environmentDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + environmentDir));
     File targetDirecotry = new File(targetDir);
 
-    Generator generator = new Generator(roleDirecotry, environmentDirecotry, templateDirectory, targetDirecotry);
+    Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, targetDirecotry);
+    generator.setDeleteBeforeGenerate(true);
     generator.generate(environments);
   }
 

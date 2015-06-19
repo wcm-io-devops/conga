@@ -61,18 +61,6 @@ public final class FileUtil {
   }
 
   /**
-   * Ensure that directory exists.
-   * @param dir Directory
-   * @return Directory
-   */
-  public static File ensureDirExists(File dir) {
-    if (!dir.exists() || !dir.isDirectory()) {
-      throw new IllegalArgumentException("Directory not found: " + getCanonicalPath(dir));
-    }
-    return dir;
-  }
-
-  /**
    * Ensure that directory exists and create it if not.
    * @param dir Directory
    * @return Directory
