@@ -13,12 +13,12 @@ on the command line.
 Developer definitions
 ---------------------
 
-Roles: [definitions/src/roles](definitions/src/roles/)
+Roles: [definitions/src/main/roles](definitions/src/main/roles/)
 
-Templates: [definitions/src/templates](definitions/src/templates/)
+Templates: [definitions/src/main/templates](definitions/src/main/templates/)
 
 
 Operations definitions
 -----------------------
 
-Environments: [environments/src/environments](environments/src/environments/)
+Environments: [environments/src/main/environments](environments/src/main/environments/)
