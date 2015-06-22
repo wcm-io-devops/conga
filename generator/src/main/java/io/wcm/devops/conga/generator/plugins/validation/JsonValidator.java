@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Map;
 
 import org.apache.commons.lang3.CharEncoding;
 
@@ -68,7 +69,7 @@ public final class JsonValidator implements ValidatorPlugin {
   }
 
   @Override
-  public void validate(File file, String charset) throws ValidationException {
+  public void validate(File file, String charset, Map<String, Object> options) throws ValidationException {
     try (InputStream is = new FileInputStream(file);
         Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
       jsonParser.parse(reader);

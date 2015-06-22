@@ -36,7 +36,9 @@ public final class RoleFile implements Cloneable {
   private String template;
   private List<String> variants = new ArrayList<>();
   private List<String> validators = new ArrayList<>();
+  private Map<String, Object> validatorOptions = new HashMap<>();
   private List<String> postProcessors = new ArrayList<>();
+  private Map<String, Object> postProcessorOptions = new HashMap<>();
   private String multiply;
   private Map<String, Object> multiplyOptions = new HashMap<>();
   private String charset = CharEncoding.UTF_8;
@@ -81,12 +83,29 @@ public final class RoleFile implements Cloneable {
     this.validators = validators;
   }
 
+  public Map<String, Object> getValidatorOptions() {
+    return this.validatorOptions;
+  }
+
+
+  public void setValidatorOptions(Map<String, Object> validatorOptions) {
+    this.validatorOptions = validatorOptions;
+  }
+
   public List<String> getPostProcessors() {
     return this.postProcessors;
   }
 
   public void setPostProcessors(List<String> postProcessors) {
     this.postProcessors = postProcessors;
+  }
+
+  public Map<String, Object> getPostProcessorOptions() {
+    return this.postProcessorOptions;
+  }
+
+  public void setPostProcessorOptions(Map<String, Object> postProcessorOptions) {
+    this.postProcessorOptions = postProcessorOptions;
   }
 
   public String getMultiply() {

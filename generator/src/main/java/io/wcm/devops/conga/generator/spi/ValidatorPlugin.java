@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.spi;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Plugin that allows to validate a generate file.
@@ -37,8 +38,9 @@ public interface ValidatorPlugin extends Plugin {
    * Execute validation operation.
    * @param file File
    * @param charset File charset
+   * @param options Validation options
    * @throws ValidationException when validation fails
    */
-  void validate(File file, String charset) throws ValidationException;
+  void validate(File file, String charset, Map<String, Object> options) throws ValidationException;
 
 }

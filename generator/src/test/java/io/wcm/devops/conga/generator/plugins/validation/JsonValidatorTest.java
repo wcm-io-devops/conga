@@ -44,14 +44,14 @@ public class JsonValidatorTest {
   public void testValidJson() throws Exception {
     File file = new File(getClass().getResource("/validators/json/validJson.json").toURI());
     assertTrue(underTest.accepts(file, null));
-    underTest.validate(file, null);
+    underTest.validate(file, null, null);
   }
 
   @Test(expected = ValidationException.class)
   public void testInvalidJson() throws Exception {
     File file = new File(getClass().getResource("/validators/json/invalidJson.json").toURI());
     assertTrue(underTest.accepts(file, null));
-    underTest.validate(file, null);
+    underTest.validate(file, null, null);
   }
 
   @Test

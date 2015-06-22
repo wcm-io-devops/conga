@@ -106,7 +106,7 @@ class FileGenerator {
       throw new GeneratorException("Validator '" + validator.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
     log.info("Validate {} for file {}", validator.getName(), getFilenameForLog());
-    validator.validate(file, roleFile.getCharset());
+    validator.validate(file, roleFile.getCharset(), roleFile.getValidatorOptions());
   }
 
   private void postProcessFile() {
@@ -120,7 +120,7 @@ class FileGenerator {
       throw new GeneratorException("Post processor '" + postProcessor.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
     log.info("Post-process {} for file {}", postProcessor.getName(), getFilenameForLog());
-    postProcessor.postProcess(file, roleFile.getCharset(), log);
+    postProcessor.postProcess(file, roleFile.getCharset(), roleFile.getPostProcessorOptions(), log);
   }
 
   private String getFilenameForLog() {

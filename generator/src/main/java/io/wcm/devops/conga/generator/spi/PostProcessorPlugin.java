@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.spi;
 
 import java.io.File;
+import java.util.Map;
 
 import org.slf4j.Logger;
 
@@ -39,8 +40,9 @@ public interface PostProcessorPlugin extends Plugin {
    * Execute post process operation.
    * @param charset File charset
    * @param file File
+   * @param options Post processor options
    * @param logger Logger
    */
-  void postProcess(File file, String charset, Logger logger);
+  void postProcess(File file, String charset, Map<String, Object> options, Logger logger);
 
 }

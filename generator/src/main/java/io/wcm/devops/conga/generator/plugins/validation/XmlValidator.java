@@ -26,6 +26,7 @@ import io.wcm.devops.conga.generator.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -71,7 +72,7 @@ public final class XmlValidator implements ValidatorPlugin {
   }
 
   @Override
-  public void validate(File file, String charset) throws ValidationException {
+  public void validate(File file, String charset, Map<String, Object> options) throws ValidationException {
     try {
       documentBuilder.parse(file);
     }

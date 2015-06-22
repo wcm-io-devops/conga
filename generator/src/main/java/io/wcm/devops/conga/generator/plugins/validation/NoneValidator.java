@@ -23,6 +23,7 @@ import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Does no validation.
@@ -45,7 +46,7 @@ public final class NoneValidator implements ValidatorPlugin {
   }
 
   @Override
-  public void validate(File file, String charset) throws ValidationException {
+  public void validate(File file, String charset, Map<String, Object> options) throws ValidationException {
     // no validation
   }
 

@@ -44,14 +44,14 @@ public class XmlValidatorTest {
   public void testValidXml() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/validXml.xml").toURI());
     assertTrue(underTest.accepts(file, null));
-    underTest.validate(file, null);
+    underTest.validate(file, null, null);
   }
 
   @Test(expected = ValidationException.class)
   public void testInvalidXml() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/invalidXml.xml").toURI());
     assertTrue(underTest.accepts(file, null));
-    underTest.validate(file, null);
+    underTest.validate(file, null, null);
   }
 
   @Test
