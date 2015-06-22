@@ -50,6 +50,10 @@ public final class VariableStringResolver {
    * @throws IllegalArgumentException when a variable name could not be resolve.d
    */
   public static String resolve(String value, Map<String, Object> variables) {
+    if (value == null) {
+      return null;
+    }
+
     String resolvedString = resolve(value, variables, 0);
 
     // de-escaped escaped variables
