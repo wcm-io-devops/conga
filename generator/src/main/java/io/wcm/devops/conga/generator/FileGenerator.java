@@ -48,6 +48,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Template;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Generates file for one environment.
@@ -143,21 +144,21 @@ class FileGenerator {
     }
 
     // add file header, validate and post-process generated file
-    applyFileHeader(fileContext);
-    applyValidation(fileContext);
+    applyFileHeader(fileContext, roleFile.getFileHeader());
+    applyValidation(fileContext, roleFile.getValidators());
     applyPostProcessor(fileContext);
   }
 
-  private void applyFileHeader(FileContext fileItem) {
+  private void applyFileHeader(FileContext fileItem, String pluginName) {
     Stream<FileHeaderPlugin> fileHeaders;
-    if (StringUtils.isEmpty(roleFile.getFileHeader())) {
+    if (StringUtils.isEmpty(pluginName)) {
       // auto-detect matching file header plugin if none are defined
       fileHeaders = pluginManager.getAll(FileHeaderPlugin.class).stream()
           .filter(plugin -> plugin.accepts(fileItem, fileHeaderContext));
     }
     else {
       // otherwise apply selected file header plugin
-      fileHeaders = Stream.of(roleFile.getFileHeader())
+      fileHeaders = Stream.of(pluginName)
           .map(name -> pluginManager.get(name, FileHeaderPlugin.class));
     }
     fileHeaders
@@ -173,9 +174,9 @@ class FileGenerator {
     plugin.apply(fileItem, fileHeaderContext);
   }
 
-  private void applyValidation(FileContext fileItem) {
+  private void applyValidation(FileContext fileItem, List<String> pluginNames) {
     Stream<ValidatorPlugin> validators;
-    if (roleFile.getValidators().isEmpty()) {
+    if (pluginNames.isEmpty()) {
       // auto-detect matching validators if none are defined
       validators = pluginManager.getAll(ValidatorPlugin.class).stream()
           .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneFileHeader.NAME))
@@ -183,7 +184,7 @@ class FileGenerator {
     }
     else {
       // otherwise apply selected validators
-      validators = roleFile.getValidators().stream()
+      validators = pluginNames.stream()
           .map(name -> pluginManager.get(name, ValidatorPlugin.class));
     }
     validators
@@ -215,8 +216,8 @@ class FileGenerator {
 
     // validate processed files
     if (processedFiles != null) {
-      processedFiles.forEach(this::applyFileHeader);
-      processedFiles.forEach(this::applyValidation);
+      processedFiles.forEach(processedFile -> applyFileHeader(processedFile, (String)null));
+      processedFiles.forEach(processedFile -> applyValidation(processedFile, ImmutableList.of()));
     }
   }
 
