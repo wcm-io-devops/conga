@@ -46,7 +46,7 @@ public class XmlValidatorTest {
     File file = new File(getClass().getResource("/validators/xml/validXml.xml").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertTrue(underTest.accepts(fileContext, null));
-    underTest.validate(fileContext, null);
+    underTest.apply(fileContext, null);
   }
 
   @Test(expected = ValidationException.class)
@@ -54,7 +54,7 @@ public class XmlValidatorTest {
     File file = new File(getClass().getResource("/validators/xml/invalidXml.xml").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertTrue(underTest.accepts(fileContext, null));
-    underTest.validate(fileContext, null);
+    underTest.apply(fileContext, null);
   }
 
   @Test

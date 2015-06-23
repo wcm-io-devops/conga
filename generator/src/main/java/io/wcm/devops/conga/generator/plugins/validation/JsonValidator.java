@@ -69,7 +69,7 @@ public final class JsonValidator implements ValidatorPlugin {
   }
 
   @Override
-  public void validate(FileContext file, ValidatorContext context) throws ValidationException {
+  public Void apply(FileContext file, ValidatorContext context) throws ValidationException {
     try (InputStream is = new FileInputStream(file.getFile());
         Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
       jsonParser.parse(reader);
@@ -77,6 +77,7 @@ public final class JsonValidator implements ValidatorPlugin {
     catch (IOException | JsonIOException | JsonSyntaxException ex) {
       throw new ValidationException("JSON file is not valid: " + ex.getMessage(), ex);
     }
+    return null;
   }
 
 }

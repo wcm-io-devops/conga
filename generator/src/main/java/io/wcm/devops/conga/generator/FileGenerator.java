@@ -118,7 +118,7 @@ class FileGenerator {
       throw new GeneratorException("Validator '" + validator.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
     log.info("Validate {} for file {}", validator.getName(), getFilenameForLog());
-    validator.validate(validateFile, validatorContext);
+    validator.apply(validateFile, validatorContext);
   }
 
   private void postProcessFile(FileContext postProcessFile) {
@@ -134,7 +134,7 @@ class FileGenerator {
     }
     log.info("Post-process {} for file {}", postProcessor.getName(), getFilenameForLog());
 
-    List<FileContext> processedFiles = postProcessor.postProcess(postProcessFile, postProcessorContext);
+    List<FileContext> processedFiles = postProcessor.apply(postProcessFile, postProcessorContext);
 
     // validate processed files
     processedFiles.forEach(this::validateFile);

@@ -45,7 +45,7 @@ public class JsonValidatorTest {
     File file = new File(getClass().getResource("/validators/json/validJson.json").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertTrue(underTest.accepts(fileContext, null));
-    underTest.validate(fileContext, null);
+    underTest.apply(fileContext, null);
   }
 
   @Test(expected = ValidationException.class)
@@ -53,7 +53,7 @@ public class JsonValidatorTest {
     File file = new File(getClass().getResource("/validators/json/invalidJson.json").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertTrue(underTest.accepts(fileContext, null));
-    underTest.validate(fileContext, null);
+    underTest.apply(fileContext, null);
   }
 
   @Test

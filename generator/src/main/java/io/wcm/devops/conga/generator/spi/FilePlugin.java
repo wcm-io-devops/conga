@@ -17,37 +17,31 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.validation;
+package io.wcm.devops.conga.generator.spi;
 
-import io.wcm.devops.conga.generator.spi.ValidationException;
-import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 
 /**
- * Does no validation.
+ * Generic plugin interface all other plugins extend from that are called for a generated file.
+ * @param <T> Context object type.
+ * @param <R> Return type of the apply method.
  */
-public final class NoneValidator implements ValidatorPlugin {
+public interface FilePlugin<T, R> extends Plugin {
 
   /**
-   * Plugin name
+   * Checks if the plugin can be applied to the given file.
+   * @param file Context file
+   * @param context Context objects
+   * @return true when the plugin can be applied to the given file.
    */
-  public static final String NAME = "none";
+  boolean accepts(FileContext file, T context);
 
-  @Override
-  public String getName() {
-    return NAME;
-  }
-
-  @Override
-  public boolean accepts(FileContext file, ValidatorContext context) {
-    return true;
-  }
-
-  @Override
-  public Void apply(FileContext file, ValidatorContext context) throws ValidationException {
-    // no validation
-    return null;
-  }
+  /**
+   * Applies the plugin operation.
+   * @param file Context file
+   * @param context Context objects
+   * @return Return value or {@link Void}.
+   */
+  R apply(FileContext file, T context);
 
 }

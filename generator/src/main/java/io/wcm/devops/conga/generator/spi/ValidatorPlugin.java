@@ -19,27 +19,14 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
-import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 
 /**
  * Plugin that allows to validate a generate file.
+ * The apply method throws a {@link ValidationException} when validation fails.
  */
-public interface ValidatorPlugin extends Plugin {
+public interface ValidatorPlugin extends FilePlugin<ValidatorContext, Void> {
 
-  /**
-   * @param file Context file
-   * @param context Context objects
-   * @return true when validation can be applied to the given context.
-   */
-  boolean accepts(FileContext file, ValidatorContext context);
-
-  /**
-   * Execute validation operation.
-   * @param file Context file
-   * @param context Context objects
-   * @throws ValidationException when validation fails
-   */
-  void validate(FileContext file, ValidatorContext context) throws ValidationException;
+  // methods defined in super interfaces
 
 }

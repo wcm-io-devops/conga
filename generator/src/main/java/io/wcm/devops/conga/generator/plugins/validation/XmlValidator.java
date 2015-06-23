@@ -72,13 +72,14 @@ public final class XmlValidator implements ValidatorPlugin {
   }
 
   @Override
-  public void validate(FileContext file, ValidatorContext context) throws ValidationException {
+  public Void apply(FileContext file, ValidatorContext context) throws ValidationException {
     try {
       documentBuilder.parse(file.getFile());
     }
     catch (SAXException | IOException ex) {
       throw new ValidationException("XML file is not valid: " + ex.getMessage(), ex);
     }
+    return null;
   }
 
 }
