@@ -88,8 +88,8 @@ public final class XmlFileHeader implements FileHeaderPlugin {
       Document doc = documentBuilder.parse(file.getFile());
 
       // build XML comment and add it at first position
-      Comment comment = doc.createComment("\n" + StringUtils.join(context.getCommentLines(), "\n"));
-      doc.insertBefore(comment, doc.getDocumentElement());
+      Comment comment = doc.createComment("\n" + StringUtils.join(context.getCommentLines(), "\n") + "\n");
+      doc.insertBefore(comment, doc.getChildNodes().item(0));
 
       // write file
       file.getFile().delete();

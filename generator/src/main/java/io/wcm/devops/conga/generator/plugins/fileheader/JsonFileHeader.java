@@ -26,6 +26,8 @@ import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.CharEncoding;
@@ -58,10 +60,13 @@ public final class JsonFileHeader implements FileHeaderPlugin {
     try {
       String content = FileUtils.readFileToString(file.getFile(), CharEncoding.UTF_8);
 
+      List<String> sanitizedCommentLines = context.getCommentLines().stream()
+          .map(line -> StringUtils.replace(StringUtils.replace(line, "/*", "/+"), "*/", "+/"))
+          .collect(Collectors.toList());
+
       content = "/*\n"
-          + StringUtils.join(context.getCommentLines(), "\n")
+          + StringUtils.join(sanitizedCommentLines, "\n") + "\n"
           + "*/\n"
-          + "\n"
           + content;
 
       file.getFile().delete();

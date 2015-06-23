@@ -39,6 +39,7 @@ public final class RoleFile implements Cloneable {
   private Map<String, Object> validatorOptions = new HashMap<>();
   private List<String> postProcessors = new ArrayList<>();
   private Map<String, Object> postProcessorOptions = new HashMap<>();
+  private String fileHeader;
   private String multiply;
   private Map<String, Object> multiplyOptions = new HashMap<>();
   private String charset = CharEncoding.UTF_8;
@@ -73,6 +74,14 @@ public final class RoleFile implements Cloneable {
 
   public void setVariants(List<String> variants) {
     this.variants = variants;
+  }
+
+  public String getFileHeader() {
+    return this.fileHeader;
+  }
+
+  public void setFileHeader(String fileHeader) {
+    this.fileHeader = fileHeader;
   }
 
   public List<String> getValidators() {

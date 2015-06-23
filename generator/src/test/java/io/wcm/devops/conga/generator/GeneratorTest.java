@@ -37,6 +37,8 @@ import com.google.common.collect.ImmutableList;
 
 public class GeneratorTest {
 
+  private static final String TEST_VERSION = "testVersion1ForFileHeader";
+
   private Generator underTest;
   private ResourceCollection baseDir;
   private File destDir;
@@ -51,6 +53,7 @@ public class GeneratorTest {
         ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")),
         ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")),
         destDir);
+    underTest.setArtifactVersions(ImmutableList.of(TEST_VERSION));
   }
 
   @Test
@@ -79,12 +82,14 @@ public class GeneratorTest {
     assertContains(json1, "JSON file äöüß€ with UTF-8 encoding");
     assertContains(json1, "\"defaultString\": \"value2\"");
     assertContains(json1, "\"globalString\": \"globalValue äöüß€\"");
+    assertContains(json1, TEST_VERSION);
 
     File xml1tenant1 = assertFile(node1Dir, "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml");
     assertContains(xml1tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
     assertContains(xml1tenant1, "<defaultString>value1 äöüß€</defaultString>");
     assertContains(xml1tenant1, "<globalString>globalValue äöüß€</globalString>");
     assertContains(xml1tenant1, "<variableString>The v1-role1-variant11</variableString>");
+    assertContains(xml1tenant1, TEST_VERSION);
 
     File xml1tenant2 = assertFile(node1Dir, "xml/test.tenant2.tenantRole1.env1.xml");
     assertContains(xml1tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");

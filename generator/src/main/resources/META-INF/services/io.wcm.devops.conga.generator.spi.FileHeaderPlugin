@@ -1,1 +1,3 @@
+io.wcm.devops.conga.generator.plugins.fileheader.JsonFileHeader
 io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader
+io.wcm.devops.conga.generator.plugins.fileheader.XmlFileHeader
