@@ -26,11 +26,17 @@ import java.util.List;
 
 /**
  * Plugin that allows to post-process a generated file.
- * Returns a list of files that where post processed and should be further processed. This can be the same file that was
- * given as input, or one or multiple other files that where generated instead.
  */
 public interface PostProcessorPlugin extends FilePlugin<PostProcessorContext, List<FileContext>> {
 
-  // methods defined in super interfaces
+  /**
+   * Applies the post processing.
+   * @param file Context file
+   * @param context Context objects
+   * @return Returns a list of files that where generated additionally or instead of the input file.
+   *         The input file itself should never be returned, otherwise files may get processed twice.
+   */
+  @Override
+  List<FileContext> apply(FileContext file, PostProcessorContext context);
 
 }

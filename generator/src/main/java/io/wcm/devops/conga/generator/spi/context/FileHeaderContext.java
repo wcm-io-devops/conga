@@ -26,55 +26,21 @@ import java.util.List;
  */
 public final class FileHeaderContext extends AbstractPluginContext<FileHeaderContext> {
 
-  private String message;
-  private String timestamp;
-  private List<String> versions;
+  private List<String> commentLines;
 
   /**
-   * @return File header message
+   * @return Comment lines for file header
    */
-  public String getMessage() {
-    return this.message;
+  public List<String> getCommentLines() {
+    return this.commentLines;
   }
 
   /**
-   * @param value File header message
+   * @param value Comment lines for file header
    * @return this
    */
-  public FileHeaderContext message(String value) {
-    message = value;
-    return this;
-  }
-
-  /**
-   * @return Formatted generation timestampe
-   */
-  public String getTimestamp() {
-    return this.timestamp;
-  }
-
-  /**
-   * @param value Formatted generation timestampe
-   * @return this
-   */
-  public FileHeaderContext timestamp(String value) {
-    timestamp = value;
-    return this;
-  }
-
-  /**
-   * @return Role/Template definition version(s)
-   */
-  public List<String> getVersions() {
-    return this.versions;
-  }
-
-  /**
-   * @param value Role/Template definition version(s)
-   * @return this
-   */
-  public FileHeaderContext versions(List<String> value) {
-    versions = value;
+  public FileHeaderContext commentLines(List<String> value) {
+    commentLines = value;
     return this;
   }
 

@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
+import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 
 /**
@@ -27,6 +28,13 @@ import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
  */
 public interface FileHeaderPlugin extends FilePlugin<FileHeaderContext, Void> {
 
-  // methods defined in super interfaces
+  /**
+   * Applies the comment file header.
+   * @param file Context file
+   * @param context Context objects
+   * @return nothing
+   */
+  @Override
+  Void apply(FileContext file, FileHeaderContext context);
 
 }

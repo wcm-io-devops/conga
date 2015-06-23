@@ -51,6 +51,15 @@ public final class FileUtil {
   }
 
   /**
+   * Get canoncial path of file
+   * @param fileContext File context
+   * @return Canonical path
+   */
+  public static String getCanonicalPath(FileContext fileContext) {
+    return getCanonicalPath(fileContext.getFile());
+  }
+
+  /**
    * Ensure that file exists.
    * @param file File
    * @return File
