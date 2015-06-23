@@ -19,11 +19,30 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
-/**
- * Context object for {@link io.wcm.devops.conga.generator.spi.ValidatorPlugin} calls.
- */
-public interface ValidatorContext extends PluginFileContext {
+import java.io.File;
+import java.util.Map;
 
-  // methods defined in super interfaces
+/**
+ * Super interface for context objects for {@link io.wcm.devops.conga.generator.spi.Plugin} calls for files.
+ */
+public interface PluginFileContext extends PluginContext {
+
+  /**
+   * File that was generated
+   * @return File
+   */
+  File getFile();
+
+  /**
+   * Charset for file
+   * @return Charset
+   */
+  String getCharset();
+
+  /**
+   * Validator options from role definition.
+   * @return Options configuration
+   */
+  Map<String, Object> getOptions();
 
 }

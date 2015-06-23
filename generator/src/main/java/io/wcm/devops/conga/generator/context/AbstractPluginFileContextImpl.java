@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.context;
 
 import io.wcm.devops.conga.generator.spi.context.PluginContext;
+import io.wcm.devops.conga.generator.spi.context.PluginFileContext;
 
 import java.io.File;
 import java.util.Map;
@@ -27,12 +28,14 @@ import java.util.Map;
 /**
  * Implementation of {@link PluginContext} with file context.
  */
-public abstract class AbstractPluginFileContextImpl<T> extends AbstractPluginContextImpl<T> {
+public abstract class AbstractPluginFileContextImpl<T> extends AbstractPluginContextImpl<T>
+    implements PluginFileContext {
 
   private File file;
   private String charset;
   private Map<String, Object> options;
 
+  @Override
   public File getFile() {
     return file;
   }
@@ -47,6 +50,7 @@ public abstract class AbstractPluginFileContextImpl<T> extends AbstractPluginCon
     return (T)this;
   }
 
+  @Override
   public String getCharset() {
     return charset;
   }
@@ -61,6 +65,7 @@ public abstract class AbstractPluginFileContextImpl<T> extends AbstractPluginCon
     return (T)this;
   }
 
+  @Override
   public Map<String, Object> getOptions() {
     return options;
   }

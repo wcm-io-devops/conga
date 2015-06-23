@@ -19,30 +19,11 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
-import java.io.File;
-import java.util.Map;
-
 /**
  * Context object for {@link io.wcm.devops.conga.generator.spi.PostProcessorPlugin} calls.
  */
-public interface PostProcessorContext extends PluginContext {
+public interface PostProcessorContext extends PluginFileContext {
 
-  /**
-   * File that was generated
-   * @return File
-   */
-  File getFile();
-
-  /**
-   * Charset for file
-   * @return Charset
-   */
-  String getCharset();
-
-  /**
-   * Post processor options from role definition.
-   * @return Options configuration
-   */
-  Map<String, Object> getOptions();
+  // methods defined in super interfaces
 
 }
