@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * Generic file header plugin implementation.
  */
@@ -43,9 +45,15 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
     try {
       String content = FileUtils.readFileToString(file.getFile(), file.getCharset());
 
-      List<String> sanitizedCommentLines = context.getCommentLines().stream()
-          .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + sanitizeComment(line) + lineBreak)
-          .collect(Collectors.toList());
+      List<String> sanitizedCommentLines;
+      if (context.getCommentLines() == null) {
+        sanitizedCommentLines = ImmutableList.of();
+      }
+      else {
+        sanitizedCommentLines = context.getCommentLines().stream()
+            .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + sanitizeComment(line) + lineBreak)
+            .collect(Collectors.toList());
+      }
 
       content = StringUtils.defaultString(getCommentBlockStart())
           + StringUtils.join(sanitizedCommentLines, "")

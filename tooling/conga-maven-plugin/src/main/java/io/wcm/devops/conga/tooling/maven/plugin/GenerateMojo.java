@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -82,6 +83,7 @@ public class GenerateMojo extends AbstractCongaMojo {
     Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
     generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
+    generator.setArtifactVersions(buildDependencyVersionList());
     generator.generate(environments);
   }
 
@@ -102,6 +104,20 @@ public class GenerateMojo extends AbstractCongaMojo {
     catch (MalformedURLException | DependencyResolutionRequiredException ex) {
       throw new MojoExecutionException("Unable to get classpath elements for class loader.", ex);
     }
+  }
+
+  /**
+   * Build list of referenced dependencies to be included in file header of generatet files.
+   * @return Version list
+   */
+  @SuppressWarnings("deprecation")
+  private List<String> buildDependencyVersionList() {
+    List<String> versions = new ArrayList<>();
+    for (Dependency dependency : project.getCompileDependencies()) {
+      versions.add(dependency.getGroupId() + "/" + dependency.getArtifactId() + "/" + dependency.getVersion()
+          + (dependency.getClassifier() != null ? "/" + dependency.getClassifier() : ""));
+    }
+    return versions;
   }
 
   @Override
