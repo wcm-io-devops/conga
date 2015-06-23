@@ -170,7 +170,7 @@ class FileGenerator {
     if (!plugin.accepts(fileItem, fileHeaderContext)) {
       throw new GeneratorException("File header plugin '" + plugin.getName() + "' does not accept " + FileUtil.getCanonicalPath(fileItem));
     }
-    log.info("Add {} file header to file {}", plugin.getName(), getFilenameForLog(fileItem));
+    log.debug("Add {} file header to file {}", plugin.getName(), getFilenameForLog(fileItem));
     plugin.apply(fileItem, fileHeaderContext);
   }
 
