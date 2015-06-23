@@ -22,6 +22,8 @@ package io.wcm.devops.conga.generator.spi;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 
+import java.util.List;
+
 /**
  * Plugin that allows to post-process a generated file.
  */
@@ -38,7 +40,9 @@ public interface PostProcessorPlugin extends Plugin {
    * Execute post process operation.
    * @param file Context file
    * @param context Context objects
+   * @return List of files that where post processed and should be further processed. This can be the same file that was
+   *         given as input, or one or multiple other files that where generated instead.
    */
-  void postProcess(FileContext file, PostProcessorContext context);
+  List<FileContext> postProcess(FileContext file, PostProcessorContext context);
 
 }

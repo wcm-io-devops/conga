@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -84,55 +85,59 @@ class FileGenerator {
     }
 
     // validate and post-process generated file
-    validateFile();
-    postProcessFile();
+    validateFile(fileContext);
+    postProcessFile(fileContext);
   }
 
-  private void validateFile() {
+  private void validateFile(FileContext validateFile) {
     Stream<ValidatorPlugin> validators;
     if (roleFile.getValidators().isEmpty()) {
       // auto-detect matching validators if none are defined
       validators = pluginManager.getAll(ValidatorPlugin.class).stream()
-          .filter(validator -> validateAccepts(validator));
+          .filter(validator -> validateAccepts(validateFile, validator));
     }
     else {
       // otherwise apply selected validators
       validators = roleFile.getValidators().stream()
           .map(name -> pluginManager.get(name, ValidatorPlugin.class));
     }
-    validators.forEach(this::validateFile);
+    validators.forEach(plugin -> validateFile(validateFile, plugin));
   }
 
-  private boolean validateAccepts(ValidatorPlugin validator) {
+  private boolean validateAccepts(FileContext validateFile, ValidatorPlugin validator) {
     ValidatorContext validatorContext = new ValidatorContext().options(roleFile.getValidatorOptions()).logger(log);
-    return validator.accepts(fileContext, validatorContext);
+    return validator.accepts(validateFile, validatorContext);
   }
 
-  private void validateFile(ValidatorPlugin validator) {
+  private void validateFile(FileContext validateFile, ValidatorPlugin validator) {
     if (StringUtils.equals(validator.getName(), NoneValidator.NAME)) {
       return;
     }
     ValidatorContext validatorContext = new ValidatorContext().options(roleFile.getValidatorOptions()).logger(log);
-    if (!validator.accepts(fileContext, validatorContext)) {
+    if (!validator.accepts(validateFile, validatorContext)) {
       throw new GeneratorException("Validator '" + validator.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
     log.info("Validate {} for file {}", validator.getName(), getFilenameForLog());
-    validator.validate(fileContext, validatorContext);
+    validator.validate(validateFile, validatorContext);
   }
 
-  private void postProcessFile() {
+  private void postProcessFile(FileContext postProcessFile) {
     roleFile.getPostProcessors().stream()
     .map(name -> pluginManager.get(name, PostProcessorPlugin.class))
-    .forEach(this::postProcessFile);
+    .forEach(plugin -> postProcessFile(postProcessFile, plugin));
   }
 
-  private void postProcessFile(PostProcessorPlugin postProcessor) {
+  private void postProcessFile(FileContext postProcessFile, PostProcessorPlugin postProcessor) {
     PostProcessorContext postProcessorContext = new PostProcessorContext().options(roleFile.getValidatorOptions()).logger(log);
-    if (!postProcessor.accepts(fileContext, postProcessorContext)) {
+    if (!postProcessor.accepts(postProcessFile, postProcessorContext)) {
       throw new GeneratorException("Post processor '" + postProcessor.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
     log.info("Post-process {} for file {}", postProcessor.getName(), getFilenameForLog());
-    postProcessor.postProcess(fileContext, postProcessorContext);
+
+    List<FileContext> processedFiles = postProcessor.postProcess(postProcessFile, postProcessorContext);
+
+    // validate processed files
+    processedFiles.forEach(this::validateFile);
   }
 
   private String getFilenameForLog() {
