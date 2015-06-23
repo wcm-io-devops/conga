@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
+import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 
 /**
@@ -27,16 +28,18 @@ import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 public interface ValidatorPlugin extends Plugin {
 
   /**
+   * @param file Context file
    * @param context Context objects
    * @return true when validation can be applied to the given context.
    */
-  boolean accepts(ValidatorContext context);
+  boolean accepts(FileContext file, ValidatorContext context);
 
   /**
    * Execute validation operation.
+   * @param file Context file
    * @param context Context objects
    * @throws ValidationException when validation fails
    */
-  void validate(ValidatorContext context) throws ValidationException;
+  void validate(FileContext file, ValidatorContext context) throws ValidationException;
 
 }

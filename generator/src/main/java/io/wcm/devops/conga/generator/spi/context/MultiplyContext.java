@@ -35,6 +35,9 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   private Environment environment;
   private Map<String, Object> config;
 
+  /**
+   * @return Role
+   */
   public Role getRole() {
     return role;
   }
@@ -48,6 +51,9 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
     return this;
   }
 
+  /**
+   * @return Role file
+   */
   public RoleFile getRoleFile() {
     return roleFile;
   }
@@ -61,6 +67,9 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
     return this;
   }
 
+  /**
+   * @return Environment
+   */
   public Environment getEnvironment() {
     return environment;
   }
@@ -74,6 +83,9 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
     return this;
   }
 
+  /**
+   * @return Config
+   */
   public Map<String, Object> getConfig() {
     return config;
   }

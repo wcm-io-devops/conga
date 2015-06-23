@@ -28,6 +28,9 @@ public abstract class AbstractPluginContext<T> {
 
   private Logger logger;
 
+  /**
+   * @return Logger
+   */
   public Logger getLogger() {
     return logger;
   }

@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator.plugins.validation;
 
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
@@ -63,13 +64,13 @@ public final class JsonValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(ValidatorContext context) {
-    return FileUtil.matchesExtension(context.getFile(), FILE_EXTENSION);
+  public boolean accepts(FileContext file, ValidatorContext context) {
+    return FileUtil.matchesExtension(file, FILE_EXTENSION);
   }
 
   @Override
-  public void validate(ValidatorContext context) throws ValidationException {
-    try (InputStream is = new FileInputStream(context.getFile());
+  public void validate(FileContext file, ValidatorContext context) throws ValidationException {
+    try (InputStream is = new FileInputStream(file.getFile());
         Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
       jsonParser.parse(reader);
     }

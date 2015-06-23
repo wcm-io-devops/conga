@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -83,6 +85,16 @@ public final class FileUtil {
    */
   public static boolean matchesExtension(File file, String extension) {
     return StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(file.getName()), extension);
+  }
+
+  /**
+   * Checks file extension
+   * @param fileContext File context
+   * @param extension File extension
+   * @return true if file extension matches
+   */
+  public static boolean matchesExtension(FileContext fileContext, String extension) {
+    return matchesExtension(fileContext.getFile(), extension);
   }
 
 }

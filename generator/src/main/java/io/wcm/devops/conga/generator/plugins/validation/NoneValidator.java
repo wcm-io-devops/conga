@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator.plugins.validation;
 
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 
 /**
@@ -39,12 +40,12 @@ public final class NoneValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(ValidatorContext context) {
+  public boolean accepts(FileContext file, ValidatorContext context) {
     return true;
   }
 
   @Override
-  public void validate(ValidatorContext context) throws ValidationException {
+  public void validate(FileContext file, ValidatorContext context) throws ValidationException {
     // no validation
   }
 

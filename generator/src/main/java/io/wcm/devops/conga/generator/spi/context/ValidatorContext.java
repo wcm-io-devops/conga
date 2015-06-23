@@ -19,11 +19,29 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
+import java.util.Map;
+
 /**
  * Context for {@link io.wcm.devops.conga.generator.spi.ValidatorPlugin}.
  */
-public final class ValidatorContext extends AbstractPluginFileContext<ValidatorContext> {
+public final class ValidatorContext extends AbstractPluginContext<ValidatorContext> {
 
-  // implementation in super classes
+  private Map<String, Object> options;
+
+  /**
+   * @return Validator options
+   */
+  public Map<String, Object> getOptions() {
+    return options;
+  }
+
+  /**
+   * @param value Validator options
+   * @return this
+   */
+  public ValidatorContext options(Map<String, Object> value) {
+    options = value;
+    return this;
+  }
 
 }

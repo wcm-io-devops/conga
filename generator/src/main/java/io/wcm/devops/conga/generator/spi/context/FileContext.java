@@ -20,17 +20,18 @@
 package io.wcm.devops.conga.generator.spi.context;
 
 import java.io.File;
-import java.util.Map;
 
 /**
- * Generic plugin file context.
+ * File context for plugins.
  */
-public abstract class AbstractPluginFileContext<T> extends AbstractPluginContext<T> {
+public final class FileContext {
 
   private File file;
   private String charset;
-  private Map<String, Object> options;
 
+  /**
+   * @return File
+   */
   public File getFile() {
     return file;
   }
@@ -39,12 +40,14 @@ public abstract class AbstractPluginFileContext<T> extends AbstractPluginContext
    * @param value File
    * @return this
    */
-  @SuppressWarnings("unchecked")
-  public T file(File value) {
+  public FileContext file(File value) {
     file = value;
-    return (T)this;
+    return this;
   }
 
+  /**
+   * @return Charset
+   */
   public String getCharset() {
     return charset;
   }
@@ -53,24 +56,9 @@ public abstract class AbstractPluginFileContext<T> extends AbstractPluginContext
    * @param value Charset
    * @return this
    */
-  @SuppressWarnings("unchecked")
-  public T charset(String value) {
+  public FileContext charset(String value) {
     charset = value;
-    return (T)this;
-  }
-
-  public Map<String, Object> getOptions() {
-    return options;
-  }
-
-  /**
-   * @param value Config
-   * @return this
-   */
-  @SuppressWarnings("unchecked")
-  public T options(Map<String, Object> value) {
-    options = value;
-    return (T)this;
+    return this;
   }
 
 }

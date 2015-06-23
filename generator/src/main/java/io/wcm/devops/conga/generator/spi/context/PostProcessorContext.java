@@ -19,11 +19,29 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
+import java.util.Map;
+
 /**
  * Context for {@link io.wcm.devops.conga.generator.spi.PostProcessorPlugin}.
  */
-public final class PostProcessorContext extends AbstractPluginFileContext<PostProcessorContext> {
+public final class PostProcessorContext extends AbstractPluginContext<PostProcessorContext> {
 
-  // implementation in super classes
+  private Map<String, Object> options;
+
+  /**
+   * @return Post processor options
+   */
+  public Map<String, Object> getOptions() {
+    return options;
+  }
+
+  /**
+   * @param value Post processor options
+   * @return this
+   */
+  public PostProcessorContext options(Map<String, Object> value) {
+    options = value;
+    return this;
+  }
 
 }

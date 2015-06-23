@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
+import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 
 /**
@@ -27,15 +28,17 @@ import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 public interface PostProcessorPlugin extends Plugin {
 
   /**
+   * @param file Context file
    * @param context Context objects
    * @return true when post process can be applied to the given context.
    */
-  boolean accepts(PostProcessorContext context);
+  boolean accepts(FileContext file, PostProcessorContext context);
 
   /**
    * Execute post process operation.
+   * @param file Context file
    * @param context Context objects
    */
-  void postProcess(PostProcessorContext context);
+  void postProcess(FileContext file, PostProcessorContext context);
 
 }
