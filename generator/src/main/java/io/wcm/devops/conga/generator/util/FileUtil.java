@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -46,6 +48,15 @@ public final class FileUtil {
     catch (IOException ex) {
       return file.getAbsolutePath();
     }
+  }
+
+  /**
+   * Get canoncial path of file
+   * @param fileContext File context
+   * @return Canonical path
+   */
+  public static String getCanonicalPath(FileContext fileContext) {
+    return getCanonicalPath(fileContext.getFile());
   }
 
   /**
@@ -83,6 +94,16 @@ public final class FileUtil {
    */
   public static boolean matchesExtension(File file, String extension) {
     return StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(file.getName()), extension);
+  }
+
+  /**
+   * Checks file extension
+   * @param fileContext File context
+   * @param extension File extension
+   * @return true if file extension matches
+   */
+  public static boolean matchesExtension(FileContext fileContext, String extension) {
+    return matchesExtension(fileContext.getFile(), extension);
   }
 
 }

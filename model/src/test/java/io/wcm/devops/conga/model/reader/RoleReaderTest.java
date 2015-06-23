@@ -88,6 +88,7 @@ public class RoleReaderTest {
     assertEquals(ImmutableMap.of("option1", "value1"), file.getValidatorOptions());
     assertEquals(ImmutableList.of("osgi-config-generator"), file.getPostProcessors());
     assertEquals(ImmutableMap.of("option2", "value2"), file.getPostProcessorOptions());
+    assertEquals("sling-provisioning", file.getFileHeader());
     assertEquals("none", file.getMultiply());
     assertEquals(CharEncoding.UTF_8, file.getCharset());
 

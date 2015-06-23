@@ -17,16 +17,16 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.validation;
+package io.wcm.devops.conga.generator.plugins.fileheader;
 
-import io.wcm.devops.conga.generator.spi.ValidationException;
-import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
-import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
+import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 
 /**
- * Does no validation.
+ * Adds no file header.
  */
-public final class NoneValidator implements ValidatorPlugin {
+public final class NoneFileHeader implements FileHeaderPlugin {
 
   /**
    * Plugin name
@@ -39,13 +39,14 @@ public final class NoneValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(ValidatorContext context) {
+  public boolean accepts(FileContext file, FileHeaderContext context) {
     return true;
   }
 
   @Override
-  public void validate(ValidatorContext context) throws ValidationException {
-    // no validation
+  public Void apply(FileContext file, FileHeaderContext context) {
+    // no file header
+    return null;
   }
 
 }

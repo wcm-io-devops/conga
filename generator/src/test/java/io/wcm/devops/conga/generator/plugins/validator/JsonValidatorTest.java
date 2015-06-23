@@ -17,14 +17,13 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.validation;
+package io.wcm.devops.conga.generator.plugins.validator;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import io.wcm.devops.conga.generator.context.ValidatorContextImpl;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
-import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 
 import java.io.File;
@@ -44,24 +43,24 @@ public class JsonValidatorTest {
   @Test
   public void testValidJson() throws Exception {
     File file = new File(getClass().getResource("/validators/json/validJson.json").toURI());
-    ValidatorContext context = new ValidatorContextImpl().file(file);
-    assertTrue(underTest.accepts(context));
-    underTest.validate(context);
+    FileContext fileContext = new FileContext().file(file);
+    assertTrue(underTest.accepts(fileContext, null));
+    underTest.apply(fileContext, null);
   }
 
   @Test(expected = ValidationException.class)
   public void testInvalidJson() throws Exception {
     File file = new File(getClass().getResource("/validators/json/invalidJson.json").toURI());
-    ValidatorContext context = new ValidatorContextImpl().file(file);
-    assertTrue(underTest.accepts(context));
-    underTest.validate(context);
+    FileContext fileContext = new FileContext().file(file);
+    assertTrue(underTest.accepts(fileContext, null));
+    underTest.apply(fileContext, null);
   }
 
   @Test
   public void testNoJson() throws Exception {
     File file = new File(getClass().getResource("/validators/json/noJson.txt").toURI());
-    ValidatorContext context = new ValidatorContextImpl().file(file);
-    assertFalse(underTest.accepts(context));
+    FileContext fileContext = new FileContext().file(file);
+    assertFalse(underTest.accepts(fileContext, null));
   }
 
 }

@@ -17,16 +17,32 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.context;
+package io.wcm.devops.conga.generator.spi.context;
 
-import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
+import org.slf4j.Logger;
 
 /**
- * Implementation of {@link ValidatorContext}.
+ * Generic plugin context.
  */
-public final class ValidatorContextImpl extends AbstractPluginFileContextImpl<ValidatorContextImpl>
-    implements ValidatorContext {
+public abstract class AbstractPluginContext<T> {
 
-  // implementation in superclasses
+  private Logger logger;
+
+  /**
+   * @return Logger
+   */
+  public Logger getLogger() {
+    return logger;
+  }
+
+  /**
+   * @param value Logger
+   * @return this
+   */
+  @SuppressWarnings("unchecked")
+  public T logger(Logger value) {
+    logger = value;
+    return (T)this;
+  }
 
 }

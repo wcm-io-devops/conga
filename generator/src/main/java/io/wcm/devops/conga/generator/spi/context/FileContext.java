@@ -19,17 +19,51 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
-import org.slf4j.Logger;
+import java.io.File;
 
 /**
- * Super interface for context objects for {@link io.wcm.devops.conga.generator.spi.Plugin} calls.
+ * File context for plugins.
  */
-public interface PluginContext {
+public final class FileContext {
+
+  private File file;
+  private String charset;
 
   /**
-   * Logger to write plugin logging messages to.
-   * @return Logger
+   * @return File
    */
-  Logger getLogger();
+  public File getFile() {
+    return file;
+  }
+
+  /**
+   * @param value File
+   * @return this
+   */
+  public FileContext file(File value) {
+    file = value;
+    return this;
+  }
+
+  /**
+   * @return Charset
+   */
+  public String getCharset() {
+    return charset;
+  }
+
+  /**
+   * @param value Charset
+   * @return this
+   */
+  public FileContext charset(String value) {
+    charset = value;
+    return this;
+  }
+
+  @Override
+  public String toString() {
+    return file.toString();
+  }
 
 }

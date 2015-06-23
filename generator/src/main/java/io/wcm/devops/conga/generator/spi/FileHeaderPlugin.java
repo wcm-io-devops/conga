@@ -17,16 +17,24 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.context;
+package io.wcm.devops.conga.generator.spi;
 
-import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 
 /**
- * Implementation of {@link PostProcessorContext}.
+ * Plugin that generates a file header comment with info that the file was automatically generated
+ * and further info like a timestamp.
  */
-public final class PostProcessorContextImpl
-    extends AbstractPluginFileContextImpl<PostProcessorContextImpl> implements PostProcessorContext {
+public interface FileHeaderPlugin extends FilePlugin<FileHeaderContext, Void> {
 
-  // implementation in superclasses
+  /**
+   * Applies the comment file header.
+   * @param file Context file
+   * @param context Context objects
+   * @return nothing
+   */
+  @Override
+  Void apply(FileContext file, FileHeaderContext context);
 
 }

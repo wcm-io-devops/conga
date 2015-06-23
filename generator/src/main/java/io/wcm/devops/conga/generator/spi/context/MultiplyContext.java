@@ -23,36 +23,80 @@ import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
 
-import java.util.List;
 import java.util.Map;
 
 /**
- * Context object for {@link io.wcm.devops.conga.generator.spi.MultiplyPlugin} calls.
+ * Context for {@link io.wcm.devops.conga.generator.spi.MultiplyPlugin}.
  */
-public interface MultiplyContext extends PluginContext {
-  
+public final class MultiplyContext extends AbstractPluginContext<MultiplyContext> {
+
+  private Role role;
+  private RoleFile roleFile;
+  private Environment environment;
+  private Map<String, Object> config;
+
   /**
-   * Current role.
    * @return Role
    */
-  Role getRole();
-  
+  public Role getRole() {
+    return role;
+  }
+
   /**
-   * Current generated file of role
+   * @param value Role
+   * @return this
+   */
+  public MultiplyContext role(Role value) {
+    role = value;
+    return this;
+  }
+
+  /**
    * @return Role file
    */
-  RoleFile getRoleFile();
-  
+  public RoleFile getRoleFile() {
+    return roleFile;
+  }
+
   /**
-   * Environment
+   * @param value Role file
+   * @return this
+   */
+  public MultiplyContext roleFile(RoleFile value) {
+    roleFile = value;
+    return this;
+  }
+
+  /**
    * @return Environment
    */
-  Environment getEnvironment();
-  
+  public Environment getEnvironment() {
+    return environment;
+  }
+
   /**
-   * Merged configuration for current node/role.
-   * @return Configuration
+   * @param value Environment
+   * @return this
    */
-  Map<String, Object> getConfig();
+  public MultiplyContext environment(Environment value) {
+    environment = value;
+    return this;
+  }
+
+  /**
+   * @return Config
+   */
+  public Map<String, Object> getConfig() {
+    return config;
+  }
+
+  /**
+   * @param value Config
+   * @return this
+   */
+  public MultiplyContext config(Map<String, Object> value) {
+    config = value;
+    return this;
+  }
 
 }

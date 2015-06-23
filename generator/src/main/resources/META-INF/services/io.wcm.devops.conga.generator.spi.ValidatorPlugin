@@ -1,3 +1,3 @@
-io.wcm.devops.conga.generator.plugins.validation.JsonValidator
-io.wcm.devops.conga.generator.plugins.validation.NoneValidator
-io.wcm.devops.conga.generator.plugins.validation.XmlValidator
+io.wcm.devops.conga.generator.plugins.validator.JsonValidator
+io.wcm.devops.conga.generator.plugins.validator.NoneValidator
+io.wcm.devops.conga.generator.plugins.validator.XmlValidator

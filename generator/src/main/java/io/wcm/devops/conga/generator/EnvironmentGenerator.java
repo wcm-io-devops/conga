@@ -19,7 +19,6 @@
  */
 package io.wcm.devops.conga.generator;
 
-import io.wcm.devops.conga.generator.context.MultiplyContextImpl;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
@@ -64,13 +63,15 @@ class EnvironmentGenerator {
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
+  private final List<String> artifactVersions;
   private final Logger log;
 
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
 
   public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
-      File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager, Logger log) {
+      File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager,
+      List<String> artifactVersions, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = environment;
@@ -78,6 +79,7 @@ class EnvironmentGenerator {
     this.pluginManager = pluginManager;
     this.handlebarsManager = handlebarsManager;
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
+    this.artifactVersions = artifactVersions;
     this.log = log;
     this.environmentContextProperties = ImmutableMap.copyOf(
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, environment));
@@ -165,7 +167,7 @@ class EnvironmentGenerator {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
     }
 
-    MultiplyContext multiplyContext = new MultiplyContextImpl()
+    MultiplyContext multiplyContext = new MultiplyContext()
     .role(role)
     .roleFile(roleFile)
     .environment(environment)
@@ -194,7 +196,7 @@ class EnvironmentGenerator {
     if (file.exists()) {
       file.delete();
     }
-    FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager, log);
+    FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager, artifactVersions, log);
     try {
       fileGenerator.generate();
       generatedFilePaths.add(FileUtil.getCanonicalPath(file));

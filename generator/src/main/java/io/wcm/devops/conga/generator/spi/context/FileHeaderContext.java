@@ -17,32 +17,31 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.context;
+package io.wcm.devops.conga.generator.spi.context;
 
-import io.wcm.devops.conga.generator.spi.context.PluginContext;
-
-import org.slf4j.Logger;
+import java.util.List;
 
 /**
- * Implementation of {@link PluginContext}.
+ * Context for {@link io.wcm.devops.conga.generator.spi.FileHeaderPlugin}.
  */
-public abstract class AbstractPluginContextImpl<T> implements PluginContext {
+public final class FileHeaderContext extends AbstractPluginContext<FileHeaderContext> {
 
-  private Logger logger;
+  private List<String> commentLines;
 
-  @Override
-  public Logger getLogger() {
-    return logger;
+  /**
+   * @return Comment lines for file header
+   */
+  public List<String> getCommentLines() {
+    return this.commentLines;
   }
 
   /**
-   * @param value Logger
+   * @param value Comment lines for file header
    * @return this
    */
-  @SuppressWarnings("unchecked")
-  public T logger(Logger value) {
-    logger = value;
-    return (T)this;
+  public FileHeaderContext commentLines(List<String> value) {
+    commentLines = value;
+    return this;
   }
 
 }

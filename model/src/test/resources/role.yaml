@@ -13,6 +13,7 @@ files:
   template: systemconfig-importer.txt.hbs
   variants:
   - importer
+  fileHeader: sling-provisioning
   validators:
   - sling-provisioning-model
   validatorOptions:

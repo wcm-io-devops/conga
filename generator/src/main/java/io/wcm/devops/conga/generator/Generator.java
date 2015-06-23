@@ -56,6 +56,7 @@ public final class Generator {
   private final HandlebarsManager handlebarsManager;
   private Logger log = LoggerFactory.getLogger(getClass());
   private boolean deleteBeforeGenerate;
+  private List<String> artifactVersions;
 
   /**
    * @param roleDirs Directories with role definitions. Filename without extension = role name.
@@ -84,6 +85,13 @@ public final class Generator {
    */
   public void setDeleteBeforeGenerate(boolean deleteBeforeGenerate) {
     this.deleteBeforeGenerate = deleteBeforeGenerate;
+  }
+
+  /**
+   * @param artifactVersions List of versions to include as information in generated file headers.
+   */
+  public void setArtifactVersions(List<String> artifactVersions) {
+    this.artifactVersions = artifactVersions;
   }
 
   private static <T> Map<String, T> readModels(List<ResourceCollection> dirs, ModelReader<T> reader) {
@@ -138,7 +146,7 @@ public final class Generator {
         environmentDestDir.mkdir();
       }
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDestDir, pluginManager, handlebarsManager, log);
+          environmentDestDir, pluginManager, handlebarsManager, artifactVersions, log);
       environmentGenerator.generate();
     }
   }

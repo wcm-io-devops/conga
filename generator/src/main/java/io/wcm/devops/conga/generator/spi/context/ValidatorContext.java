@@ -19,30 +19,29 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
-import java.io.File;
 import java.util.Map;
 
 /**
- * Context object for {@link io.wcm.devops.conga.generator.spi.ValidatorPlugin} calls.
+ * Context for {@link io.wcm.devops.conga.generator.spi.ValidatorPlugin}.
  */
-public interface ValidatorContext extends PluginContext {
+public final class ValidatorContext extends AbstractPluginContext<ValidatorContext> {
+
+  private Map<String, Object> options;
 
   /**
-   * File that was generated
-   * @return File
+   * @return Validator options
    */
-  File getFile();
+  public Map<String, Object> getOptions() {
+    return options;
+  }
 
   /**
-   * Charset for file
-   * @return Charset
+   * @param value Validator options
+   * @return this
    */
-  String getCharset();
-
-  /**
-   * Validator options from role definition.
-   * @return Options configuration
-   */
-  Map<String, Object> getOptions();
+  public ValidatorContext options(Map<String, Object> value) {
+    options = value;
+    return this;
+  }
 
 }
