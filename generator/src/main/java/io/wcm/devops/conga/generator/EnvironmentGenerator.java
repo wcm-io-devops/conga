@@ -19,10 +19,12 @@
  */
 package io.wcm.devops.conga.generator;
 
+import io.wcm.devops.conga.generator.context.MultiplyContextImpl;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
+import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
@@ -163,7 +165,14 @@ class EnvironmentGenerator {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
     }
 
-    List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(role, roleFile, environment, config);
+    MultiplyContext multiplyContext = new MultiplyContextImpl()
+    .role(role)
+    .roleFile(roleFile)
+    .environment(environment)
+    .config(config)
+    .logger(log);
+
+    List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
 
       // resolve variables

@@ -21,9 +21,7 @@ package io.wcm.devops.conga.generator.plugins.validation;
 
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
-
-import java.io.File;
-import java.util.Map;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 
 /**
  * Does no validation.
@@ -41,12 +39,12 @@ public final class NoneValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(File file, String charset) {
+  public boolean accepts(ValidatorContext context) {
     return true;
   }
 
   @Override
-  public void validate(File file, String charset, Map<String, Object> options) throws ValidationException {
+  public void validate(ValidatorContext context) throws ValidationException {
     // no validation
   }
 

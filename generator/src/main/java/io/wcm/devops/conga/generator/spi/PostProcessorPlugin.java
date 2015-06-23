@@ -19,10 +19,7 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
-import java.io.File;
-import java.util.Map;
-
-import org.slf4j.Logger;
+import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 
 /**
  * Plugin that allows to post-process a generated file.
@@ -30,19 +27,15 @@ import org.slf4j.Logger;
 public interface PostProcessorPlugin extends Plugin {
 
   /**
-   * @param file File
-   * @param charset File charset
+   * @param context Context objects
    * @return true when post process can be applied to the given context.
    */
-  boolean accepts(File file, String charset);
+  boolean accepts(PostProcessorContext context);
 
   /**
    * Execute post process operation.
-   * @param charset File charset
-   * @param file File
-   * @param options Post processor options
-   * @param logger Logger
+   * @param context Context objects
    */
-  void postProcess(File file, String charset, Map<String, Object> options, Logger logger);
+  void postProcess(PostProcessorContext context);
 
 }

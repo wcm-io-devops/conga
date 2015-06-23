@@ -22,11 +22,10 @@ package io.wcm.devops.conga.generator.plugins.validation;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -67,14 +66,14 @@ public final class XmlValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(File file, String charset) {
-    return FileUtil.matchesExtension(file, FILE_EXTENSION);
+  public boolean accepts(ValidatorContext context) {
+    return FileUtil.matchesExtension(context.getFile(), FILE_EXTENSION);
   }
 
   @Override
-  public void validate(File file, String charset, Map<String, Object> options) throws ValidationException {
+  public void validate(ValidatorContext context) throws ValidationException {
     try {
-      documentBuilder.parse(file);
+      documentBuilder.parse(context.getFile());
     }
     catch (SAXException | IOException ex) {
       throw new ValidationException("XML file is not valid: " + ex.getMessage(), ex);

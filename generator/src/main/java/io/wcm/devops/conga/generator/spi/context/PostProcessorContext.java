@@ -17,26 +17,32 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.spi;
+package io.wcm.devops.conga.generator.spi.context;
 
-import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
+import java.io.File;
+import java.util.Map;
 
 /**
- * Plugin that allows to validate a generate file.
+ * Context object for {@link io.wcm.devops.conga.generator.spi.PostProcessorPlugin} calls.
  */
-public interface ValidatorPlugin extends Plugin {
+public interface PostProcessorContext extends PluginContext {
 
   /**
-   * @param context Context objects
-   * @return true when validation can be applied to the given context.
+   * File that was generated
+   * @return File
    */
-  boolean accepts(ValidatorContext context);
+  File getFile();
 
   /**
-   * Execute validation operation.
-   * @param context Context objects
-   * @throws ValidationException when validation fails
+   * Charset for file
+   * @return Charset
    */
-  void validate(ValidatorContext context) throws ValidationException;
+  String getCharset();
+
+  /**
+   * Post processor options from role definition.
+   * @return Options configuration
+   */
+  Map<String, Object> getOptions();
 
 }

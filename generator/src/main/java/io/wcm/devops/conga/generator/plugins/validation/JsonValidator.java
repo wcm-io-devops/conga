@@ -21,15 +21,14 @@ package io.wcm.devops.conga.generator.plugins.validation;
 
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Map;
 
 import org.apache.commons.lang3.CharEncoding;
 
@@ -64,13 +63,13 @@ public final class JsonValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(File file, String charset) {
-    return FileUtil.matchesExtension(file, FILE_EXTENSION);
+  public boolean accepts(ValidatorContext context) {
+    return FileUtil.matchesExtension(context.getFile(), FILE_EXTENSION);
   }
 
   @Override
-  public void validate(File file, String charset, Map<String, Object> options) throws ValidationException {
-    try (InputStream is = new FileInputStream(file);
+  public void validate(ValidatorContext context) throws ValidationException {
+    try (InputStream is = new FileInputStream(context.getFile());
         Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
       jsonParser.parse(reader);
     }

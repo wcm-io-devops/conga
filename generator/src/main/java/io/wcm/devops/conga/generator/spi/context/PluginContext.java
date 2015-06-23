@@ -17,26 +17,19 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.spi;
+package io.wcm.devops.conga.generator.spi.context;
 
-import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
+import org.slf4j.Logger;
 
 /**
- * Plugin that allows to validate a generate file.
+ * Super interface for context objects for {@link io.wcm.devops.conga.generator.spi.Plugin} calls.
  */
-public interface ValidatorPlugin extends Plugin {
+public interface PluginContext {
 
   /**
-   * @param context Context objects
-   * @return true when validation can be applied to the given context.
+   * Logger to write plugin logging messages to.
+   * @return Logger
    */
-  boolean accepts(ValidatorContext context);
-
-  /**
-   * Execute validation operation.
-   * @param context Context objects
-   * @throws ValidationException when validation fails
-   */
-  void validate(ValidatorContext context) throws ValidationException;
+  Logger getLogger();
 
 }

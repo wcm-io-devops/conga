@@ -19,9 +19,13 @@
  */
 package io.wcm.devops.conga.generator;
 
+import io.wcm.devops.conga.generator.context.PostProcessorContextImpl;
+import io.wcm.devops.conga.generator.context.ValidatorContextImpl;
 import io.wcm.devops.conga.generator.plugins.validation.NoneValidator;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.role.RoleFile;
@@ -88,7 +92,7 @@ class FileGenerator {
     if (roleFile.getValidators().isEmpty()) {
       // auto-detect matching validators if none are defined
       validators = pluginManager.getAll(ValidatorPlugin.class).stream()
-          .filter(validator -> validator.accepts(file, roleFile.getCharset()));
+          .filter(validator -> validateAccepts(validator));
     }
     else {
       // otherwise apply selected validators
@@ -98,15 +102,32 @@ class FileGenerator {
     validators.forEach(this::validateFile);
   }
 
+  private boolean validateAccepts(ValidatorPlugin validator) {
+    ValidatorContext validatorContext = new ValidatorContextImpl()
+    .file(file)
+    .charset(roleFile.getCharset())
+    .options(roleFile.getValidatorOptions())
+    .logger(log);
+
+    return validator.accepts(validatorContext);
+  }
+
   private void validateFile(ValidatorPlugin validator) {
     if (StringUtils.equals(validator.getName(), NoneValidator.NAME)) {
       return;
     }
-    if (!validator.accepts(file, roleFile.getCharset())) {
+
+    ValidatorContext validatorContext = new ValidatorContextImpl()
+    .file(file)
+    .charset(roleFile.getCharset())
+    .options(roleFile.getValidatorOptions())
+    .logger(log);
+
+    if (!validator.accepts(validatorContext)) {
       throw new GeneratorException("Validator '" + validator.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
     log.info("Validate {} for file {}", validator.getName(), getFilenameForLog());
-    validator.validate(file, roleFile.getCharset(), roleFile.getValidatorOptions());
+    validator.validate(validatorContext);
   }
 
   private void postProcessFile() {
@@ -116,11 +137,17 @@ class FileGenerator {
   }
 
   private void postProcessFile(PostProcessorPlugin postProcessor) {
-    if (!postProcessor.accepts(file, roleFile.getCharset())) {
+    PostProcessorContext postProcessorContext = new PostProcessorContextImpl()
+    .file(file)
+    .charset(roleFile.getCharset())
+    .options(roleFile.getValidatorOptions())
+    .logger(log);
+
+    if (!postProcessor.accepts(postProcessorContext)) {
       throw new GeneratorException("Post processor '" + postProcessor.getName() + "' does not accept " + FileUtil.getCanonicalPath(file));
     }
     log.info("Post-process {} for file {}", postProcessor.getName(), getFilenameForLog());
-    postProcessor.postProcess(file, roleFile.getCharset(), roleFile.getPostProcessorOptions(), log);
+    postProcessor.postProcess(postProcessorContext);
   }
 
   private String getFilenameForLog() {

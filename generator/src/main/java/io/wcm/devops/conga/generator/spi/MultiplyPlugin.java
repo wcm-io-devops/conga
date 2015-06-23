@@ -19,9 +19,7 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
-import io.wcm.devops.conga.model.environment.Environment;
-import io.wcm.devops.conga.model.role.Role;
-import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 
 import java.util.List;
 import java.util.Map;
@@ -33,13 +31,10 @@ public interface MultiplyPlugin extends Plugin {
 
   /**
    * Execute multiply operation.
-   * @param role Role
-   * @param roleFile Role file
-   * @param environment Environment
-   * @param config Configuration
+   * @param context Context objects
    * @return List of configurations with adapted parameters per multiply item. Parameters from this map can be used in
    *         placeholder for directory or filename to generate multiple files.
    */
-  List<Map<String, Object>> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config);
+  List<Map<String, Object>> multiply(MultiplyContext context);
 
 }

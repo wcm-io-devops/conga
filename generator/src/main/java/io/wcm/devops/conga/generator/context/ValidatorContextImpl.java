@@ -17,26 +17,16 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.spi;
+package io.wcm.devops.conga.generator.context;
 
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 
 /**
- * Plugin that allows to validate a generate file.
+ * Implementation of {@link ValidatorContext}.
  */
-public interface ValidatorPlugin extends Plugin {
+public final class ValidatorContextImpl extends AbstractPluginFileContextImpl<ValidatorContextImpl>
+    implements ValidatorContext {
 
-  /**
-   * @param context Context objects
-   * @return true when validation can be applied to the given context.
-   */
-  boolean accepts(ValidatorContext context);
-
-  /**
-   * Execute validation operation.
-   * @param context Context objects
-   * @throws ValidationException when validation fails
-   */
-  void validate(ValidatorContext context) throws ValidationException;
+  // implementation in superclasses
 
 }
