@@ -23,19 +23,18 @@ import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
- * Adds file headers to JSON files.
+ * Adds file headers to Windows .bat or .cmd files.
  */
-public final class JsonFileHeader extends AbstractFileHeader {
+public final class WindowsCmdScriptFileHeader extends AbstractFileHeader {
 
   /**
    * Plugin name
    */
-  public static final String NAME = "json";
+  public static final String NAME = "windowsCmdScript";
 
-  private static final String FILE_EXTENSION = "json";
+  private static final String FILE_EXTENSION_BAT = "bat";
+  private static final String FILE_EXTENSION_CMD = "cmd";
 
   @Override
   public String getName() {
@@ -44,22 +43,23 @@ public final class JsonFileHeader extends AbstractFileHeader {
 
   @Override
   public boolean accepts(FileContext file, FileHeaderContext context) {
-    return FileUtil.matchesExtension(file, FILE_EXTENSION);
+    return FileUtil.matchesExtension(file, FILE_EXTENSION_BAT)
+        || FileUtil.matchesExtension(file, FILE_EXTENSION_CMD);
   }
 
   @Override
-  protected String sanitizeComment(String line) {
-    return StringUtils.replace(StringUtils.replace(line, "/*", "/+"), "*/", "+/");
+  protected String getLineBreak() {
+    return "\r\n";
   }
 
   @Override
-  protected String getCommentBlockStart() {
-    return "/*\n";
+  protected String getCommentLinePrefix() {
+    return "REM ";
   }
 
   @Override
-  protected String getCommentBlockEnd() {
-    return "*/\n";
+  protected String getBlockSuffix() {
+    return getLineBreak();
   }
 
 }

@@ -43,7 +43,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * Adds XML file header.
+ * Adds file headers to XML files.
  */
 public final class XmlFileHeader implements FileHeaderPlugin {
 

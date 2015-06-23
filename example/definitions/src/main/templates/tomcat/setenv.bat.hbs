@@ -1,0 +1,11 @@
+REM Java environment to use for the tomcat instance
+SET JAVA_HOME={{jvm.path}}
+
+REM Path where to store PID file
+SET CATALINA_PID={{tomcat.path}}/catalinarunning.pid
+
+REM Heap space and permgen space memory settings for JVM
+SET CATALINA_OPTS=-Xms{{jvm.heapspace.min}} -Xmx{{jvm.heapspace.max}} -XX:MaxPermSize={{jvm.permgenspace.max}}
+
+REM JVM optimization settings: Enable G1 garbage collector
+SET CATALINA_OPTS=$CATALINA_OPTS$ -XX:+UseG1GC

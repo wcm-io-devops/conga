@@ -33,6 +33,11 @@ files:
   # Default charset ist UTF-8 unless specified otherwise
   charset: ISO-8859-1
 
+- file: setenv.bat
+  dir: bin
+  template: setenv.bat.hbs
+  charset: ISO-8859-1
+
 
 # Defines configuration parameters and default values
 config:
