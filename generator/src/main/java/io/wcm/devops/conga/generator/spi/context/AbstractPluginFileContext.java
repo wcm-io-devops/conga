@@ -17,25 +17,20 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.context;
-
-import io.wcm.devops.conga.generator.spi.context.PluginContext;
-import io.wcm.devops.conga.generator.spi.context.PluginFileContext;
+package io.wcm.devops.conga.generator.spi.context;
 
 import java.io.File;
 import java.util.Map;
 
 /**
- * Implementation of {@link PluginContext} with file context.
+ * Generic plugin file context.
  */
-public abstract class AbstractPluginFileContextImpl<T> extends AbstractPluginContextImpl<T>
-    implements PluginFileContext {
+public abstract class AbstractPluginFileContext<T> extends AbstractPluginContext<T> {
 
   private File file;
   private String charset;
   private Map<String, Object> options;
 
-  @Override
   public File getFile() {
     return file;
   }
@@ -50,7 +45,6 @@ public abstract class AbstractPluginFileContextImpl<T> extends AbstractPluginCon
     return (T)this;
   }
 
-  @Override
   public String getCharset() {
     return charset;
   }
@@ -65,7 +59,6 @@ public abstract class AbstractPluginFileContextImpl<T> extends AbstractPluginCon
     return (T)this;
   }
 
-  @Override
   public Map<String, Object> getOptions() {
     return options;
   }

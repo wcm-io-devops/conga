@@ -17,20 +17,17 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.context;
-
-import io.wcm.devops.conga.generator.spi.context.PluginContext;
+package io.wcm.devops.conga.generator.spi.context;
 
 import org.slf4j.Logger;
 
 /**
- * Implementation of {@link PluginContext}.
+ * Generic plugin context.
  */
-public abstract class AbstractPluginContextImpl<T> implements PluginContext {
+public abstract class AbstractPluginContext<T> {
 
   private Logger logger;
 
-  @Override
   public Logger getLogger() {
     return logger;
   }

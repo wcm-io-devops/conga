@@ -20,7 +20,6 @@
 package io.wcm.devops.conga.generator.plugins.multiply;
 
 import static org.junit.Assert.assertEquals;
-import io.wcm.devops.conga.generator.context.MultiplyContextImpl;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -59,7 +58,7 @@ public class NoneMultiplyTest {
 
   @Test
   public void testMultiply() {
-    MultiplyContext context = new MultiplyContextImpl().role(role).roleFile(roleFile).environment(environment).config(config);
+    MultiplyContext context = new MultiplyContext().role(role).roleFile(roleFile).environment(environment).config(config);
     List<Map<String, Object>> configs = underTest.multiply(context);
 
     assertEquals(1, configs.size());

@@ -20,10 +20,10 @@
 package io.wcm.devops.conga.generator.spi.context;
 
 /**
- * Context object for {@link io.wcm.devops.conga.generator.spi.PostProcessorPlugin} calls.
+ * Context for {@link io.wcm.devops.conga.generator.spi.PostProcessorPlugin}.
  */
-public interface PostProcessorContext extends PluginFileContext {
+public final class PostProcessorContext extends AbstractPluginFileContext<PostProcessorContext> {
 
-  // methods defined in super interfaces
+  // implementation in super classes
 
 }

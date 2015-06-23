@@ -19,7 +19,6 @@
  */
 package io.wcm.devops.conga.generator;
 
-import io.wcm.devops.conga.generator.context.MultiplyContextImpl;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
@@ -165,7 +164,7 @@ class EnvironmentGenerator {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
     }
 
-    MultiplyContext multiplyContext = new MultiplyContextImpl()
+    MultiplyContext multiplyContext = new MultiplyContext()
     .role(role)
     .roleFile(roleFile)
     .environment(environment)

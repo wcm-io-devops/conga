@@ -19,8 +19,6 @@
  */
 package io.wcm.devops.conga.generator;
 
-import io.wcm.devops.conga.generator.context.PostProcessorContextImpl;
-import io.wcm.devops.conga.generator.context.ValidatorContextImpl;
 import io.wcm.devops.conga.generator.plugins.validation.NoneValidator;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
@@ -103,7 +101,7 @@ class FileGenerator {
   }
 
   private boolean validateAccepts(ValidatorPlugin validator) {
-    ValidatorContext validatorContext = new ValidatorContextImpl()
+    ValidatorContext validatorContext = new ValidatorContext()
     .file(file)
     .charset(roleFile.getCharset())
     .options(roleFile.getValidatorOptions())
@@ -117,7 +115,7 @@ class FileGenerator {
       return;
     }
 
-    ValidatorContext validatorContext = new ValidatorContextImpl()
+    ValidatorContext validatorContext = new ValidatorContext()
     .file(file)
     .charset(roleFile.getCharset())
     .options(roleFile.getValidatorOptions())
@@ -137,7 +135,7 @@ class FileGenerator {
   }
 
   private void postProcessFile(PostProcessorPlugin postProcessor) {
-    PostProcessorContext postProcessorContext = new PostProcessorContextImpl()
+    PostProcessorContext postProcessorContext = new PostProcessorContext()
     .file(file)
     .charset(roleFile.getCharset())
     .options(roleFile.getValidatorOptions())

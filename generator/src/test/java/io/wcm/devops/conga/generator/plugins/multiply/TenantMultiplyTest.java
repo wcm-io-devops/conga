@@ -22,7 +22,6 @@ package io.wcm.devops.conga.generator.plugins.multiply;
 import static org.junit.Assert.assertEquals;
 import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.context.MultiplyContextImpl;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -62,7 +61,7 @@ public class TenantMultiplyTest {
 
     environment = new Environment();
 
-    context = new MultiplyContextImpl().role(role).roleFile(roleFile).environment(environment).config(config);
+    context = new MultiplyContext().role(role).roleFile(roleFile).environment(environment).config(config);
   }
 
   @Test

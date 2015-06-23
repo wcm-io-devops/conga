@@ -21,7 +21,6 @@ package io.wcm.devops.conga.generator.plugins.validation;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import io.wcm.devops.conga.generator.context.ValidatorContextImpl;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
@@ -45,7 +44,7 @@ public class XmlValidatorTest {
   @Test
   public void testValidXml() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/validXml.xml").toURI());
-    ValidatorContext context = new ValidatorContextImpl().file(file);
+    ValidatorContext context = new ValidatorContext().file(file);
     assertTrue(underTest.accepts(context));
     underTest.validate(context);
   }
@@ -53,7 +52,7 @@ public class XmlValidatorTest {
   @Test(expected = ValidationException.class)
   public void testInvalidXml() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/invalidXml.xml").toURI());
-    ValidatorContext context = new ValidatorContextImpl().file(file);
+    ValidatorContext context = new ValidatorContext().file(file);
     assertTrue(underTest.accepts(context));
     underTest.validate(context);
   }
@@ -61,7 +60,7 @@ public class XmlValidatorTest {
   @Test
   public void testNoXml() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/noXml.txt").toURI());
-    ValidatorContext context = new ValidatorContextImpl().file(file);
+    ValidatorContext context = new ValidatorContext().file(file);
     assertFalse(underTest.accepts(context));
   }
 

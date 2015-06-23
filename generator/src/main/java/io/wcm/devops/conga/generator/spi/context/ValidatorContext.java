@@ -20,10 +20,10 @@
 package io.wcm.devops.conga.generator.spi.context;
 
 /**
- * Context object for {@link io.wcm.devops.conga.generator.spi.ValidatorPlugin} calls.
+ * Context for {@link io.wcm.devops.conga.generator.spi.ValidatorPlugin}.
  */
-public interface ValidatorContext extends PluginFileContext {
+public final class ValidatorContext extends AbstractPluginFileContext<ValidatorContext> {
 
-  // methods defined in super interfaces
+  // implementation in super classes
 
 }
