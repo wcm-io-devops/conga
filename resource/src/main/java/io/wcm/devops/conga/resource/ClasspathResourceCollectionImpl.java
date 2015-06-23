@@ -43,7 +43,7 @@ class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl impl
 
     try {
       PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(this.classLoader);
-      org.springframework.core.io.Resource[] classpathResources = resolver.getResources("classpath:" + convertPath(path) + "/*");
+      org.springframework.core.io.Resource[] classpathResources = resolver.getResources("classpath*:" + convertPath(path) + "/*");
       for (org.springframework.core.io.Resource resource : classpathResources) {
         if (isFolder(resource)) {
           folderPaths.add(path + "/" + resource.getFilename());
