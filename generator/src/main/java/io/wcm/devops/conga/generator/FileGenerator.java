@@ -20,7 +20,7 @@
 package io.wcm.devops.conga.generator;
 
 import io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader;
-import io.wcm.devops.conga.generator.plugins.validation.NoneValidator;
+import io.wcm.devops.conga.generator.plugins.validator.NoneValidator;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
