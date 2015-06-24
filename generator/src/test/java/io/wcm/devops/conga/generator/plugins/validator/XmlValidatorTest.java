@@ -42,7 +42,7 @@ public class XmlValidatorTest {
   }
 
   @Test
-  public void testValidXml() throws Exception {
+  public void testValid() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/validXml.xml").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertTrue(underTest.accepts(fileContext, null));
@@ -50,7 +50,7 @@ public class XmlValidatorTest {
   }
 
   @Test(expected = ValidationException.class)
-  public void testInvalidXml() throws Exception {
+  public void testInvalid() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/invalidXml.xml").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertTrue(underTest.accepts(fileContext, null));
@@ -58,7 +58,7 @@ public class XmlValidatorTest {
   }
 
   @Test
-  public void testNoXml() throws Exception {
+  public void testNonExisting() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/noXml.txt").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertFalse(underTest.accepts(fileContext, null));
