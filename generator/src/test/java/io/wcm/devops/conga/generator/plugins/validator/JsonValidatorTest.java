@@ -57,7 +57,7 @@ public class JsonValidatorTest {
   }
 
   @Test
-  public void testNonExisting() throws Exception {
+  public void testInvalidFileExtension() throws Exception {
     File file = new File(getClass().getResource("/validators/json/noJson.txt").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertFalse(underTest.accepts(fileContext, null));

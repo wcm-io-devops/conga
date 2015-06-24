@@ -58,7 +58,7 @@ public class XmlValidatorTest {
   }
 
   @Test
-  public void testNonExisting() throws Exception {
+  public void testInvalidFileExtension() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/noXml.txt").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertFalse(underTest.accepts(fileContext, null));
