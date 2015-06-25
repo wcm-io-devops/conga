@@ -50,9 +50,8 @@ public class HandlebarsManager {
         @Override
         public Handlebars load(HandlebarsKey options) throws Exception {
           TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
-          Handlebars handlebars = new Handlebars(templateLoader);
-          handlebars.with(getEscapingStrategy(options.getFileExtension()));
-          return handlebars;
+          return new Handlebars(templateLoader)
+              .with(getEscapingStrategy(options.getFileExtension()));
         }
       });
 
