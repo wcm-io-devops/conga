@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.model.reader.RoleReader;
@@ -141,7 +142,7 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
 
     public TemplateValidator(ResourceCollection templateDir) {
       this.templateDir = templateDir;
-      this.handlebarsManager = new HandlebarsManager(ImmutableList.of(templateDir));
+      this.handlebarsManager = new HandlebarsManager(ImmutableList.of(templateDir), new PluginManager());
     }
 
     @Override
@@ -149,7 +150,7 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
       if (StringUtils.equalsIgnoreCase(resource.getFileExtension(), FILE_EXTENSION)) {
         String templatePath = StringUtils.substringAfter(unifySlashes(resource.getCanonicalPath()),
             unifySlashes(templateDir.getCanonicalPath()) + "/");
-        Handlebars handlebars = handlebarsManager.get(CharEncoding.UTF_8);
+        Handlebars handlebars = handlebarsManager.get(null, CharEncoding.UTF_8);
         try {
           handlebars.compile(templatePath);
         }
