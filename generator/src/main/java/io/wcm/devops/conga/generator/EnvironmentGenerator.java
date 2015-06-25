@@ -88,7 +88,8 @@ class EnvironmentGenerator {
   }
 
   public void generate() {
-    log.info("Genrate environment '{}'...", environmentName);
+    log.info("");
+    log.info("Generate environment '{}'...", environmentName);
 
     for (Node node : environment.getNodes()) {
       generateNode(node);
