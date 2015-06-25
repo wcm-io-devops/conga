@@ -178,9 +178,6 @@ class FileGenerator {
   }
 
   private void applyFileHeader(FileContext fileItem, FileHeaderPlugin plugin) {
-    if (!plugin.accepts(fileItem, fileHeaderContext)) {
-      throw new GeneratorException("File header plugin '" + plugin.getName() + "' does not accept " + FileUtil.getCanonicalPath(fileItem));
-    }
     log.debug("Add {} file header to file {}", plugin.getName(), getFilenameForLog(fileItem));
     plugin.apply(fileItem, fileHeaderContext);
   }
@@ -204,9 +201,6 @@ class FileGenerator {
   }
 
   private void applyValidation(FileContext fileItem, ValidatorPlugin plugin) {
-    if (!plugin.accepts(fileItem, validatorContext)) {
-      throw new GeneratorException("Validator '" + plugin.getName() + "' does not accept " + FileUtil.getCanonicalPath(fileItem));
-    }
     log.info("Validate {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
     plugin.apply(fileItem, validatorContext);
   }
@@ -218,9 +212,6 @@ class FileGenerator {
   }
 
   private void applyPostProcessor(FileContext fileItem, PostProcessorPlugin plugin) {
-    if (!plugin.accepts(fileItem, postProcessorContext)) {
-      throw new GeneratorException("Post processor '" + plugin.getName() + "' does not accept " + FileUtil.getCanonicalPath(fileItem));
-    }
     log.info("Post-process {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
 
     List<FileContext> processedFiles = plugin.apply(fileItem, postProcessorContext);
