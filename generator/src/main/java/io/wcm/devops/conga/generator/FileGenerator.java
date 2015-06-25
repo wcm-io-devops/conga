@@ -30,7 +30,9 @@ import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,9 +79,17 @@ class FileGenerator {
     this.pluginManager = pluginManager;
     this.log = log;
     this.fileContext = new FileContext().file(file).charset(roleFile.getCharset());
-    this.fileHeaderContext = new FileHeaderContext().commentLines(buildFileHeaderCommentLines(version, dependencyVersions));
-    this.validatorContext = new ValidatorContext().options(roleFile.getValidatorOptions()).logger(log);
-    this.postProcessorContext = new PostProcessorContext().options(roleFile.getPostProcessorOptions()).logger(log);
+
+    this.fileHeaderContext = new FileHeaderContext()
+    .commentLines(buildFileHeaderCommentLines(version, dependencyVersions));
+
+    this.validatorContext = new ValidatorContext()
+    .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
+    .logger(log);
+
+    this.postProcessorContext = new PostProcessorContext()
+    .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
+    .logger(log);
   }
 
   /**

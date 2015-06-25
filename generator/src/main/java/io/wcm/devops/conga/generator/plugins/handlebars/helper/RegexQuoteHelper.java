@@ -45,7 +45,7 @@ public class RegexQuoteHelper implements HelperPlugin<Object> {
   public CharSequence apply(Object context, Options options) throws IOException {
     if (options.isFalsy(context)) {
       Object param = options.param(0, null);
-      return param == null ? null : param.toString();
+      return param != null ? param.toString() : null;
     }
     return Pattern.quote(context.toString());
   }
