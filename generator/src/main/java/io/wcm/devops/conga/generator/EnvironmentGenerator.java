@@ -86,7 +86,7 @@ class EnvironmentGenerator {
     this.dependencyVersions = dependencyVersions;
     this.log = log;
     this.environmentContextProperties = ImmutableMap.copyOf(
-        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, environment));
+        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, environment, version));
   }
 
   public void generate() {

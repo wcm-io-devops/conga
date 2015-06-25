@@ -47,10 +47,14 @@ final class ContextPropertiesBuilder {
    * Build context variables that are global to the environment.
    * @param environmentName Environment name
    * @param environment Environment
+   * @param version Environment version
    * @return Context variables map
    */
-  public static Map<String, Object> buildEnvironmentContextVariables(String environmentName, Environment environment) {
+  public static Map<String, Object> buildEnvironmentContextVariables(String environmentName,
+      Environment environment, String version) {
     Map<String, Object> map = new HashMap<>();
+
+    map.put(ContextProperties.VERSION, version);
     map.put(ContextProperties.ENVIRONMENT, environmentName);
 
     // clone environment before resolving variables to make sure they are resolved only for this context, not for file generation

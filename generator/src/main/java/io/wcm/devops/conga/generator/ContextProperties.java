@@ -31,6 +31,11 @@ public final class ContextProperties {
   }
 
   /**
+   * Environment version
+   */
+  public static final String VERSION = "version";
+
+  /**
    * Current node role name
    */
   public static final String ROLE = "nodeRole";
