@@ -20,8 +20,6 @@
 package io.wcm.devops.conga.generator.plugins.escapingstrategy;
 
 import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
-import io.wcm.devops.conga.generator.spi.context.EscapingStrategyContext;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -53,12 +51,12 @@ public class XmlEscapingStrategy implements EscapingStrategyPlugin {
   }
 
   @Override
-  public boolean accepts(FileContext file, EscapingStrategyContext context) {
-    return FileUtil.matchesExtension(file, FILE_EXTENSION);
+  public boolean accepts(String fileExtension) {
+    return FileUtil.matchesExtension(fileExtension, FILE_EXTENSION);
   }
 
   @Override
-  public EscapingStrategy apply(FileContext file, EscapingStrategyContext context) {
+  public EscapingStrategy getEscapingStrategy() {
     return ESCAPING_STRATEGY;
   }
 

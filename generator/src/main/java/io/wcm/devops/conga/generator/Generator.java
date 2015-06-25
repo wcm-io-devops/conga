@@ -69,7 +69,7 @@ public final class Generator {
     this.roles = readModels(roleDirs, new RoleReader());
     this.environments = readModels(environmentDirs, new EnvironmentReader());
     this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);
-    this.handlebarsManager = new HandlebarsManager(templateDirs);
+    this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginManager);
   }
 
   /**

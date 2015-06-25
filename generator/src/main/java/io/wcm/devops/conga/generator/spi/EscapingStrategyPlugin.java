@@ -19,9 +19,6 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
-import io.wcm.devops.conga.generator.spi.context.EscapingStrategyContext;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
-
 import com.github.jknack.handlebars.EscapingStrategy;
 
 /**
@@ -29,15 +26,18 @@ import com.github.jknack.handlebars.EscapingStrategy;
  * Please keep in mind that this strategy is applied to every variable and does not regard the context where
  * the variable takes place in within the template.
  */
-public interface EscapingStrategyPlugin extends FilePlugin<EscapingStrategyContext, EscapingStrategy> {
+public interface EscapingStrategyPlugin extends Plugin {
 
   /**
-   * Provides an escaping strategy for the given file.
-   * @param file Context file
-   * @param context Context objects
-   * @return Escaping strategy
+   * Checks if the plugin can be applied to files with the given file extension.
+   * @param fileExtension
+   * @return true when the plugin can be applied to the given file.
    */
-  @Override
-  EscapingStrategy apply(FileContext file, EscapingStrategyContext context);
+  boolean accepts(String fileExtension);
+
+  /**
+   * @return Handlebars escaping strategy.
+   */
+  EscapingStrategy getEscapingStrategy();
 
 }

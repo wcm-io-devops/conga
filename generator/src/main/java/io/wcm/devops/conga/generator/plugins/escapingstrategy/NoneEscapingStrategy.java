@@ -20,8 +20,6 @@
 package io.wcm.devops.conga.generator.plugins.escapingstrategy;
 
 import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
-import io.wcm.devops.conga.generator.spi.context.EscapingStrategyContext;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
 
 import com.github.jknack.handlebars.EscapingStrategy;
 
@@ -48,12 +46,12 @@ public class NoneEscapingStrategy implements EscapingStrategyPlugin {
   }
 
   @Override
-  public boolean accepts(FileContext file, EscapingStrategyContext context) {
+  public boolean accepts(String fileExtension) {
     return true;
   }
 
   @Override
-  public EscapingStrategy apply(FileContext file, EscapingStrategyContext context) {
+  public EscapingStrategy getEscapingStrategy() {
     return ESCAPING_STRATEGY;
   }
 

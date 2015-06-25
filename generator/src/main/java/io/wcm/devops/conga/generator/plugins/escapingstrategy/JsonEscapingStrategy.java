@@ -20,11 +20,12 @@
 package io.wcm.devops.conga.generator.plugins.escapingstrategy;
 
 import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
-import io.wcm.devops.conga.generator.spi.context.EscapingStrategyContext;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.text.translate.AggregateTranslator;
+import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
+import org.apache.commons.lang3.text.translate.EntityArrays;
+import org.apache.commons.lang3.text.translate.LookupTranslator;
 
 import com.github.jknack.handlebars.EscapingStrategy;
 
@@ -40,10 +41,29 @@ public class JsonEscapingStrategy implements EscapingStrategyPlugin {
 
   private static final String FILE_EXTENSION = "json";
 
+  /**
+   * Copy from {@link org.apache.commons.lang3.StringEscapeUtils#escapeJson(String)},
+   * but without explicitly escaping unicode chars. The escaping of forward slashes is removed as well also part of the
+   * JSON specifiction. Both for better readability.
+   */
+  private static final CharSequenceTranslator ESCAPE_JSON =
+      new AggregateTranslator(
+          new LookupTranslator(
+              new String[][] {
+                  {
+                    "\"", "\\\""
+                  },
+                  {
+                    "\\", "\\\\"
+                  }
+              }),
+              new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
+          );
+
   private static final EscapingStrategy ESCAPING_STRATEGY = new EscapingStrategy() {
     @Override
     public String escape(CharSequence value) {
-      return value == null ? null : StringEscapeUtils.escapeJson(value.toString());
+      return value == null ? null : ESCAPE_JSON.translate(value);
     }
   };
 
@@ -53,12 +73,12 @@ public class JsonEscapingStrategy implements EscapingStrategyPlugin {
   }
 
   @Override
-  public boolean accepts(FileContext file, EscapingStrategyContext context) {
-    return FileUtil.matchesExtension(file, FILE_EXTENSION);
+  public boolean accepts(String fileExtension) {
+    return FileUtil.matchesExtension(fileExtension, FILE_EXTENSION);
   }
 
   @Override
-  public EscapingStrategy apply(FileContext file, EscapingStrategyContext context) {
+  public EscapingStrategy getEscapingStrategy() {
     return ESCAPING_STRATEGY;
   }
 

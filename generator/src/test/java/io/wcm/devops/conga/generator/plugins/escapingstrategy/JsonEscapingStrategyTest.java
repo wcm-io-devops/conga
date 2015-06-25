@@ -23,10 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
-
-import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,19 +41,15 @@ public class JsonEscapingStrategyTest {
 
   @Test
   public void testValid() {
-    File file = new File("test.json");
-    FileContext fileContext = new FileContext().file(file);
-    assertTrue(underTest.accepts(fileContext, null));
-
-    EscapingStrategy strategy = underTest.apply(fileContext, null);
+    assertTrue(underTest.accepts("json"));
+    EscapingStrategy strategy = underTest.getEscapingStrategy();
     assertEquals("\\\"", strategy.escape("\""));
+    assertEquals("äöüß€/", strategy.escape("äöüß€/"));
   }
 
   @Test
   public void testInvalid() {
-    File file = new File("test.txt");
-    FileContext fileContext = new FileContext().file(file);
-    assertFalse(underTest.accepts(fileContext, null));
+    assertFalse(underTest.accepts("txt"));
   }
 
 }

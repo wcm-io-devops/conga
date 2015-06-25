@@ -26,7 +26,7 @@ files:
 
 config:
   var1: v1
-  defaultString: value1 äöüß€
+  defaultString: '"value1" äöüß€'
   defaultInt: 55
   defaultBool: true
   variableString: "The ${var1}"

@@ -20,11 +20,17 @@
 package io.wcm.devops.conga.generator.handlebars;
 
 import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.plugins.escapingstrategy.NoneEscapingStrategy;
+import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.resource.ResourceCollection;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.google.common.cache.CacheBuilder;
@@ -37,35 +43,54 @@ import com.google.common.cache.LoadingCache;
 public class HandlebarsManager {
 
   private final List<ResourceCollection> templateDirs;
+  private final PluginManager pluginManager;
 
-  private final LoadingCache<String, Handlebars> handlebarsCache =
-      CacheBuilder.newBuilder().build(new CacheLoader<String, Handlebars>() {
+  private final LoadingCache<HandlebarsKey, Handlebars> handlebarsCache =
+      CacheBuilder.newBuilder().build(new CacheLoader<HandlebarsKey, Handlebars>() {
         @Override
-        public Handlebars load(String charset) throws Exception {
-          TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, charset);
-          return new Handlebars(templateLoader);
+        public Handlebars load(HandlebarsKey options) throws Exception {
+          TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
+          Handlebars handlebars = new Handlebars(templateLoader);
+          handlebars.with(getEscapingStrategy(options.getFileExtension()));
+          return handlebars;
         }
       });
 
   /**
    * @param templateDirs Template base directories
    */
-  public HandlebarsManager(List<ResourceCollection> templateDirs) {
+  public HandlebarsManager(List<ResourceCollection> templateDirs, PluginManager pluginManager) {
     this.templateDirs = templateDirs;
+    this.pluginManager = pluginManager;
   }
 
   /**
-   * Get handelbars instance for charset.
+   * Get handelbars instance with escaping for file extension and charset.
+   * @param fileExtension File extension
    * @param charset Charset
    * @return Handlebars instance
    */
-  public Handlebars get(String charset) {
+  public Handlebars get(String fileExtension, String charset) {
+    HandlebarsKey key = new HandlebarsKey(fileExtension, charset);
     try {
-      return handlebarsCache.get(charset);
+      return handlebarsCache.get(key);
     }
     catch (ExecutionException ex) {
-      throw new GeneratorException("Unable to get handlebars instance for charset " + charset, ex);
+      throw new GeneratorException("Unable to get handlebars instance for " + key.toString(), ex);
     }
+  }
+
+  /**
+   * Find escaping strategy matching for the given file extension.
+   * @param fileExtension File extension
+   * @return Escaping strategy (never null, returns {@link NoneEscapingStrategy} if no match found.
+   */
+  private EscapingStrategy getEscapingStrategy(String fileExtension) {
+    EscapingStrategyPlugin escapingStrategyPlugin = pluginManager.getAll(EscapingStrategyPlugin.class).stream()
+        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneEscapingStrategy.NAME))
+        .filter(plugin -> plugin.accepts(fileExtension))
+        .findFirst().orElse(pluginManager.get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class));
+    return escapingStrategyPlugin.getEscapingStrategy();
   }
 
 }

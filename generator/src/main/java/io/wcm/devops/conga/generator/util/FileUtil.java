@@ -88,18 +88,28 @@ public final class FileUtil {
 
   /**
    * Checks file extension
-   * @param file File
-   * @param extension File extension
+   * @param fileExtension File extension of file to check
+   * @param extension Expected file extension
    * @return true if file extension matches
    */
-  public static boolean matchesExtension(File file, String extension) {
-    return StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(file.getName()), extension);
+  public static boolean matchesExtension(String fileExtension, String extension) {
+    return StringUtils.equalsIgnoreCase(fileExtension, extension);
   }
 
   /**
    * Checks file extension
-   * @param fileContext File context
-   * @param extension File extension
+   * @param file File to check
+   * @param extension Expected file extension
+   * @return true if file extension matches
+   */
+  public static boolean matchesExtension(File file, String extension) {
+    return matchesExtension(FilenameUtils.getExtension(file.getName()), extension);
+  }
+
+  /**
+   * Checks file extension
+   * @param fileContext File context to check
+   * @param extension Expected file extension
    * @return true if file extension matches
    */
   public static boolean matchesExtension(FileContext fileContext, String extension) {

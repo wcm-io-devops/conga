@@ -153,7 +153,8 @@ class EnvironmentGenerator {
       templateFile = FilenameUtils.concat(role.getTemplateDir(), templateFile);
     }
     try {
-      Handlebars handlebars = handlebarsManager.get(roleFile.getCharset());
+      String fileExtension = FilenameUtils.getExtension(roleFile.getFile());
+      Handlebars handlebars = handlebarsManager.get(fileExtension, roleFile.getCharset());
       return handlebars.compile(templateFile);
     }
     catch (IOException ex) {
