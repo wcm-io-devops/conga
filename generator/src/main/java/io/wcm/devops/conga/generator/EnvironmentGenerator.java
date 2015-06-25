@@ -65,7 +65,8 @@ class EnvironmentGenerator {
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
-  private final List<String> artifactVersions;
+  private final String version;
+  private final List<String> dependencyVersions;
   private final Logger log;
 
   private final Map<String, Object> environmentContextProperties;
@@ -73,7 +74,7 @@ class EnvironmentGenerator {
 
   public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
       File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager,
-      List<String> artifactVersions, Logger log) {
+      String version, List<String> dependencyVersions, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = environment;
@@ -81,7 +82,8 @@ class EnvironmentGenerator {
     this.pluginManager = pluginManager;
     this.handlebarsManager = handlebarsManager;
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
-    this.artifactVersions = artifactVersions;
+    this.version = version;
+    this.dependencyVersions = dependencyVersions;
     this.log = log;
     this.environmentContextProperties = ImmutableMap.copyOf(
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, environment));
@@ -217,7 +219,8 @@ class EnvironmentGenerator {
     if (file.exists()) {
       file.delete();
     }
-    FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager, artifactVersions, log);
+    FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager,
+        version, dependencyVersions, log);
     try {
       fileGenerator.generate();
       generatedFilePaths.add(FileUtil.getCanonicalPath(file));

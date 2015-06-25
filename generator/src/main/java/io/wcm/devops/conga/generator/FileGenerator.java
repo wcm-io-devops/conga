@@ -68,7 +68,7 @@ class FileGenerator {
   private final PostProcessorContext postProcessorContext;
 
   public FileGenerator(File nodeDir, File file, RoleFile roleFile, Map<String, Object> config,
-      Template template, PluginManager pluginManager, List<String> artifactVersions, Logger log) {
+      Template template, PluginManager pluginManager, String version, List<String> dependencyVersions, Logger log) {
     this.nodeDir = nodeDir;
     this.file = file;
     this.roleFile = roleFile;
@@ -77,29 +77,30 @@ class FileGenerator {
     this.pluginManager = pluginManager;
     this.log = log;
     this.fileContext = new FileContext().file(file).charset(roleFile.getCharset());
-    this.fileHeaderContext = new FileHeaderContext().commentLines(buildFileHeaderCommentLines(artifactVersions));
+    this.fileHeaderContext = new FileHeaderContext().commentLines(buildFileHeaderCommentLines(version, dependencyVersions));
     this.validatorContext = new ValidatorContext().options(roleFile.getValidatorOptions()).logger(log);
     this.postProcessorContext = new PostProcessorContext().options(roleFile.getPostProcessorOptions()).logger(log);
   }
 
   /**
    * Generate comment lines for file header added to all files for which a {@link FileHeaderPlugin} is registered.
-   * @param versions List of artifact versions to include
+   * @param dependencyVersions List of artifact versions to include
    * @return Formatted comment lines
    */
-  private List<String> buildFileHeaderCommentLines(List<String> versions) {
+  private List<String> buildFileHeaderCommentLines(String version, List<String> dependencyVersions) {
     List<String> lines = new ArrayList<>();
 
     lines.add("This configuration file is AUTO-GENERATED. Please do no change it manually.");
     lines.add("If you want to change the configuration update the environment definition");
     lines.add("and generate it again.");
     lines.add("");
-    lines.add("Generated at: " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date()));
+    lines.add((version != null ? "Version " + version + ", generated " : "Generated ")
+        + "at: " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date()));
 
-    if (versions != null && !versions.isEmpty()) {
+    if (dependencyVersions != null && !dependencyVersions.isEmpty()) {
       lines.add("");
-      lines.add("Versions:");
-      lines.addAll(versions);
+      lines.add("Dependencies:");
+      lines.addAll(dependencyVersions);
     }
 
     return formatFileHeaderCommentLines(lines);

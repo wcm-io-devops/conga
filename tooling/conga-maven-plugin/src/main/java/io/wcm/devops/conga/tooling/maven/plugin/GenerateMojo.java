@@ -83,7 +83,8 @@ public class GenerateMojo extends AbstractCongaMojo {
     Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
     generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
-    generator.setArtifactVersions(buildDependencyVersionList());
+    generator.setVersion(project.getVersion());
+    generator.setDependencyVersions(buildDependencyVersionList());
     generator.generate(environments);
   }
 
