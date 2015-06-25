@@ -1,0 +1,3 @@
+io.wcm.devops.conga.generator.plugins.escapingstrategy.JsonEscapingStrategy
+io.wcm.devops.conga.generator.plugins.escapingstrategy.NoneEscapingStrategy
+io.wcm.devops.conga.generator.plugins.escapingstrategy.XmlEscapingStrategy
