@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.model.environment;
 
+import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public final class Node extends AbstractConfigurable {
   }
 
   public void setRoles(List<NodeRole> roles) {
-    this.roles = roles;
+    this.roles = defaultEmptyList(roles);
   }
 
 }

@@ -19,6 +19,10 @@
  */
 package io.wcm.devops.conga.model.role;
 
+import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
+import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
+import io.wcm.devops.conga.model.util.MapExpander;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +77,7 @@ public final class RoleFile implements Cloneable {
   }
 
   public void setVariants(List<String> variants) {
-    this.variants = variants;
+    this.variants = defaultEmptyList(variants);
   }
 
   public String getFileHeader() {
@@ -89,7 +93,7 @@ public final class RoleFile implements Cloneable {
   }
 
   public void setValidators(List<String> validators) {
-    this.validators = validators;
+    this.validators = defaultEmptyList(validators);
   }
 
   public Map<String, Object> getValidatorOptions() {
@@ -98,7 +102,7 @@ public final class RoleFile implements Cloneable {
 
 
   public void setValidatorOptions(Map<String, Object> validatorOptions) {
-    this.validatorOptions = validatorOptions;
+    this.validatorOptions = defaultEmptyMap(MapExpander.expand(validatorOptions));
   }
 
   public List<String> getPostProcessors() {
@@ -106,7 +110,7 @@ public final class RoleFile implements Cloneable {
   }
 
   public void setPostProcessors(List<String> postProcessors) {
-    this.postProcessors = postProcessors;
+    this.postProcessors = defaultEmptyList(postProcessors);
   }
 
   public Map<String, Object> getPostProcessorOptions() {
@@ -114,7 +118,7 @@ public final class RoleFile implements Cloneable {
   }
 
   public void setPostProcessorOptions(Map<String, Object> postProcessorOptions) {
-    this.postProcessorOptions = postProcessorOptions;
+    this.postProcessorOptions = defaultEmptyMap(MapExpander.expand(postProcessorOptions));
   }
 
   public String getMultiply() {
@@ -130,7 +134,7 @@ public final class RoleFile implements Cloneable {
   }
 
   public void setMultiplyOptions(Map<String, Object> multiplyOptions) {
-    this.multiplyOptions = multiplyOptions;
+    this.multiplyOptions = defaultEmptyMap(MapExpander.expand(multiplyOptions));
   }
 
   public String getCharset() {
