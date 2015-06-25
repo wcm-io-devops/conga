@@ -55,11 +55,14 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
             .collect(Collectors.toList());
       }
 
-      content = StringUtils.defaultString(getCommentBlockStart())
+      int insertPosition = getInsertPosition(content);
+
+      content = StringUtils.substring(content, 0, insertPosition)
+          + StringUtils.defaultString(getCommentBlockStart())
           + StringUtils.join(sanitizedCommentLines, "")
           + StringUtils.defaultString(getCommentBlockEnd())
           + StringUtils.defaultString(getBlockSuffix())
-          + content;
+          + StringUtils.substring(content, insertPosition);
 
       file.getFile().delete();
       FileUtils.write(file.getFile(), content, file.getCharset());
@@ -92,6 +95,10 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
 
   protected String getBlockSuffix() {
     return null;
+  }
+
+  protected int getInsertPosition(String content) {
+    return 0;
   }
 
 }

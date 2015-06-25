@@ -23,6 +23,8 @@ import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Adds file headers to Bash .sh script files.
  */
@@ -53,6 +55,15 @@ public final class BashScriptFileHeader extends AbstractFileHeader {
   @Override
   protected String getBlockSuffix() {
     return getLineBreak();
+  }
+
+  @Override
+  protected int getInsertPosition(String content) {
+    // keep shebang on first line if present
+    if (StringUtils.startsWith(content, "#!")) {
+      return StringUtils.indexOf(content, "\n") + 1;
+    }
+    return 0;
   }
 
 }

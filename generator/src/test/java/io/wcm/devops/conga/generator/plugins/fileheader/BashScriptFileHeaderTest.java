@@ -46,14 +46,18 @@ public class BashScriptFileHeaderTest {
   @Test
   public void testApply() throws Exception {
     File file = new File("target/generation-test/fileHeader.sh");
-    FileUtils.write(file, "myscript");
+    FileUtils.write(file, "#!/bin/bash\n"
+        + "myscript");
 
     FileHeaderContext context = new FileHeaderContext().commentLines(ImmutableList.of("a", "b", "c"));
     FileContext fileContext = new FileContext().file(file);
     assertTrue(underTest.accepts(fileContext, context));
     underTest.apply(fileContext, context);
 
-    assertTrue(StringUtils.contains(FileUtils.readFileToString(file), "# a\n# b\n# c\n"));
+    String content = FileUtils.readFileToString(file);
+    assertTrue(StringUtils.contains(content, "# a\n# b\n# c\n"));
+    assertTrue(StringUtils.endsWith(content, "\nmyscript"));
+    assertTrue(StringUtils.startsWith(content, "#!/bin/bash\n"));
 
     file.delete();
   }
