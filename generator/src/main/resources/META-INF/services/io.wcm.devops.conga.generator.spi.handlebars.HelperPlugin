@@ -1,1 +1,2 @@
+io.wcm.devops.conga.generator.plugins.handlebars.helper.JoinHelper
 io.wcm.devops.conga.generator.plugins.handlebars.helper.RegexQuoteHelper
