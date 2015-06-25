@@ -46,9 +46,9 @@ public class HandlebarsManager {
         @Override
         public Handlebars load(HandlebarsKey options) throws Exception {
           TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
-          EscapingStrategyPlugin plugin = pluginManager.get(options.getEscapingStrategy(), EscapingStrategyPlugin.class);
+          EscapingStrategyPlugin escapingStrategy = pluginManager.get(options.getEscapingStrategy(), EscapingStrategyPlugin.class);
           return new Handlebars(templateLoader)
-          .with(plugin.getEscapingStrategy());
+              .with(escapingStrategy);
         }
       });
 

@@ -28,8 +28,6 @@ import io.wcm.devops.conga.generator.util.PluginManager;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.jknack.handlebars.EscapingStrategy;
-
 public class XmlEscapingStrategyTest {
 
   private EscapingStrategyPlugin underTest;
@@ -42,9 +40,8 @@ public class XmlEscapingStrategyTest {
   @Test
   public void testValid() {
     assertTrue(underTest.accepts("xml"));
-    EscapingStrategy strategy = underTest.getEscapingStrategy();
-    assertEquals("&quot;", strategy.escape("\""));
-    assertEquals("äöüß€/", strategy.escape("äöüß€/"));
+    assertEquals("&quot;", underTest.escape("\""));
+    assertEquals("äöüß€/", underTest.escape("äöüß€/"));
   }
 
   @Test

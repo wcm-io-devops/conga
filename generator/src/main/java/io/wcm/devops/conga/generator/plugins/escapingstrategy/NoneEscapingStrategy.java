@@ -21,8 +21,6 @@ package io.wcm.devops.conga.generator.plugins.escapingstrategy;
 
 import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
 
-import com.github.jknack.handlebars.EscapingStrategy;
-
 /**
  * Does no escaping.
  */
@@ -32,13 +30,6 @@ public class NoneEscapingStrategy implements EscapingStrategyPlugin {
    * Plugin name
    */
   public static final String NAME = "none";
-
-  private static final EscapingStrategy ESCAPING_STRATEGY = new EscapingStrategy() {
-    @Override
-    public String escape(CharSequence value) {
-      return value == null ? null : value.toString();
-    }
-  };
 
   @Override
   public String getName() {
@@ -51,8 +42,8 @@ public class NoneEscapingStrategy implements EscapingStrategyPlugin {
   }
 
   @Override
-  public EscapingStrategy getEscapingStrategy() {
-    return ESCAPING_STRATEGY;
+  public String escape(CharSequence value) {
+    return value == null ? null : value.toString();
   }
 
 }

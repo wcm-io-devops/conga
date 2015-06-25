@@ -26,7 +26,7 @@ import com.github.jknack.handlebars.EscapingStrategy;
  * Please keep in mind that this strategy is applied to every variable and does not regard the context where
  * the variable takes place in within the template.
  */
-public interface EscapingStrategyPlugin extends Plugin {
+public interface EscapingStrategyPlugin extends Plugin, EscapingStrategy {
 
   /**
    * Checks if the plugin can be applied to files with the given file extension.
@@ -34,10 +34,5 @@ public interface EscapingStrategyPlugin extends Plugin {
    * @return true when the plugin can be applied to the given file.
    */
   boolean accepts(String fileExtension);
-
-  /**
-   * @return Handlebars escaping strategy.
-   */
-  EscapingStrategy getEscapingStrategy();
 
 }

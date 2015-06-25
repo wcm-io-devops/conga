@@ -24,8 +24,6 @@ import io.wcm.devops.conga.generator.util.FileUtil;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import com.github.jknack.handlebars.EscapingStrategy;
-
 /**
  * Escapes for XML files.
  */
@@ -38,13 +36,6 @@ public class XmlEscapingStrategy implements EscapingStrategyPlugin {
 
   private static final String FILE_EXTENSION = "xml";
 
-  private static final EscapingStrategy ESCAPING_STRATEGY = new EscapingStrategy() {
-    @Override
-    public String escape(CharSequence value) {
-      return value == null ? null : StringEscapeUtils.escapeXml10(value.toString());
-    }
-  };
-
   @Override
   public String getName() {
     return NAME;
@@ -56,8 +47,8 @@ public class XmlEscapingStrategy implements EscapingStrategyPlugin {
   }
 
   @Override
-  public EscapingStrategy getEscapingStrategy() {
-    return ESCAPING_STRATEGY;
+  public String escape(CharSequence value) {
+    return value == null ? null : StringEscapeUtils.escapeXml10(value.toString());
   }
 
 }

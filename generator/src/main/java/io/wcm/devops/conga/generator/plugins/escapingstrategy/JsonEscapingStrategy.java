@@ -27,8 +27,6 @@ import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
 
-import com.github.jknack.handlebars.EscapingStrategy;
-
 /**
  * Escapes for JSON files.
  */
@@ -60,13 +58,6 @@ public class JsonEscapingStrategy implements EscapingStrategyPlugin {
               new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
           );
 
-  private static final EscapingStrategy ESCAPING_STRATEGY = new EscapingStrategy() {
-    @Override
-    public String escape(CharSequence value) {
-      return value == null ? null : ESCAPE_JSON.translate(value);
-    }
-  };
-
   @Override
   public String getName() {
     return NAME;
@@ -78,8 +69,8 @@ public class JsonEscapingStrategy implements EscapingStrategyPlugin {
   }
 
   @Override
-  public EscapingStrategy getEscapingStrategy() {
-    return ESCAPING_STRATEGY;
+  public String escape(CharSequence value) {
+    return value == null ? null : ESCAPE_JSON.translate(value);
   }
 
 }
