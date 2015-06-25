@@ -17,19 +17,24 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.escapingstrategy;
+package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+
+import java.io.IOException;
+import java.util.regex.Pattern;
+
+import com.github.jknack.handlebars.Options;
 
 /**
- * Does no escaping.
+ * Handlebars helper that allows to quotes a string for usage in a regular expression.
  */
-public class NoneEscapingStrategy implements EscapingStrategyPlugin {
+public class RegexQuoteHelper implements HelperPlugin<Object> {
 
   /**
-   * Plugin name
+   * Plugin/Helper name
    */
-  public static final String NAME = "none";
+  public static final String NAME = "regexQuote";
 
   @Override
   public String getName() {
@@ -37,13 +42,12 @@ public class NoneEscapingStrategy implements EscapingStrategyPlugin {
   }
 
   @Override
-  public boolean accepts(String fileExtension) {
-    return true;
-  }
-
-  @Override
-  public String escape(CharSequence value) {
-    return value == null ? null : value.toString();
+  public CharSequence apply(Object context, Options options) throws IOException {
+    if (options.isFalsy(context)) {
+      Object param = options.param(0, null);
+      return param == null ? null : param.toString();
+    }
+    return Pattern.quote(context.toString());
   }
 
 }

@@ -17,7 +17,9 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.spi;
+package io.wcm.devops.conga.generator.spi.handlebars;
+
+import io.wcm.devops.conga.generator.spi.Plugin;
 
 import com.github.jknack.handlebars.EscapingStrategy;
 

@@ -17,12 +17,12 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.escapingstrategy;
+package io.wcm.devops.conga.generator.plugins.handlebars.escaping;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.PluginManager;
 
 import org.junit.Before;

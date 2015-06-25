@@ -20,12 +20,12 @@
 package io.wcm.devops.conga.generator;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
-import io.wcm.devops.conga.generator.plugins.escapingstrategy.NoneEscapingStrategy;
+import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
-import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;

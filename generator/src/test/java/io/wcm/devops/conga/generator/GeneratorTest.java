@@ -66,7 +66,7 @@ public class GeneratorTest {
     assertContains(text1, "textfile äöüß with ISO-8859-1 encoding", CharEncoding.ISO_8859_1);
     assertContains(text1, "defaultString: \"value1\" äöüß", CharEncoding.ISO_8859_1);
     assertContains(text1, "globalString: globalFromRole1", CharEncoding.ISO_8859_1);
-    assertContains(text1, "variableString: The v1", CharEncoding.ISO_8859_1);
+    assertContains(text1, "variableString: \\QThe v1-role1-variant11\\E", CharEncoding.ISO_8859_1);
 
     assertContains(text1, ContextProperties.ENVIRONMENT + ": env1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.NODE + ": node1", CharEncoding.ISO_8859_1);

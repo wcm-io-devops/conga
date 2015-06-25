@@ -17,9 +17,9 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.escapingstrategy;
+package io.wcm.devops.conga.generator.plugins.handlebars.escaping;
 
-import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
 import org.apache.commons.lang3.text.translate.AggregateTranslator;

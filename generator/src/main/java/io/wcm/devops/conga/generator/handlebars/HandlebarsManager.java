@@ -20,7 +20,8 @@
 package io.wcm.devops.conga.generator.handlebars;
 
 import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.resource.ResourceCollection;
 
@@ -43,12 +44,20 @@ public class HandlebarsManager {
 
   private final LoadingCache<HandlebarsKey, Handlebars> handlebarsCache =
       CacheBuilder.newBuilder().build(new CacheLoader<HandlebarsKey, Handlebars>() {
+        @SuppressWarnings("unchecked")
         @Override
         public Handlebars load(HandlebarsKey options) throws Exception {
+
+          // setup handlebars
           TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
           EscapingStrategyPlugin escapingStrategy = pluginManager.get(options.getEscapingStrategy(), EscapingStrategyPlugin.class);
-          return new Handlebars(templateLoader)
-              .with(escapingStrategy);
+          Handlebars handlebars = new Handlebars(templateLoader).with(escapingStrategy);
+
+          // register helper plugins
+          pluginManager.getAll(HelperPlugin.class)
+          .forEach(plugin -> handlebars.registerHelper(plugin.getName(), plugin));
+
+          return handlebars;
         }
       });
 

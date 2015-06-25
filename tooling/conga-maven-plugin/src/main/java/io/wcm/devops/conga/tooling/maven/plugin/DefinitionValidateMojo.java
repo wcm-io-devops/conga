@@ -20,7 +20,7 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
-import io.wcm.devops.conga.generator.plugins.escapingstrategy.NoneEscapingStrategy;
+import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.ModelReader;

@@ -1,0 +1,3 @@
+io.wcm.devops.conga.generator.plugins.handlebars.escaping.JsonEscapingStrategy
+io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy
+io.wcm.devops.conga.generator.plugins.handlebars.escaping.XmlEscapingStrategy

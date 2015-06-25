@@ -17,24 +17,19 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.escapingstrategy;
+package io.wcm.devops.conga.generator.plugins.handlebars.escaping;
 
-import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
-import io.wcm.devops.conga.generator.util.FileUtil;
-
-import org.apache.commons.lang3.StringEscapeUtils;
+import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 
 /**
- * Escapes for XML files.
+ * Does no escaping.
  */
-public class XmlEscapingStrategy implements EscapingStrategyPlugin {
+public class NoneEscapingStrategy implements EscapingStrategyPlugin {
 
   /**
    * Plugin name
    */
-  public static final String NAME = "xml";
-
-  private static final String FILE_EXTENSION = "xml";
+  public static final String NAME = "none";
 
   @Override
   public String getName() {
@@ -43,12 +38,12 @@ public class XmlEscapingStrategy implements EscapingStrategyPlugin {
 
   @Override
   public boolean accepts(String fileExtension) {
-    return FileUtil.matchesExtension(fileExtension, FILE_EXTENSION);
+    return true;
   }
 
   @Override
   public String escape(CharSequence value) {
-    return value == null ? null : StringEscapeUtils.escapeXml10(value.toString());
+    return value == null ? null : value.toString();
   }
 
 }
