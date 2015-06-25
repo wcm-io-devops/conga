@@ -19,23 +19,27 @@
  */
 package io.wcm.devops.conga.generator.handlebars;
 
+import java.util.Objects;
+
 /**
  * Key for identifying handlebar instances per file extension and charset.
  */
 final class HandlebarsKey {
 
-  private final String fileExtension;
+  private final String escapingStrategy;
   private final String charset;
   private final String combinedKey;
 
-  public HandlebarsKey(String fileExtension, String charset) {
-    this.fileExtension = fileExtension;
+  public HandlebarsKey(String escapingStrategy, String charset) {
+    Objects.requireNonNull(escapingStrategy, "Escaping strategy is missing");
+    Objects.requireNonNull(charset, "Charset is missing");
+    this.escapingStrategy = escapingStrategy;
     this.charset = charset;
-    this.combinedKey = fileExtension + "#" + charset;
+    this.combinedKey = escapingStrategy + "#" + charset;
   }
 
-  public String getFileExtension() {
-    return this.fileExtension;
+  public String getEscapingStrategy() {
+    return this.escapingStrategy;
   }
 
   public String getCharset() {
@@ -57,7 +61,7 @@ final class HandlebarsKey {
 
   @Override
   public String toString() {
-    return "fileExtension=" + this.fileExtension + ", charset=" + this.charset;
+    return "escapingStrategy=" + this.escapingStrategy + ", charset=" + this.charset;
   }
 
 }

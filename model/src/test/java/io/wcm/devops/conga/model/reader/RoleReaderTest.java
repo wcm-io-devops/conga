@@ -91,6 +91,7 @@ public class RoleReaderTest {
     assertEquals("sling-provisioning", file.getFileHeader());
     assertEquals("none", file.getMultiply());
     assertEquals(CharEncoding.UTF_8, file.getCharset());
+    assertEquals("none", file.getEscapingStrategy());
 
     RoleFile vhostFile = role.getFiles().get(4);
     assertEquals("tenant", vhostFile.getMultiply());

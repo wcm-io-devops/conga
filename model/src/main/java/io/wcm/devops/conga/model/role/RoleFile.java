@@ -47,6 +47,7 @@ public final class RoleFile implements Cloneable {
   private String multiply;
   private Map<String, Object> multiplyOptions = new HashMap<>();
   private String charset = CharEncoding.UTF_8;
+  private String escapingStrategy;
 
   public String getFile() {
     return this.file;
@@ -143,6 +144,14 @@ public final class RoleFile implements Cloneable {
 
   public void setCharset(String charset) {
     this.charset = charset;
+  }
+
+  public String getEscapingStrategy() {
+    return this.escapingStrategy;
+  }
+
+  public void setEscapingStrategy(String escapingStrategy) {
+    this.escapingStrategy = escapingStrategy;
   }
 
 }

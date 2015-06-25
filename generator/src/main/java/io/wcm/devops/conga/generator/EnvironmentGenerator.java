@@ -20,7 +20,9 @@
 package io.wcm.devops.conga.generator;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.plugins.escapingstrategy.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
+import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
@@ -153,13 +155,30 @@ class EnvironmentGenerator {
       templateFile = FilenameUtils.concat(role.getTemplateDir(), templateFile);
     }
     try {
-      String fileExtension = FilenameUtils.getExtension(roleFile.getFile());
-      Handlebars handlebars = handlebarsManager.get(fileExtension, roleFile.getCharset());
+      Handlebars handlebars = handlebarsManager.get(getEscapingStrategy(roleFile), roleFile.getCharset());
       return handlebars.compile(templateFile);
     }
     catch (IOException ex) {
       throw new GeneratorException("Unable to compile handlebars template: " + nodeRole.getRole() + "/" + roleFile.getFile(), ex);
     }
+  }
+
+  /**
+   * Get escaping strategy for file. If one is explicitly defined in role definition use this.
+   * Otherwise get the best-matching by file extension.
+   * @param roleFile Role file
+   * @return Escaping Strategy (never null)
+   */
+  private String getEscapingStrategy(RoleFile roleFile) {
+    if (StringUtils.isNotEmpty(roleFile.getEscapingStrategy())) {
+      return roleFile.getEscapingStrategy();
+    }
+    String fileExtension = FilenameUtils.getExtension(roleFile.getFile());
+    return pluginManager.getAll(EscapingStrategyPlugin.class).stream()
+        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneEscapingStrategy.NAME))
+        .filter(plugin -> plugin.accepts(fileExtension))
+        .findFirst().orElse(pluginManager.get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class))
+        .getName();
   }
 
   private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template) {

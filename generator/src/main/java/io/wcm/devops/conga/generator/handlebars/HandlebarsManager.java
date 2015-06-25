@@ -20,7 +20,6 @@
 package io.wcm.devops.conga.generator.handlebars;
 
 import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.plugins.escapingstrategy.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.spi.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.resource.ResourceCollection;
@@ -28,9 +27,6 @@ import io.wcm.devops.conga.resource.ResourceCollection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.google.common.cache.CacheBuilder;
@@ -50,8 +46,9 @@ public class HandlebarsManager {
         @Override
         public Handlebars load(HandlebarsKey options) throws Exception {
           TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
+          EscapingStrategyPlugin plugin = pluginManager.get(options.getEscapingStrategy(), EscapingStrategyPlugin.class);
           return new Handlebars(templateLoader)
-              .with(getEscapingStrategy(options.getFileExtension()));
+          .with(plugin.getEscapingStrategy());
         }
       });
 
@@ -65,31 +62,18 @@ public class HandlebarsManager {
 
   /**
    * Get handelbars instance with escaping for file extension and charset.
-   * @param fileExtension File extension
+   * @param escapingStrategy Escaping strategy plugin name
    * @param charset Charset
    * @return Handlebars instance
    */
-  public Handlebars get(String fileExtension, String charset) {
-    HandlebarsKey key = new HandlebarsKey(fileExtension, charset);
+  public Handlebars get(String escapingStrategy, String charset) {
+    HandlebarsKey key = new HandlebarsKey(escapingStrategy, charset);
     try {
       return handlebarsCache.get(key);
     }
     catch (ExecutionException ex) {
       throw new GeneratorException("Unable to get handlebars instance for " + key.toString(), ex);
     }
-  }
-
-  /**
-   * Find escaping strategy matching for the given file extension.
-   * @param fileExtension File extension
-   * @return Escaping strategy (never null, returns {@link NoneEscapingStrategy} if no match found.
-   */
-  private EscapingStrategy getEscapingStrategy(String fileExtension) {
-    EscapingStrategyPlugin escapingStrategyPlugin = pluginManager.getAll(EscapingStrategyPlugin.class).stream()
-        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneEscapingStrategy.NAME))
-        .filter(plugin -> plugin.accepts(fileExtension))
-        .findFirst().orElse(pluginManager.get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class));
-    return escapingStrategyPlugin.getEscapingStrategy();
   }
 
 }
