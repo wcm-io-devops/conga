@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import io.wcm.devops.conga.model.util.MapExpander;
+
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -26,7 +28,6 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -78,7 +79,7 @@ public final class VariableStringResolver {
         matcher.appendReplacement(sb, Matcher.quoteReplacement("\\${" + variable + "}"));
       }
       else {
-        Object valueObject = getDeep(variables, variable);
+        Object valueObject = MapExpander.getDeep(variables, variable);
         if (valueObject != null) {
           String variableValue = valueToString(valueObject);
           matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
@@ -97,22 +98,6 @@ public final class VariableStringResolver {
     else {
       return sb.toString();
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  private static Object getDeep(Map<String, Object> variables, String key) {
-    if (variables.containsKey(key)) {
-      return ObjectUtils.defaultIfNull(variables.get(key), "");
-    }
-    if (StringUtils.contains(key, ".")) {
-      String keyPart = StringUtils.substringBefore(key, ".");
-      String keySuffix = StringUtils.substringAfter(key, ".");
-      Object resultKeyPart = variables.get(keyPart);
-      if (resultKeyPart != null && resultKeyPart instanceof Map) {
-        return getDeep((Map<String, Object>)resultKeyPart, keySuffix);
-      }
-    }
-    return null;
   }
 
   @SuppressWarnings("unchecked")
