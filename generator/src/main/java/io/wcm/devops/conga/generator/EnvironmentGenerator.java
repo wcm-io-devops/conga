@@ -216,9 +216,7 @@ class EnvironmentGenerator {
 
   private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template) {
     File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, fileName) : fileName);
-    if (generatedFilePaths.contains(FileUtil.getCanonicalPath(file))) {
-      throw new GeneratorException("File was generated already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
-    }
+    boolean duplicateFile = generatedFilePaths.contains(FileUtil.getCanonicalPath(file));
     if (file.exists()) {
       file.delete();
     }
@@ -227,6 +225,9 @@ class EnvironmentGenerator {
     try {
       fileGenerator.generate();
       generatedFilePaths.add(FileUtil.getCanonicalPath(file));
+      if (duplicateFile) {
+        log.warn("File was generated already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
+      }
     }
     catch (ValidationException ex) {
       throw new GeneratorException("File validation failed " + FileUtil.getCanonicalPath(file) + " - " + ex.getMessage());
