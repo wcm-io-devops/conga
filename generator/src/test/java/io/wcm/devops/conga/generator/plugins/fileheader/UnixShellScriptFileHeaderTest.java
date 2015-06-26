@@ -34,13 +34,13 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
-public class BashScriptFileHeaderTest {
+public class UnixShellScriptFileHeaderTest {
 
   private FileHeaderPlugin underTest;
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(BashScriptFileHeader.NAME, FileHeaderPlugin.class);
+    underTest = new PluginManager().get(UnixShellScriptFileHeader.NAME, FileHeaderPlugin.class);
   }
 
   @Test

@@ -23,18 +23,19 @@ import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
- * Adds file headers to Windows .bat or .cmd files.
+ * Adds file headers to Unix script files (esp. Bash).
  */
-public final class WindowsCmdScriptFileHeader extends AbstractFileHeader {
+public final class UnixShellScriptFileHeader extends AbstractFileHeader {
 
   /**
    * Plugin name
    */
-  public static final String NAME = "windowsCmdScript";
+  public static final String NAME = "unixShellScript";
 
-  private static final String FILE_EXTENSION_BAT = "bat";
-  private static final String FILE_EXTENSION_CMD = "cmd";
+  private static final String FILE_EXTENSION = "sh";
 
   @Override
   public String getName() {
@@ -43,23 +44,26 @@ public final class WindowsCmdScriptFileHeader extends AbstractFileHeader {
 
   @Override
   public boolean accepts(FileContext file, FileHeaderContext context) {
-    return FileUtil.matchesExtension(file, FILE_EXTENSION_BAT)
-        || FileUtil.matchesExtension(file, FILE_EXTENSION_CMD);
-  }
-
-  @Override
-  protected String getLineBreak() {
-    return "\r\n";
+    return FileUtil.matchesExtension(file, FILE_EXTENSION);
   }
 
   @Override
   protected String getCommentLinePrefix() {
-    return "REM ";
+    return "# ";
   }
 
   @Override
   protected String getBlockSuffix() {
     return getLineBreak();
+  }
+
+  @Override
+  protected int getInsertPosition(String content) {
+    // keep shebang on first line if present
+    if (StringUtils.startsWith(content, "#!")) {
+      return StringUtils.indexOf(content, "\n") + 1;
+    }
+    return 0;
   }
 
 }

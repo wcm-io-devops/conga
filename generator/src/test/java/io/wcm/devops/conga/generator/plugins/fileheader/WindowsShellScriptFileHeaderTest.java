@@ -34,13 +34,13 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
-public class WindowsCmdScriptFileHeaderTest {
+public class WindowsShellScriptFileHeaderTest {
 
   private FileHeaderPlugin underTest;
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(WindowsCmdScriptFileHeader.NAME, FileHeaderPlugin.class);
+    underTest = new PluginManager().get(WindowsShellScriptFileHeader.NAME, FileHeaderPlugin.class);
   }
 
   @Test
