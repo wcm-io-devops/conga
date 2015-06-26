@@ -19,35 +19,38 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.io.IOException;
+import java.util.Objects;
 
-import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 
-public class RegexQuoteHelperTest {
+/**
+ * Handlebars helper that evaluates two objects for equality and shows/hides the contained block accordingly.
+ */
+public class IfEqualsHelper implements HelperPlugin<Object> {
 
-  private Helper<Object> helper;
+  /**
+   * Plugin/Helper name
+   */
+  public static final String NAME = "ifEquals";
 
-  @SuppressWarnings("unchecked")
-  @Before
-  public void setUp() {
-    helper = new PluginManager().get(RegexQuoteHelper.NAME, HelperPlugin.class);
+  @Override
+  public String getName() {
+    return NAME;
   }
 
-  @Test
-  public void testApply() throws Exception {
-    assertEquals("\\Qabc\\E", helper.apply("abc", new MockOptions()));
-    assertEquals("\\Qa.b.c\\E", helper.apply("a.b.c", new MockOptions()));
-  }
-
-  @Test
-  public void testApplyFalsy() throws Exception {
-    assertNull(helper.apply(null, new MockOptions()));
+  @Override
+  public CharSequence apply(Object context, Options options) throws IOException {
+    if (!options.isFalsy(context)
+        && options.params.length > 0
+        && Objects.equals(context, options.param(0))) {
+      return options.fn();
+    }
+    else {
+      return options.inverse();
+    }
   }
 
 }

@@ -20,7 +20,6 @@
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManager;
 
@@ -28,26 +27,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.Helper;
+import com.google.common.collect.ImmutableList;
 
-public class RegexQuoteHelperTest {
+public class JoinHelperTest {
 
   private Helper<Object> helper;
 
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() {
-    helper = new PluginManager().get(RegexQuoteHelper.NAME, HelperPlugin.class);
+    helper = new PluginManager().get(JoinHelper.NAME, HelperPlugin.class);
   }
 
   @Test
   public void testApply() throws Exception {
-    assertEquals("\\Qabc\\E", helper.apply("abc", new MockOptions()));
-    assertEquals("\\Qa.b.c\\E", helper.apply("a.b.c", new MockOptions()));
-  }
-
-  @Test
-  public void testApplyFalsy() throws Exception {
-    assertNull(helper.apply(null, new MockOptions()));
+    assertEquals("a|b|c", helper.apply(ImmutableList.of("a", "b", "c"), new MockOptions("|")));
   }
 
 }
