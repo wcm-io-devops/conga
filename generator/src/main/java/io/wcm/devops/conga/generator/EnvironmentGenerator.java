@@ -91,11 +91,13 @@ class EnvironmentGenerator {
 
   public void generate() {
     log.info("");
-    log.info("Generate environment '{}'...", environmentName);
+    log.info("===== Environment '{}' =====", environmentName);
 
     for (Node node : environment.getNodes()) {
       generateNode(node);
     }
+
+    log.info("");
   }
 
   private void generateNode(Node node) {
@@ -103,7 +105,8 @@ class EnvironmentGenerator {
       throw new GeneratorException("Missing node name in " + environmentName + ".");
     }
 
-    log.info("Generate node '{}'...", node.getNode());
+    log.info("");
+    log.info("----- Node '{}' -----", node.getNode());
 
     for (NodeRole nodeRole : node.getRoles()) {
       Role role = roles.get(nodeRole.getRole());

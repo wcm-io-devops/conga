@@ -83,13 +83,15 @@ class FileGenerator {
     this.fileHeaderContext = new FileHeaderContext()
     .commentLines(buildFileHeaderCommentLines(version, dependencyVersions));
 
+    Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");
+
     this.validatorContext = new ValidatorContext()
     .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
-    .logger(log);
+    .logger(pluginLogger);
 
     this.postProcessorContext = new PostProcessorContext()
     .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
-    .logger(log);
+    .logger(pluginLogger);
   }
 
   /**
@@ -178,7 +180,7 @@ class FileGenerator {
   }
 
   private void applyFileHeader(FileContext fileItem, FileHeaderPlugin plugin) {
-    log.debug("Add {} file header to file {}", plugin.getName(), getFilenameForLog(fileItem));
+    log.debug("  Add {} file header to file {}", plugin.getName(), getFilenameForLog(fileItem));
     plugin.apply(fileItem, fileHeaderContext);
   }
 
@@ -201,7 +203,7 @@ class FileGenerator {
   }
 
   private void applyValidation(FileContext fileItem, ValidatorPlugin plugin) {
-    log.info("Validate {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    log.info("  Validate {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
     plugin.apply(fileItem, validatorContext);
   }
 
@@ -212,7 +214,7 @@ class FileGenerator {
   }
 
   private void applyPostProcessor(FileContext fileItem, PostProcessorPlugin plugin) {
-    log.info("Post-process {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    log.info("  Post-process {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
 
     List<FileContext> processedFiles = plugin.apply(fileItem, postProcessorContext);
 
