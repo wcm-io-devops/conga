@@ -57,4 +57,23 @@ public class CharsetAwareTemplateLoader extends AbstractTemplateLoader {
     throw new FileNotFoundException("Tempalte file not found: " + location);
   }
 
+  @Override
+  public String resolve(String uri) {
+    Resource firstResource = null;
+    for (ResourceCollection templateDir : templateDirs) {
+      Resource file = templateDir.getResource(uri);
+      if (firstResource == null) {
+        firstResource = file;
+      }
+      if (file.exists()) {
+        return file.getCanonicalPath();
+      }
+    }
+    if (firstResource != null) {
+      return firstResource.getCanonicalPath();
+    }
+    return null;
+  }
+
+
 }

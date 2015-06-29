@@ -233,7 +233,7 @@ class EnvironmentGenerator {
       throw new GeneratorException("File validation failed " + FileUtil.getCanonicalPath(file) + " - " + ex.getMessage());
     }
     catch (Throwable ex) {
-      throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file) + "", ex);
+      throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file) + "\n" + ex.getMessage(), ex);
     }
   }
 

@@ -86,6 +86,7 @@ public class GeneratorTest {
     assertContains(json1, "\"globalString\": \"globalValue äöüß€\"");
     assertContains(json1, TEST_VERSION);
     assertContains(json1, TEST_DEPENDENCY_VERSION);
+    assertContains(json1, "\"partialDefaultString\": \"value2\"");
 
     File xml1tenant1 = assertFile(node1Dir, "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml");
     assertContains(xml1tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
