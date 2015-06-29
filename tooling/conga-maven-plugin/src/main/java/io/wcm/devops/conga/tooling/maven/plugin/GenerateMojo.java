@@ -32,9 +32,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -113,12 +114,13 @@ public class GenerateMojo extends AbstractCongaMojo {
    */
   @SuppressWarnings("deprecation")
   private List<String> buildDependencyVersionList() {
-    List<String> versions = new ArrayList<>();
-    for (Dependency dependency : project.getCompileDependencies()) {
-      versions.add(dependency.getGroupId() + "/" + dependency.getArtifactId() + "/" + dependency.getVersion()
-          + (dependency.getClassifier() != null ? "/" + dependency.getClassifier() : ""));
-    }
-    return versions;
+    return project.getCompileDependencies().stream()
+        // filter out dependencies that may be inherited from wcm.io global-parent pom
+        .filter(dependency -> !StringUtils.equals(dependency.getGroupId(), "com.google.code.findbugs"))
+        // transform to string
+        .map(dependency -> dependency.getGroupId() + "/" + dependency.getArtifactId() + "/" + dependency.getVersion()
+            + (dependency.getClassifier() != null ? "/" + dependency.getClassifier() : ""))
+            .collect(Collectors.toList());
   }
 
   @Override
