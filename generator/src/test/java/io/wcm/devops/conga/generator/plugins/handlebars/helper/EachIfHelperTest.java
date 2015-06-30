@@ -19,7 +19,6 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import static io.wcm.devops.conga.generator.plugins.handlebars.helper.MockOptions.FN_RETURN;
 import static org.junit.Assert.assertEquals;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -29,34 +28,36 @@ import org.junit.Test;
 
 import com.github.jknack.handlebars.Helper;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
-public class IfEqualsHelperTest {
+public class EachIfHelperTest {
 
   private Helper<Object> helper;
 
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() {
-    helper = new PluginManager().get(IfEqualsHelper.NAME, HelperPlugin.class);
-  }
-
-  @Test
-  public void testEquals() throws Exception {
-    assertEquals(FN_RETURN, helper.apply("abc", new MockOptions("abc")));
-    assertEquals(FN_RETURN, helper.apply(ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("a", "b", "c"))));
-  }
-
-  @Test
-  public void testNotEquals() throws Exception {
-    assertEquals("", helper.apply("abc", new MockOptions("def")));
-    assertEquals("", helper.apply(ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("d", "e", "f"))));
+    helper = new PluginManager().get(EachIfHelper.NAME, HelperPlugin.class);
   }
 
   @Test
   public void testNull() throws Exception {
-    assertEquals("", helper.apply(null, new MockOptions("def")));
-    assertEquals("", helper.apply("abc", new MockOptions()));
     assertEquals("", helper.apply(null, new MockOptions()));
+    assertEquals("", helper.apply(null, new MockOptions("a")));
+  }
+
+  @Test
+  public void testSingleValue() throws Exception {
+    assertEquals("", helper.apply("v1", new MockOptions()));
+    assertEquals("", helper.apply("v1", new MockOptions("a")));
+  }
+
+  @Test
+  public void testList() throws Exception {
+    assertEquals("", helper.apply(ImmutableList.of("v1", "v2"), new MockOptions()));
+    assertEquals("", helper.apply(ImmutableList.of("v1", "v2"), new MockOptions("a")));
+    assertEquals("fn({a=1})", helper.apply(ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("b", "2")), new MockOptions("a")));
+    assertEquals("fn({a=1})fn({a=2})", helper.apply(ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", "2")), new MockOptions("a")));
   }
 
 }
