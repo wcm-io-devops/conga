@@ -29,7 +29,7 @@ import com.github.jknack.handlebars.Options;
 /**
  * Handlebars helper that evaluates two objects for equality and shows/hides the contained block accordingly.
  */
-public class IfEqualsHelper implements HelperPlugin<Object> {
+public final class IfEqualsHelper implements HelperPlugin<Object> {
 
   /**
    * Plugin/Helper name

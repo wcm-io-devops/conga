@@ -60,4 +60,10 @@ public class EachIfHelperTest {
     assertEquals("fn({a=1})fn({a=2})", helper.apply(ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", "2")), new MockOptions("a")));
   }
 
+  @Test
+  public void testListDeepMap() throws Exception {
+    assertEquals("fn({a={b=1}})",
+        helper.apply(ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", ImmutableMap.of("b", "1"))), new MockOptions("a.b")));
+  }
+
 }

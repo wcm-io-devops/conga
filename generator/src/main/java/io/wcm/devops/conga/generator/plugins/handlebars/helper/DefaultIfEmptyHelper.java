@@ -30,7 +30,7 @@ import com.github.jknack.handlebars.helper.StringHelpers;
  * Handlebars helper thats inserts a value with fallback to another if it's not set.
  * Uses {@link StringHelpers#defaultIfEmpty}.
  */
-public class DefaultIfEmptyHelper implements HelperPlugin<Object> {
+public final class DefaultIfEmptyHelper implements HelperPlugin<Object> {
 
   /**
    * Plugin/Helper name

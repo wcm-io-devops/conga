@@ -30,7 +30,7 @@ import com.github.jknack.handlebars.helper.StringHelpers;
  * Handlebars helper that joins a list to a single string.
  * Uses {@link StringHelpers#join}.
  */
-public class JoinHelper implements HelperPlugin<Object> {
+public final class JoinHelper implements HelperPlugin<Object> {
 
   /**
    * Plugin/Helper name

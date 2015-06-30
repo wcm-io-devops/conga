@@ -29,7 +29,7 @@ import com.github.jknack.handlebars.Options;
 /**
  * Handlebars helper that allows to quotes a string for usage in a regular expression.
  */
-public class RegexQuoteHelper implements HelperPlugin<Object> {
+public final class RegexQuoteHelper implements HelperPlugin<Object> {
 
   /**
    * Plugin/Helper name
