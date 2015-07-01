@@ -68,7 +68,7 @@ public class GeneratorTest {
     assertContains(text1, "textfile äöüß with ISO-8859-1 encoding", CharEncoding.ISO_8859_1);
     assertContains(text1, "defaultString: \"value1\" äöüß", CharEncoding.ISO_8859_1);
     assertContains(text1, "globalString: globalFromRole1", CharEncoding.ISO_8859_1);
-    assertContains(text1, "variableString: \\QThe v1-role1-variant11\\E", CharEncoding.ISO_8859_1);
+    assertContains(text1, "variableString: \\QThe v1-role1-variant11${novar}\\E", CharEncoding.ISO_8859_1);
 
     assertContains(text1, ContextProperties.ENVIRONMENT + ": env1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.NODE + ": node1", CharEncoding.ISO_8859_1);
@@ -92,7 +92,7 @@ public class GeneratorTest {
     assertContains(xml1tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
     assertContains(xml1tenant1, "<defaultString value=\"&quot;value1&quot; äöüß€\"/>");
     assertContains(xml1tenant1, "<globalString>globalValue äöüß€</globalString>");
-    assertContains(xml1tenant1, "<variableString>The v1-role1-variant11</variableString>");
+    assertContains(xml1tenant1, "<variableString>The v1-role1-variant11${novar}</variableString>");
     assertContains(json1, TEST_VERSION);
     assertContains(xml1tenant1, TEST_DEPENDENCY_VERSION);
 
@@ -100,7 +100,7 @@ public class GeneratorTest {
     assertContains(xml1tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");
     assertContains(xml1tenant2, "<defaultString value=\"defaultFromTenant2\"/>");
     assertContains(xml1tenant2, "<globalString>globalFromTenant2</globalString>");
-    assertContains(xml1tenant2, "<variableString>The v1-tenant2</variableString>");
+    assertContains(xml1tenant2, "<variableString>The v1-tenant2${novar}</variableString>");
 
     File node2Dir = assertDirectory(destDir, "env1/node2");
 
@@ -108,13 +108,13 @@ public class GeneratorTest {
     assertContains(xml2tenant1, "XML file äöüß€ with UTF-8 encoding for tenant1");
     assertContains(xml2tenant1, "<defaultString value=\"defaultFromNode2Role1\"/>");
     assertContains(xml2tenant1, "<globalString>globalValue äöüß€</globalString>");
-    assertContains(xml2tenant1, "<variableString>The v1-node2</variableString>");
+    assertContains(xml2tenant1, "<variableString>The v1-node2${novar}</variableString>");
 
     File xml2tenant2 = assertFile(node2Dir, "xml/test.tenant2.tenantRole1.env1.xml");
     assertContains(xml2tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");
     assertContains(xml2tenant2, "<defaultString value=\"defaultFromTenant2\"/>");
     assertContains(xml2tenant2, "<globalString>globalFromTenant2</globalString>");
-    assertContains(xml2tenant2, "<variableString>The v1-tenant2</variableString>");
+    assertContains(xml2tenant2, "<variableString>The v1-tenant2${novar}</variableString>");
   }
 
   private File assertDirectory(File assertBaseDir, String path) {

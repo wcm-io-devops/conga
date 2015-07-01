@@ -84,4 +84,13 @@ public class VariableMapResolverTest {
         "key1", "The v1 and v21,var221=v1"), VariableMapResolver.resolve(map));
   }
 
+  @Test
+  public void testNestedWithEscapedVariable() {
+    Map<String, Object> map = ImmutableMap.of("var1", "\\${novar}", "var2", "${var1}v2", "var3", "${var1}${var2}v3",
+        "key1", "The ${var1} and ${var2} and ${var3}");
+
+    assertEquals(ImmutableMap.of("var1", "${novar}", "var2", "${novar}v2", "var3", "${novar}${novar}v2v3",
+        "key1", "The ${novar} and ${novar}v2 and ${novar}${novar}v2v3"), VariableMapResolver.resolve(map));
+  }
+
 }

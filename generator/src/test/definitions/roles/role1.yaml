@@ -29,4 +29,4 @@ config:
   defaultString: '"value1" äöüß€'
   defaultInt: 55
   defaultBool: true
-  variableString: "The ${var1}"
+  variableString: "The ${var1}\\${novar}"

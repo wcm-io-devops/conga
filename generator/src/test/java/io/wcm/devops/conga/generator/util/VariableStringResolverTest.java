@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import static io.wcm.devops.conga.generator.util.VariableStringResolver.deescape;
+import static io.wcm.devops.conga.generator.util.VariableStringResolver.resolve;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
@@ -33,61 +35,63 @@ public class VariableStringResolverTest {
   @Test
   public void testSimple() {
 
-    Map<String, Object> varaiables = ImmutableMap.of("var1", "v1", "var2", "v2");
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "v2");
 
-    assertEquals("The v1 and v2", VariableStringResolver.resolve("The ${var1} and ${var2}", varaiables));
+    assertEquals("The v1 and v2", resolve("The ${var1} and ${var2}", variables));
   }
 
   @Test
   public void testNestedVariables() {
 
-    Map<String, Object> varaiables = ImmutableMap.of("var1", "v1", "var2", "${var1}${var1}", "var3", "${var2}${var1}");
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "${var1}${var1}", "var3", "${var2}${var1}");
 
-    assertEquals("v1,v1v1,v1v1v1", VariableStringResolver.resolve("${var1},${var2},${var3}", varaiables));
+    assertEquals("v1,v1v1,v1v1v1", resolve("${var1},${var2},${var3}", variables));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNestedVariables_IllegalRecursion() {
 
-    Map<String, Object> varaiables = ImmutableMap.of("var1", "${var2}", "var2", "${var1}");
+    Map<String, Object> variables = ImmutableMap.of("var1", "${var2}", "var2", "${var1}");
 
-    VariableStringResolver.resolve("${var1}", varaiables);
+    resolve("${var1}", variables);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testUnknownVariable() {
 
-    Map<String, Object> varaiables = ImmutableMap.of();
+    Map<String, Object> variables = ImmutableMap.of();
 
-    VariableStringResolver.resolve("${var1}", varaiables);
+    resolve("${var1}", variables);
   }
 
   @Test
   public void testEscapedVariables() {
-    Map<String, Object> varaiables = ImmutableMap.of("var1", "v1", "var2", "\\${var1}${var1}", "var3", "${var2}${var1}");
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "\\${var1}${var1}", "var3", "${var2}${var1}");
 
-    assertEquals("${var1},${var1}v1,${var1}v1v1", VariableStringResolver.resolve("\\${var1},${var2},${var3}", varaiables));
+    assertEquals("${var1},${var1}v1,${var1}v1v1", resolve("\\${var1},${var2},${var3}", variables));
+    assertEquals("\\${var1},\\${var1}v1,\\${var1}v1v1", resolve("\\${var1},${var2},${var3}", variables, false));
+    assertEquals("${var1},${var1}v1,${var1}v1v1", deescape(resolve("\\${var1},${var2},${var3}", variables, false)));
   }
 
   @Test
   public void testDeepMapVariable() {
-    Map<String, Object> varaiables = ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22")));
+    Map<String, Object> variables = ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22")));
 
-    assertEquals("The v1 and v21", VariableStringResolver.resolve("The ${var1.k1} and ${var1.k2.k21}", varaiables));
+    assertEquals("The v1 and v21", resolve("The ${var1.k1} and ${var1.k2.k21}", variables));
   }
 
   @Test
   public void testListVariable() {
-    Map<String, Object> varaiables = ImmutableMap.of("var1", ImmutableList.of("v1", "v2", ImmutableList.of("v31", "v32")));
+    Map<String, Object> variables = ImmutableMap.of("var1", ImmutableList.of("v1", "v2", ImmutableList.of("v31", "v32")));
 
-    assertEquals("The v1,v2,v31,v32", VariableStringResolver.resolve("The ${var1}", varaiables));
+    assertEquals("The v1,v2,v31,v32", resolve("The ${var1}", variables));
   }
 
   @Test
   public void testMapVariable() {
-    Map<String, Object> varaiables = ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22")));
+    Map<String, Object> variables = ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22")));
 
-    assertEquals("The k1=v1,k2=k21=v21,k22=v22", VariableStringResolver.resolve("The ${var1}", varaiables));
+    assertEquals("The k1=v1,k2=k21=v21,k22=v22", resolve("The ${var1}", variables));
   }
 
 }

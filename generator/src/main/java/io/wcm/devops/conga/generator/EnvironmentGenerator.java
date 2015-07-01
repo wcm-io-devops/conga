@@ -204,7 +204,7 @@ class EnvironmentGenerator {
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
 
       // resolve variables
-      Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig);
+      Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig, false);
 
       // replace placeholders in dir/filename with context variables
       String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);

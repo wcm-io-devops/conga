@@ -74,7 +74,6 @@ class FileGenerator {
     this.nodeDir = nodeDir;
     this.file = file;
     this.roleFile = roleFile;
-    this.config = config;
     this.template = template;
     this.pluginManager = pluginManager;
     this.log = log;
@@ -92,6 +91,8 @@ class FileGenerator {
     this.postProcessorContext = new PostProcessorContext()
     .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
     .logger(pluginLogger);
+
+    this.config = VariableMapResolver.deescape(config);
   }
 
   /**

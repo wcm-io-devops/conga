@@ -45,22 +45,46 @@ public final class VariableStringResolver {
   /**
    * Replace variable placeholders in a string with syntax ${key} with values from a map.
    * The variables can recursively reference each other.
+   * All escaped variables are deescaped.
    * @param value Value with variable placeholders
    * @param variables Variable map
    * @return Value with variable placeholders resolved.
    * @throws IllegalArgumentException when a variable name could not be resolve.d
    */
   public static String resolve(String value, Map<String, Object> variables) {
+    return resolve(value, variables, true);
+  }
+
+  /**
+   * Replace variable placeholders in a string with syntax ${key} with values from a map.
+   * The variables can recursively reference each other.
+   * @param value Value with variable placeholders
+   * @param variables Variable map
+   * @param deescapeVariables If true, {@link #deescape(String)} is applied to the result string
+   * @return Value with variable placeholders resolved.
+   * @throws IllegalArgumentException when a variable name could not be resolve.d
+   */
+  public static String resolve(String value, Map<String, Object> variables, boolean deescapeVariables) {
     if (value == null) {
       return null;
     }
 
     String resolvedString = resolve(value, variables, 0);
 
-    // de-escaped escaped variables
-    resolvedString = VARIABLE_PATTERN.matcher(resolvedString).replaceAll("\\$\\{$2\\}");
+    if (deescapeVariables) {
+      resolvedString = deescape(resolvedString);
+    }
 
     return resolvedString;
+  }
+
+  /**
+   * De-escapes all escaped variables in the given string.
+   * @param value String that may contain escaped variable references (starting with \$)
+   * @return String with de-escaped variable references.
+   */
+  public static String deescape(String value) {
+    return VARIABLE_PATTERN.matcher(value).replaceAll("\\$\\{$2\\}");
   }
 
   private static String resolve(String value, Map<String, Object> variables, int iterationCount) {
@@ -75,7 +99,7 @@ public final class VariableStringResolver {
       boolean escapedVariable = StringUtils.equals(matcher.group(1), "\\$");
       String variable = matcher.group(2);
       if (escapedVariable) {
-        // keept escaped variables intact
+        // keep escaped variables intact
         matcher.appendReplacement(sb, Matcher.quoteReplacement("\\${" + variable + "}"));
       }
       else {
