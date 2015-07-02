@@ -153,12 +153,9 @@ class EnvironmentGenerator {
   }
 
   private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {
-    String templateFile = roleFile.getTemplate();
+    String templateFile = FileUtil.getTemplatePath(role, roleFile);
     if (StringUtils.isEmpty(templateFile)) {
       throw new GeneratorException("No template defined for file: " + nodeRole.getRole() + "/" + roleFile.getFile());
-    }
-    if (StringUtils.isNotEmpty(role.getTemplateDir())) {
-      templateFile = FilenameUtils.concat(role.getTemplateDir(), templateFile);
     }
     try {
       Handlebars handlebars = handlebarsManager.get(getEscapingStrategy(roleFile), roleFile.getCharset());

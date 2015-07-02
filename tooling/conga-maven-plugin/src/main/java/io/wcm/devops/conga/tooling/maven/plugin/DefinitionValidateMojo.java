@@ -20,25 +20,26 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
-import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
-import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.model.reader.RoleReader;
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.tooling.maven.plugin.util.PathUtil;
+import io.wcm.devops.conga.tooling.maven.plugin.validation.DefinitionValidator;
+import io.wcm.devops.conga.tooling.maven.plugin.validation.ModelValidator;
+import io.wcm.devops.conga.tooling.maven.plugin.validation.RoleTemplateFileValidator;
+import io.wcm.devops.conga.tooling.maven.plugin.validation.TemplateValidator;
 
 import java.util.List;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
-import com.github.jknack.handlebars.Handlebars;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -60,12 +61,21 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     ResourceCollection templateDir = getTemplateDir();
     ResourceCollection environmentDir = getEnvironmentDir();
 
+    // validate role definition syntax
     validateFiles(roleDir, roleDir, new ModelValidator("Role", new RoleReader()));
-    validateFiles(templateDir, templateDir, new TemplateValidator(templateDir));
+
+    // validate that all template can be compiled
+    HandlebarsManager handlebarsManager = new HandlebarsManager(ImmutableList.of(templateDir), new PluginManager());
+    validateFiles(templateDir, templateDir, new TemplateValidator(templateDir, handlebarsManager));
+
+    // validate that roles reference existing templates
+    validateFiles(roleDir, roleDir, new RoleTemplateFileValidator(handlebarsManager));
+
+    // validate environment definition syntax
     validateFiles(environmentDir, environmentDir, new ModelValidator("Environment", new EnvironmentReader()));
   }
 
-  private void validateFiles(ResourceCollection sourceDir, ResourceCollection rootSourceDir, Validator validator)
+  private void validateFiles(ResourceCollection sourceDir, ResourceCollection rootSourceDir, DefinitionValidator validator)
       throws MojoFailureException {
     if (!sourceDir.exists()) {
       return;
@@ -85,82 +95,15 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
   }
 
   private static String getPathForLog(ResourceCollection rootSourceDir, Resource file) {
-    String path = unifySlashes(file.getCanonicalPath());
-    String rootPath = unifySlashes(rootSourceDir.getCanonicalPath()) + "/";
+    String path = PathUtil.unifySlashes(file.getCanonicalPath());
+    String rootPath = PathUtil.unifySlashes(rootSourceDir.getCanonicalPath()) + "/";
     return StringUtils.substringAfter(path, rootPath);
   }
 
-  private static String unifySlashes(String path) {
-    return StringUtils.replace(path, "\\", "/");
-  }
 
   @Override
   protected ResourceLoader getResourceLoader() {
     return resourceLoader;
-  }
-
-  /**
-   * Resource validator
-   */
-  private interface Validator {
-    void validate(Resource resource, String pathForLog) throws MojoFailureException;
-  }
-
-  /**
-   * Validates YAML model file against it's reader.
-   */
-  private static class ModelValidator implements Validator {
-
-    private final String modelName;
-    private final ModelReader<?> modelReader;
-
-    public ModelValidator(String modelName, ModelReader<?> modelReader) {
-      this.modelName = modelName;
-      this.modelReader = modelReader;
-    }
-
-    @Override
-    public void validate(Resource resource, String pathForLog) throws MojoFailureException {
-      try {
-        modelReader.read(resource);
-      }
-      catch (Throwable ex) {
-        throw new MojoFailureException(modelName + " definition " + pathForLog + " is invalid:\n" + ex.getMessage());
-      }
-    }
-
-  }
-
-  /**
-   * Validates Handlebars templates by compiling it.
-   */
-  private static class TemplateValidator implements Validator {
-
-    private static final String FILE_EXTENSION = "hbs";
-
-    private final ResourceCollection templateDir;
-    private final HandlebarsManager handlebarsManager;
-
-    public TemplateValidator(ResourceCollection templateDir) {
-      this.templateDir = templateDir;
-      this.handlebarsManager = new HandlebarsManager(ImmutableList.of(templateDir), new PluginManager());
-    }
-
-    @Override
-    public void validate(Resource resource, String pathForLog) throws MojoFailureException {
-      if (StringUtils.equalsIgnoreCase(resource.getFileExtension(), FILE_EXTENSION)) {
-        String templatePath = StringUtils.substringAfter(unifySlashes(resource.getCanonicalPath()),
-            unifySlashes(templateDir.getCanonicalPath()) + "/");
-        Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, CharEncoding.UTF_8);
-        try {
-          handlebars.compile(templatePath);
-        }
-        catch (Throwable ex) {
-          throw new MojoFailureException("Template " + pathForLog + " is invalid:\n" + ex.getMessage());
-        }
-      }
-    }
-
   }
 
 }
