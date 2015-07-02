@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.RoleReader;
 import io.wcm.devops.conga.resource.Resource;
@@ -27,6 +29,7 @@ import io.wcm.devops.conga.resource.ResourceLoader;
 import io.wcm.devops.conga.tooling.maven.plugin.util.PathUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.DefinitionValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.ModelValidator;
+import io.wcm.devops.conga.tooling.maven.plugin.validation.RoleTemplateFileValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.TemplateValidator;
 
 import java.util.List;
@@ -36,6 +39,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Validates definitions by trying to parse them with model reader or compile them via handlebars.
@@ -56,8 +61,17 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     ResourceCollection templateDir = getTemplateDir();
     ResourceCollection environmentDir = getEnvironmentDir();
 
+    // validate role definition syntax
     validateFiles(roleDir, roleDir, new ModelValidator("Role", new RoleReader()));
-    validateFiles(templateDir, templateDir, new TemplateValidator(templateDir));
+
+    // validate that all template can be compiled
+    HandlebarsManager handlebarsManager = new HandlebarsManager(ImmutableList.of(templateDir), new PluginManager());
+    validateFiles(templateDir, templateDir, new TemplateValidator(templateDir, handlebarsManager));
+
+    // validate that roles reference existing templates
+    validateFiles(roleDir, roleDir, new RoleTemplateFileValidator(handlebarsManager));
+
+    // validate environment definition syntax
     validateFiles(environmentDir, environmentDir, new ModelValidator("Environment", new EnvironmentReader()));
   }
 

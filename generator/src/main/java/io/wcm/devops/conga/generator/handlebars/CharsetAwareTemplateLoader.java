@@ -48,13 +48,18 @@ public class CharsetAwareTemplateLoader extends AbstractTemplateLoader {
 
   @Override
   public TemplateSource sourceAt(String location) throws IOException {
+    Resource firstFile = null;
     for (ResourceCollection templateDir : templateDirs) {
       Resource file = templateDir.getResource(location);
+      if (firstFile == null) {
+        firstFile = file;
+      }
       if (file.exists()) {
         return new CharsetAwareTemplateSource(file, charset, location);
       }
     }
-    throw new FileNotFoundException("Tempalte file not found: " + location);
+    throw new FileNotFoundException("Template file not found: "
+        + (firstFile != null ? firstFile.getCanonicalPath() : location));
   }
 
   @Override

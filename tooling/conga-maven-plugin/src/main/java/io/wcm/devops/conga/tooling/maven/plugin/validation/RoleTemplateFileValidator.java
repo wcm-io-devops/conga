@@ -21,47 +21,51 @@ package io.wcm.devops.conga.tooling.maven.plugin.validation;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
+import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.model.reader.ModelReader;
+import io.wcm.devops.conga.model.reader.RoleReader;
+import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.resource.Resource;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.tooling.maven.plugin.util.PathUtil;
 
-import org.apache.commons.lang3.CharEncoding;
+import java.io.IOException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoFailureException;
 
 import com.github.jknack.handlebars.Handlebars;
 
 /**
- * Validates Handlebars templates by compiling it.
+ * Ensures that all template files references in role definitions point to an existing template.
  */
-public final class TemplateValidator implements DefinitionValidator {
+public final class RoleTemplateFileValidator implements DefinitionValidator {
 
-  private static final String FILE_EXTENSION = "hbs";
+  private final ModelReader<Role> modelReader = new RoleReader();
 
-  private final ResourceCollection templateDir;
   private final HandlebarsManager handlebarsManager;
 
   /**
-   * @param templateDir Template directory
    * @param handlebarsManager Handlebars Manager
    */
-  public TemplateValidator(ResourceCollection templateDir, HandlebarsManager handlebarsManager) {
-    this.templateDir = templateDir;
+  public RoleTemplateFileValidator(HandlebarsManager handlebarsManager) {
     this.handlebarsManager = handlebarsManager;
   }
 
   @Override
   public void validate(Resource resource, String pathForLog) throws MojoFailureException {
-    if (StringUtils.equalsIgnoreCase(resource.getFileExtension(), FILE_EXTENSION)) {
-      String templatePath = StringUtils.substringAfter(PathUtil.unifySlashes(resource.getCanonicalPath()),
-          PathUtil.unifySlashes(templateDir.getCanonicalPath()) + "/");
-      Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, CharEncoding.UTF_8);
-      try {
-        handlebars.compile(templatePath);
+    try {
+      Role role = modelReader.read(resource);
+      for (RoleFile roleFile : role.getFiles()) {
+        Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, roleFile.getCharset());
+        String templateFile = FileUtil.getTemplatePath(role, roleFile);
+        if (StringUtils.isEmpty(templateFile)) {
+          throw new IOException("File '" + roleFile.getFile() + "' from role '" + resource.getName() + "' has no template assigned.");
+        }
+        handlebars.compile(templateFile);
       }
-      catch (Throwable ex) {
-        throw new MojoFailureException("Template " + pathForLog + " is invalid:\n" + ex.getMessage());
-      }
+    }
+    catch (Throwable ex) {
+      throw new MojoFailureException("Role definition " + pathForLog + " is invalid:\n" + ex.getMessage());
     }
   }
 

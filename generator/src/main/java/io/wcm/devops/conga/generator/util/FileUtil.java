@@ -20,6 +20,8 @@
 package io.wcm.devops.conga.generator.util;
 
 import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -114,6 +116,23 @@ public final class FileUtil {
    */
   public static boolean matchesExtension(FileContext fileContext, String extension) {
     return matchesExtension(fileContext.getFile(), extension);
+  }
+
+  /**
+   * Get template path for a role file.
+   * @param role Role
+   * @param roleFile Role file
+   * @return Path or null if not defined
+   */
+  public static String getTemplatePath(Role role, RoleFile roleFile) {
+    String path = roleFile.getTemplate();
+    if (StringUtils.isEmpty(path)) {
+      return null;
+    }
+    if (StringUtils.isNotEmpty(role.getTemplateDir())) {
+      path = FilenameUtils.concat(role.getTemplateDir(), path);
+    }
+    return path;
   }
 
 }
