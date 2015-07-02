@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.resource.ResourceCollection;
@@ -115,6 +116,14 @@ public class GeneratorTest {
     assertContains(xml2tenant2, "<defaultString value=\"defaultFromTenant2\"/>");
     assertContains(xml2tenant2, "<globalString>globalFromTenant2</globalString>");
     assertContains(xml2tenant2, "<variableString>The v1-tenant2${novar}</variableString>");
+
+    // check conditional files
+    assertFile(node1Dir, "text/test-conditional-tenant1.txt");
+    assertNotFile(node1Dir, "text/test-conditional-tenant2.txt");
+    assertNotFile(node1Dir, "text/test-conditional-tenant3.txt");
+    assertFile(node2Dir, "text/test-conditional-tenant1.txt");
+    assertFile(node2Dir, "text/test-conditional-tenant2.txt");
+    assertNotFile(node2Dir, "text/test-conditional-tenant3.txt");
   }
 
   private File assertDirectory(File assertBaseDir, String path) {
@@ -127,6 +136,11 @@ public class GeneratorTest {
     File file = new File(assertBaseDir, path);
     assertTrue("File does not exist: " + FileUtil.getCanonicalPath(file), file.exists() && file.isFile());
     return file;
+  }
+
+  private void assertNotFile(File assertBaseDir, String path) {
+    File file = new File(assertBaseDir, path);
+    assertFalse("File does exist: " + FileUtil.getCanonicalPath(file), file.exists() && file.isFile());
   }
 
   private void assertContains(File file, String contains) {

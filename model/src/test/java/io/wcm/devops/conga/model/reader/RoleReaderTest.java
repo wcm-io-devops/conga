@@ -84,6 +84,7 @@ public class RoleReaderTest {
     assertEquals("data/deploy", file.getDir());
     assertEquals("systemconfig-importer.txt.hbs", file.getTemplate());
     assertEquals(ImmutableList.of("importer"), file.getVariants());
+    assertEquals("${abc}", file.getCondition());
     assertEquals(ImmutableList.of("sling-provisioning-model"), file.getValidators());
     assertEquals(ImmutableMap.of("option1", "value1"), file.getValidatorOptions());
     assertEquals(ImmutableList.of("osgi-config-generator"), file.getPostProcessors());

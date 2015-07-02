@@ -24,7 +24,16 @@ files:
     roles:
     - tenantRole1
 
+- file: "test-conditional-${tenant}.txt"
+  dir: text
+  template: "test.txt.hbs"
+  condition: "${generateConditionalFile}"
+  charset: ISO-8859-1
+  multiply: tenant
+
+
 config:
+  generateConditionalFile: false
   var1: v1
   defaultString: '"value1" äöüß€'
   defaultInt: 55
