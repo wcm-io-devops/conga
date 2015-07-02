@@ -217,6 +217,15 @@ class EnvironmentGenerator {
     if (file.exists()) {
       file.delete();
     }
+
+    // skip file if condition does not evaluate to a non-empty string or is "false"
+    if (StringUtils.isNotEmpty(roleFile.getCondition())) {
+      String condition = VariableStringResolver.resolve(roleFile.getCondition(), config);
+      if (StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false")) {
+        return;
+      }
+    }
+
     FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager,
         version, dependencyVersions, log);
     try {
