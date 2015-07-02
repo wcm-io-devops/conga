@@ -39,6 +39,7 @@ public final class RoleFile implements Cloneable {
   private String dir;
   private String template;
   private List<String> variants = new ArrayList<>();
+  private String condition;
   private List<String> validators = new ArrayList<>();
   private Map<String, Object> validatorOptions = new HashMap<>();
   private List<String> postProcessors = new ArrayList<>();
@@ -79,6 +80,14 @@ public final class RoleFile implements Cloneable {
 
   public void setVariants(List<String> variants) {
     this.variants = defaultEmptyList(variants);
+  }
+
+  public String getCondition() {
+    return this.condition;
+  }
+
+  public void setCondition(String condition) {
+    this.condition = condition;
   }
 
   public String getFileHeader() {

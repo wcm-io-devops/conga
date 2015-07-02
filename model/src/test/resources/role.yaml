@@ -13,6 +13,7 @@ files:
   template: systemconfig-importer.txt.hbs
   variants:
   - importer
+  condition: "${abc}"
   fileHeader: sling-provisioning
   validators:
   - sling-provisioning-model
