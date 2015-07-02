@@ -34,7 +34,7 @@
   <packaging>jar</packaging>
 
   <name>CONGA Command Line Interface</name>
-  <description>CONGA - CONfiguration GenerAtor</description>
+  <description>wcm.io DevOps CONGA - CONfiguration GenerAtor</description>
 
   <dependencies>
 

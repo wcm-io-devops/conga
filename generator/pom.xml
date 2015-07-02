@@ -33,7 +33,7 @@
   <packaging>jar</packaging>
 
   <name>CONGA Generator</name>
-  <description>CONGA Configuration Generator.</description>
+  <description>wcm.io DevOps CONGA Configuration Generator.</description>
 
   <dependencies>
 

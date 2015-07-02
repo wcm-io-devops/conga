@@ -33,7 +33,7 @@
   <packaging>jar</packaging>
 
   <name>CONGA Model</name>
-  <description>CONGA Model classes for java representation of definition files.</description>
+  <description>wcm.io DevOps CONGA Model classes for java representation of definition files.</description>
 
   <dependencies>
   
