@@ -19,26 +19,22 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
-import java.io.File;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 
 /**
  * Plugin that allows to validate a generate file.
  */
-public interface ValidatorPlugin extends Plugin {
+public interface ValidatorPlugin extends FilePlugin<ValidatorContext, Void> {
 
   /**
-   * @param file File
-   * @param charset File charset
-   * @return true when validation can be applied to the given context.
+   * Validates the given file
+   * @param file Context file
+   * @param context Context objects
+   * @return nothing
+   * @throws ValidationException when the validation fails.
    */
-  boolean accepts(File file, String charset);
-
-  /**
-   * Execute validation operation.
-   * @param file File
-   * @param charset File charset
-   * @throws ValidationException when validation fails
-   */
-  void validate(File file, String charset) throws ValidationException;
+  @Override
+  Void apply(FileContext file, ValidatorContext context) throws ValidationException;
 
 }

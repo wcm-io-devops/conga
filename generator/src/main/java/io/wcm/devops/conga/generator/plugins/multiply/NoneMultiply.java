@@ -20,9 +20,7 @@
 package io.wcm.devops.conga.generator.plugins.multiply;
 
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
-import io.wcm.devops.conga.model.environment.Environment;
-import io.wcm.devops.conga.model.role.Role;
-import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 
 import java.util.List;
 import java.util.Map;
@@ -45,8 +43,8 @@ public final class NoneMultiply implements MultiplyPlugin {
   }
 
   @Override
-  public List<Map<String, Object>> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config) {
-    return ImmutableList.of(config);
+  public List<Map<String, Object>> multiply(MultiplyContext context) {
+    return ImmutableList.of(context.getConfig());
   }
 
 }

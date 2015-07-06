@@ -1,0 +1,6 @@
+io.wcm.devops.conga.generator.plugins.fileheader.ConfFileHeader
+io.wcm.devops.conga.generator.plugins.fileheader.JsonFileHeader
+io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader
+io.wcm.devops.conga.generator.plugins.fileheader.UnixShellScriptFileHeader
+io.wcm.devops.conga.generator.plugins.fileheader.WindowsShellScriptFileHeader
+io.wcm.devops.conga.generator.plugins.fileheader.XmlFileHeader

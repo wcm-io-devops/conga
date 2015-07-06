@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.model.environment;
 
+import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public final class Environment extends AbstractConfigurable {
   }
 
   public void setNodes(List<Node> nodes) {
-    this.nodes = nodes;
+    this.nodes = defaultEmptyList(nodes);
   }
 
   public List<RoleConfig> getRoleConfig() {
@@ -46,7 +47,7 @@ public final class Environment extends AbstractConfigurable {
   }
 
   public void setRoleConfig(List<RoleConfig> roleConfig) {
-    this.roleConfig = roleConfig;
+    this.roleConfig = defaultEmptyList(roleConfig);
   }
 
   public List<Tenant> getTenants() {
@@ -54,7 +55,7 @@ public final class Environment extends AbstractConfigurable {
   }
 
   public void setTenants(List<Tenant> tenants) {
-    this.tenants = tenants;
+    this.tenants = defaultEmptyList(tenants);
   }
 
 }

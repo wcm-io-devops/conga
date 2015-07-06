@@ -19,6 +19,10 @@
  */
 package io.wcm.devops.conga.model.role;
 
+import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
+import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
+import io.wcm.devops.conga.model.util.MapExpander;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,11 +39,16 @@ public final class RoleFile implements Cloneable {
   private String dir;
   private String template;
   private List<String> variants = new ArrayList<>();
+  private String condition;
   private List<String> validators = new ArrayList<>();
+  private Map<String, Object> validatorOptions = new HashMap<>();
   private List<String> postProcessors = new ArrayList<>();
+  private Map<String, Object> postProcessorOptions = new HashMap<>();
+  private String fileHeader;
   private String multiply;
   private Map<String, Object> multiplyOptions = new HashMap<>();
   private String charset = CharEncoding.UTF_8;
+  private String escapingStrategy;
 
   public String getFile() {
     return this.file;
@@ -70,7 +79,23 @@ public final class RoleFile implements Cloneable {
   }
 
   public void setVariants(List<String> variants) {
-    this.variants = variants;
+    this.variants = defaultEmptyList(variants);
+  }
+
+  public String getCondition() {
+    return this.condition;
+  }
+
+  public void setCondition(String condition) {
+    this.condition = condition;
+  }
+
+  public String getFileHeader() {
+    return this.fileHeader;
+  }
+
+  public void setFileHeader(String fileHeader) {
+    this.fileHeader = fileHeader;
   }
 
   public List<String> getValidators() {
@@ -78,7 +103,16 @@ public final class RoleFile implements Cloneable {
   }
 
   public void setValidators(List<String> validators) {
-    this.validators = validators;
+    this.validators = defaultEmptyList(validators);
+  }
+
+  public Map<String, Object> getValidatorOptions() {
+    return this.validatorOptions;
+  }
+
+
+  public void setValidatorOptions(Map<String, Object> validatorOptions) {
+    this.validatorOptions = defaultEmptyMap(MapExpander.expand(validatorOptions));
   }
 
   public List<String> getPostProcessors() {
@@ -86,7 +120,15 @@ public final class RoleFile implements Cloneable {
   }
 
   public void setPostProcessors(List<String> postProcessors) {
-    this.postProcessors = postProcessors;
+    this.postProcessors = defaultEmptyList(postProcessors);
+  }
+
+  public Map<String, Object> getPostProcessorOptions() {
+    return this.postProcessorOptions;
+  }
+
+  public void setPostProcessorOptions(Map<String, Object> postProcessorOptions) {
+    this.postProcessorOptions = defaultEmptyMap(MapExpander.expand(postProcessorOptions));
   }
 
   public String getMultiply() {
@@ -102,7 +144,7 @@ public final class RoleFile implements Cloneable {
   }
 
   public void setMultiplyOptions(Map<String, Object> multiplyOptions) {
-    this.multiplyOptions = multiplyOptions;
+    this.multiplyOptions = defaultEmptyMap(MapExpander.expand(multiplyOptions));
   }
 
   public String getCharset() {
@@ -111,6 +153,14 @@ public final class RoleFile implements Cloneable {
 
   public void setCharset(String charset) {
     this.charset = charset;
+  }
+
+  public String getEscapingStrategy() {
+    return this.escapingStrategy;
+  }
+
+  public void setEscapingStrategy(String escapingStrategy) {
+    this.escapingStrategy = escapingStrategy;
   }
 
 }

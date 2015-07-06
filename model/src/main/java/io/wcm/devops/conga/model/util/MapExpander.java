@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -36,6 +37,28 @@ public final class MapExpander {
 
   private MapExpander() {
     // static methods only
+  }
+
+  /**
+   * Get object from map with "deep" access resolving dots in the key as nested map keys.
+   * @param map Map
+   * @param key Key with dots
+   * @return Value or null
+   */
+  @SuppressWarnings("unchecked")
+  public static Object getDeep(Map<String, Object> map, String key) {
+    if (map.containsKey(key)) {
+      return ObjectUtils.defaultIfNull(map.get(key), "");
+    }
+    if (StringUtils.contains(key, ".")) {
+      String keyPart = StringUtils.substringBefore(key, ".");
+      String keySuffix = StringUtils.substringAfter(key, ".");
+      Object resultKeyPart = map.get(keyPart);
+      if (resultKeyPart != null && resultKeyPart instanceof Map) {
+        return getDeep((Map<String, Object>)resultKeyPart, keySuffix);
+      }
+    }
+    return null;
   }
 
   /**

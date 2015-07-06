@@ -19,6 +19,10 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -46,6 +50,15 @@ public final class FileUtil {
     catch (IOException ex) {
       return file.getAbsolutePath();
     }
+  }
+
+  /**
+   * Get canoncial path of file
+   * @param fileContext File context
+   * @return Canonical path
+   */
+  public static String getCanonicalPath(FileContext fileContext) {
+    return getCanonicalPath(fileContext.getFile());
   }
 
   /**
@@ -77,12 +90,49 @@ public final class FileUtil {
 
   /**
    * Checks file extension
-   * @param file File
-   * @param extension File extension
+   * @param fileExtension File extension of file to check
+   * @param extension Expected file extension
+   * @return true if file extension matches
+   */
+  public static boolean matchesExtension(String fileExtension, String extension) {
+    return StringUtils.equalsIgnoreCase(fileExtension, extension);
+  }
+
+  /**
+   * Checks file extension
+   * @param file File to check
+   * @param extension Expected file extension
    * @return true if file extension matches
    */
   public static boolean matchesExtension(File file, String extension) {
-    return StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(file.getName()), extension);
+    return matchesExtension(FilenameUtils.getExtension(file.getName()), extension);
+  }
+
+  /**
+   * Checks file extension
+   * @param fileContext File context to check
+   * @param extension Expected file extension
+   * @return true if file extension matches
+   */
+  public static boolean matchesExtension(FileContext fileContext, String extension) {
+    return matchesExtension(fileContext.getFile(), extension);
+  }
+
+  /**
+   * Get template path for a role file.
+   * @param role Role
+   * @param roleFile Role file
+   * @return Path or null if not defined
+   */
+  public static String getTemplatePath(Role role, RoleFile roleFile) {
+    String path = roleFile.getTemplate();
+    if (StringUtils.isEmpty(path)) {
+      return null;
+    }
+    if (StringUtils.isNotEmpty(role.getTemplateDir())) {
+      path = FilenameUtils.concat(role.getTemplateDir(), path);
+    }
+    return path;
   }
 
 }

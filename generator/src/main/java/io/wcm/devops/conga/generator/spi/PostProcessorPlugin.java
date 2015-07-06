@@ -19,28 +19,24 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
-import java.io.File;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 
-import org.slf4j.Logger;
+import java.util.List;
 
 /**
  * Plugin that allows to post-process a generated file.
  */
-public interface PostProcessorPlugin extends Plugin {
+public interface PostProcessorPlugin extends FilePlugin<PostProcessorContext, List<FileContext>> {
 
   /**
-   * @param file File
-   * @param charset File charset
-   * @return true when post process can be applied to the given context.
+   * Applies the post processing.
+   * @param file Context file
+   * @param context Context objects
+   * @return Returns a list of files that where generated additionally or instead of the input file.
+   *         The input file itself should never be returned, otherwise files may get processed twice.
    */
-  boolean accepts(File file, String charset);
-
-  /**
-   * Execute post process operation.
-   * @param charset File charset
-   * @param file File
-   * @param logger Logger
-   */
-  void postProcess(File file, String charset, Logger logger);
+  @Override
+  List<FileContext> apply(FileContext file, PostProcessorContext context);
 
 }

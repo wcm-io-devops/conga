@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.model.shared;
 
+import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
 import io.wcm.devops.conga.model.util.MapExpander;
 
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public abstract class AbstractConfigurable implements Configurable, Cloneable {
    */
   @Override
   public final void setConfig(Map<String, Object> config) {
-    this.config = MapExpander.expand(config);
+    this.config = defaultEmptyMap(MapExpander.expand(config));
   }
 
 }

@@ -20,9 +20,12 @@
 package io.wcm.devops.conga.generator;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
+import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
@@ -62,13 +65,16 @@ class EnvironmentGenerator {
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
+  private final String version;
+  private final List<String> dependencyVersions;
   private final Logger log;
 
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
 
   public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
-      File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager, Logger log) {
+      File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager,
+      String version, List<String> dependencyVersions, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = environment;
@@ -76,17 +82,22 @@ class EnvironmentGenerator {
     this.pluginManager = pluginManager;
     this.handlebarsManager = handlebarsManager;
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
+    this.version = version;
+    this.dependencyVersions = dependencyVersions;
     this.log = log;
     this.environmentContextProperties = ImmutableMap.copyOf(
-        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, environment));
+        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, environment, version));
   }
 
   public void generate() {
-    log.info("Genrate environment '{}'...", environmentName);
+    log.info("");
+    log.info("===== Environment '{}' =====", environmentName);
 
     for (Node node : environment.getNodes()) {
       generateNode(node);
     }
+
+    log.info("");
   }
 
   private void generateNode(Node node) {
@@ -94,7 +105,8 @@ class EnvironmentGenerator {
       throw new GeneratorException("Missing node name in " + environmentName + ".");
     }
 
-    log.info("Generate node '{}'...", node.getNode());
+    log.info("");
+    log.info("----- Node '{}' -----", node.getNode());
 
     for (NodeRole nodeRole : node.getRoles()) {
       Role role = roles.get(nodeRole.getRole());
@@ -141,20 +153,35 @@ class EnvironmentGenerator {
   }
 
   private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {
-    String templateFile = roleFile.getTemplate();
+    String templateFile = FileUtil.getTemplatePath(role, roleFile);
     if (StringUtils.isEmpty(templateFile)) {
       throw new GeneratorException("No template defined for file: " + nodeRole.getRole() + "/" + roleFile.getFile());
     }
-    if (StringUtils.isNotEmpty(role.getTemplateDir())) {
-      templateFile = FilenameUtils.concat(role.getTemplateDir(), templateFile);
-    }
     try {
-      Handlebars handlebars = handlebarsManager.get(roleFile.getCharset());
+      Handlebars handlebars = handlebarsManager.get(getEscapingStrategy(roleFile), roleFile.getCharset());
       return handlebars.compile(templateFile);
     }
     catch (IOException ex) {
       throw new GeneratorException("Unable to compile handlebars template: " + nodeRole.getRole() + "/" + roleFile.getFile(), ex);
     }
+  }
+
+  /**
+   * Get escaping strategy for file. If one is explicitly defined in role definition use this.
+   * Otherwise get the best-matching by file extension.
+   * @param roleFile Role file
+   * @return Escaping Strategy (never null)
+   */
+  private String getEscapingStrategy(RoleFile roleFile) {
+    if (StringUtils.isNotEmpty(roleFile.getEscapingStrategy())) {
+      return roleFile.getEscapingStrategy();
+    }
+    String fileExtension = FilenameUtils.getExtension(roleFile.getFile());
+    return pluginManager.getAll(EscapingStrategyPlugin.class).stream()
+        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneEscapingStrategy.NAME))
+        .filter(plugin -> plugin.accepts(fileExtension))
+        .findFirst().orElse(pluginManager.get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class))
+        .getName();
   }
 
   private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template) {
@@ -163,11 +190,18 @@ class EnvironmentGenerator {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
     }
 
-    List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(role, roleFile, environment, config);
+    MultiplyContext multiplyContext = new MultiplyContext()
+    .role(role)
+    .roleFile(roleFile)
+    .environment(environment)
+    .config(config)
+    .logger(log);
+
+    List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
 
       // resolve variables
-      Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig);
+      Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig, false);
 
       // replace placeholders in dir/filename with context variables
       String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
@@ -178,23 +212,34 @@ class EnvironmentGenerator {
   }
 
   private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template) {
-    File file = new File(nodeDir, FilenameUtils.concat(dir, fileName));
-    if (generatedFilePaths.contains(FileUtil.getCanonicalPath(file))) {
-      throw new GeneratorException("File was generated already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
-    }
+    File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, fileName) : fileName);
+    boolean duplicateFile = generatedFilePaths.contains(FileUtil.getCanonicalPath(file));
     if (file.exists()) {
       file.delete();
     }
-    FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager, log);
+
+    // skip file if condition does not evaluate to a non-empty string or is "false"
+    if (StringUtils.isNotEmpty(roleFile.getCondition())) {
+      String condition = VariableStringResolver.resolve(roleFile.getCondition(), config);
+      if (StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false")) {
+        return;
+      }
+    }
+
+    FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager,
+        version, dependencyVersions, log);
     try {
       fileGenerator.generate();
       generatedFilePaths.add(FileUtil.getCanonicalPath(file));
+      if (duplicateFile) {
+        log.warn("File was generated already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
+      }
     }
     catch (ValidationException ex) {
       throw new GeneratorException("File validation failed " + FileUtil.getCanonicalPath(file) + " - " + ex.getMessage());
     }
     catch (Throwable ex) {
-      throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file) + "", ex);
+      throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file) + "\n" + ex.getMessage(), ex);
     }
   }
 

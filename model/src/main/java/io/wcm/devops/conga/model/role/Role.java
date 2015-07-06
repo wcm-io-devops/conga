@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.model.role;
 
+import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public final class Role extends AbstractConfigurable {
   }
 
   public void setVariants(List<RoleVariant> variants) {
-    this.variants = variants;
+    this.variants = defaultEmptyList(variants);
   }
 
   public String getTemplateDir() {
@@ -54,7 +55,7 @@ public final class Role extends AbstractConfigurable {
   }
 
   public void setFiles(List<RoleFile> files) {
-    this.files = files;
+    this.files = defaultEmptyList(files);
   }
 
 }

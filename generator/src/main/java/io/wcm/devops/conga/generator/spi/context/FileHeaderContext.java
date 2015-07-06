@@ -17,36 +17,31 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.validation;
+package io.wcm.devops.conga.generator.spi.context;
 
-import io.wcm.devops.conga.generator.spi.ValidationException;
-import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
-
-import java.io.File;
+import java.util.List;
 
 /**
- * Does no validation.
+ * Context for {@link io.wcm.devops.conga.generator.spi.FileHeaderPlugin}.
  */
-public final class NoneValidator implements ValidatorPlugin {
+public final class FileHeaderContext extends AbstractPluginContext<FileHeaderContext> {
+
+  private List<String> commentLines;
 
   /**
-   * Plugin name
+   * @return Comment lines for file header
    */
-  public static final String NAME = "none";
-
-  @Override
-  public String getName() {
-    return NAME;
+  public List<String> getCommentLines() {
+    return this.commentLines;
   }
 
-  @Override
-  public boolean accepts(File file, String charset) {
-    return true;
-  }
-
-  @Override
-  public void validate(File file, String charset) throws ValidationException {
-    // no validation
+  /**
+   * @param value Comment lines for file header
+   * @return this
+   */
+  public FileHeaderContext commentLines(List<String> value) {
+    commentLines = value;
+    return this;
   }
 
 }

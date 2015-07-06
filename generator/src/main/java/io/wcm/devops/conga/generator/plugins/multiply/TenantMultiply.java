@@ -22,10 +22,8 @@ package io.wcm.devops.conga.generator.plugins.multiply;
 import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
-import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.model.environment.Tenant;
-import io.wcm.devops.conga.model.role.Role;
-import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.model.util.MapMerger;
 
 import java.util.ArrayList;
@@ -52,15 +50,15 @@ public final class TenantMultiply implements MultiplyPlugin {
   }
 
   @Override
-  public List<Map<String, Object>> multiply(Role role, RoleFile roleFile, Environment environment, Map<String, Object> config) {
+  public List<Map<String, Object>> multiply(MultiplyContext context) {
     List<Map<String, Object>> contexts = new ArrayList<>();
 
-    for (Tenant tenant : environment.getTenants()) {
+    for (Tenant tenant : context.getEnvironment().getTenants()) {
       if (StringUtils.isEmpty(tenant.getTenant())) {
         throw new GeneratorException("Tenant without tenant name detected.");
       }
-      if (acceptTenant(tenant, roleFile.getMultiplyOptions())) {
-        Map<String, Object> mergedConfig = MapMerger.merge(tenant.getConfig(), config);
+      if (acceptTenant(tenant, context.getRoleFile().getMultiplyOptions())) {
+        Map<String, Object> mergedConfig = MapMerger.merge(tenant.getConfig(), context.getConfig());
 
         // set tenant-specific context variables
         mergedConfig.put(ContextProperties.TENANT, tenant.getTenant());

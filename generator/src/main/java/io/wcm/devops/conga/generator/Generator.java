@@ -56,6 +56,8 @@ public final class Generator {
   private final HandlebarsManager handlebarsManager;
   private Logger log = LoggerFactory.getLogger(getClass());
   private boolean deleteBeforeGenerate;
+  private String version;
+  private List<String> dependencyVersions;
 
   /**
    * @param roleDirs Directories with role definitions. Filename without extension = role name.
@@ -68,7 +70,7 @@ public final class Generator {
     this.roles = readModels(roleDirs, new RoleReader());
     this.environments = readModels(environmentDirs, new EnvironmentReader());
     this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);
-    this.handlebarsManager = new HandlebarsManager(templateDirs);
+    this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginManager);
   }
 
   /**
@@ -84,6 +86,21 @@ public final class Generator {
    */
   public void setDeleteBeforeGenerate(boolean deleteBeforeGenerate) {
     this.deleteBeforeGenerate = deleteBeforeGenerate;
+  }
+
+  /**
+   * @param version The main version of the environment definition.
+   */
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
+  /**
+   * @param dependencyVersions List of versions to include as dependency information in generated file headers,
+   *          e.g. the versions of the references role/template definition artifacts.
+   */
+  public void setDependencyVersions(List<String> dependencyVersions) {
+    this.dependencyVersions = dependencyVersions;
   }
 
   private static <T> Map<String, T> readModels(List<ResourceCollection> dirs, ModelReader<T> reader) {
@@ -138,7 +155,7 @@ public final class Generator {
         environmentDestDir.mkdir();
       }
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDestDir, pluginManager, handlebarsManager, log);
+          environmentDestDir, pluginManager, handlebarsManager, version, dependencyVersions, log);
       environmentGenerator.generate();
     }
   }

@@ -84,10 +84,19 @@ public class RoleReaderTest {
     assertEquals("data/deploy", file.getDir());
     assertEquals("systemconfig-importer.txt.hbs", file.getTemplate());
     assertEquals(ImmutableList.of("importer"), file.getVariants());
+    assertEquals("${abc}", file.getCondition());
     assertEquals(ImmutableList.of("sling-provisioning-model"), file.getValidators());
+    assertEquals(ImmutableMap.of("option1", "value1"), file.getValidatorOptions());
     assertEquals(ImmutableList.of("osgi-config-generator"), file.getPostProcessors());
+    assertEquals(ImmutableMap.of("option2", "value2"), file.getPostProcessorOptions());
+    assertEquals("sling-provisioning", file.getFileHeader());
     assertEquals("none", file.getMultiply());
     assertEquals(CharEncoding.UTF_8, file.getCharset());
+    assertEquals("none", file.getEscapingStrategy());
+
+    RoleFile vhostFile = role.getFiles().get(4);
+    assertEquals("tenant", vhostFile.getMultiply());
+    assertEquals(ImmutableMap.of("roles", ImmutableList.of("website")), vhostFile.getMultiplyOptions());
   }
 
 }

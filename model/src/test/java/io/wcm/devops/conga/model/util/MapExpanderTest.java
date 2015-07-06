@@ -20,7 +20,9 @@
 package io.wcm.devops.conga.model.util;
 
 import static io.wcm.devops.conga.model.util.MapExpander.expand;
+import static io.wcm.devops.conga.model.util.MapExpander.getDeep;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -90,6 +92,19 @@ public class MapExpanderTest {
             ImmutableMap.of("a.b", "v1", "a.c.d", "v2"),
             ImmutableMap.of("a.b", "v3")
             ))));
+  }
+
+  @Test
+  public void testGetDeep() {
+    assertNull(getDeep(ImmutableMap.of(), null));
+    assertNull(getDeep(ImmutableMap.of(), "p1"));
+    assertNull(getDeep(ImmutableMap.of(), "p1.p2"));
+    assertNull(getDeep(ImmutableMap.of(), "p1.p2.p3"));
+
+    assertEquals("v1", getDeep(ImmutableMap.of("p1", "v1", "p2", "v2"), "p1"));
+    assertNull(getDeep(ImmutableMap.of("p1", "v1", "p2", "v2"), "p1.p2"));
+    assertEquals("v1", getDeep(ImmutableMap.of("p1", ImmutableMap.of("p2", "v1"), "p2", "v2"), "p1.p2"));
+    assertEquals("v1", getDeep(ImmutableMap.of("p1", ImmutableMap.of("p2", ImmutableMap.of("p3", "v1")), "p2", "v2"), "p1.p2.p3"));
   }
 
 }

@@ -17,14 +17,15 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.validation;
+package io.wcm.devops.conga.generator.plugins.validator;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -66,18 +67,19 @@ public final class XmlValidator implements ValidatorPlugin {
   }
 
   @Override
-  public boolean accepts(File file, String charset) {
+  public boolean accepts(FileContext file, ValidatorContext context) {
     return FileUtil.matchesExtension(file, FILE_EXTENSION);
   }
 
   @Override
-  public void validate(File file, String charset) throws ValidationException {
+  public Void apply(FileContext file, ValidatorContext context) throws ValidationException {
     try {
-      documentBuilder.parse(file);
+      documentBuilder.parse(file.getFile());
     }
     catch (SAXException | IOException ex) {
       throw new ValidationException("XML file is not valid: " + ex.getMessage(), ex);
     }
+    return null;
   }
 
 }

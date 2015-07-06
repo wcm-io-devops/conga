@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
+import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Tenant;
@@ -47,6 +48,7 @@ public class TenantMultiplyTest {
   private RoleFile roleFile;
   private Map<String, Object> config;
   private Environment environment;
+  private MultiplyContext context;
 
   @Before
   public void setUp() {
@@ -58,11 +60,13 @@ public class TenantMultiplyTest {
     config = ImmutableMap.of("var1", "v1", "var2", "v2");
 
     environment = new Environment();
+
+    context = new MultiplyContext().role(role).roleFile(roleFile).environment(environment).config(config);
   }
 
   @Test
   public void testNoTenants() {
-    List<Map<String, Object>> configs = underTest.multiply(role, roleFile, environment, config);
+    List<Map<String, Object>> configs = underTest.multiply(context);
     assertEquals(0, configs.size());
   }
 
@@ -70,7 +74,7 @@ public class TenantMultiplyTest {
   public void testTenantWithoutName() {
     environment.getTenants().add(new Tenant());
 
-    underTest.multiply(role, roleFile, environment, config);
+    underTest.multiply(context);
   }
 
   @Test
@@ -84,7 +88,7 @@ public class TenantMultiplyTest {
     tenant2.setTenant("tenant2");
     environment.getTenants().add(tenant2);
 
-    List<Map<String, Object>> configs = underTest.multiply(role, roleFile, environment, config);
+    List<Map<String, Object>> configs = underTest.multiply(context);
     assertEquals(2, configs.size());
 
     Map<String, Object> config1 = configs.get(0);
@@ -116,7 +120,7 @@ public class TenantMultiplyTest {
 
     roleFile.setMultiplyOptions(ImmutableMap.of(TenantMultiply.ROLES_PROPERTY, ImmutableList.of("role1", "role3")));
 
-    List<Map<String, Object>> configs = underTest.multiply(role, roleFile, environment, config);
+    List<Map<String, Object>> configs = underTest.multiply(context);
     assertEquals(2, configs.size());
 
     Map<String, Object> config1 = configs.get(0);

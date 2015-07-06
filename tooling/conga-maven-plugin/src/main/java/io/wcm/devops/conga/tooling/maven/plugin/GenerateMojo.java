@@ -23,19 +23,37 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ROLES_DIR;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_TEMPLATES_DIR;
 import io.wcm.devops.conga.generator.Generator;
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -66,6 +84,13 @@ public class GenerateMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
+  @Component
+  private ArtifactResolver resolver;
+  @Component
+  private ArtifactHandlerManager artifactHandlerManager;
+  @Parameter(property = "session", readonly = true, required = true)
+  private MavenSession mavenSession;
+
   private ResourceLoader resourceLoader;
 
   @Override
@@ -82,6 +107,8 @@ public class GenerateMojo extends AbstractCongaMojo {
     Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
     generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
+    generator.setVersion(project.getVersion());
+    generator.setDependencyVersions(buildDependencyVersionList());
     generator.generate(environments);
   }
 
@@ -102,6 +129,76 @@ public class GenerateMojo extends AbstractCongaMojo {
     catch (MalformedURLException | DependencyResolutionRequiredException ex) {
       throw new MojoExecutionException("Unable to get classpath elements for class loader.", ex);
     }
+  }
+
+  /**
+   * Build list of referenced dependencies to be included in file header of generated files.
+   * @return Version list
+   */
+  @SuppressWarnings("deprecation")
+  private List<String> buildDependencyVersionList() {
+    getLog().info("Scanning dependencies for CONGA definitions...");
+    return project.getCompileDependencies().stream()
+        // include only dependencies with a CONGA-INF/ directory
+        .filter(this::hasCongaDefinitions)
+        // transform to string
+        .map(dependency -> dependency.getGroupId() + "/" + dependency.getArtifactId() + "/" + dependency.getVersion()
+            + (dependency.getClassifier() != null ? "/" + dependency.getClassifier() : ""))
+            .collect(Collectors.toList());
+  }
+
+  /**
+   * Checks if the JAR file of the given dependency has a CONGA-INF/ directory.
+   * @param dependency Dependency
+   * @return true if configuration definitions found
+   */
+  private boolean hasCongaDefinitions(Dependency dependency) {
+    if (!StringUtils.equals(dependency.getType(), "jar")) {
+      return false;
+    }
+    String fileInfo = dependency.toString();
+    try {
+      Artifact artifact = getArtifact(dependency);
+      fileInfo = FileUtil.getCanonicalPath(artifact.getFile());
+      try (ZipFile zipFile = new ZipFile(artifact.getFile())) {
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
+        while (entries.hasMoreElements()) {
+          ZipEntry entry = entries.nextElement();
+          if (StringUtils.startsWith(entry.getName(), BuildConstants.CLASSPATH_PREFIX)) {
+            return true;
+          }
+        }
+      }
+    }
+    catch (IOException ex) {
+      throw new GeneratorException("Unable to read from JAR file: " + fileInfo, ex);
+    }
+    return false;
+  }
+
+  /**
+   * Get a resolved Artifact from the coordinates provided
+   * @return the artifact, which has been resolved.
+   */
+  @SuppressWarnings("deprecation")
+  private Artifact getArtifact(Dependency dependency) throws IOException {
+    Artifact artifact = new DefaultArtifact(dependency.getGroupId(),
+        dependency.getArtifactId(),
+        VersionRange.createFromVersion(dependency.getVersion()),
+        dependency.getScope(),
+        dependency.getType(),
+        dependency.getClassifier(),
+        artifactHandlerManager.getArtifactHandler(dependency.getType()));
+    try {
+      this.resolver.resolve(artifact, this.project.getRemoteArtifactRepositories(), this.mavenSession.getLocalRepository());
+    }
+    catch (final ArtifactResolutionException ex) {
+      throw new IOException("Unable to get artifact for " + dependency, ex);
+    }
+    catch (ArtifactNotFoundException ex) {
+      throw new IOException("Unable to get artifact for " + dependency, ex);
+    }
+    return artifact;
   }
 
   @Override

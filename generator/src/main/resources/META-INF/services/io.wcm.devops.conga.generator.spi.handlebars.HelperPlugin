@@ -1,0 +1,6 @@
+io.wcm.devops.conga.generator.plugins.handlebars.helper.DefaultIfEmptyHelper
+io.wcm.devops.conga.generator.plugins.handlebars.helper.EachIfHelper
+io.wcm.devops.conga.generator.plugins.handlebars.helper.EachIfEqualsHelper
+io.wcm.devops.conga.generator.plugins.handlebars.helper.IfEqualsHelper
+io.wcm.devops.conga.generator.plugins.handlebars.helper.JoinHelper
+io.wcm.devops.conga.generator.plugins.handlebars.helper.RegexQuoteHelper

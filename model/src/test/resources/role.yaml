@@ -13,12 +13,19 @@ files:
   template: systemconfig-importer.txt.hbs
   variants:
   - importer
+  condition: "${abc}"
+  fileHeader: sling-provisioning
   validators:
   - sling-provisioning-model
+  validatorOptions:
+    option1: value1
   postProcessors:
   - osgi-config-generator
+  postProcessorOptions:
+    option2: value2
   multiply: none
   charset: UTF-8
+  escapingStrategy: none
 
 - file: ROOT.xml
   dir: conf/Catalina/localhost
