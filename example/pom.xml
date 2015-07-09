@@ -50,11 +50,11 @@
       <plugin>
         <groupId>io.wcm.devops.conga</groupId>
         <artifactId>conga-maven-plugin</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
         <extensions>true</extensions>
       </plugin>
 
-      <!-- do not deploy this hierarchy pom into maven repository -->
+      <!-- do not deploy this example into maven repository -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>

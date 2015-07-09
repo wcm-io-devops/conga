@@ -33,7 +33,6 @@
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.example.environments</artifactId>
   <packaging>config</packaging>
-  <version>1-SNAPSHOT</version>
 
   <name>CONGA Packaging Example: Environments</name>
   <description>Contains environment definitions and generates the configuration.</description>
