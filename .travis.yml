@@ -16,10 +16,17 @@
 # limitations under the License.
 # #L%
 #
+
 language: java
+
 jdk:
 - oraclejdk8
+
+# Make sure travis can use container-based infrastructure
+sudo: false
+
 install: "mvn -s ./.travis.maven-settings.xml clean"
+
 script:
 - "mvn -s ./.travis.maven-settings.xml -Pcontinuous-integration -U -Dmaven.javadoc.skip=true install"
 # Separate build for example due to dependeny on conga-maven-plugin
