@@ -38,9 +38,9 @@
   <description>Root POM for wcm.io CONGA Maven hierarchy.</description>
 
   <scm>
-    <connection>scm:git:https://github.com/wcm-io-devops/wcm-io-devops-conga.git</connection>
-    <developerConnection>scm:git:https://github.com/wcm-io-devops/wcm-io-devops-conga.git</developerConnection>
-    <url>https://github.com/wcm-io-devops/wcm-io-devops-conga</url>
+    <connection>scm:git:https://github.com/wcm-io-devops/conga.git</connection>
+    <developerConnection>scm:git:https://github.com/wcm-io-devops/conga.git</developerConnection>
+    <url>https://github.com/wcm-io-devops/conga</url>
     <tag>HEAD</tag>
   </scm>
 

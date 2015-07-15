@@ -56,7 +56,7 @@
 
   <ciManagement>
     <system>Travis CI</system>
-    <url>https://travis-ci.org/wcm-io-devops/wcm-io-devops-conga</url>
+    <url>https://travis-ci.org/wcm-io-devops/conga</url>
   </ciManagement>
 
   <developers>
