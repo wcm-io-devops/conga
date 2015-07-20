@@ -102,5 +102,20 @@
 
     </dependencies>
   </dependencyManagement>
+  
+  <build>
+    <plugins>
+    
+      <!-- Do not deploy site -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skipDeploy>true</skipDeploy>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>
