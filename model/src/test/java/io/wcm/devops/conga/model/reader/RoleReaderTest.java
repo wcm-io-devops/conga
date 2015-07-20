@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.model.role.RoleVariant;
+import io.wcm.devops.conga.model.shared.LineEndings;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,11 +93,13 @@ public class RoleReaderTest {
     assertEquals("sling-provisioning", file.getFileHeader());
     assertEquals("none", file.getMultiply());
     assertEquals(CharEncoding.UTF_8, file.getCharset());
+    assertEquals(LineEndings.windows, file.getLineEndings());
     assertEquals("none", file.getEscapingStrategy());
 
     RoleFile vhostFile = role.getFiles().get(4);
     assertEquals("tenant", vhostFile.getMultiply());
     assertEquals(ImmutableMap.of("roles", ImmutableList.of("website")), vhostFile.getMultiplyOptions());
+    assertEquals(LineEndings.unix, vhostFile.getLineEndings());
   }
 
 }

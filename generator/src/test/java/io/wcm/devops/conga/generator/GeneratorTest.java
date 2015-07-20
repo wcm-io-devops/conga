@@ -70,6 +70,7 @@ public class GeneratorTest {
     assertContains(text1, "defaultString: \"value1\" äöüß", CharEncoding.ISO_8859_1);
     assertContains(text1, "globalString: globalFromRole1", CharEncoding.ISO_8859_1);
     assertContains(text1, "variableString: \\QThe v1-role1-variant11${novar}\\E", CharEncoding.ISO_8859_1);
+    assertContains(text1, "\r\n", CharEncoding.ISO_8859_1);
 
     assertContains(text1, ContextProperties.ENVIRONMENT + ": env1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.NODE + ": node1", CharEncoding.ISO_8859_1);

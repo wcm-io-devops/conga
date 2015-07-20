@@ -29,6 +29,7 @@ import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.generator.util.LineEndingConverter;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.model.role.RoleFile;
@@ -38,6 +39,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -151,16 +153,26 @@ class FileGenerator {
     }
 
     // generate file with handlebars template
+    // use unix file endings by default
     try (FileOutputStream fos = new FileOutputStream(file);
-        Writer writer = new OutputStreamWriter(fos, roleFile.getCharset())) {
-      template.apply(config, writer);
-      writer.flush();
+        Writer fileWriter = new OutputStreamWriter(fos, roleFile.getCharset())) {
+      StringWriter stringWriter = new StringWriter();
+      template.apply(config, stringWriter);
+      fileWriter.write(normalizeLineEndings(stringWriter.toString()));
+      fileWriter.flush();
     }
 
     // add file header, validate and post-process generated file
     applyFileHeader(fileContext, roleFile.getFileHeader());
     applyValidation(fileContext, roleFile.getValidators());
     applyPostProcessor(fileContext);
+  }
+
+  private String normalizeLineEndings(String value) {
+    // convert/normalize all line endings to unix style
+    String normalizedLineEndings = LineEndingConverter.normalizeToUnix(value);
+    // and then to the line-ending style as requested in the tempalte definition
+    return LineEndingConverter.convertTo(normalizedLineEndings, roleFile.getLineEndings());
   }
 
   private void applyFileHeader(FileContext fileItem, String pluginName) {

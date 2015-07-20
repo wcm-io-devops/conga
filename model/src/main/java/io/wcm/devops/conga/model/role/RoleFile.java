@@ -21,6 +21,7 @@ package io.wcm.devops.conga.model.role;
 
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
+import io.wcm.devops.conga.model.shared.LineEndings;
 import io.wcm.devops.conga.model.util.MapExpander;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public final class RoleFile implements Cloneable {
   private String multiply;
   private Map<String, Object> multiplyOptions = new HashMap<>();
   private String charset = CharEncoding.UTF_8;
+  private LineEndings lineEndings = LineEndings.unix;
   private String escapingStrategy;
 
   public String getFile() {
@@ -153,6 +155,14 @@ public final class RoleFile implements Cloneable {
 
   public void setCharset(String charset) {
     this.charset = charset;
+  }
+
+  public LineEndings getLineEndings() {
+    return this.lineEndings;
+  }
+
+  public void setLineEndings(LineEndings lineEndings) {
+    this.lineEndings = lineEndings;
   }
 
   public String getEscapingStrategy() {
