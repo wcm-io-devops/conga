@@ -31,6 +31,7 @@ import java.util.List;
 public final class Node extends AbstractConfigurable {
 
   private String node;
+  private List<String> nodes = new ArrayList<>();
   private List<NodeRole> roles = new ArrayList<>();
 
   public String getNode() {
@@ -39,6 +40,14 @@ public final class Node extends AbstractConfigurable {
 
   public void setNode(String node) {
     this.node = node;
+  }
+
+  public List<String> getNodes() {
+    return this.nodes;
+  }
+
+  public void setNodes(List<String> nodes) {
+    this.nodes = defaultEmptyList(nodes);
   }
 
   public List<NodeRole> getRoles() {
