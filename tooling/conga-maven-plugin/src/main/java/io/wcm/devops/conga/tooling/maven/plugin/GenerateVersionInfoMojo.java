@@ -20,7 +20,7 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Properties;
 
-import org.apache.maven.model.Plugin;
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -41,7 +41,7 @@ import org.apache.maven.project.MavenProject;
  * artifact.
  */
 @Mojo(name = "generate-version-info", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresProject = true, threadSafe = true)
-public class GenerateVersionInfoMojo extends AbstractCongaMojo {
+public class GenerateVersionInfoMojo extends AbstractMojo {
 
   /**
    * Target path for the prepared definition files.
@@ -52,12 +52,8 @@ public class GenerateVersionInfoMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
-  private ResourceLoader resourceLoader;
-
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    resourceLoader = new ResourceLoader();
-
     File outputDir = new File(definitionTarget, BuildConstants.CLASSPATH_PREFIX);
     if (!outputDir.exists()) {
       outputDir.mkdirs();
@@ -67,38 +63,14 @@ public class GenerateVersionInfoMojo extends AbstractCongaMojo {
     if (propsFile.exists()) {
       propsFile.delete();
     }
-    Properties props = getVersionInfoProperties();
+    Properties versionInfo = VersionInfoUtil.getVersionInfoProperties(project);
     try (OutputStream os = new FileOutputStream(propsFile)) {
-      props.store(os, "CONGA Version Info");
+      versionInfo.store(os, "CONGA Version Info");
     }
     catch (IOException ex) {
       throw new MojoExecutionException("Error generating version info to "
           + FileUtil.getCanonicalPath(propsFile) + ": " + ex.getMessage(), ex);
     }
-  }
-
-  /**
-   * Detects versions from maven-conga-plugin and additional CONGA plugins used.
-   * @return Properties with versions
-   */
-  private Properties getVersionInfoProperties() {
-    Properties props = new Properties();
-
-    // add version info about the conga-maven-plugin itself, and direct plugin dependencies (assumed conga plugins)
-    Plugin congaPlugin = project.getPlugin(BuildConstants.CONGA_MAVEN_PLUGIN_KEY);
-    if (congaPlugin != null) {
-      props.put(congaPlugin.getKey(), congaPlugin.getVersion());
-
-      congaPlugin.getDependencies().stream()
-      .forEach(dependency -> props.put(Plugin.constructKey(dependency.getGroupId(), dependency.getArtifactId()), dependency.getVersion()));
-    }
-
-    return props;
-  }
-
-  @Override
-  protected ResourceLoader getResourceLoader() {
-    return resourceLoader;
   }
 
 }
