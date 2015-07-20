@@ -21,6 +21,7 @@ package io.wcm.devops.conga.model.role;
 
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
+import io.wcm.devops.conga.model.shared.AbstractModel;
 import io.wcm.devops.conga.model.shared.LineEndings;
 import io.wcm.devops.conga.model.util.MapExpander;
 
@@ -34,7 +35,7 @@ import org.apache.commons.lang3.CharEncoding;
 /**
  * File definition.
  */
-public final class RoleFile implements Cloneable {
+public final class RoleFile extends AbstractModel {
 
   private String file;
   private String dir;

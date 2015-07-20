@@ -31,6 +31,9 @@
         Add "generate-version-info" and "validate-version-info" goals to ensure that during configuration generation
         no older Maven/CONGA plugins are used than were used during generation of references definition artifacts.
       </action>
+      <action type="add" dev="sseifert">
+        Support "nodes" attribute additional to "node" for environments when multiple nodes have the same roles and configuration.
+      </action>
     </release>
 
     <release version="1.0.0" date="2015-07-06">

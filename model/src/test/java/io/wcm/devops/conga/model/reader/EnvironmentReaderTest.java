@@ -51,7 +51,7 @@ public class EnvironmentReaderTest {
 
   @Test
   public void testEnvironment() {
-    assertEquals(4, environment.getNodes().size());
+    assertEquals(3, environment.getNodes().size());
     assertEquals(1, environment.getRoleConfig().size());
     assertEquals(2, environment.getTenants().size());
 
@@ -72,6 +72,13 @@ public class EnvironmentReaderTest {
         "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "2048m"))), node.getConfig());
 
     assertEquals(2, node.getRoles().size());
+  }
+
+  @Test
+  public void testMultiNode() {
+    Node node = environment.getNodes().get(1);
+    assertEquals(ImmutableList.of("services-1", "services-2"), node.getNodes());
+    assertEquals(1, node.getRoles().size());
   }
 
   @Test
