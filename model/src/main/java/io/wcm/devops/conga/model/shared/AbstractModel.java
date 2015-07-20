@@ -19,30 +19,17 @@
  */
 package io.wcm.devops.conga.model.shared;
 
-import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
-import io.wcm.devops.conga.model.util.MapExpander;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * Abstract {@link Configurable} implementation.
+ * Abstract model implementation.
  */
-public abstract class AbstractConfigurable extends AbstractModel implements Configurable {
-
-  private Map<String, Object> config = new HashMap<>();
+public abstract class AbstractModel implements Cloneable {
 
   @Override
-  public final Map<String, Object> getConfig() {
-    return this.config;
-  }
-
-  /**
-   * @param config Config
-   */
-  @Override
-  public final void setConfig(Map<String, Object> config) {
-    this.config = defaultEmptyMap(MapExpander.expand(config));
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
   }
 
 }
