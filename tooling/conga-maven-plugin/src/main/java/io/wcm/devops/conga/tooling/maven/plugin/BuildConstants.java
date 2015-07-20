@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import org.apache.maven.model.Plugin;
+
 /**
  * Packaging types
  */
@@ -79,5 +81,15 @@ public final class BuildConstants {
    * Classpath directory in JAR file for roles
    */
   public static final String CLASSPATH_ENVIRONMENTS_DIR = CLASSPATH_PREFIX + "environments";
+
+  /**
+   * Properties file containing version information about CONGA Maven Plugin version and CONGA plugin versions.
+   */
+  public static final String FILE_VERSION_INFO = "version.properties";
+
+  /**
+   * CONGA maven plugin key.
+   */
+  public static final String CONGA_MAVEN_PLUGIN_KEY = Plugin.constructKey("io.wcm.devops.conga", "conga-maven-plugin");
 
 }
