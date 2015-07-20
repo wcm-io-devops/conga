@@ -24,8 +24,12 @@
   <body>
 
     <release version="1.1.0" date="not released">
-      <action type="update" dev="sseifert">
+      <action type="add" dev="sseifert">
         Add property "lineEndings" to role file to allow explicit control over generated file endings.
+      </action>
+      <action type="add" dev="sseifert">
+        Add "generate-version-info" and "validate-version-info" goals to ensure that during configuration generation
+        no older Maven/CONGA plugins are used than were used during generation of references definition artifacts.
       </action>
     </release>
 
