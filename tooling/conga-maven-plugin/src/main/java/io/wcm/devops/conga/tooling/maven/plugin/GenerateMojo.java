@@ -27,13 +27,9 @@ import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +39,6 @@ import java.util.zip.ZipFile;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
@@ -95,7 +90,7 @@ public class GenerateMojo extends AbstractCongaMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    resourceLoader = new ResourceLoader(buildDependencyClassLoader());
+    resourceLoader = new ResourceLoader(ClassLoaderUtil.buildDependencyClassLoader(project));
 
     List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
         getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_ROLES_DIR));
@@ -110,25 +105,6 @@ public class GenerateMojo extends AbstractCongaMojo {
     generator.setVersion(project.getVersion());
     generator.setDependencyVersions(buildDependencyVersionList());
     generator.generate(environments);
-  }
-
-  /**
-   * Build class loader from dependency of current maven project - to allow referencing definitions
-   * from artifacts build with "conga-definition" package type.
-   * @return Class loader
-   * @throws MojoExecutionException
-   */
-  private ClassLoader buildDependencyClassLoader() throws MojoExecutionException {
-    try {
-      List<URL> classLoaderUrls = new ArrayList<>();
-      for (String path : project.getCompileClasspathElements()) {
-        classLoaderUrls.add(new File(path).toURI().toURL());
-      }
-      return new URLClassLoader(classLoaderUrls.toArray(new URL[classLoaderUrls.size()]));
-    }
-    catch (MalformedURLException | DependencyResolutionRequiredException ex) {
-      throw new MojoExecutionException("Unable to get classpath elements for class loader.", ex);
-    }
   }
 
   /**
