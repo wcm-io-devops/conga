@@ -27,12 +27,14 @@ import java.util.Map;
 public interface Configurable {
 
   /**
-   * @return Configuration parameters.
+   * Defines a map of configuration parameters.
+   * They are merged with the configuration parameters from the configuration inheritance tree.
+   * @return Configuration parameter map
    */
   Map<String, Object> getConfig();
 
   /**
-   * @param config Configuration parameters
+   * @param config Configuration parameter map
    */
   void setConfig(Map<String, Object> config);
 

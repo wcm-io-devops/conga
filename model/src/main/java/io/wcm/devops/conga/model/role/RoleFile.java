@@ -33,7 +33,7 @@ import java.util.Map;
 import org.apache.commons.lang3.CharEncoding;
 
 /**
- * File definition.
+ * Defines a file to be generated for a role.
  */
 public final class RoleFile extends AbstractModel {
 
@@ -53,6 +53,12 @@ public final class RoleFile extends AbstractModel {
   private LineEndings lineEndings = LineEndings.unix;
   private String escapingStrategy;
 
+  /**
+   * Defines the file name of the generated file.
+   * Variable placeholders can be used to reference variables or context properties, e.g. <code>${tenant}</code> for the
+   * current tenant name if a tenant multiply plugin is used.
+   * @return File name
+   */
   public String getFile() {
     return this.file;
   }
@@ -61,6 +67,13 @@ public final class RoleFile extends AbstractModel {
     this.file = name;
   }
 
+  /**
+   * Sets the directory to generate the file in. The directory name is relative to the configuration target directory of
+   * the node.
+   * Variable placeholders can be used to reference variables or context properties, e.g. <code>${tenant}</code> for the
+   * current tenant name if a tenant multiply plugin is used.
+   * @return Directory name
+   */
   public String getDir() {
     return this.dir;
   }
@@ -69,6 +82,11 @@ public final class RoleFile extends AbstractModel {
     this.dir = dir;
   }
 
+  /**
+   * Defines the template name to be used to generate the file. The template file should have an ".hbs" extension.
+   * The file name is resolved relative to the template directory of the role.
+   * @return Template file name
+   */
   public String getTemplate() {
     return this.template;
   }
@@ -77,6 +95,11 @@ public final class RoleFile extends AbstractModel {
     this.template = template;
   }
 
+  /**
+   * Defines the role variant names for which this file should be generated.
+   * If no names are defined the file is generated for all role variants.
+   * @return List of role variant names
+   */
   public List<String> getVariants() {
     return this.variants;
   }
@@ -85,6 +108,12 @@ public final class RoleFile extends AbstractModel {
     this.variants = defaultEmptyList(variants);
   }
 
+  /**
+   * Defines a condition whether the file should be generated or not. The condition contains one single variable
+   * placeholder reference, e.g. <code>${myvar}</code>. The condition is true if the resulting string of the variable is
+   * not empty and does not match "false".
+   * @return Condition expression
+   */
   public String getCondition() {
     return this.condition;
   }
@@ -93,6 +122,12 @@ public final class RoleFile extends AbstractModel {
     this.condition = condition;
   }
 
+  /**
+   * Defines the name of a file header plugin that should be applied to the generated file.
+   * If no name is given the best-matching plugin is detected automatically by the file extension.
+   * If this is not wished, explicitly setting the property to "none" ensures that no plugin is applied.
+   * @return File header plugin name
+   */
   public String getFileHeader() {
     return this.fileHeader;
   }
@@ -101,6 +136,12 @@ public final class RoleFile extends AbstractModel {
     this.fileHeader = fileHeader;
   }
 
+  /**
+   * Defines a list of validator plugin names that should be applied to the generated file.
+   * If none is given the best-matching plugins are detected automatically by the file extension.
+   * If this is not wished, explicitly setting a list entry with "none" ensures that no plugin is applied.
+   * @return List of validator plugin names
+   */
   public List<String> getValidators() {
     return this.validators;
   }
@@ -109,6 +150,11 @@ public final class RoleFile extends AbstractModel {
     this.validators = defaultEmptyList(validators);
   }
 
+  /**
+   * Defines configuration parameters that are passed as options to the validator plugins.
+   * They are merged with the configuration parameters from the configuration inheritance tree.
+   * @return Configuration parameters
+   */
   public Map<String, Object> getValidatorOptions() {
     return this.validatorOptions;
   }
@@ -118,6 +164,10 @@ public final class RoleFile extends AbstractModel {
     this.validatorOptions = defaultEmptyMap(MapExpander.expand(validatorOptions));
   }
 
+  /**
+   * Defines a list of post processor plugin names that should be applied to the generated file.
+   * @return List of post processor plugin names
+   */
   public List<String> getPostProcessors() {
     return this.postProcessors;
   }
@@ -126,6 +176,11 @@ public final class RoleFile extends AbstractModel {
     this.postProcessors = defaultEmptyList(postProcessors);
   }
 
+  /**
+   * Defines configuration parameters that are passed as options to the post processor plugins.
+   * They are merged with the configuration parameters from the configuration inheritance tree.
+   * @return Configuration parameters
+   */
   public Map<String, Object> getPostProcessorOptions() {
     return this.postProcessorOptions;
   }
@@ -134,6 +189,12 @@ public final class RoleFile extends AbstractModel {
     this.postProcessorOptions = defaultEmptyMap(MapExpander.expand(postProcessorOptions));
   }
 
+  /**
+   * Defines a multiply plugin name to be used. Using a mulitply plugin multiple files are generated instead
+   * of a single file, e.g. one per tenant. To ensure each file has a unique file name variables have to be used
+   * in the "file" property.
+   * @return Multiply plugin name
+   */
   public String getMultiply() {
     return this.multiply;
   }
@@ -142,6 +203,11 @@ public final class RoleFile extends AbstractModel {
     this.multiply = multiply;
   }
 
+  /**
+   * Defines configuration parameters that are passed as options to the multiply plugin.
+   * They are merged with the configuration parameters from the configuration inheritance tree.
+   * @return Configuration parameters
+   */
   public Map<String, Object> getMultiplyOptions() {
     return this.multiplyOptions;
   }
@@ -150,6 +216,11 @@ public final class RoleFile extends AbstractModel {
     this.multiplyOptions = defaultEmptyMap(MapExpander.expand(multiplyOptions));
   }
 
+  /**
+   * Defines a charset to be used for the generated file. It is expected that the templates is encoded in the same
+   * charset. If not set UTF-8 is the default charset.
+   * @return Charset name
+   */
   public String getCharset() {
     return this.charset;
   }
@@ -158,6 +229,11 @@ public final class RoleFile extends AbstractModel {
     this.charset = charset;
   }
 
+  /**
+   * Defines the line endings style for the generated files. Possible values are 'unix', 'windows' and 'macos'.
+   * If not set 'unix' line endings are the default.
+   * @return Line endings style
+   */
   public LineEndings getLineEndings() {
     return this.lineEndings;
   }
@@ -166,6 +242,12 @@ public final class RoleFile extends AbstractModel {
     this.lineEndings = lineEndings;
   }
 
+  /**
+   * Defines an handlebars escaping strategy plugin to be used.
+   * If no name is given the best-matching plugin is detected automatically by the file extension.
+   * If this is not wished, explicitly setting the property to "none" ensures that no plugin is applied.
+   * @return Handlebars escaping strategy plugin name.
+   */
   public String getEscapingStrategy() {
     return this.escapingStrategy;
   }

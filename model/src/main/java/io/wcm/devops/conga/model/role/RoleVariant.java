@@ -22,12 +22,16 @@ package io.wcm.devops.conga.model.role;
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 /**
- * Role variant definition.
+ * Defines a named variant of a role.
  */
 public final class RoleVariant extends AbstractConfigurable {
 
   private String variant;
 
+  /**
+   * Defines the variant name.
+   * @return Variant name
+   */
   public String getVariant() {
     return this.variant;
   }

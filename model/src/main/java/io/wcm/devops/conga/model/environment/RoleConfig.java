@@ -22,12 +22,16 @@ package io.wcm.devops.conga.model.environment;
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 /**
- * Global role-specific configuration.
+ * Global role-specific configuration. Configuration defined here applies to all nodes that have this role assigned.
  */
 public final class RoleConfig extends AbstractConfigurable {
 
   private String role;
 
+  /**
+   * Defines role name.
+   * @return Role name
+   */
   public String getRole() {
     return this.role;
   }

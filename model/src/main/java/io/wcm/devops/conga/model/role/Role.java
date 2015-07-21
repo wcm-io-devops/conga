@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Role definition.
+ * Defines a role with a set of configuration files to generate.
+ * The filename of the role YAML file is the role name, it's not included in the model.
  */
 public final class Role extends AbstractConfigurable {
 
@@ -34,6 +35,11 @@ public final class Role extends AbstractConfigurable {
   private String templateDir;
   private List<RoleFile> files = new ArrayList<>();
 
+  /**
+   * Defines the role variants available for this role. Role variants can be used to apply a slightly different
+   * set of configuration templates or values to a node based on a variant.
+   * @return List of role variant definitions
+   */
   public List<RoleVariant> getVariants() {
     return this.variants;
   }
@@ -42,6 +48,11 @@ public final class Role extends AbstractConfigurable {
     this.variants = defaultEmptyList(variants);
   }
 
+  /**
+   * Defines the directory where the role template files are located. The path is relative to the tempaltes root
+   * directory. If missing the files are searched within the templates root directory.
+   * @return Relative path to template files
+   */
   public String getTemplateDir() {
     return this.templateDir;
   }
@@ -50,6 +61,10 @@ public final class Role extends AbstractConfigurable {
     this.templateDir = templateDirectory;
   }
 
+  /**
+   * Defines the files that should be generated for this role.
+   * @return List of file definitions.
+   */
   public List<RoleFile> getFiles() {
     return this.files;
   }

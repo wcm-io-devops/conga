@@ -32,6 +32,11 @@ public abstract class AbstractConfigurable extends AbstractModel implements Conf
 
   private Map<String, Object> config = new HashMap<>();
 
+  /**
+   * Defines a map of configuration parameters.
+   * They are merged with the configuration parameters from the configuration inheritance tree.
+   * @return Configuration parameter map
+   */
   @Override
   public final Map<String, Object> getConfig() {
     return this.config;
