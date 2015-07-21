@@ -15,6 +15,7 @@ files:
   variants:
   - variant11
   charset: ISO-8859-1
+  lineEndings: windows
 
 - file: "test.${tenant}.${tenantRoles}.${environment}.xml"
   dir: xml

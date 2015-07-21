@@ -65,6 +65,9 @@ abstract class AbstractConfigurableObjectTreeProcessor<T> {
   }
 
   private void resolveNestedObjects(Object object, ConfigurableProcessor<T> processor, T parentPayload) {
+    if (object == null || object.getClass().isEnum()) {
+      return;
+    }
     try {
       Map<String, String> description = BeanUtils.describe(object);
       for (String propertyName : description.keySet()) {

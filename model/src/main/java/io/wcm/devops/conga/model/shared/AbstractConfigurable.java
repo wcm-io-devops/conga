@@ -28,10 +28,15 @@ import java.util.Map;
 /**
  * Abstract {@link Configurable} implementation.
  */
-public abstract class AbstractConfigurable implements Configurable, Cloneable {
+public abstract class AbstractConfigurable extends AbstractModel implements Configurable {
 
   private Map<String, Object> config = new HashMap<>();
 
+  /**
+   * Defines a map of configuration parameters.
+   * They are merged with the configuration parameters from the configuration inheritance tree.
+   * @return Configuration parameter map
+   */
   @Override
   public final Map<String, Object> getConfig() {
     return this.config;

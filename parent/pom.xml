@@ -23,72 +23,19 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>io.wcm.maven</groupId>
-    <artifactId>io.wcm.maven.global-parent</artifactId>
-    <version>7</version>
+    <groupId>io.wcm.devops</groupId>
+    <artifactId>io.wcm.devops.parent_toplevel</artifactId>
+    <version>1.0.0</version>
     <relativePath />
   </parent>
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.parent</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <packaging>pom</packaging>
 
   <name>CONGA Parent</name>
   <description>Parent POM for all wcm.io CONGA projects.</description>
-
-  <properties>
-    <build.compiler.source>1.8</build.compiler.source>
-    <build.compiler.target>1.8</build.compiler.target>
-  </properties>
-
-  <inceptionYear>2015</inceptionYear>
-
-  <organization>
-    <name>wcm.io</name>
-    <url>http://wcm.io</url>
-  </organization>
-
-  <issueManagement>
-    <system>JIRA</system>
-    <url>https://wcm-io.atlassian.net/browse/</url>
-  </issueManagement>
-
-  <ciManagement>
-    <system>Travis CI</system>
-    <url>https://travis-ci.org/wcm-io-devops/wcm-io-devops-conga</url>
-  </ciManagement>
-
-  <developers>
-    <developer>
-      <name>wcm.io Community</name>
-      <organization>wcm.io</organization>
-      <organizationUrl>http://wcm.io</organizationUrl>
-    </developer>
-  </developers>
-
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
-
-  <!-- default dependencies for all projects -->
-  <dependencies>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-  </dependencies>
 
   <dependencyManagement>
     <dependencies>
@@ -153,157 +100,31 @@
         <version>4.1.6.RELEASE</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>1.7.12</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.7.12</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.12</version>
-      </dependency>
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.17</version>
-      </dependency>
-
-      <!-- Testing -->
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.12</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>2.0.13-beta</version>
-      </dependency>
-
     </dependencies>
   </dependencyManagement>
-
+  
   <build>
     <plugins>
-
-      <!-- license check -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>license-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>check-file-header</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
-
-    <pluginManagement>
-      <plugins>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>license-maven-plugin</artifactId>
-          <configuration>
-            <licenseName>apache_v2</licenseName>
-            <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
-            <projectName>wcm.io</projectName>
-            <excludes>
-              <exclude>**/*.json</exclude>
-              <exclude>**/*.html</exclude>
-            </excludes>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <excludePackageNames>*.impl</excludePackageNames>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>external.atlassian.jgitflow</groupId>
-          <artifactId>jgitflow-maven-plugin</artifactId>
-          <version>1.0-m5.1</version>
-        </plugin>
-
-      </plugins>
-
-    </pluginManagement>
-  </build>
-
-  <reporting>
-    <plugins>
-
+    
+      <!-- Do not deploy site -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <inherited>true</inherited>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>index</report>
-              <report>dependencies</report>
-              <report>scm</report>
-              <report>license</report>
-              <report>summary</report>
-            </reports>
-          </reportSet>
-        </reportSets>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skipDeploy>true</skipDeploy>
+        </configuration>
+      </plugin>
+
+      <!-- Disable Cobertura to avoid build problems -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
 
     </plugins>
-  </reporting>
-
-  <profiles>
-    <!-- profile used for building releases and deployment to sonatype/maven central -->
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <!-- sign the build -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <inherited>true</inherited>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <!-- configure staging process at sonatype.-->
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <inherited>true</inherited>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <!-- Deployed artifacts should go to staging to be reviewed before publish -->
-              <autoReleaseAfterClose>false</autoReleaseAfterClose>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  </build>
 
 </project>

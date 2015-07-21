@@ -70,13 +70,14 @@ public class GeneratorTest {
     assertContains(text1, "defaultString: \"value1\" äöüß", CharEncoding.ISO_8859_1);
     assertContains(text1, "globalString: globalFromRole1", CharEncoding.ISO_8859_1);
     assertContains(text1, "variableString: \\QThe v1-role1-variant11${novar}\\E", CharEncoding.ISO_8859_1);
+    assertContains(text1, "\r\n", CharEncoding.ISO_8859_1);
 
     assertContains(text1, ContextProperties.ENVIRONMENT + ": env1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.NODE + ": node1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.ROLE + ": role1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.ROLE_VARIANT + ": variant1", CharEncoding.ISO_8859_1);
-    assertContains(text1, ContextProperties.NODES + ": node1,node2", CharEncoding.ISO_8859_1);
-    assertContains(text1, ContextProperties.NODES_BY_ROLE + ": node1,node2", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.NODES + ": node1,node2,node3", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.NODES_BY_ROLE + ": node1,node2,node3", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.NODES_BY_ROLE_VARIANT + ": node1", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.TENANTS + ": tenant1,tenant2,tenant3", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.TENANTS_BY_ROLE + ": tenant1,tenant2", CharEncoding.ISO_8859_1);
@@ -116,6 +117,9 @@ public class GeneratorTest {
     assertContains(xml2tenant2, "<defaultString value=\"defaultFromTenant2\"/>");
     assertContains(xml2tenant2, "<globalString>globalFromTenant2</globalString>");
     assertContains(xml2tenant2, "<variableString>The v1-tenant2${novar}</variableString>");
+
+    File node3Dir = assertDirectory(destDir, "env1/node3");
+    assertFile(node3Dir, "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml");
 
     // check conditional files
     assertFile(node1Dir, "text/test-conditional-tenant1.txt");

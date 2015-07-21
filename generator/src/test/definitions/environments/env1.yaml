@@ -6,7 +6,9 @@ nodes:
     variant: variant11
   - role: role2
 
-- node: node2
+- nodes:
+  - node2
+  - node3
   config:
     var1: v1-node2
   roles:

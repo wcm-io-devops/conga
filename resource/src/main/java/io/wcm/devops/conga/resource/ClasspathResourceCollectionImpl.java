@@ -24,12 +24,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
 
 class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl implements ResourceCollection {
 
@@ -81,15 +82,15 @@ class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl impl
   }
 
   @Override
-  public List<Resource> getResources() {
-    return ImmutableList.copyOf(fileUrls.stream()
+  public SortedSet<Resource> getResources() {
+    return ImmutableSortedSet.copyOf(fileUrls.stream()
         .map(url -> new ClasspathResourceImpl(url, resourceLoader))
         .collect(Collectors.toList()));
   }
 
   @Override
-  public List<ResourceCollection> getResourceCollections() {
-    return ImmutableList.copyOf(folderPaths.stream()
+  public SortedSet<ResourceCollection> getResourceCollections() {
+    return ImmutableSortedSet.copyOf(folderPaths.stream()
         .map(folderPath -> new ClasspathResourceCollectionImpl(folderPath, resourceLoader))
         .collect(Collectors.toList()));
   }

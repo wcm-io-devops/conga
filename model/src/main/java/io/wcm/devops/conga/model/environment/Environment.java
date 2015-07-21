@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Environment definition.
+ * Defines an environment with a set of nodes and configuration.
+ * The filename of the environment YAML file is the environment name, it's not included in the model.
  */
 public final class Environment extends AbstractConfigurable {
 
@@ -34,6 +35,10 @@ public final class Environment extends AbstractConfigurable {
   private List<RoleConfig> roleConfig = new ArrayList<>();
   private List<Tenant> tenants = new ArrayList<>();
 
+  /**
+   * Defines nodes for the environment.
+   * @return List of nodes
+   */
   public List<Node> getNodes() {
     return this.nodes;
   }
@@ -42,6 +47,12 @@ public final class Environment extends AbstractConfigurable {
     this.nodes = defaultEmptyList(nodes);
   }
 
+  /**
+   * Defines role-specific configuration. In this section it is possible to define configuration parameters that affect
+   * each
+   * node that has this role defined.
+   * @return Configurations per role
+   */
   public List<RoleConfig> getRoleConfig() {
     return this.roleConfig;
   }
@@ -50,6 +61,12 @@ public final class Environment extends AbstractConfigurable {
     this.roleConfig = defaultEmptyList(roleConfig);
   }
 
+  /**
+   * Defines a list of tenants for configuration files that have tenant-specific system configurations. E.g. vhosts
+   * files
+   * for Apache Webserver.
+   * @return List of tenans
+   */
   public List<Tenant> getTenants() {
     return this.tenants;
   }

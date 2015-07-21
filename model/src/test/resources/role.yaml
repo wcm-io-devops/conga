@@ -25,6 +25,7 @@ files:
     option2: value2
   multiply: none
   charset: UTF-8
+  lineEndings: windows
   escapingStrategy: none
 
 - file: ROOT.xml

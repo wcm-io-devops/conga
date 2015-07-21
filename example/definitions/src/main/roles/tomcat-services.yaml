@@ -37,6 +37,7 @@ files:
   dir: bin
   template: setenv.bat.hbs
   charset: ISO-8859-1
+  lineEndings: windows
 
 
 # Defines configuration parameters and default values

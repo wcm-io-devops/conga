@@ -26,6 +26,7 @@ import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.util.EnvironmentExpander;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
@@ -77,7 +78,7 @@ class EnvironmentGenerator {
       String version, List<String> dependencyVersions, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
-    this.environment = environment;
+    this.environment = EnvironmentExpander.expandNodes(environment, environmentName);
     this.destDir = destDir;
     this.pluginManager = pluginManager;
     this.handlebarsManager = handlebarsManager;
@@ -86,7 +87,7 @@ class EnvironmentGenerator {
     this.dependencyVersions = dependencyVersions;
     this.log = log;
     this.environmentContextProperties = ImmutableMap.copyOf(
-        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, environment, version));
+        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, version));
   }
 
   public void generate() {

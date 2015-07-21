@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.resource;
 
-import java.util.List;
+import java.util.SortedSet;
 
 /**
  * Abstraction for a list of resources from filesystem or classpath.
@@ -43,11 +43,11 @@ public interface ResourceCollection extends ResourceInfo {
   /**
    * @return Resources in this collections.
    */
-  List<Resource> getResources();
+  SortedSet<Resource> getResources();
 
   /**
    * @return Resource collections in this collection.
    */
-  List<ResourceCollection> getResourceCollections();
+  SortedSet<ResourceCollection> getResourceCollections();
 
 }

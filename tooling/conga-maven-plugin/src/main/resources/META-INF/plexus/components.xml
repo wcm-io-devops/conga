@@ -30,6 +30,8 @@
           <lifecycle>
             <id>default</id>
             <phases>
+              <validate>io.wcm.devops.conga:conga-maven-plugin:validate-version-info</validate>
+              <generate-resources>io.wcm.devops.conga:conga-maven-plugin:generate-version-info</generate-resources>
               <validate>io.wcm.devops.conga:conga-maven-plugin:definition-validate</validate>
               <package>io.wcm.devops.conga:conga-maven-plugin:definition-package</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>
@@ -48,6 +50,7 @@
           <lifecycle>
             <id>default</id>
             <phases>
+              <validate>io.wcm.devops.conga:conga-maven-plugin:validate-version-info</validate>
               <generate-resources>io.wcm.devops.conga:conga-maven-plugin:generate</generate-resources>
               <package>io.wcm.devops.conga:conga-maven-plugin:package</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>

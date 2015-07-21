@@ -25,7 +25,7 @@
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
@@ -35,12 +35,16 @@
   <name>CONGA Generator</name>
   <description>wcm.io DevOps CONGA Configuration Generator.</description>
 
+  <properties>
+    <site.url.module.prefix>conga/generator</site.url.module.prefix>
+  </properties>
+
   <dependencies>
 
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.model</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.0</version>
       <scope>compile</scope>
     </dependency>
 
@@ -87,8 +91,58 @@
           <addVersionToProjectName>false</addVersionToProjectName>
         </configuration>
       </plugin>
+      
+      <!-- deploy site because because of generated javadocs -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skipDeploy>false</skipDeploy>
+        </configuration>
+      </plugin>      
 
     </plugins>
   </build>
+
+  <reporting>
+    <plugins>
+    
+      <!-- Aggregate JavaDocs of CONGA modules -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <dependencySourceIncludes>
+            <include>io.wcm.devops.conga:io.wcm.devops.conga.resource</include>
+            <include>io.wcm.devops.conga:io.wcm.devops.conga.model</include>
+          </dependencySourceIncludes>
+          <includeDependencySources>true</includeDependencySources>
+          <includeTransitiveDependencySources>true</includeTransitiveDependencySources>
+          <groups>
+            <group>
+              <title>CONGA Generator</title>
+              <packages>io.wcm.devops.conga.generator:io.wcm.devops.conga.generator.*</packages>
+            </group>
+            <group>
+              <title>CONGA Model</title>
+              <packages>io.wcm.devops.conga.model:io.wcm.devops.conga.model.*</packages>
+            </group>
+            <group>
+              <title>CONGA Resource</title>
+              <packages>io.wcm.devops.conga.resource:io.wcm.devops.conga.resource.*</packages>
+            </group>
+          </groups>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
+  <distributionManagement>
+    <site>
+      <id>${site.deploy.id}</id>
+      <url>${site.deploy.url}${site.url.module.prefix}</url>
+    </site>
+  </distributionManagement>
 
 </project>
