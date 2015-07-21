@@ -19,7 +19,6 @@ Configuration generator for DevOps Teams.
 * [Usage][usage]
 * [General concepts][general-concepts]
 * [Extensibility model][extensibility]
-* [Examples][examples]
 * [YAML definitions][yaml-definitions]
 * [Handlebars quickstart][handlebars-quickstart]
 * [API documentation][apidocs]
