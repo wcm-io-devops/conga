@@ -21,10 +21,10 @@ package io.wcm.devops.conga.resource;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
 
 class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCollection {
 
@@ -58,22 +58,22 @@ class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCol
   }
 
   @Override
-  public List<Resource> getResources() {
+  public SortedSet<Resource> getResources() {
     if (!exists()) {
-      return ImmutableList.of();
+      return ImmutableSortedSet.of();
     }
-    return ImmutableList.copyOf(Arrays.stream(file.listFiles())
+    return ImmutableSortedSet.copyOf(Arrays.stream(file.listFiles())
         .filter(child -> child.isFile())
         .map(child -> new FileResourceImpl(child))
         .collect(Collectors.toList()));
   }
 
   @Override
-  public List<ResourceCollection> getResourceCollections() {
+  public SortedSet<ResourceCollection> getResourceCollections() {
     if (!exists()) {
-      return ImmutableList.of();
+      return ImmutableSortedSet.of();
     }
-    return ImmutableList.copyOf(Arrays.stream(file.listFiles())
+    return ImmutableSortedSet.copyOf(Arrays.stream(file.listFiles())
         .filter(child -> child.isDirectory())
         .map(child -> new FileResourceCollectionImpl(child, resourceLoader))
         .collect(Collectors.toList()));

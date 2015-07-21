@@ -22,7 +22,7 @@ package io.wcm.devops.conga.resource;
 /**
  * Abstraction for resource information.
  */
-public interface ResourceInfo {
+public interface ResourceInfo extends Comparable<Resource> {
 
   /**
    * @return true if resource exists

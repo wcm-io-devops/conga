@@ -32,7 +32,7 @@ import io.wcm.devops.conga.tooling.maven.plugin.validation.ModelValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.RoleTemplateFileValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.TemplateValidator;
 
-import java.util.List;
+import java.util.SortedSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -80,8 +80,8 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     if (!sourceDir.exists()) {
       return;
     }
-    List<Resource> files = sourceDir.getResources();
-    List<ResourceCollection> dirs = sourceDir.getResourceCollections();
+    SortedSet<Resource> files = sourceDir.getResources();
+    SortedSet<ResourceCollection> dirs = sourceDir.getResourceCollections();
     if (files.isEmpty() && dirs.isEmpty()) {
       return;
     }

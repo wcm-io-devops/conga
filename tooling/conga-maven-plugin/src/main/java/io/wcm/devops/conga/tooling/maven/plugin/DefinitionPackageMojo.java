@@ -32,7 +32,7 @@ import io.wcm.devops.conga.resource.ResourceLoader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.SortedSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -172,8 +172,8 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
     if (!sourceDir.exists()) {
       return;
     }
-    List<Resource> files = sourceDir.getResources();
-    List<ResourceCollection> dirs = sourceDir.getResourceCollections();
+    SortedSet<Resource> files = sourceDir.getResources();
+    SortedSet<ResourceCollection> dirs = sourceDir.getResourceCollections();
     if (files.isEmpty() && dirs.isEmpty()) {
       return;
     }

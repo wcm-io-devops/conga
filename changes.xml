@@ -34,6 +34,9 @@
       <action type="add" dev="sseifert">
         Support "nodes" attribute additional to "node" for environments when multiple nodes have the same roles and configuration.
       </action>
+      <action type="fix" dev="sseifert">
+        Resource abstraction: Ensure resource collections are always ordered alphabetically.
+      </action>
     </release>
 
     <release version="1.0.0" date="2015-07-06">
