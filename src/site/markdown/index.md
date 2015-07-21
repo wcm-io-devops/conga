@@ -37,7 +37,7 @@ It targets DevOps teams where developers are responsible for defining the roles 
 
 The generator can be executed from the command line or via a maven plugin. The definition files are written in [YAML 1.1](http://yaml.org/) format. The templates use [Handlebars](http://handlebarsjs.com/) as scripting language.
 
-See [General Concepts][general-concepts] for a more in-depth explanation or jump into the [usage description][usage] and the [examples][examples].
+See [general concepts][general-concepts] for a more in-depth explanation or jump into the [usage description][usage] and the [examples][examples].
 
 
 ## Plugins

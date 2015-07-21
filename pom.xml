@@ -34,7 +34,7 @@
   <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>CONGA Root</name>
+  <name>CONGA</name>
   <description>Root POM for wcm.io CONGA Maven hierarchy.</description>
 
   <scm>
