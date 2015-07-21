@@ -79,18 +79,20 @@ Inheritance order (higher number has higher precedence):
 
 Additionally to the variables defined in the configuration parameter maps a set of default context properties are defined automatically by CONGA and merged with the parameter maps:
 
-* `version`: Environment version
-* `nodeRole`: Current node role name
-* `nodeRoleVariant`: Current node role variant name
-* `environment`: Environment name
-* `node`: Current node name
-* `nodes`: List of all nodes. Each node has properties as defined in the [Node model][node-model].
-* `nodesByRole`: Map with node roles with each entry containing a list of all nodes with this role. Each node has properties as defined in the [Node model][node-model].
-* `nodesByRoleVariant`: Map with node roles with each entry containing a map with node role variants each entry containing a list of all nodes with this role and variant. Each node has properties as defined in the [Node model][node-model].
-* `tenants`: List of all tenants. Each tenant has properties as defined in the [Tenant model][tenant-model].
-* `tenantsByRole`: Map with tenant roles with each entry containing a list of all tenants with this role. Each tenant has properties as defined in the [Tenant model][tenant-model].
-* `tenant`: Current tenant name. This is only set if the tenant multiple plugin is used.
-* `tenantRoles`: List of current tenant's role names This is only set if the tenant multiply plugin is used.
+| Property             | Description
+|----------------------|-------------
+| `version`            | Environment version
+| `nodeRole`           | Current node role name
+| `nodeRoleVariant`    | Current node role variant name
+| `environment`        | Environment name
+| `node`               | Current node name
+| `nodes`              | List of all nodes. Each node has properties as defined in the [Node model][node-model].
+| `nodesByRole`        | Map with node roles with each entry containing a list of all nodes with this role. Each node has properties as defined in the [Node model][node-model].
+| `nodesByRoleVariant` | Map with node roles with each entry containing a map with node role variants each entry containing a list of all nodes with this role and variant. Each node has properties as defined in the [Node model][node-model].
+| `tenants`            | List of all tenants. Each tenant has properties as defined in the [Tenant model][tenant-model].
+| `tenantsByRole`      | Map with tenant roles with each entry containing a list of all tenants with this role. Each tenant has properties as defined in the [Tenant model][tenant-model].
+| `tenant`             | Current tenant name. This is only set if the tenant multiple plugin is used.
+| `tenantRoles`        | List of current tenant's role names This is only set if the tenant multiply plugin is used.
 
 
 [role-model]: generator/apidocs/io/wcm/devops/conga/model/role/Role.html

@@ -59,3 +59,11 @@ You find the generated files at `target/configuration`, they are packed as well 
 [yaml-definitions]: yaml-definitions.html
 [handlebars-quickstart]: handlebars-quickstart.html
 [handlebars]: http://handlebarsjs.com/
+
+
+### Using from command line
+
+It is possible to use CONGA outside Maven from the command line using this prepacked JAR with all dependencies:
+http://search.maven.org/#search|ga|1|a%3A%22io.wcm.devops.conga.tooling.cli%22
+
+This mode lacks some features like building definition artefacts, versioning etc. So it is recommended to use the Maven plugin whenever possible.
