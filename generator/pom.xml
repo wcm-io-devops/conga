@@ -92,7 +92,7 @@
         </configuration>
       </plugin>
       
-      <!-- Do not deploy site -->
+      <!-- deploy site because because of generated javadocs -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
