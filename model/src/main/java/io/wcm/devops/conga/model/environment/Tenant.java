@@ -26,13 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tenant definition.
+ * Defines a tenant for configuration files that have tenant-specific system configurations.
+ * E.g. vhosts files for Apache Webserver.
  */
 public final class Tenant extends AbstractConfigurable {
 
   private String tenant;
   private List<String> roles = new ArrayList<>();
 
+  /**
+   * Defines tenant name.
+   * @return Tenant name
+   */
   public String getTenant() {
     return this.tenant;
   }
@@ -41,6 +46,11 @@ public final class Tenant extends AbstractConfigurable {
     this.tenant = tenant;
   }
 
+  /**
+   * Defines tenant roles. These roles are different form node roles. They can be used within the templates
+   * or by multiply plugins to filter the list of tenants by their roles.
+   * @return List of tenant role names
+   */
   public List<String> getRoles() {
     return this.roles;
   }

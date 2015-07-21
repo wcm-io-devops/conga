@@ -22,13 +22,17 @@ package io.wcm.devops.conga.model.environment;
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 /**
- * Node definition.
+ * Role assignment for a node in an environment.
  */
 public final class NodeRole extends AbstractConfigurable {
 
   private String role;
   private String variant;
 
+  /**
+   * Defines the role name.
+   * @return Role name
+   */
   public String getRole() {
     return this.role;
   }
@@ -37,6 +41,10 @@ public final class NodeRole extends AbstractConfigurable {
     this.role = role;
   }
 
+  /**
+   * Defines the role variant name. Only ony variant can be chosen per role. The role has to define the variant.
+   * @return Role variant name
+   */
   public String getVariant() {
     return this.variant;
   }

@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Node definition.
+ * Environment node. A node is a system to deploy to, e.g. a physical machine, virtual machine, Docker container or any
+ * other deployment target.
  */
 public final class Node extends AbstractConfigurable {
 
@@ -34,6 +35,10 @@ public final class Node extends AbstractConfigurable {
   private List<String> nodes = new ArrayList<>();
   private List<NodeRole> roles = new ArrayList<>();
 
+  /**
+   * Defines the node name. This is usually a host name or any other unique name identifying the node.
+   * @return Node name
+   */
   public String getNode() {
     return this.node;
   }
@@ -42,6 +47,12 @@ public final class Node extends AbstractConfigurable {
     this.node = node;
   }
 
+  /**
+   * Defines multiple node names. This is useful if the same set of roles, role variants and configuration apply
+   * to multiple nodes. In this case you can define a single node definition with multiple node names.
+   * The single node name property must nost be used in this case.
+   * @return List of node names
+   */
   public List<String> getNodes() {
     return this.nodes;
   }
@@ -50,6 +61,10 @@ public final class Node extends AbstractConfigurable {
     this.nodes = defaultEmptyList(nodes);
   }
 
+  /**
+   * Defines roles to be used by this node.
+   * @return Role assignments for node
+   */
   public List<NodeRole> getRoles() {
     return this.roles;
   }

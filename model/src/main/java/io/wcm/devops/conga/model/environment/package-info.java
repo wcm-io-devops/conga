@@ -17,27 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.role;
-
-import io.wcm.devops.conga.model.shared.AbstractConfigurable;
-
 /**
- * Defines a named variant of a role.
+ * Environment and node definition models.
  */
-public final class RoleVariant extends AbstractConfigurable {
-
-  private String variant;
-
-  /**
-   * Defines the variant name.
-   * @return Variant name
-   */
-  public String getVariant() {
-    return this.variant;
-  }
-
-  public void setVariant(String variant) {
-    this.variant = variant;
-  }
-
-}
+package io.wcm.devops.conga.model.environment;
