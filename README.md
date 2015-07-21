@@ -12,7 +12,7 @@ Continuous Integration: https://travis-ci.org/wcm-io-devops/conga
 
 ## Build from sources
 
-If you want to build wcm.io from sources make sure you have configured all [Maven Repositories](http://devops.wcm.io/maven.html) in your settings.xml.
+If you want to build from sources make sure you have configured all [Maven Repositories](http://devops.wcm.io/maven.html) in your settings.xml.
 
 See [Travis Maven settings.xml](https://github.com/wcm-io-devops/conga/blob/master/.travis.maven-settings.xml) for an example with a full configuration.
 
