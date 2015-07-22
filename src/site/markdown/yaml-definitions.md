@@ -74,6 +74,7 @@ Inheritance order (higher number has higher precedence):
 6. Role configuration from node
 7. Variant configuration from node
 
+There is a special support when merging list parameter. By default a list value on a deeper lever overwrites a list inherited from a parameter map on a higher level completely. If you insert the keyword `_merge_` as list item on either of the list values, they are merged and the special keyword entry is removed.
 
 ### Default context properties
 
