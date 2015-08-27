@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -67,8 +68,13 @@ public class ValidateVersionInfoMojo extends AbstractMojo {
   private void validateVersionInfo(Properties currentVersionInfo, Properties dependencyVersionInfo) throws MojoExecutionException {
     for (Object keyObject : currentVersionInfo.keySet()) {
       String key = keyObject.toString();
-      DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(currentVersionInfo.getProperty(key));
-      DefaultArtifactVersion dependencyVersion = new DefaultArtifactVersion(dependencyVersionInfo.getProperty(key));
+      String currentVersionString = currentVersionInfo.getProperty(key);
+      String dependencyVersionString = dependencyVersionInfo.getProperty(key);
+      if (StringUtils.isEmpty(currentVersionString) || StringUtils.isEmpty(dependencyVersionString)) {
+        continue;
+      }
+      DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(currentVersionString);
+      DefaultArtifactVersion dependencyVersion = new DefaultArtifactVersion(dependencyVersionString);
       if (currentVersion.compareTo(dependencyVersion) < 0) {
         throw new MojoExecutionException("Newer CONGA maven plugin or plugin version required: " + key + ":" + dependencyVersion.toString());
       }
