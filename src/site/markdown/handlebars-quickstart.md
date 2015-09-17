@@ -209,9 +209,9 @@ Conditional for each loop - loop is generated if condition is true:
 Conditional for each loop - loop is generated if expression equals to an argument:
 
 ```
-{{#eachIf group1.list "group1.param1" "myValue"}},
+{{#eachIfEquals group1.list "group1.param1" "myValue"}},
   conditional loop block
-{{/eachIf}}
+{{/eachIfEquals}}
 ```
 
 
