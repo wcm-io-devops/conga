@@ -25,7 +25,7 @@
   <parent>
     <groupId>io.wcm.devops</groupId>
     <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -112,15 +112,6 @@
         <artifactId>maven-site-plugin</artifactId>
         <configuration>
           <skipDeploy>true</skipDeploy>
-        </configuration>
-      </plugin>
-
-      <!-- Disable Cobertura to avoid build problems -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
         </configuration>
       </plugin>
 
