@@ -2,17 +2,8 @@
 
 Configuration generator for DevOps Teams.
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.wcm.devops.conga/conga-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.wcm.devops.conga/conga-maven-plugin)
 
-### Maven Dependency
-
-```xml
-<plugin>
-  <groupId>io.wcm.devops.conga</groupId>
-  <artifactId>conga-maven-plugin</artifactId>
-  <version>1.1.2</version>
-  <extensions>true</extensions>
-</plugin>
-```
 
 ### Documentation
 
