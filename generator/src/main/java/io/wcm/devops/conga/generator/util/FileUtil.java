@@ -19,15 +19,15 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.model.role.Role;
-import io.wcm.devops.conga.model.role.RoleFile;
-
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
 
 /**
  * Utility methods for file handling.

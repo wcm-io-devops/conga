@@ -19,9 +19,9 @@
  */
 package io.wcm.devops.conga.generator.spi.handlebars;
 
-import io.wcm.devops.conga.generator.spi.Plugin;
-
 import com.github.jknack.handlebars.Helper;
+
+import io.wcm.devops.conga.generator.spi.Plugin;
 
 /**
  * Plugin that allows to register custom Handlebars {@link Helper} extensions that can be used in all templates.

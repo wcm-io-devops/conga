@@ -19,12 +19,6 @@
  */
 package io.wcm.devops.conga.generator.plugins.validator;
 
-import io.wcm.devops.conga.generator.spi.ValidationException;
-import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
-import io.wcm.devops.conga.generator.util.FileUtil;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +30,12 @@ import org.apache.commons.lang3.CharEncoding;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+
+import io.wcm.devops.conga.generator.spi.ValidationException;
+import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
+import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
  * Validates JSON syntax.

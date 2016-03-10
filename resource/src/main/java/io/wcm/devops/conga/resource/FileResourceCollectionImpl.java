@@ -30,12 +30,12 @@ class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCol
 
   private final ResourceLoader resourceLoader;
 
-  public FileResourceCollectionImpl(String path, ResourceLoader resourceLoader) {
+  FileResourceCollectionImpl(String path, ResourceLoader resourceLoader) {
     super(path);
     this.resourceLoader = resourceLoader;
   }
 
-  public FileResourceCollectionImpl(File file, ResourceLoader resourceLoader) {
+  FileResourceCollectionImpl(File file, ResourceLoader resourceLoader) {
     super(file);
     this.resourceLoader = resourceLoader;
   }

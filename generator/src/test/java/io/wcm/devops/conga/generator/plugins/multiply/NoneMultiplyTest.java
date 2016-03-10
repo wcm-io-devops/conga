@@ -20,12 +20,6 @@
 package io.wcm.devops.conga.generator.plugins.multiply;
 
 import static org.junit.Assert.assertEquals;
-import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
-import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
-import io.wcm.devops.conga.model.environment.Environment;
-import io.wcm.devops.conga.model.role.Role;
-import io.wcm.devops.conga.model.role.RoleFile;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +28,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
+
+import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
+import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
 
 public class NoneMultiplyTest {
 

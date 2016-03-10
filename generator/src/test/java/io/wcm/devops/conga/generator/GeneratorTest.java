@@ -21,9 +21,6 @@ package io.wcm.devops.conga.generator;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +32,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 public class GeneratorTest {
 

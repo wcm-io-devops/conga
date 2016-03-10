@@ -26,11 +26,11 @@ abstract class AbstractFileResourceInfoImpl implements ResourceInfo {
 
   protected final File file;
 
-  public AbstractFileResourceInfoImpl(String path) {
+  AbstractFileResourceInfoImpl(String path) {
     this(new File(path));
   }
 
-  public AbstractFileResourceInfoImpl(File file) {
+  AbstractFileResourceInfoImpl(File file) {
     this.file = file;
     validateFile();
   }

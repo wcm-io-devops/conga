@@ -20,10 +20,11 @@
 package io.wcm.devops.conga.model.environment;
 
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
-import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 /**
  * Environment node. A node is a system to deploy to, e.g. a physical machine, virtual machine, Docker container or any

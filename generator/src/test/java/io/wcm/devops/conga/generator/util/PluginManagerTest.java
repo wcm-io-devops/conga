@@ -21,15 +21,16 @@ package io.wcm.devops.conga.generator.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
-import io.wcm.devops.conga.generator.plugins.multiply.TenantMultiply;
-import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
+import io.wcm.devops.conga.generator.plugins.multiply.TenantMultiply;
+import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 
 public class PluginManagerTest {
 

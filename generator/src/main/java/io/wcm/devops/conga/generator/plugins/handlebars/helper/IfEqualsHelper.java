@@ -19,12 +19,12 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-
 import java.io.IOException;
 import java.util.Objects;
 
 import com.github.jknack.handlebars.Options;
+
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 
 /**
  * Handlebars helper that evaluates two objects for equality and shows/hides the contained block accordingly.

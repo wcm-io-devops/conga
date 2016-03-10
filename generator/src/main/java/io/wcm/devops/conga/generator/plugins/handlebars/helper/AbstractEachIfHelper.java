@@ -19,9 +19,6 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.model.util.MapExpander;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +35,9 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.helper.EachHelper;
 import com.google.common.collect.ImmutableList;
 
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.model.util.MapExpander;
+
 /**
  * Handlebars helper that extends the each helper by iterating only on list items that match a certain condition.
  */
@@ -46,7 +46,7 @@ abstract class AbstractEachIfHelper implements HelperPlugin {
   private final Helper<Object> delegate = new EachHelper();
   private final BiFunction<Object, Options, Boolean> propertyEvaluator;
 
-  public AbstractEachIfHelper(BiFunction<Object, Options, Boolean> propertyEvaluator) {
+  AbstractEachIfHelper(BiFunction<Object, Options, Boolean> propertyEvaluator) {
     this.propertyEvaluator = propertyEvaluator;
   }
 

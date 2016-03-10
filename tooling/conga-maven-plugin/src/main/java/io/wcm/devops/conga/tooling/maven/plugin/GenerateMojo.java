@@ -22,12 +22,6 @@ package io.wcm.devops.conga.tooling.maven.plugin;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ENVIRONMENTS_DIR;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ROLES_DIR;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_TEMPLATES_DIR;
-import io.wcm.devops.conga.generator.Generator;
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
-import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -56,6 +50,13 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.Generator;
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 
 /**
  * Generates configuration using CONGA generator.

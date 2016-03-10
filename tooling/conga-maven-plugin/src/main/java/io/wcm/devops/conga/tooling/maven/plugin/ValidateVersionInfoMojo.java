@@ -19,9 +19,6 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
-import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
-import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -41,6 +38,9 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+
+import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
+import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 
 /**
  * Validates that the CONGA maven plugin version and CONGA plugin versions match or are newer than those versions

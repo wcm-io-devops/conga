@@ -26,11 +26,11 @@ import java.io.InputStream;
 
 class FileResourceImpl extends AbstractFileResourceInfoImpl implements Resource {
 
-  public FileResourceImpl(String path) {
+  FileResourceImpl(String path) {
     super(path);
   }
 
-  public FileResourceImpl(File file) {
+  FileResourceImpl(File file) {
     super(file);
   }
 

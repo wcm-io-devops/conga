@@ -19,18 +19,6 @@
  */
 package io.wcm.devops.conga.generator;
 
-import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
-import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
-import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.generator.util.PluginManager;
-import io.wcm.devops.conga.model.environment.Environment;
-import io.wcm.devops.conga.model.reader.EnvironmentReader;
-import io.wcm.devops.conga.model.reader.ModelReader;
-import io.wcm.devops.conga.model.reader.RoleReader;
-import io.wcm.devops.conga.model.role.Role;
-import io.wcm.devops.conga.resource.Resource;
-import io.wcm.devops.conga.resource.ResourceCollection;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,6 +31,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+
+import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
+import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.model.reader.EnvironmentReader;
+import io.wcm.devops.conga.model.reader.ModelReader;
+import io.wcm.devops.conga.model.reader.RoleReader;
+import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.resource.Resource;
+import io.wcm.devops.conga.resource.ResourceCollection;
 
 /**
  * Main entry point for CONGA generator.

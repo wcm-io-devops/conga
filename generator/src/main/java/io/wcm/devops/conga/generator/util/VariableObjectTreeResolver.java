@@ -19,9 +19,9 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import io.wcm.devops.conga.model.shared.Configurable;
-
 import java.util.Map;
+
+import io.wcm.devops.conga.model.shared.Configurable;
 
 /**
  * Iterates over all {@link Configurable} items in the object tree

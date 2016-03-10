@@ -19,8 +19,6 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import io.wcm.devops.conga.resource.Resource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,6 +29,8 @@ import org.apache.commons.lang3.CharEncoding;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.collect.ImmutableSet;
+
+import io.wcm.devops.conga.resource.Resource;
 
 /**
  * Shared functionality for model readers.

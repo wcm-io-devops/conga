@@ -19,6 +19,21 @@
  */
 package io.wcm.devops.conga.generator;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.google.common.collect.ImmutableMap;
+
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
@@ -39,21 +54,6 @@ import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.model.role.RoleVariant;
 import io.wcm.devops.conga.model.util.MapMerger;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Generates file for one environment.
  */
@@ -73,7 +73,7 @@ class EnvironmentGenerator {
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
 
-  public EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
+  EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
       File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager,
       String version, List<String> dependencyVersions, Logger log) {
     this.roles = roles;
@@ -192,11 +192,11 @@ class EnvironmentGenerator {
     }
 
     MultiplyContext multiplyContext = new MultiplyContext()
-    .role(role)
-    .roleFile(roleFile)
-    .environment(environment)
-    .config(config)
-    .logger(log);
+        .role(role)
+        .roleFile(roleFile)
+        .environment(environment)
+        .config(config)
+        .logger(log);
 
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {

@@ -19,10 +19,10 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import io.wcm.devops.conga.model.role.Role;
-
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+
+import io.wcm.devops.conga.model.role.Role;
 
 /**
  * Reads role definitions.

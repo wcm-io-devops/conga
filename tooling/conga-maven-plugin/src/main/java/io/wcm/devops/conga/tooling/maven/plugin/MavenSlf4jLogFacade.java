@@ -35,7 +35,7 @@ class MavenSlf4jLogFacade implements Logger {
 
   private final Log log;
 
-  public MavenSlf4jLogFacade(Log log) {
+  MavenSlf4jLogFacade(Log log) {
     this.log = log;
   }
 

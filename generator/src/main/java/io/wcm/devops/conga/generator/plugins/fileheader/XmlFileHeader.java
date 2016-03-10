@@ -19,12 +19,6 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.util.FileUtil;
-
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -41,6 +35,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
+import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
  * Adds file headers to XML files.

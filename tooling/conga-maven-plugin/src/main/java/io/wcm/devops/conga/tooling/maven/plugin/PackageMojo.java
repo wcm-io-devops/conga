@@ -22,7 +22,6 @@ package io.wcm.devops.conga.tooling.maven.plugin;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSIFIER_CONFIGURATION;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.FILE_EXTENSION_CONFIGURATION;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_CONFIGURATION;
-import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +39,8 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
+
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 /**
  * Packages the generated configurations in a ZIP file.

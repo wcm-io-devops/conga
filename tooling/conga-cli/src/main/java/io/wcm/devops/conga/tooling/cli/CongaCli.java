@@ -19,10 +19,6 @@
  */
 package io.wcm.devops.conga.tooling.cli;
 
-import io.wcm.devops.conga.generator.Generator;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
-
 import java.io.File;
 import java.util.List;
 
@@ -33,6 +29,10 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.Generator;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 /**
  * CONGA command line interface.

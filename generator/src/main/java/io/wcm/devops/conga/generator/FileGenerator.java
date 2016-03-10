@@ -19,22 +19,6 @@
  */
 package io.wcm.devops.conga.generator;
 
-import io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader;
-import io.wcm.devops.conga.generator.plugins.validator.NoneValidator;
-import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
-import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
-import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
-import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
-import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.generator.util.LineEndingConverter;
-import io.wcm.devops.conga.generator.util.PluginManager;
-import io.wcm.devops.conga.generator.util.VariableMapResolver;
-import io.wcm.devops.conga.model.role.RoleFile;
-import io.wcm.devops.conga.model.util.MapMerger;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,6 +38,22 @@ import org.slf4j.Logger;
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 
+import io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader;
+import io.wcm.devops.conga.generator.plugins.validator.NoneValidator;
+import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
+import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
+import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
+import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
+import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.generator.util.LineEndingConverter;
+import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
+import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.util.MapMerger;
+
 /**
  * Generates file for one environment.
  */
@@ -71,7 +71,7 @@ class FileGenerator {
   private final ValidatorContext validatorContext;
   private final PostProcessorContext postProcessorContext;
 
-  public FileGenerator(File nodeDir, File file, RoleFile roleFile, Map<String, Object> config,
+  FileGenerator(File nodeDir, File file, RoleFile roleFile, Map<String, Object> config,
       Template template, PluginManager pluginManager, String version, List<String> dependencyVersions, Logger log) {
     this.nodeDir = nodeDir;
     this.file = file;
@@ -82,17 +82,17 @@ class FileGenerator {
     this.fileContext = new FileContext().file(file).charset(roleFile.getCharset());
 
     this.fileHeaderContext = new FileHeaderContext()
-    .commentLines(buildFileHeaderCommentLines(version, dependencyVersions));
+        .commentLines(buildFileHeaderCommentLines(version, dependencyVersions));
 
     Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");
 
     this.validatorContext = new ValidatorContext()
-    .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
-    .logger(pluginLogger);
+        .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
+        .logger(pluginLogger);
 
     this.postProcessorContext = new PostProcessorContext()
-    .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
-    .logger(pluginLogger);
+        .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
+        .logger(pluginLogger);
 
     this.config = VariableMapResolver.deescape(config);
   }

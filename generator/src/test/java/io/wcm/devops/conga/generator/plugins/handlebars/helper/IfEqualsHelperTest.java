@@ -21,14 +21,15 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.MockOptions.FN_RETURN;
 import static org.junit.Assert.assertEquals;
-import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.Helper;
 import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.util.PluginManager;
 
 public class IfEqualsHelperTest {
 

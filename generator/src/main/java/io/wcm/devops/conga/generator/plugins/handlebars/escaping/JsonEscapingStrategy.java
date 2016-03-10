@@ -19,13 +19,13 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.escaping;
 
-import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
-import io.wcm.devops.conga.generator.util.FileUtil;
-
 import org.apache.commons.lang3.text.translate.AggregateTranslator;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
+
+import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
  * Escapes for JSON files.

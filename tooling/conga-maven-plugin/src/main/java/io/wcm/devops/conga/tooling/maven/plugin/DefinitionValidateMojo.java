@@ -19,6 +19,16 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import java.util.SortedSet;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
+import com.google.common.collect.ImmutableList;
+
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
@@ -31,16 +41,6 @@ import io.wcm.devops.conga.tooling.maven.plugin.validation.DefinitionValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.ModelValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.RoleTemplateFileValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.TemplateValidator;
-
-import java.util.SortedSet;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * Validates definitions by trying to parse them with model reader or compile them via handlebars.

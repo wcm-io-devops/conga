@@ -27,7 +27,7 @@ abstract class AbstractClasspathResourceImpl implements ResourceInfo {
   protected final String path;
   protected final ClassLoader classLoader;
 
-  public AbstractClasspathResourceImpl(String path, ClassLoader classLoader) {
+  AbstractClasspathResourceImpl(String path, ClassLoader classLoader) {
     this.path = path;
     this.classLoader = classLoader;
   }

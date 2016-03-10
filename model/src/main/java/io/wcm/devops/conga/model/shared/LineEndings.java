@@ -41,7 +41,7 @@ public enum LineEndings {
 
   private final String lineEnding;
 
-  private LineEndings(String lineEnding) {
+  LineEndings(String lineEnding) {
     this.lineEnding = lineEnding;
   }
 

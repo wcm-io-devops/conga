@@ -19,12 +19,6 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.util.FileUtil;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +27,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
+import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
  * Generic file header plugin implementation.

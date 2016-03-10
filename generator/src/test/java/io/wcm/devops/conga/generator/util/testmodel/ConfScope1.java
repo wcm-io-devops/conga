@@ -19,10 +19,10 @@
  */
 package io.wcm.devops.conga.generator.util.testmodel;
 
-import io.wcm.devops.conga.model.shared.AbstractConfigurable;
-
 import java.util.List;
 import java.util.Map;
+
+import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 public class ConfScope1 extends AbstractConfigurable {
 

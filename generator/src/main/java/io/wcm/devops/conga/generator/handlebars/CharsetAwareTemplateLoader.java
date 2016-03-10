@@ -19,15 +19,15 @@
  */
 package io.wcm.devops.conga.generator.handlebars;
 
-import io.wcm.devops.conga.resource.Resource;
-import io.wcm.devops.conga.resource.ResourceCollection;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
 import com.github.jknack.handlebars.io.AbstractTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
+
+import io.wcm.devops.conga.resource.Resource;
+import io.wcm.devops.conga.resource.ResourceCollection;
 
 /**
  * Charset-aware template-loader for handlebars.

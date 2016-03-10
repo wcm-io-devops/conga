@@ -19,14 +19,14 @@
  */
 package io.wcm.devops.conga.generator.handlebars;
 
-import io.wcm.devops.conga.resource.Resource;
-
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 
 import com.github.jknack.handlebars.io.AbstractTemplateSource;
+
+import io.wcm.devops.conga.resource.Resource;
 
 /**
  * Charset-aware TemplateSource for handlebars.
@@ -37,7 +37,7 @@ class CharsetAwareTemplateSource extends AbstractTemplateSource {
   private final String charset;
   private final String location;
 
-  public CharsetAwareTemplateSource(Resource file, String charset, String location) {
+  CharsetAwareTemplateSource(Resource file, String charset, String location) {
     this.file = file;
     this.charset = charset;
     this.location = location;
