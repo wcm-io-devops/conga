@@ -66,4 +66,9 @@ public final class UnixShellScriptFileHeader extends AbstractFileHeader {
     return 0;
   }
 
+  @Override
+  public FileHeaderContext extract(FileContext file) {
+    return extractFileHeaderWithLinePrefixes(file);
+  }
+
 }

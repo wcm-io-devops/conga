@@ -19,9 +19,11 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,12 +51,18 @@ public class XmlFileHeaderTest {
     File file = new File("target/generation-test/fileHeader.xml");
     FileUtils.copyFile(new File(getClass().getResource("/validators/xml/validXml.xml").toURI()), file);
 
-    FileHeaderContext context = new FileHeaderContext().commentLines(ImmutableList.of("a", "b", "c"));
+    List<String> lines = ImmutableList.of("Der Jodelkaiser", "aus dem Oetztal", "ist wieder daheim.");
+    FileHeaderContext context = new FileHeaderContext().commentLines(lines);
     FileContext fileContext = new FileContext().file(file);
+
     assertTrue(underTest.accepts(fileContext, context));
     underTest.apply(fileContext, context);
 
-    assertTrue(StringUtils.contains(FileUtils.readFileToString(file), "a\nb\nc\n"));
+    assertTrue(StringUtils.contains(FileUtils.readFileToString(file),
+        "Der Jodelkaiser\naus dem Oetztal\nist wieder daheim.\n"));
+
+    FileHeaderContext extractContext = underTest.extract(fileContext);
+    assertEquals(lines, extractContext.getCommentLines());
 
     file.delete();
   }

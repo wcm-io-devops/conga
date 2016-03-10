@@ -19,9 +19,11 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,15 +52,20 @@ public class UnixShellScriptFileHeaderTest {
     FileUtils.write(file, "#!/bin/bash\n"
         + "myscript");
 
-    FileHeaderContext context = new FileHeaderContext().commentLines(ImmutableList.of("a", "b", "c"));
+    List<String> lines = ImmutableList.of("Der Jodelkaiser", "aus dem Oetztal", "ist wieder daheim.");
+    FileHeaderContext context = new FileHeaderContext().commentLines(lines);
     FileContext fileContext = new FileContext().file(file);
+
     assertTrue(underTest.accepts(fileContext, context));
     underTest.apply(fileContext, context);
 
     String content = FileUtils.readFileToString(file);
-    assertTrue(StringUtils.contains(content, "# a\n# b\n# c\n"));
+    assertTrue(StringUtils.contains(content, "# Der Jodelkaiser\n# aus dem Oetztal\n# ist wieder daheim.\n"));
     assertTrue(StringUtils.endsWith(content, "\nmyscript"));
     assertTrue(StringUtils.startsWith(content, "#!/bin/bash\n"));
+
+    FileHeaderContext extractContext = underTest.extract(fileContext);
+    assertEquals(lines, extractContext.getCommentLines());
 
     file.delete();
   }

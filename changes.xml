@@ -27,6 +27,12 @@
       <action type="update" dev="sseifert">
         Shorten default file header comment and allow filtering of comment lines in file header plugins.
       </action>
+      <action type="update" dev="sseifert">
+        FileHeaderPlugin: Add optional extract method to extract file headers from existing file.
+      </action>
+      <action type="update" dev="sseifert">
+        Add support to extract file headers to all file header plugins.
+      </action>
     </release>
 
     <release version="1.1.2" date="2015-08-27">

@@ -62,4 +62,9 @@ public final class JsonFileHeader extends AbstractFileHeader {
     return "*/\n";
   }
 
+  @Override
+  public FileHeaderContext extract(FileContext file) {
+    return extractFileHeaderBetweenBlockStartEnd(file);
+  }
+
 }

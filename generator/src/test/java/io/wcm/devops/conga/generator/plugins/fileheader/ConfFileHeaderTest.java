@@ -19,9 +19,11 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,12 +51,18 @@ public class ConfFileHeaderTest {
     File file = new File("target/generation-test/fileHeader.conf");
     FileUtils.write(file, "myscript");
 
-    FileHeaderContext context = new FileHeaderContext().commentLines(ImmutableList.of("a", "b", "c"));
+    List<String> lines = ImmutableList.of("Der Jodelkaiser", "aus dem Oetztal", "ist wieder daheim.");
+    FileHeaderContext context = new FileHeaderContext().commentLines(lines);
     FileContext fileContext = new FileContext().file(file);
+
     assertTrue(underTest.accepts(fileContext, context));
     underTest.apply(fileContext, context);
 
-    assertTrue(StringUtils.contains(FileUtils.readFileToString(file), "# a\n# b\n# c\n"));
+    assertTrue(StringUtils.contains(FileUtils.readFileToString(file),
+        "# Der Jodelkaiser\n# aus dem Oetztal\n# ist wieder daheim.\n"));
+
+    FileHeaderContext extractContext = underTest.extract(fileContext);
+    assertEquals(lines, extractContext.getCommentLines());
 
     file.delete();
   }

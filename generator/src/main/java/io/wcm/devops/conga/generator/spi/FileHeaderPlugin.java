@@ -37,4 +37,13 @@ public interface FileHeaderPlugin extends FilePlugin<FileHeaderContext, Void> {
   @Override
   Void apply(FileContext file, FileHeaderContext context);
 
+  /**
+   * Extract comment lines from file header.
+   * @param file Context file
+   * @return File header context with comment lines. Returns null if extraction not possible or no comments present.
+   */
+  default FileHeaderContext extract(FileContext file) {
+    return null;
+  }
+
 }
