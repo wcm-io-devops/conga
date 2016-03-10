@@ -92,6 +92,7 @@ class FileGenerator {
 
     this.postProcessorContext = new PostProcessorContext()
         .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
+        .pluginManager(pluginManager)
         .logger(pluginLogger);
 
     this.config = VariableMapResolver.deescape(config);
