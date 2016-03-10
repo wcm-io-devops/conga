@@ -59,6 +59,10 @@ import io.wcm.devops.conga.model.util.MapMerger;
  */
 class FileGenerator {
 
+  private final String environmentName;
+  private final String roleName;
+  private final String roleVariantName;
+  private final String templateName;
   private final File nodeDir;
   private final File file;
   private final RoleFile roleFile;
@@ -71,8 +75,15 @@ class FileGenerator {
   private final ValidatorContext validatorContext;
   private final PostProcessorContext postProcessorContext;
 
-  FileGenerator(File nodeDir, File file, RoleFile roleFile, Map<String, Object> config,
+  //CHECKSTYLE:OFF
+  FileGenerator(String environmentName, String roleName, String roleVariantName, String templateName,
+      File nodeDir, File file, RoleFile roleFile, Map<String, Object> config,
       Template template, PluginManager pluginManager, String version, List<String> dependencyVersions, Logger log) {
+    //CHECKSTYLE:ON
+    this.environmentName = environmentName;
+    this.roleName = roleName;
+    this.roleVariantName = roleVariantName;
+    this.templateName = templateName;
     this.nodeDir = nodeDir;
     this.file = file;
     this.roleFile = roleFile;
@@ -110,6 +121,14 @@ class FileGenerator {
     lines.add("");
     lines.add((version != null ? "Version " + version + ", generated " : "Generated ")
         + "at: " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date()));
+
+    // add information how this file was generated
+    lines.add("Environment: " + environmentName);
+    lines.add("Role: " + roleName);
+    if (StringUtils.isNotBlank(roleVariantName)) {
+      lines.add("Variant: " + roleVariantName);
+    }
+    lines.add("Template: " + templateName);
 
     if (dependencyVersions != null && !dependencyVersions.isEmpty()) {
       lines.add("");

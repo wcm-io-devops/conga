@@ -134,7 +134,8 @@ class EnvironmentGenerator {
       for (RoleFile roleFile : role.getFiles()) {
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
-          multiplyFiles(role, roleFile, mergedConfig, nodeDir, template);
+          multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
+              nodeRole.getRole(), variant, roleFile.getTemplate());
         }
       }
     }
@@ -185,7 +186,8 @@ class EnvironmentGenerator {
         .getName();
   }
 
-  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template) {
+  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
+      String roleName, String roleVariantName, String templateName) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
@@ -208,11 +210,13 @@ class EnvironmentGenerator {
       String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
       String file = VariableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
 
-      generateFile(roleFile, dir, file, resolvedConfig, nodeDir, template);
+      generateFile(roleFile, dir, file, resolvedConfig, nodeDir, template,
+          roleName, roleVariantName, templateName);
     }
   }
 
-  private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template) {
+  private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template,
+      String roleName, String roleVariantName, String templateName) {
     File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, fileName) : fileName);
     boolean duplicateFile = generatedFilePaths.contains(FileUtil.getCanonicalPath(file));
     if (file.exists()) {
@@ -227,7 +231,8 @@ class EnvironmentGenerator {
       }
     }
 
-    FileGenerator fileGenerator = new FileGenerator(nodeDir, file, roleFile, config, template, pluginManager,
+    FileGenerator fileGenerator = new FileGenerator(environmentName, roleName, roleVariantName, templateName,
+        nodeDir, file, roleFile, config, template, pluginManager,
         version, dependencyVersions, log);
     try {
       fileGenerator.generate();
