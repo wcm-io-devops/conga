@@ -51,7 +51,9 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
       }
       else {
         sanitizedCommentLines = context.getCommentLines().stream()
-            .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + sanitizeComment(line) + lineBreak)
+            .map(line -> sanitizeComment(line))
+            .filter(line -> line != null)
+            .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + line + lineBreak)
             .collect(Collectors.toList());
       }
 

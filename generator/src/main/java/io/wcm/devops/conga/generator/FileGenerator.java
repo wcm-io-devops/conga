@@ -106,8 +106,6 @@ class FileGenerator {
     List<String> lines = new ArrayList<>();
 
     lines.add("This configuration file is AUTO-GENERATED. Please do no change it manually.");
-    lines.add("If you want to change the configuration update the environment definition");
-    lines.add("and generate it again.");
     lines.add("");
     lines.add((version != null ? "Version " + version + ", generated " : "Generated ")
         + "at: " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(new Date()));
