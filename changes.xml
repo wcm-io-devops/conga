@@ -36,6 +36,9 @@
       <action type="update" dev="sseifert">
         Add generation information for environment, role, role variant and template to file header.
       </action>
+      <action type="update" dev="sseifert">
+        CONGA Maven Plugin: Generate configuration ZIP package per environment, not one including all environments.
+      </action>
     </release>
 
     <release version="1.1.2" date="2015-08-27">

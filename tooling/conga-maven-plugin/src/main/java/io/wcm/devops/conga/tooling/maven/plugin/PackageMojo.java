@@ -25,6 +25,10 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.execution.MavenSession;
@@ -40,6 +44,8 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
+import com.google.common.collect.ImmutableSet;
+
 import io.wcm.devops.conga.resource.ResourceLoader;
 
 /**
@@ -47,6 +53,12 @@ import io.wcm.devops.conga.resource.ResourceLoader;
  */
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
 public class PackageMojo extends AbstractCongaMojo {
+
+  /**
+   * Selected environments to generate.
+   */
+  @Parameter
+  private String[] environments;
 
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
@@ -66,18 +78,39 @@ public class PackageMojo extends AbstractCongaMojo {
   public void execute() throws MojoExecutionException, MojoFailureException {
     resourceLoader = new ResourceLoader();
 
-    File configRootDir = getTargetDir();
-
-    // pack generated configuration in ZIP file
-    File outputFile = buildZipFile(configRootDir);
-
-    // set or attach ZIP artifact
-    if (StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
-      project.getArtifact().setFile(outputFile);
+    Set<String> selectedEnvironments;
+    if (environments != null && environments.length > 0) {
+      selectedEnvironments = ImmutableSet.copyOf(environments);
     }
     else {
-      projectHelper.attachArtifact(project, outputFile, CLASSIFIER_CONFIGURATION);
+      selectedEnvironments = null;
     }
+
+    // collect configuration environment directories
+    File configRootDir = getTargetDir();
+    List<File> environmentDirs = Arrays.stream(configRootDir.listFiles())
+        .filter(file -> file.isDirectory())
+        .filter(dir -> selectedEnvironments == null || selectedEnvironments.contains(dir.getName()))
+        .collect(Collectors.toList());
+
+    // generate an ZIP artifact with generated configurations for each environment
+    for (File environmentDir : environmentDirs) {
+
+      // classifier is environment name
+      // if current project is not a config project, prefix the classifier
+      String classifier = environmentDir.getName();
+      if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
+        classifier = CLASSIFIER_CONFIGURATION + "." + classifier;
+      }
+
+      // build ZIP artifact
+      File outputFile = buildZipFile(environmentDir, classifier);
+
+      // attach ZIP artifact
+      projectHelper.attachArtifact(project, outputFile, classifier);
+
+    }
+
   }
 
   /**
@@ -86,8 +119,8 @@ public class PackageMojo extends AbstractCongaMojo {
    * @return JAR file
    * @throws MojoExecutionException
    */
-  private File buildZipFile(File contentDirectory) throws MojoExecutionException {
-    File zipFile = new File(project.getBuild().getDirectory(), buildZipFileName());
+  private File buildZipFile(File contentDirectory, String classifier) throws MojoExecutionException {
+    File zipFile = new File(project.getBuild().getDirectory(), buildZipFileName(classifier));
 
     zipArchiver.addDirectory(contentDirectory);
     zipArchiver.setDestFile(zipFile);
@@ -101,12 +134,10 @@ public class PackageMojo extends AbstractCongaMojo {
     return zipFile;
   }
 
-  private String buildZipFileName() {
+  private String buildZipFileName(String classifier) {
     StringBuilder sb = new StringBuilder();
     sb.append(project.getBuild().getFinalName());
-    if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
-      sb.append("-").append(CLASSIFIER_CONFIGURATION);
-    }
+    sb.append("-").append(classifier);
     sb.append(".").append(FILE_EXTENSION_CONFIGURATION);
     return sb.toString();
   }
