@@ -108,8 +108,9 @@ public class PackageMojo extends AbstractCongaMojo {
         // if current project is not a config project, prefix the classifier
         String classifier = environmentDir.getName();
         if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
-          classifier = CLASSIFIER_CONFIGURATION + "." + classifier;
+          classifier = CLASSIFIER_CONFIGURATION + "-" + classifier;
         }
+        validateClassifier(classifier);
 
         // build ZIP artifact
         File outputFile = buildZipFile(environmentDir, classifier);
@@ -125,6 +126,8 @@ public class PackageMojo extends AbstractCongaMojo {
       if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
         classifier = CLASSIFIER_CONFIGURATION;
       }
+      validateClassifier(classifier);
+
       File outputFile = buildZipFile(configRootDir, classifier);
       // set or attach ZIP artifact
       if (StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
@@ -166,6 +169,13 @@ public class PackageMojo extends AbstractCongaMojo {
     }
     sb.append(".").append(FILE_EXTENSION_CONFIGURATION);
     return sb.toString();
+  }
+
+  private void validateClassifier(String classifier) throws MojoExecutionException {
+    // classifier should not contain dots to make sure separation from extension/packaging types is not affected
+    if (StringUtils.contains(classifier, ".")) {
+      throw new MojoExecutionException("Classifier must not contain dots: " + classifier);
+    }
   }
 
   @Override
