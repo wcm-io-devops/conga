@@ -60,6 +60,13 @@ public class PackageMojo extends AbstractCongaMojo {
   @Parameter
   private String[] environments;
 
+  /**
+   * If set to true (default) a separate ZIP artifact is generated per environment.
+   * Otherwise a single ZIP containing all environments in sub directories is created.
+   */
+  @Parameter(defaultValue = "true")
+  private boolean artifactPerEnvironment;
+
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
@@ -93,22 +100,39 @@ public class PackageMojo extends AbstractCongaMojo {
         .filter(dir -> selectedEnvironments == null || selectedEnvironments.contains(dir.getName()))
         .collect(Collectors.toList());
 
-    // generate an ZIP artifact with generated configurations for each environment
-    for (File environmentDir : environmentDirs) {
+    if (artifactPerEnvironment) {
+      // generate an ZIP artifact with generated configurations for each environment
+      for (File environmentDir : environmentDirs) {
 
-      // classifier is environment name
-      // if current project is not a config project, prefix the classifier
-      String classifier = environmentDir.getName();
-      if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
-        classifier = CLASSIFIER_CONFIGURATION + "." + classifier;
+        // classifier is environment name
+        // if current project is not a config project, prefix the classifier
+        String classifier = environmentDir.getName();
+        if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
+          classifier = CLASSIFIER_CONFIGURATION + "." + classifier;
+        }
+
+        // build ZIP artifact
+        File outputFile = buildZipFile(environmentDir, classifier);
+
+        // attach ZIP artifact
+        projectHelper.attachArtifact(project, outputFile, classifier);
+
       }
-
-      // build ZIP artifact
-      File outputFile = buildZipFile(environmentDir, classifier);
-
-      // attach ZIP artifact
-      projectHelper.attachArtifact(project, outputFile, classifier);
-
+    }
+    else {
+      // generate an ZIP artifact containing all environments
+      String classifier = null;
+      if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
+        classifier = CLASSIFIER_CONFIGURATION;
+      }
+      File outputFile = buildZipFile(configRootDir, classifier);
+      // set or attach ZIP artifact
+      if (StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
+        project.getArtifact().setFile(outputFile);
+      }
+      else {
+        projectHelper.attachArtifact(project, outputFile, CLASSIFIER_CONFIGURATION);
+      }
     }
 
   }
@@ -137,7 +161,9 @@ public class PackageMojo extends AbstractCongaMojo {
   private String buildZipFileName(String classifier) {
     StringBuilder sb = new StringBuilder();
     sb.append(project.getBuild().getFinalName());
-    sb.append("-").append(classifier);
+    if (StringUtils.isNotBlank(classifier)) {
+      sb.append("-").append(classifier);
+    }
     sb.append(".").append(FILE_EXTENSION_CONFIGURATION);
     return sb.toString();
   }
