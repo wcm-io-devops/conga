@@ -39,6 +39,9 @@
       <action type="update" dev="sseifert">
         CONGA Maven Plugin: Generate configuration ZIP package per environment, not one including all environments.
       </action>
+      <action type="update" dev="sseifert">
+        Add m2e lifecycle mapping - ignore all goals by default in Eclipse.
+      </action>
     </release>
 
     <release version="1.1.2" date="2015-08-27">
