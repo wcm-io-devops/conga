@@ -25,9 +25,6 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_TEMPLATES_DIR;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.FILE_EXTENSION_DEFINITION;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_DEFINITION;
-import io.wcm.devops.conga.resource.Resource;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,6 +50,10 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.ManifestException;
+
+import io.wcm.devops.conga.resource.Resource;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 /**
  * Packages the definitions in a ZIP file.

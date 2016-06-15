@@ -19,9 +19,6 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
-import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,6 +32,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+
+import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 
 /**
  * Generates a file with information CONGA maven plugin version and CONGA plugins versions used to generate this

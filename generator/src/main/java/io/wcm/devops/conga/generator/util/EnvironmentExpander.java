@@ -19,10 +19,6 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.model.environment.Environment;
-import io.wcm.devops.conga.model.environment.Node;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +28,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.rits.cloning.Cloner;
+
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.model.environment.Node;
 
 /**
  * Expands configuration nodes in environment.

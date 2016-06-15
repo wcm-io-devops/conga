@@ -19,11 +19,11 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import io.wcm.devops.conga.resource.Resource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+
+import io.wcm.devops.conga.resource.Resource;
 
 /**
  * Reads a model.

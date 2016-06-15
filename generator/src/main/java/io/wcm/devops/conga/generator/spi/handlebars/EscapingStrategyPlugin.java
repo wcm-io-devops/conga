@@ -19,9 +19,9 @@
  */
 package io.wcm.devops.conga.generator.spi.handlebars;
 
-import io.wcm.devops.conga.generator.spi.Plugin;
-
 import com.github.jknack.handlebars.EscapingStrategy;
+
+import io.wcm.devops.conga.generator.spi.Plugin;
 
 /**
  * Plugin that provides an {@link EscapingStrategy} to be used by Handlebars when replacing variables in a template.

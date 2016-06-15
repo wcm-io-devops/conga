@@ -19,12 +19,12 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-
 import java.io.IOException;
 
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.helper.StringHelpers;
+
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 
 /**
  * Handlebars helper that joins a list to a single string.

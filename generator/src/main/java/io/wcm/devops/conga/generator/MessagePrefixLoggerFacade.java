@@ -31,7 +31,7 @@ class MessagePrefixLoggerFacade implements Logger {
   private final Logger delegate;
   private final String messagePrefix;
 
-  public MessagePrefixLoggerFacade(Logger delegate, String messagePrefix) {
+  MessagePrefixLoggerFacade(Logger delegate, String messagePrefix) {
     this.delegate = delegate;
     this.messagePrefix = messagePrefix;
   }

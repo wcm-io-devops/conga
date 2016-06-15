@@ -21,10 +21,6 @@ package io.wcm.devops.conga.model.reader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import io.wcm.devops.conga.model.role.Role;
-import io.wcm.devops.conga.model.role.RoleFile;
-import io.wcm.devops.conga.model.role.RoleVariant;
-import io.wcm.devops.conga.model.shared.LineEndings;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +32,11 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+
+import io.wcm.devops.conga.model.role.Role;
+import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.role.RoleVariant;
+import io.wcm.devops.conga.model.shared.LineEndings;
 
 public class RoleReaderTest {
 

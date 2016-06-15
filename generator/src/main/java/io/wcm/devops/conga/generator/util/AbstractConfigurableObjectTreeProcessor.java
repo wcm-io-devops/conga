@@ -19,8 +19,6 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import io.wcm.devops.conga.model.shared.Configurable;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +26,8 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import io.wcm.devops.conga.model.shared.Configurable;
 
 /**
  * Iterates over all {@link Configurable} items in the object tree.

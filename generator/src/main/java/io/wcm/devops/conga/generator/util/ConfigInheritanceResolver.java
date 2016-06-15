@@ -19,17 +19,17 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.environment.RoleConfig;
 import io.wcm.devops.conga.model.shared.Configurable;
 import io.wcm.devops.conga.model.util.MapMerger;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Iterates over all {@link Configurable} items in the object tree.

@@ -19,11 +19,11 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
+import java.util.Map;
+
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
-
-import java.util.Map;
 
 /**
  * Context for {@link io.wcm.devops.conga.generator.spi.MultiplyPlugin}.

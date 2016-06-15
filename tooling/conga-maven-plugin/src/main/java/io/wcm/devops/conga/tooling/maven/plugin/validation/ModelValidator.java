@@ -19,10 +19,10 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.validation;
 
+import org.apache.maven.plugin.MojoFailureException;
+
 import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.resource.Resource;
-
-import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * Validates YAML model file against it's reader.

@@ -19,12 +19,6 @@
  */
 package io.wcm.devops.conga.generator.handlebars;
 
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
-import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
-import io.wcm.devops.conga.resource.ResourceCollection;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -33,6 +27,12 @@ import com.github.jknack.handlebars.io.TemplateLoader;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.resource.ResourceCollection;
 
 /**
  * Manages charset-aware handlebars instances.

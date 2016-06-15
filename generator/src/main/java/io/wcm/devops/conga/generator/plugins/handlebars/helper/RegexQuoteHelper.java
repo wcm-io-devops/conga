@@ -19,12 +19,12 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 import com.github.jknack.handlebars.Options;
+
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 
 /**
  * Handlebars helper that allows to quotes a string for usage in a regular expression.

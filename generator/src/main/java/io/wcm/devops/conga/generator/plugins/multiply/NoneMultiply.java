@@ -19,13 +19,13 @@
  */
 package io.wcm.devops.conga.generator.plugins.multiply;
 
-import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
-import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
-
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
+import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 
 /**
  * Multiplier that does not multiply but generate the file once.

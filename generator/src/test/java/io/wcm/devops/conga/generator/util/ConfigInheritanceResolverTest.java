@@ -20,17 +20,18 @@
 package io.wcm.devops.conga.generator.util;
 
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope1;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope2;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope3;
 import io.wcm.devops.conga.generator.util.testmodel.Root;
 import io.wcm.devops.conga.generator.util.testmodel.SampleNode;
 import io.wcm.devops.conga.generator.util.testmodel.SimpleConf;
-
-import org.junit.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 public class ConfigInheritanceResolverTest {
 

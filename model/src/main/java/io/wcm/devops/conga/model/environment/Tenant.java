@@ -20,10 +20,11 @@
 package io.wcm.devops.conga.model.environment;
 
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
-import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 /**
  * Defines a tenant for configuration files that have tenant-specific system configurations.

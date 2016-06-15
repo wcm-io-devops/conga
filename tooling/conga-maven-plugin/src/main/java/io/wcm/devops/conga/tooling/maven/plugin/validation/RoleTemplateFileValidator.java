@@ -19,6 +19,13 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.validation;
 
+import java.io.IOException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.plugin.MojoFailureException;
+
+import com.github.jknack.handlebars.Handlebars;
+
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.util.FileUtil;
@@ -27,13 +34,6 @@ import io.wcm.devops.conga.model.reader.RoleReader;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.resource.Resource;
-
-import java.io.IOException;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoFailureException;
-
-import com.github.jknack.handlebars.Handlebars;
 
 /**
  * Ensures that all template files references in role definitions point to an existing template.

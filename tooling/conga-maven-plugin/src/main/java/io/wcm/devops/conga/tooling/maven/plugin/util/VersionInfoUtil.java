@@ -19,12 +19,12 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.util;
 
-import io.wcm.devops.conga.tooling.maven.plugin.BuildConstants;
-
 import java.util.Properties;
 
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
+
+import io.wcm.devops.conga.tooling.maven.plugin.BuildConstants;
 
 /**
  * Utility method for generating and validation version info.

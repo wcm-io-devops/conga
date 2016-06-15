@@ -26,7 +26,7 @@ class MapEntry<K, V> implements Map.Entry<K, V> {
   private final K key;
   private final V value;
 
-  public MapEntry(K key, V value) {
+  MapEntry(K key, V value) {
     this.key = key;
     this.value = value;
   }

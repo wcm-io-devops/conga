@@ -20,10 +20,11 @@
 package io.wcm.devops.conga.model.shared;
 
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
-import io.wcm.devops.conga.model.util.MapExpander;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.wcm.devops.conga.model.util.MapExpander;
 
 /**
  * Abstract {@link Configurable} implementation.

@@ -19,17 +19,17 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.validation;
 
-import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
-import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
-import io.wcm.devops.conga.resource.Resource;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.tooling.maven.plugin.util.PathUtil;
-
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoFailureException;
 
 import com.github.jknack.handlebars.Handlebars;
+
+import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
+import io.wcm.devops.conga.resource.Resource;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.tooling.maven.plugin.util.PathUtil;
 
 /**
  * Validates Handlebars templates by compiling it.

@@ -19,10 +19,10 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
+import java.util.List;
+
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
-
-import java.util.List;
 
 /**
  * Plugin that allows to post-process a generated file.

@@ -30,7 +30,7 @@ final class HandlebarsKey {
   private final String charset;
   private final String combinedKey;
 
-  public HandlebarsKey(String escapingStrategy, String charset) {
+  HandlebarsKey(String escapingStrategy, String charset) {
     Objects.requireNonNull(escapingStrategy, "Escaping strategy is missing");
     Objects.requireNonNull(charset, "Charset is missing");
     this.escapingStrategy = escapingStrategy;

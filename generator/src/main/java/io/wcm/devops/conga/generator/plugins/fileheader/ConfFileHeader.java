@@ -55,4 +55,9 @@ public final class ConfFileHeader extends AbstractFileHeader {
     return getLineBreak();
   }
 
+  @Override
+  public FileHeaderContext extract(FileContext file) {
+    return extractFileHeaderWithLinePrefixes(file);
+  }
+
 }

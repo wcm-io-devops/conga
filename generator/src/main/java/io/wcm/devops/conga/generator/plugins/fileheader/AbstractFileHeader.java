@@ -19,13 +19,8 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.util.FileUtil;
-
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +28,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
+import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
  * Generic file header plugin implementation.
@@ -51,7 +52,9 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
       }
       else {
         sanitizedCommentLines = context.getCommentLines().stream()
-            .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + sanitizeComment(line) + lineBreak)
+            .map(line -> sanitizeComment(line))
+            .filter(line -> line != null)
+            .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + line + lineBreak)
             .collect(Collectors.toList());
       }
 
@@ -99,6 +102,66 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
 
   protected int getInsertPosition(String content) {
     return 0;
+  }
+
+  /**
+   * Extract file header from the beginning of file between comment block start and end symbol.
+   * @param file File
+   * @return File header or null
+   */
+  protected final FileHeaderContext extractFileHeaderBetweenBlockStartEnd(FileContext file) {
+    try {
+      if (StringUtils.isNotEmpty(getCommentBlockStart()) && StringUtils.isNotEmpty(getCommentBlockEnd())) {
+        String content = FileUtils.readFileToString(file.getFile(), file.getCharset());
+        int insertPosition = getInsertPosition(content);
+        int posBlockStart = content.indexOf(getCommentBlockStart());
+        int posBlockEnd = content.indexOf(getCommentBlockEnd());
+        if (posBlockStart == insertPosition && posBlockEnd > 0) {
+          String fileHeader = content.substring(posBlockStart + getCommentBlockStart().length(), posBlockEnd);
+          List<String> lines = ImmutableList.copyOf(StringUtils.split(fileHeader, getLineBreak()));
+          return new FileHeaderContext().commentLines(lines);
+        }
+      }
+    }
+    catch (IOException ex) {
+      throw new GeneratorException("Unable to parse file header from " + FileUtil.getCanonicalPath(file), ex);
+    }
+    return null;
+  }
+
+  /**
+   * Extract file header from the beginning of file with all lines starting with line prefix.
+   * @param file File File
+   * @return File header or null
+   */
+  protected final FileHeaderContext extractFileHeaderWithLinePrefixes(FileContext file) {
+    try {
+      if (StringUtils.isNotEmpty(getLineBreak()) && StringUtils.isNotEmpty(getCommentLinePrefix())) {
+        String content = FileUtils.readFileToString(file.getFile(), file.getCharset());
+        int insertPosition = getInsertPosition(content);
+        content = content.substring(insertPosition);
+
+        String[] contentLines = StringUtils.split(content, getLineBreak());
+        if (contentLines.length > 0 && StringUtils.startsWith(contentLines[0], getCommentLinePrefix())) {
+          List<String> lines = new ArrayList<>();
+          for (int i = 0; i < contentLines.length; i++) {
+            if (StringUtils.startsWith(contentLines[i], getCommentLinePrefix())) {
+              lines.add(contentLines[i].substring(getCommentLinePrefix().length()));
+            }
+            else {
+              break;
+            }
+          }
+          if (!lines.isEmpty()) {
+            return new FileHeaderContext().commentLines(lines);
+          }
+        }
+      }
+    }
+    catch (IOException ex) {
+      throw new GeneratorException("Unable parse add file header from " + FileUtil.getCanonicalPath(file), ex);
+    }
+    return null;
   }
 
 }

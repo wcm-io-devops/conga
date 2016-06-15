@@ -19,13 +19,6 @@
  */
 package io.wcm.devops.conga.generator.plugins.validator;
 
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.ValidationException;
-import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
-import io.wcm.devops.conga.generator.util.FileUtil;
-
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -33,6 +26,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
+
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.ValidationException;
+import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
+import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
  * Validates XML syntax.

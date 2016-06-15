@@ -19,10 +19,10 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import io.wcm.devops.conga.model.environment.Environment;
-
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+
+import io.wcm.devops.conga.model.environment.Environment;
 
 /**
  * Reads environment definitions.

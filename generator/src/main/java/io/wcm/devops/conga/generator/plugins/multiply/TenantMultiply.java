@@ -19,18 +19,18 @@
  */
 package io.wcm.devops.conga.generator.plugins.multiply;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.model.environment.Tenant;
 import io.wcm.devops.conga.model.util.MapMerger;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Multiplies a file for each tenant with a matching tenant role.

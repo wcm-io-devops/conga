@@ -38,7 +38,7 @@ class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl impl
   private final List<String> folderPaths = new ArrayList<>();
   private final ResourceLoader resourceLoader;
 
-  public ClasspathResourceCollectionImpl(String path, ResourceLoader resourceLoader) {
+  ClasspathResourceCollectionImpl(String path, ResourceLoader resourceLoader) {
     super(path, resourceLoader.getClassLoader());
     this.resourceLoader = resourceLoader;
 

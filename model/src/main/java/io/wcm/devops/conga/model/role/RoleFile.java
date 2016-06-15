@@ -21,9 +21,6 @@ package io.wcm.devops.conga.model.role;
 
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
-import io.wcm.devops.conga.model.shared.AbstractModel;
-import io.wcm.devops.conga.model.shared.LineEndings;
-import io.wcm.devops.conga.model.util.MapExpander;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.CharEncoding;
+
+import io.wcm.devops.conga.model.shared.AbstractModel;
+import io.wcm.devops.conga.model.shared.LineEndings;
+import io.wcm.devops.conga.model.util.MapExpander;
 
 /**
  * Defines a file to be generated for a role.

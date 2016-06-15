@@ -19,10 +19,10 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
-import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
-
 import java.util.List;
 import java.util.Map;
+
+import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 
 /**
  * Plugin that allows to generate multiple files from one template.

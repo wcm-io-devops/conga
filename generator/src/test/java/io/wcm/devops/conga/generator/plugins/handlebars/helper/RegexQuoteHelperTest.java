@@ -21,13 +21,14 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.Helper;
+
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.util.PluginManager;
 
 public class RegexQuoteHelperTest {
 

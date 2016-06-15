@@ -19,12 +19,6 @@
  */
 package io.wcm.devops.conga.generator;
 
-import io.wcm.devops.conga.generator.util.VariableObjectTreeResolver;
-import io.wcm.devops.conga.model.environment.Environment;
-import io.wcm.devops.conga.model.environment.Node;
-import io.wcm.devops.conga.model.environment.NodeRole;
-import io.wcm.devops.conga.model.environment.Tenant;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +27,12 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import com.rits.cloning.Cloner;
+
+import io.wcm.devops.conga.generator.util.VariableObjectTreeResolver;
+import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.model.environment.Node;
+import io.wcm.devops.conga.model.environment.NodeRole;
+import io.wcm.devops.conga.model.environment.Tenant;
 
 /**
  * Builds context variables

@@ -21,11 +21,6 @@ package io.wcm.devops.conga.model.reader;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import io.wcm.devops.conga.model.environment.Environment;
-import io.wcm.devops.conga.model.environment.Node;
-import io.wcm.devops.conga.model.environment.NodeRole;
-import io.wcm.devops.conga.model.environment.RoleConfig;
-import io.wcm.devops.conga.model.environment.Tenant;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +30,12 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+
+import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.model.environment.Node;
+import io.wcm.devops.conga.model.environment.NodeRole;
+import io.wcm.devops.conga.model.environment.RoleConfig;
+import io.wcm.devops.conga.model.environment.Tenant;
 
 public class EnvironmentReaderTest {
 

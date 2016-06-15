@@ -19,9 +19,6 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.Plugin;
-
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.SortedMap;
@@ -32,6 +29,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.Plugin;
 
 /**
  * Manages registered plugin. Plugins are registered using the {@link ServiceLoader} concept.

@@ -32,17 +32,17 @@ enum ResourceType {
       (path, resourceLoader) -> new FileResourceCollectionImpl(path, resourceLoader),
       resource -> resource instanceof AbstractFileResourceInfoImpl),
 
-      CLASSPATH(ResourceLoader.CLASSPATH_PREFIX,
-          (path, resourceLoader) -> new ClasspathResourceImpl(path, resourceLoader),
-          (path, resourceLoader) -> new ClasspathResourceCollectionImpl(path, resourceLoader),
-          resource -> resource instanceof AbstractClasspathResourceImpl);
+  CLASSPATH(ResourceLoader.CLASSPATH_PREFIX,
+      (path, resourceLoader) -> new ClasspathResourceImpl(path, resourceLoader),
+      (path, resourceLoader) -> new ClasspathResourceCollectionImpl(path, resourceLoader),
+      resource -> resource instanceof AbstractClasspathResourceImpl);
 
   private final String prefix;
   private final BiFunction<String, ResourceLoader, Resource> resourceFactory;
   private final BiFunction<String, ResourceLoader, ResourceCollection> resourceCollectionFactory;
   private final Function<ResourceInfo, Boolean> resourceMatcher;
 
-  private ResourceType(String prefix,
+  ResourceType(String prefix,
       BiFunction<String, ResourceLoader, Resource> resourceFactory,
       BiFunction<String, ResourceLoader, ResourceCollection> resourceCollectionFactory,
       Function<ResourceInfo, Boolean> resourceMatcher) {

@@ -19,13 +19,8 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
-import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.util.FileUtil;
-
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,7 +35,16 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+
+import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
+import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
+import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
  * Adds file headers to XML files.
@@ -98,7 +102,26 @@ public final class XmlFileHeader implements FileHeaderPlugin {
       transformer.transform(source, result);
     }
     catch (SAXException | IOException | TransformerException ex) {
-      throw new GeneratorException("Unable to add file hader to file: " + FileUtil.getCanonicalPath(file), ex);
+      throw new GeneratorException("Unable to add file header to " + FileUtil.getCanonicalPath(file), ex);
+    }
+    return null;
+  }
+
+  @Override
+  public FileHeaderContext extract(FileContext file) {
+    try {
+      Document doc = documentBuilder.parse(file.getFile());
+      if (doc.getChildNodes().getLength() > 0) {
+        Node firstNode = doc.getChildNodes().item(0);
+        if (firstNode instanceof Comment) {
+          String comment = StringUtils.trim(((Comment)firstNode).getTextContent());
+          List<String> lines = ImmutableList.copyOf(StringUtils.split(comment, "\n"));
+          return new FileHeaderContext().commentLines(lines);
+        }
+      }
+    }
+    catch (SAXException | IOException ex) {
+      throw new GeneratorException("Unable to parse file header from " + FileUtil.getCanonicalPath(file), ex);
     }
     return null;
   }

@@ -21,9 +21,10 @@ package io.wcm.devops.conga.generator.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import io.wcm.devops.conga.model.shared.LineEndings;
 
 import org.junit.Test;
+
+import io.wcm.devops.conga.model.shared.LineEndings;
 
 public class LineEndingConverterTest {
 

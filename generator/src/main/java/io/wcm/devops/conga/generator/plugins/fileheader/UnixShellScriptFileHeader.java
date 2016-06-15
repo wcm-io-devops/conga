@@ -19,11 +19,11 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Adds file headers to Unix script files (esp. Bash).
@@ -64,6 +64,11 @@ public final class UnixShellScriptFileHeader extends AbstractFileHeader {
       return StringUtils.indexOf(content, "\n") + 1;
     }
     return 0;
+  }
+
+  @Override
+  public FileHeaderContext extract(FileContext file) {
+    return extractFileHeaderWithLinePrefixes(file);
   }
 
 }

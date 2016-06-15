@@ -19,9 +19,9 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import io.wcm.devops.conga.model.shared.LineEndings;
-
 import java.util.regex.Pattern;
+
+import io.wcm.devops.conga.model.shared.LineEndings;
 
 /**
  * Utility methods for handling line endings in files.

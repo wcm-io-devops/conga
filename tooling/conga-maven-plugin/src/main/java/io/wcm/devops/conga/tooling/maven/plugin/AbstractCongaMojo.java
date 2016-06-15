@@ -19,13 +19,13 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
-
 import java.io.File;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
+
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 /**
  * Common features for all Mojos.
