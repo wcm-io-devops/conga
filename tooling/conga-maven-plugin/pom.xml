@@ -37,6 +37,7 @@
 
   <properties>
     <maven.version>3.0.5</maven.version>
+    <site.url.module.prefix>conga/tooling/conga-maven-plugin</site.url.module.prefix>
   </properties>
 
   <dependencies>
@@ -135,6 +136,15 @@
         </executions>
       </plugin>
 
+      <!-- deploy site because because of generated plugin docs -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skipDeploy>false</skipDeploy>
+        </configuration>
+      </plugin>      
+
     </plugins>
   </build>
 
@@ -211,5 +221,12 @@
       </build>
     </profile>
   </profiles>
+
+  <distributionManagement>
+    <site>
+      <id>${site.deploy.id}</id>
+      <url>${site.deploy.url}${site.url.module.prefix}</url>
+    </site>
+  </distributionManagement>
 
 </project>
