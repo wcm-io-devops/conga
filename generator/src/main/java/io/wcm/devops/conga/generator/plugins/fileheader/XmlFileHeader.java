@@ -102,7 +102,7 @@ public final class XmlFileHeader implements FileHeaderPlugin {
       transformer.transform(source, result);
     }
     catch (SAXException | IOException | TransformerException ex) {
-      throw new GeneratorException("Unable to add file header to " + FileUtil.getCanonicalPath(file), ex);
+      throw new GeneratorException("Unable to add file header to " + file.getCanonicalPath(), ex);
     }
     return null;
   }
@@ -121,7 +121,7 @@ public final class XmlFileHeader implements FileHeaderPlugin {
       }
     }
     catch (SAXException | IOException ex) {
-      throw new GeneratorException("Unable to parse file header from " + FileUtil.getCanonicalPath(file), ex);
+      throw new GeneratorException("Unable to parse file header from " + file.getCanonicalPath(), ex);
     }
     return null;
   }

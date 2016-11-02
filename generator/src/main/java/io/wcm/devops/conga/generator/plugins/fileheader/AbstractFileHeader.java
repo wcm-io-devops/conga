@@ -33,7 +33,6 @@ import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
  * Generic file header plugin implementation.
@@ -71,7 +70,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
       FileUtils.write(file.getFile(), content, file.getCharset());
     }
     catch (IOException ex) {
-      throw new GeneratorException("Unable to add file header to " + FileUtil.getCanonicalPath(file), ex);
+      throw new GeneratorException("Unable to add file header to " + file.getCanonicalPath(), ex);
     }
     return null;
   }
@@ -124,7 +123,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
       }
     }
     catch (IOException ex) {
-      throw new GeneratorException("Unable to parse file header from " + FileUtil.getCanonicalPath(file), ex);
+      throw new GeneratorException("Unable to parse file header from " + file.getCanonicalPath(), ex);
     }
     return null;
   }
@@ -159,7 +158,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
       }
     }
     catch (IOException ex) {
-      throw new GeneratorException("Unable parse add file header from " + FileUtil.getCanonicalPath(file), ex);
+      throw new GeneratorException("Unable parse add file header from " + file.getCanonicalPath(), ex);
     }
     return null;
   }
