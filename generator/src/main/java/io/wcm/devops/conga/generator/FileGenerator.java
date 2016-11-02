@@ -261,8 +261,14 @@ class FileGenerator {
     .map(name -> pluginManager.get(name, PostProcessorPlugin.class))
     .forEach(plugin -> {
       List<FileContext> processedFiles = applyPostProcessor(fileItem, plugin);
-      processedFiles.forEach(item -> consolidatedFiles.getOrDefault(item.getCanonicalPath(), new GeneratedFileContext(item))
-          .addPostProcessor(plugin.getName()));
+      processedFiles.forEach(item -> {
+        GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
+        if (generatedFileContext == null) {
+          generatedFileContext = new GeneratedFileContext(item);
+          consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
+        }
+        generatedFileContext.addPostProcessor(plugin.getName());
+      });
     });
 
     return consolidatedFiles;

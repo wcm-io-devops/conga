@@ -24,7 +24,10 @@ import java.util.Set;
 
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 
-class GeneratedFileContext {
+/**
+ * Contains information about a generated file.
+ */
+public final class GeneratedFileContext {
 
   private final FileContext fileContext;
   private final Set<String> postProcessors = new LinkedHashSet<>();
@@ -33,16 +36,22 @@ class GeneratedFileContext {
     this.fileContext = fileContext;
   }
 
+  /**
+   * @return File context
+   */
   public FileContext getFileContext() {
     return this.fileContext;
   }
 
-  public void addPostProcessor(String name) {
-    this.postProcessors.add(name);
-  }
-
+  /**
+   * @return Post processor plugin names
+   */
   public Set<String> getPostProcessors() {
     return this.postProcessors;
+  }
+
+  void addPostProcessor(String name) {
+    this.postProcessors.add(name);
   }
 
 }
