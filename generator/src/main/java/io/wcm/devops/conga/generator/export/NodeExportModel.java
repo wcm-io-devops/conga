@@ -30,7 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
 import io.wcm.devops.conga.generator.GeneratedFileContext;
@@ -73,10 +72,14 @@ public final class NodeExportModel {
     }
 
     roleMap.put("files", files.stream()
-        .map(item -> ImmutableMap.<String, Object>builder()
-            .put("path", StringUtils.substring(item.getFileContext().getCanonicalPath(), nodeDirPath.length() + 1))
-            .put("postProcessors", ImmutableList.copyOf(item.getPostProcessors()))
-            .build())
+        .map(item -> {
+          Map<String,Object> itemMap = new LinkedHashMap<String, Object>();
+          itemMap.put("path", StringUtils.substring(item.getFileContext().getCanonicalPath(), nodeDirPath.length() + 1));
+          if (!item.getPostProcessors().isEmpty()) {
+            itemMap.put("postProcessors", ImmutableList.copyOf(item.getPostProcessors()));
+          }
+          return itemMap;
+        })
         .collect(Collectors.toList()));
 
     // resolve variables in configuration, and remove context properites

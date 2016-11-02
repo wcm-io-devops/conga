@@ -193,7 +193,7 @@ class FileGenerator {
 
     // generate distinct list of existing files generated (directly or by postprocessors)
     List<GeneratedFileContext> generatedFiles = new ArrayList<>();
-    if (postProcessedFiles.containsKey(fileContext.getCanonicalPath()) && fileContext.getFile().exists()) {
+    if (!postProcessedFiles.containsKey(fileContext.getCanonicalPath()) && file.exists()) {
       generatedFiles.add(new GeneratedFileContext(fileContext));
     }
     generatedFiles.addAll(postProcessedFiles.values());
