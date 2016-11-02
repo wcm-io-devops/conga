@@ -32,15 +32,17 @@ import org.yaml.snakeyaml.Yaml;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
 import io.wcm.devops.conga.generator.GeneratedFileContext;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
 
 /**
  * Generates a YAML file with all "model" information for each node of the environment.
  * This is useful for consuming it in infrastructure automation tools like Ansible.
  */
-public final class ExportModelGenerator {
+public final class NodeExportModel {
 
   private final File nodeDir;
   private final String nodeDirPath;
@@ -49,7 +51,7 @@ public final class ExportModelGenerator {
   /**
    * @param nodeDir Target directory for node files
    */
-  public ExportModelGenerator(File nodeDir) {
+  public NodeExportModel(File nodeDir) {
     this.nodeDir = nodeDir;
     this.nodeDirPath = FileUtil.getCanonicalPath(nodeDir);
   }
@@ -77,7 +79,10 @@ public final class ExportModelGenerator {
             .build())
         .collect(Collectors.toList()));
 
-    roleMap.put("config", config);
+    // resolve variables in configuration, and remove context properites
+    Map<String, Object> resolvedConfig = VariableMapResolver.resolve(config, false);
+    resolvedConfig = ContextPropertiesBuilder.removeContextVariables(resolvedConfig);
+    roleMap.put("config", resolvedConfig);
 
     modelMap.put(role, roleMap);
   }

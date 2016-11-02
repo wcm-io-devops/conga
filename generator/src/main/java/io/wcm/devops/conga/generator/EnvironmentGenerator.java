@@ -22,7 +22,6 @@ package io.wcm.devops.conga.generator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import io.wcm.devops.conga.generator.export.ExportModelGenerator;
+import io.wcm.devops.conga.generator.export.NodeExportModel;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
@@ -114,7 +113,7 @@ class EnvironmentGenerator {
     log.info("----- Node '{}' -----", node.getNode());
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
-    ExportModelGenerator exportModelGenerator = new ExportModelGenerator(nodeDir);
+    NodeExportModel exportModelGenerator = new NodeExportModel(nodeDir);
 
     for (NodeRole nodeRole : node.getRoles()) {
       Role role = roles.get(nodeRole.getRole());
@@ -130,16 +129,15 @@ class EnvironmentGenerator {
       Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), roleConfig);
 
       // additionally set context variables
-      Map<String, Object> mergedConfigWithContextProps = new HashMap<>(mergedConfig);
-      mergedConfigWithContextProps.putAll(environmentContextProperties);
-      mergedConfigWithContextProps.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
+      mergedConfig.putAll(environmentContextProperties);
+      mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
       // generate files
       List<GeneratedFileContext> allFiles = new ArrayList<>();
       for (RoleFile roleFile : role.getFiles()) {
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
-          allFiles.addAll(multiplyFiles(role, roleFile, mergedConfigWithContextProps, nodeDir, template,
+          allFiles.addAll(multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
               nodeRole.getRole(), variant, roleFile.getTemplate()));
         }
       }

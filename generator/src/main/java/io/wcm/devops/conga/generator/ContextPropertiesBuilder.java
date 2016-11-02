@@ -37,7 +37,7 @@ import io.wcm.devops.conga.model.environment.Tenant;
 /**
  * Builds context variables
  */
-final class ContextPropertiesBuilder {
+public final class ContextPropertiesBuilder {
 
   private ContextPropertiesBuilder() {
     // static methods only
@@ -126,5 +126,23 @@ final class ContextPropertiesBuilder {
     return map;
   }
 
+  /**
+   * Removes all context variables.
+   * @param config Configuration
+   */
+  public static Map<String, Object> removeContextVariables(Map<String, Object> config) {
+    Map<String, Object> map = new HashMap<>(config);
+    map.remove(ContextProperties.VERSION);
+    map.remove(ContextProperties.ENVIRONMENT);
+    map.remove(ContextProperties.NODES);
+    map.remove(ContextProperties.NODES_BY_ROLE);
+    map.remove(ContextProperties.NODES_BY_ROLE_VARIANT);
+    map.remove(ContextProperties.TENANTS);
+    map.remove(ContextProperties.TENANTS_BY_ROLE);
+    map.remove(ContextProperties.ROLE);
+    map.remove(ContextProperties.ROLE_VARIANT);
+    map.remove(ContextProperties.NODE);
+    return map;
+  }
 
 }
