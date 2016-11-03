@@ -21,12 +21,15 @@ package io.wcm.devops.conga.generator.spi.context;
 
 import java.io.File;
 
+import io.wcm.devops.conga.generator.util.FileUtil;
+
 /**
  * File context for plugins.
  */
 public final class FileContext {
 
   private File file;
+  private String canonicalPath;
   private String charset;
 
   /**
@@ -42,7 +45,15 @@ public final class FileContext {
    */
   public FileContext file(File value) {
     file = value;
+    canonicalPath = FileUtil.getCanonicalPath(value);
     return this;
+  }
+
+  /**
+   * @return Canonical path
+   */
+  public String getCanonicalPath() {
+    return canonicalPath;
   }
 
   /**
@@ -63,7 +74,7 @@ public final class FileContext {
 
   @Override
   public String toString() {
-    return file.toString();
+    return canonicalPath;
   }
 
 }

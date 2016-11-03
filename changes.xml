@@ -23,6 +23,12 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="1.3.0" date="not released">
+      <action type="add" dev="sseifert">
+        Add support for dumping "Model YAML" files for each node to make integration with build automation tools like Ansible more convenient.
+      </action>
+    </release>
+
     <release version="1.2.0" date="2016-06-15">
       <action type="update" dev="sseifert">
         Shorten default file header comment and allow filtering of comment lines in file header plugins.

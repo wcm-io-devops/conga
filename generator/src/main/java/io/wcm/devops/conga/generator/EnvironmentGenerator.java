@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +33,10 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.export.NodeExportModel;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
@@ -109,6 +112,9 @@ class EnvironmentGenerator {
     log.info("");
     log.info("----- Node '{}' -----", node.getNode());
 
+    File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
+    NodeExportModel exportModelGenerator = new NodeExportModel(nodeDir);
+
     for (NodeRole nodeRole : node.getRoles()) {
       Role role = roles.get(nodeRole.getRole());
       if (role == null) {
@@ -127,18 +133,21 @@ class EnvironmentGenerator {
       mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
       // generate files
-      File nodeDir = new File(destDir, node.getNode());
-      if (!nodeDir.exists()) {
-        nodeDir.mkdir();
-      }
+      List<GeneratedFileContext> allFiles = new ArrayList<>();
       for (RoleFile roleFile : role.getFiles()) {
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
-          multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
-              nodeRole.getRole(), variant, roleFile.getTemplate());
+          allFiles.addAll(multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
+              nodeRole.getRole(), variant, roleFile.getTemplate()));
         }
       }
+
+      // collect information for export model
+      exportModelGenerator.addRole(nodeRole.getRole(), variant, allFiles, mergedConfig);
     }
+
+    // save export model
+    exportModelGenerator.generate();
   }
 
   private RoleVariant getRoleVariant(Role role, String variant, String roleName, Node node) {
@@ -186,7 +195,7 @@ class EnvironmentGenerator {
         .getName();
   }
 
-  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
+  private List<GeneratedFileContext> multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
       String roleName, String roleVariantName, String templateName) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
@@ -200,6 +209,8 @@ class EnvironmentGenerator {
         .config(config)
         .logger(log);
 
+    List<GeneratedFileContext> generatedFiles = new ArrayList<>();
+
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
 
@@ -210,15 +221,16 @@ class EnvironmentGenerator {
       String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
       String file = VariableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
 
-      generateFile(roleFile, dir, file, resolvedConfig, nodeDir, template,
-          roleName, roleVariantName, templateName);
+      generatedFiles.addAll(generateFile(roleFile, dir, file, resolvedConfig, nodeDir, template,
+          roleName, roleVariantName, templateName));
     }
+
+    return generatedFiles;
   }
 
-  private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template,
+  private List<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template,
       String roleName, String roleVariantName, String templateName) {
     File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, fileName) : fileName);
-    boolean duplicateFile = generatedFilePaths.contains(FileUtil.getCanonicalPath(file));
     if (file.exists()) {
       file.delete();
     }
@@ -227,7 +239,7 @@ class EnvironmentGenerator {
     if (StringUtils.isNotEmpty(roleFile.getCondition())) {
       String condition = VariableStringResolver.resolve(roleFile.getCondition(), config);
       if (StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false")) {
-        return;
+        return ImmutableList.of();
       }
     }
 
@@ -235,11 +247,20 @@ class EnvironmentGenerator {
         nodeDir, file, roleFile, config, template, pluginManager,
         version, dependencyVersions, log);
     try {
-      fileGenerator.generate();
-      generatedFilePaths.add(FileUtil.getCanonicalPath(file));
-      if (duplicateFile) {
-        log.warn("File was generated already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
-      }
+      List<GeneratedFileContext> generatedFiles = fileGenerator.generate();
+
+      // check for path duplicates
+      generatedFiles.forEach(generatedFileContext -> {
+        String path = generatedFileContext.getFileContext().getCanonicalPath();
+        if (generatedFilePaths.contains(path)) {
+          log.warn("File was generated already, check for file name clashes: " + path);
+        }
+        else {
+          generatedFilePaths.add(path);
+        }
+      });
+
+      return generatedFiles;
     }
     catch (ValidationException ex) {
       throw new GeneratorException("File validation failed " + FileUtil.getCanonicalPath(file) + " - " + ex.getMessage());

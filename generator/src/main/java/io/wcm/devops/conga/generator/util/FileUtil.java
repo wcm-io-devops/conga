@@ -56,9 +56,11 @@ public final class FileUtil {
    * Get canoncial path of file
    * @param fileContext File context
    * @return Canonical path
+   * @deprecated use {@link FileContext#getCanonicalPath()} instead.
    */
+  @Deprecated
   public static String getCanonicalPath(FileContext fileContext) {
-    return getCanonicalPath(fileContext.getFile());
+    return fileContext.getCanonicalPath();
   }
 
   /**

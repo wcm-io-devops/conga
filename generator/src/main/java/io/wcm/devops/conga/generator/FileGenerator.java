@@ -28,6 +28,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -162,7 +163,12 @@ class FileGenerator {
     return formattedLines;
   }
 
-  public void generate() throws IOException {
+  /**
+   * Generate file(s).
+   * @return List of files that where generated directly or indirectly (by post processors).
+   * @throws IOException
+   */
+  public List<GeneratedFileContext> generate() throws IOException {
     log.info("Generate file {}", getFilenameForLog(fileContext));
 
     File dir = file.getParentFile();
@@ -183,7 +189,15 @@ class FileGenerator {
     // add file header, validate and post-process generated file
     applyFileHeader(fileContext, roleFile.getFileHeader());
     applyValidation(fileContext, roleFile.getValidators());
-    applyPostProcessor(fileContext);
+    Map<String, GeneratedFileContext> postProcessedFiles = applyPostProcessor(fileContext);
+
+    // generate distinct list of existing files generated (directly or by postprocessors)
+    List<GeneratedFileContext> generatedFiles = new ArrayList<>();
+    if (!postProcessedFiles.containsKey(fileContext.getCanonicalPath()) && file.exists()) {
+      generatedFiles.add(new GeneratedFileContext(fileContext));
+    }
+    generatedFiles.addAll(postProcessedFiles.values());
+    return generatedFiles;
   }
 
   private String normalizeLineEndings(String value) {
@@ -238,13 +252,29 @@ class FileGenerator {
     plugin.apply(fileItem, validatorContext);
   }
 
-  private void applyPostProcessor(FileContext fileItem) {
+  private Map<String, GeneratedFileContext> applyPostProcessor(FileContext fileItem) {
+    // collect distinct list of files returned by each post processor
+    // if a file is returned by multiple post processors combine to single entry with multiple plugin names
+    Map<String, GeneratedFileContext> consolidatedFiles = new LinkedHashMap<>();
+
     roleFile.getPostProcessors().stream()
     .map(name -> pluginManager.get(name, PostProcessorPlugin.class))
-    .forEach(plugin -> applyPostProcessor(fileItem, plugin));
+    .forEach(plugin -> {
+      List<FileContext> processedFiles = applyPostProcessor(fileItem, plugin);
+      processedFiles.forEach(item -> {
+        GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
+        if (generatedFileContext == null) {
+          generatedFileContext = new GeneratedFileContext(item);
+          consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
+        }
+        generatedFileContext.addPostProcessor(plugin.getName());
+      });
+    });
+
+    return consolidatedFiles;
   }
 
-  private void applyPostProcessor(FileContext fileItem, PostProcessorPlugin plugin) {
+  private List<FileContext> applyPostProcessor(FileContext fileItem, PostProcessorPlugin plugin) {
     log.info("  Post-process {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
 
     List<FileContext> processedFiles = plugin.apply(fileItem, postProcessorContext);
@@ -254,10 +284,12 @@ class FileGenerator {
       processedFiles.forEach(processedFile -> applyFileHeader(processedFile, (String)null));
       processedFiles.forEach(processedFile -> applyValidation(processedFile, ImmutableList.of()));
     }
+
+    return processedFiles;
   }
 
   private String getFilenameForLog(FileContext fileItem) {
-    return StringUtils.substring(FileUtil.getCanonicalPath(fileItem), FileUtil.getCanonicalPath(nodeDir).length() + 1);
+    return StringUtils.substring(fileItem.getCanonicalPath(), FileUtil.getCanonicalPath(nodeDir).length() + 1);
   }
 
 }
