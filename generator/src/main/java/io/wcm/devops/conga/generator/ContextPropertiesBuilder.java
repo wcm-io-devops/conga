@@ -142,6 +142,8 @@ public final class ContextPropertiesBuilder {
     map.remove(ContextProperties.ROLE);
     map.remove(ContextProperties.ROLE_VARIANT);
     map.remove(ContextProperties.NODE);
+    map.remove(ContextProperties.TENANT);
+    map.remove(ContextProperties.TENANT_ROLES);
     return map;
   }
 

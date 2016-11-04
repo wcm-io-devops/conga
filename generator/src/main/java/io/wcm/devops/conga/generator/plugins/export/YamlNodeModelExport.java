@@ -34,10 +34,9 @@ import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
-import io.wcm.devops.conga.generator.spi.export.context.ExportNodeTenantData;
+import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.generator.util.VariableMapResolver;
 
 /**
  * Exports model information for each node in YAML format.
@@ -62,24 +61,15 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
     // generate YAML data
     Map<String, Object> modelMap = new LinkedHashMap<>();
-    addRoles(modelMap, context);
-    addTenants(modelMap, context);
+    for (ExportNodeRoleData roleData : context.getRoleData()) {
+      addRole(modelMap, roleData, context);
+    }
 
     // save YAML file
     save(modelMap, context);
   }
 
-  private void addRoles(Map<String, Object> modelMap, NodeModelExportContext context) {
-    Map<String, Object> rolesMap = new LinkedHashMap<>();
-
-    for (ExportNodeRoleData roleData : context.getRoleData()) {
-      addRole(rolesMap, roleData, context);
-    }
-
-    modelMap.put("roles", rolesMap);
-  }
-
-  private void addRole(Map<String, Object> rolesMap, ExportNodeRoleData roleData, NodeModelExportContext context) {
+  private void addRole(Map<String, Object> modelMap, ExportNodeRoleData roleData, NodeModelExportContext context) {
     String nodeDirPath = FileUtil.getCanonicalPath(context.getNodeDir());
 
     Map<String, Object> roleMap = new LinkedHashMap<>();
@@ -98,31 +88,34 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
         })
         .collect(Collectors.toList()));
 
-    // resolve variables in configuration, and remove context properites
-    Map<String, Object> resolvedConfig = VariableMapResolver.resolve(roleData.getConfig(), false);
-    resolvedConfig = ContextPropertiesBuilder.removeContextVariables(resolvedConfig);
-    roleMap.put("config", resolvedConfig);
+    roleMap.put("config", cleanupConfig(context.getConfig()));
 
-    rolesMap.put(roleData.getRole(), roleMap);
+    addTenants(roleMap, roleData);
+
+    modelMap.put(roleData.getRole(), roleMap);
   }
 
-  private void addTenants(Map<String, Object> modelMap, NodeModelExportContext context) {
+  private void addTenants(Map<String, Object> roleMap, ExportNodeRoleData roleData) {
     Map<String, Object> tenantsMap = new LinkedHashMap<>();
 
-    for (ExportNodeTenantData tenantData : context.getTenantData()) {
-      addTenant(tenantsMap, tenantData);
+    if (roleData.getTenantData() != null) {
+      for (ExportNodeRoleTenantData tenantData : roleData.getTenantData()) {
+        addTenant(tenantsMap, tenantData);
+      }
     }
 
-    modelMap.put("tenants", tenantsMap);
+    if (!tenantsMap.isEmpty()) {
+      roleMap.put("tenants", tenantsMap);
+    }
   }
 
-  private void addTenant(Map<String, Object> tenantsMap, ExportNodeTenantData tenantData) {
+  private void addTenant(Map<String, Object> tenantsMap, ExportNodeRoleTenantData tenantData) {
     Map<String, Object> tenantMap = new LinkedHashMap<>();
 
-    // resolve variables in configuration, and remove context properites
-    Map<String, Object> resolvedConfig = VariableMapResolver.resolve(tenantData.getConfig(), false);
-    resolvedConfig = ContextPropertiesBuilder.removeContextVariables(resolvedConfig);
-    tenantMap.put("config", resolvedConfig);
+    if (!tenantData.getRoles().isEmpty()) {
+      tenantMap.put("roles", tenantData.getRoles());
+    }
+    tenantMap.put("config", cleanupConfig(tenantData.getConfig()));
 
     tenantsMap.put(tenantData.getTenant(), tenantMap);
   }
@@ -135,6 +128,10 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     catch (Throwable ex) {
       throw new GeneratorException("Unable to write model file: " + FileUtil.getCanonicalPath(modelFile), ex);
     }
+  }
+
+  private Map<String, Object> cleanupConfig(Map<String, Object> config) {
+    return ContextPropertiesBuilder.removeContextVariables(config);
   }
 
 }

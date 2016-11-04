@@ -19,14 +19,16 @@
  */
 package io.wcm.devops.conga.generator.spi.export.context;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * Export tenant data for node.
  */
-public final class ExportNodeTenantData {
+public final class ExportNodeRoleTenantData {
 
   private String tenant;
+  private List<String> roles;
   private Map<String, Object> config;
 
   /**
@@ -40,8 +42,24 @@ public final class ExportNodeTenantData {
    * @param value Tenant
    * @return this
    */
-  public ExportNodeTenantData tenant(String value) {
+  public ExportNodeRoleTenantData tenant(String value) {
     this.tenant = value;
+    return this;
+  }
+
+  /**
+   * @return Roles
+   */
+  public List<String> getRoles() {
+    return this.roles;
+  }
+
+  /**
+   * @param value Roles
+   * @return this
+   */
+  public ExportNodeRoleTenantData roles(List<String> value) {
+    this.roles = value;
     return this;
   }
 
@@ -56,7 +74,7 @@ public final class ExportNodeTenantData {
    * @param value Configuration
    * @return this
    */
-  public ExportNodeTenantData config(Map<String, Object> value) {
+  public ExportNodeRoleTenantData config(Map<String, Object> value) {
     this.config = value;
     return this;
   }

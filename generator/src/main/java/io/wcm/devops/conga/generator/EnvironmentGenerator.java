@@ -40,9 +40,12 @@ import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
+import io.wcm.devops.conga.generator.plugins.multiply.TenantMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
+import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.EnvironmentExpander;
@@ -133,18 +136,19 @@ class EnvironmentGenerator {
       mergedConfig.putAll(environmentContextProperties);
       mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
+      // collect information for export model
+      ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(nodeRole.getRole(), variant, mergedConfig);
+
       // generate files
       List<GeneratedFileContext> allFiles = new ArrayList<>();
       for (RoleFile roleFile : role.getFiles()) {
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
           allFiles.addAll(multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
-              nodeRole.getRole(), variant, roleFile.getTemplate()));
+              nodeRole.getRole(), variant, roleFile.getTemplate(), exportNodeRoleData));
         }
       }
-
-      // collect information for export model
-      exportModelGenerator.addRole(nodeRole.getRole(), variant, allFiles, mergedConfig);
+      exportNodeRoleData.files(allFiles);
     }
 
     // save export model
@@ -196,8 +200,9 @@ class EnvironmentGenerator {
         .getName();
   }
 
+  @SuppressWarnings("unchecked")
   private List<GeneratedFileContext> multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
-      String roleName, String roleVariantName, String templateName) {
+      String roleName, String roleVariantName, String templateName, ExportNodeRoleData exportNodeRoleData) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
@@ -217,6 +222,17 @@ class EnvironmentGenerator {
 
       // resolve variables
       Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig, false);
+
+      // collect tenant config for model export
+      if (multiplyPlugin instanceof TenantMultiply) {
+        if (exportNodeRoleData.getTenantData() == null) {
+          exportNodeRoleData.tenantData(new ArrayList<>());
+        }
+        exportNodeRoleData.getTenantData().add(new ExportNodeRoleTenantData()
+            .tenant((String)resolvedConfig.get(ContextProperties.TENANT))
+            .roles((List<String>)resolvedConfig.get(ContextProperties.TENANT_ROLES))
+            .config(resolvedConfig));
+      }
 
       // replace placeholders in dir/filename with context variables
       String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);

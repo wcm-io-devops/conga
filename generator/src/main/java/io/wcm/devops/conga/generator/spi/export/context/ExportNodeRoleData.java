@@ -31,6 +31,7 @@ public final class ExportNodeRoleData {
   private String roleVariant;
   private List<GeneratedFileContext> files;
   private Map<String, Object> config;
+  private List<ExportNodeRoleTenantData> tenantData;
 
   /**
    * @return Role name
@@ -93,6 +94,22 @@ public final class ExportNodeRoleData {
    */
   public ExportNodeRoleData config(Map<String, Object> value) {
     this.config = value;
+    return this;
+  }
+
+  /**
+   * @return Tenant data
+   */
+  public List<ExportNodeRoleTenantData> getTenantData() {
+    return this.tenantData;
+  }
+
+  /**
+   * @param value Tenant data
+   * @return this
+   */
+  public ExportNodeRoleData tenantData(List<ExportNodeRoleTenantData> value) {
+    this.tenantData = value;
     return this;
   }
 

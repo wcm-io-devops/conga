@@ -28,10 +28,9 @@ import com.rits.cloning.Cloner;
 
 import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
-import io.wcm.devops.conga.generator.spi.export.context.ExportNodeTenantData;
-import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.ExportModel;
 import io.wcm.devops.conga.model.environment.Node;
@@ -47,7 +46,6 @@ public final class NodeModelExport {
   private final List<NodeModelExportPluginItem> nodeModelExportPlugins = new ArrayList<>();
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
-  private final List<ExportNodeTenantData> tenantData = new ArrayList<>();
 
   /**
    * @param nodeDir Target directory for node
@@ -80,22 +78,25 @@ public final class NodeModelExport {
    * Add role information
    * @param role Role name
    * @param roleVariant Role variant name
-   * @param files Generated files
-   * @param config Merged configuration
+   * @param config Merged configuration (unresolved)
    */
-  public void addRole(String role, String roleVariant, List<GeneratedFileContext> files, Map<String, Object> config) {
+  public ExportNodeRoleData addRole(String role, String roleVariant, Map<String, Object> config) {
     if (!isActive()) {
-      return;
+      return new ExportNodeRoleData();
     }
 
     // clone config to make sure it is not tampered by the plugin
     Map<String, Object> clonedConfig = Cloner.standard().deepClone(config);
 
-    roleData.add(new ExportNodeRoleData()
+    // resolve variables in configuration, and remove context properites
+    Map<String, Object> resolvedConfig = VariableMapResolver.resolve(clonedConfig, false);
+
+    ExportNodeRoleData item = new ExportNodeRoleData()
         .role(role)
         .roleVariant(roleVariant)
-        .files(files)
-        .config(clonedConfig));
+        .config(resolvedConfig);
+    roleData.add(item);
+    return item;
   }
 
   /**
@@ -111,7 +112,6 @@ public final class NodeModelExport {
           .node(node)
           .environment(environment)
           .roleData(roleData)
-          .tenantData(tenantData)
           .nodeDir(nodeDir)
           .config(item.config));
     }

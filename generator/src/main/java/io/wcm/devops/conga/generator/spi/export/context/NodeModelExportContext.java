@@ -35,7 +35,6 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   private Node node;
   private Environment environment;
   private List<ExportNodeRoleData> roleData;
-  private List<ExportNodeTenantData> tenantData;
   private File nodeDir;
   private Map<String, Object> config;
 
@@ -84,22 +83,6 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
    */
   public NodeModelExportContext roleData(List<ExportNodeRoleData> value) {
     this.roleData = value;
-    return this;
-  }
-
-  /**
-   * @return Node tenant data
-   */
-  public List<ExportNodeTenantData> getTenantData() {
-    return this.tenantData;
-  }
-
-  /**
-   * @param value Node tenant data
-   * @return this
-   */
-  public NodeModelExportContext tenantData(List<ExportNodeTenantData> value) {
-    this.tenantData = value;
     return this;
   }
 
