@@ -50,7 +50,7 @@ public final class EnvironmentExpander {
    * @return Environment that contains only nodes with single node names
    */
   public static Environment expandNodes(Environment environment, String environmentName) {
-    Environment clonedEnvironemnt = new Cloner().deepClone(environment);
+    Environment clonedEnvironemnt = Cloner.standard().deepClone(environment);
 
     clonedEnvironemnt.setNodes(environment.getNodes().stream()
         .flatMap(node -> getSingleNodes(node, environmentName))
@@ -76,7 +76,7 @@ public final class EnvironmentExpander {
     }
     else if (hasNodes) {
       for (String nodeName : node.getNodes()) {
-        Node clonedNode = new Cloner().deepClone(node);
+        Node clonedNode = Cloner.standard().deepClone(node);
         clonedNode.setNode(nodeName);
         clonedNode.setNodes(ImmutableList.of());
         nodes.add(clonedNode);

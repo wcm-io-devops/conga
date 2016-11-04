@@ -58,7 +58,7 @@ public final class ContextPropertiesBuilder {
     map.put(ContextProperties.ENVIRONMENT, environmentName);
 
     // clone environment before resolving variables to make sure they are resolved only for this context, not for file generation
-    Environment clonedEnvironemnt = new Cloner().deepClone(environment);
+    Environment clonedEnvironemnt = Cloner.standard().deepClone(environment);
 
     // resolve all variables at any level in environment
     VariableObjectTreeResolver.resolve(clonedEnvironemnt);
