@@ -74,6 +74,6 @@ tenants:
     website.hostname: www.${domain}
 
 
-# Export defiintions
+# Export definitions
 exportModel:
 - node: yaml

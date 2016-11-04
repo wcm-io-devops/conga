@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -141,14 +142,16 @@ class EnvironmentGenerator {
 
       // generate files
       List<GeneratedFileContext> allFiles = new ArrayList<>();
+      Map<String, ExportNodeRoleTenantData> tenantData = new LinkedHashMap<>();
       for (RoleFile roleFile : role.getFiles()) {
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
-          allFiles.addAll(multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
-              nodeRole.getRole(), variant, roleFile.getTemplate(), exportNodeRoleData));
+          multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
+              nodeRole.getRole(), variant, roleFile.getTemplate(),
+              allFiles, tenantData);
         }
       }
-      exportNodeRoleData.files(allFiles);
+      exportNodeRoleData.files(allFiles).tenantData(new ArrayList<>(tenantData.values()));
     }
 
     // save export model
@@ -201,8 +204,9 @@ class EnvironmentGenerator {
   }
 
   @SuppressWarnings("unchecked")
-  private List<GeneratedFileContext> multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
-      String roleName, String roleVariantName, String templateName, ExportNodeRoleData exportNodeRoleData) {
+  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
+      String roleName, String roleVariantName, String templateName,
+      List<GeneratedFileContext> generatedFiles, Map<String, ExportNodeRoleTenantData> tenantData) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
@@ -215,8 +219,6 @@ class EnvironmentGenerator {
         .config(config)
         .logger(log);
 
-    List<GeneratedFileContext> generatedFiles = new ArrayList<>();
-
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
 
@@ -225,13 +227,13 @@ class EnvironmentGenerator {
 
       // collect tenant config for model export
       if (multiplyPlugin instanceof TenantMultiply) {
-        if (exportNodeRoleData.getTenantData() == null) {
-          exportNodeRoleData.tenantData(new ArrayList<>());
+        String tenant = (String)resolvedConfig.get(ContextProperties.TENANT);
+        if (!tenantData.containsKey(tenant)) {
+          tenantData.put(tenant, new ExportNodeRoleTenantData()
+              .tenant(tenant)
+              .roles((List<String>)resolvedConfig.get(ContextProperties.TENANT_ROLES))
+              .config(resolvedConfig));
         }
-        exportNodeRoleData.getTenantData().add(new ExportNodeRoleTenantData()
-            .tenant((String)resolvedConfig.get(ContextProperties.TENANT))
-            .roles((List<String>)resolvedConfig.get(ContextProperties.TENANT_ROLES))
-            .config(resolvedConfig));
       }
 
       // replace placeholders in dir/filename with context variables
@@ -241,8 +243,6 @@ class EnvironmentGenerator {
       generatedFiles.addAll(generateFile(roleFile, dir, file, resolvedConfig, nodeDir, template,
           roleName, roleVariantName, templateName));
     }
-
-    return generatedFiles;
   }
 
   private List<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template,
