@@ -48,6 +48,7 @@ import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
+import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.LineEndingConverter;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -194,7 +195,7 @@ class FileGenerator {
     // generate distinct list of existing files generated (directly or by postprocessors)
     List<GeneratedFileContext> generatedFiles = new ArrayList<>();
     if (!postProcessedFiles.containsKey(fileContext.getCanonicalPath()) && file.exists()) {
-      generatedFiles.add(new GeneratedFileContext(fileContext));
+      generatedFiles.add(new GeneratedFileContext().fileContext(fileContext));
     }
     generatedFiles.addAll(postProcessedFiles.values());
     return generatedFiles;
@@ -264,10 +265,10 @@ class FileGenerator {
       processedFiles.forEach(item -> {
         GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
         if (generatedFileContext == null) {
-          generatedFileContext = new GeneratedFileContext(item);
+          generatedFileContext = new GeneratedFileContext().fileContext(item);
           consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
         }
-        generatedFileContext.addPostProcessor(plugin.getName());
+        generatedFileContext.postProcessor(plugin.getName());
       });
     });
 

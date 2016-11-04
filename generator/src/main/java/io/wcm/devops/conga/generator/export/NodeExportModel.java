@@ -32,8 +32,8 @@ import org.yaml.snakeyaml.Yaml;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
-import io.wcm.devops.conga.generator.GeneratedFileContext;
 import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 

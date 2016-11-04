@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator;
+package io.wcm.devops.conga.generator.spi.export.context;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -29,12 +29,8 @@ import io.wcm.devops.conga.generator.spi.context.FileContext;
  */
 public final class GeneratedFileContext {
 
-  private final FileContext fileContext;
+  private FileContext fileContext;
   private final Set<String> postProcessors = new LinkedHashSet<>();
-
-  GeneratedFileContext(FileContext fileContext) {
-    this.fileContext = fileContext;
-  }
 
   /**
    * @return File context
@@ -44,14 +40,28 @@ public final class GeneratedFileContext {
   }
 
   /**
+   * @param value File context
+   * @return this
+   */
+  public GeneratedFileContext fileContext(FileContext value) {
+    this.fileContext = value;
+    return this;
+  }
+
+  /**
    * @return Post processor plugin names
    */
   public Set<String> getPostProcessors() {
     return this.postProcessors;
   }
 
-  void addPostProcessor(String name) {
+  /**
+   * @param name Post processor plugin name
+   * @return this
+   */
+  public GeneratedFileContext postProcessor(String name) {
     this.postProcessors.add(name);
+    return this;
   }
 
 }
