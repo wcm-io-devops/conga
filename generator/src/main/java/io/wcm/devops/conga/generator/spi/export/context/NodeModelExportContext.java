@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator.spi.export.context;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import io.wcm.devops.conga.generator.spi.context.AbstractPluginContext;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -36,6 +37,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   private List<ExportNodeRoleData> roleData;
   private List<ExportNodeTenantData> tenantData;
   private File nodeDir;
+  private Map<String, Object> config;
 
   /**
    * @return Node
@@ -114,6 +116,22 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
    */
   public NodeModelExportContext nodeDir(File value) {
     this.nodeDir = value;
+    return this;
+  }
+
+  /**
+   * @return Plugin config
+   */
+  public Map<String, Object> getConfig() {
+    return config;
+  }
+
+  /**
+   * @param value Plugin config
+   * @return this
+   */
+  public NodeModelExportContext config(Map<String, Object> value) {
+    config = value;
     return this;
   }
 

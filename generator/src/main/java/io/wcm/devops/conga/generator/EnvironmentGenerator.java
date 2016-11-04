@@ -35,9 +35,8 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.rits.cloning.Cloner;
 
-import io.wcm.devops.conga.generator.export.NodeExportModel;
+import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
@@ -115,7 +114,7 @@ class EnvironmentGenerator {
     log.info("----- Node '{}' -----", node.getNode());
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
-    NodeExportModel exportModelGenerator = new NodeExportModel(nodeDir);
+    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, pluginManager);
 
     for (NodeRole nodeRole : node.getRoles()) {
       Role role = roles.get(nodeRole.getRole());
@@ -145,7 +144,7 @@ class EnvironmentGenerator {
       }
 
       // collect information for export model
-      exportModelGenerator.addRole(nodeRole.getRole(), variant, allFiles, Cloner.standard().deepClone(mergedConfig));
+      exportModelGenerator.addRole(nodeRole.getRole(), variant, allFiles, mergedConfig);
     }
 
     // save export model
