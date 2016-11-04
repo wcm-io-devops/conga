@@ -35,6 +35,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.rits.cloning.Cloner;
 
 import io.wcm.devops.conga.generator.export.NodeExportModel;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
@@ -143,7 +144,7 @@ class EnvironmentGenerator {
       }
 
       // collect information for export model
-      exportModelGenerator.addRole(nodeRole.getRole(), variant, allFiles, mergedConfig);
+      exportModelGenerator.addRole(nodeRole.getRole(), variant, allFiles, Cloner.standard().deepClone(mergedConfig));
     }
 
     // save export model
