@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2015 wcm.io
+ * Copyright (C) 2016 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.spi.export;
 
 import io.wcm.devops.conga.generator.spi.Plugin;
+import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 
 /**
  * Plugin that exports CONGA model information per node for external tools.
@@ -30,6 +31,6 @@ public interface NodeModelExportPlugin extends Plugin {
    * Export model information.
    * @param context Context
    */
-  void export(NodeModelExportPlugin context);
+  void export(NodeModelExportContext context);
 
 }
