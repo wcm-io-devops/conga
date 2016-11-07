@@ -153,7 +153,7 @@ public class GeneratorTestNodeModelExportTest {
     if (tenantObject == null) {
       return ImmutableList.of();
     }
-    return ObjectUtils.defaultIfNull((List<String>)tenantObject.get("roles"), ImmutableList.of());
+    return (List<String>)ObjectUtils.defaultIfNull(tenantObject.get("roles"), ImmutableList.of());
   }
 
 }
