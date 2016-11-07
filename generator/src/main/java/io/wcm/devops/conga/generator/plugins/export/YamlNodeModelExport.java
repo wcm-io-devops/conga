@@ -22,7 +22,9 @@ package io.wcm.devops.conga.generator.plugins.export;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -62,19 +64,23 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
   public void export(NodeModelExportContext context) {
 
     // generate YAML data
-    Map<String, Object> modelMap = new LinkedHashMap<>();
+    List<Map<String, Object>> roles = new ArrayList<>();
     for (ExportNodeRoleData roleData : context.getRoleData()) {
-      addRole(modelMap, roleData, context);
+      addRole(roles, roleData, context);
     }
+
+    Map<String, Object> modelMap = new LinkedHashMap<>();
+    modelMap.put("roles", roles);
 
     // save YAML file
     save(modelMap, context);
   }
 
-  private void addRole(Map<String, Object> modelMap, ExportNodeRoleData roleData, NodeModelExportContext context) {
+  private void addRole(List<Map<String, Object>> modelList, ExportNodeRoleData roleData, NodeModelExportContext context) {
     String nodeDirPath = FileUtil.getCanonicalPath(context.getNodeDir());
 
     Map<String, Object> roleMap = new LinkedHashMap<>();
+    roleMap.put("role", roleData.getRole());
     if (StringUtils.isNotEmpty(roleData.getRoleVariant())) {
       roleMap.put("variant", roleData.getRoleVariant());
     }
@@ -94,32 +100,33 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
     addTenants(roleMap, roleData);
 
-    modelMap.put(roleData.getRole(), roleMap);
+    modelList.add(roleMap);
   }
 
   private void addTenants(Map<String, Object> roleMap, ExportNodeRoleData roleData) {
-    Map<String, Object> tenantsMap = new LinkedHashMap<>();
+    List<Map<String, Object>> tenants = new ArrayList<>();
 
     if (roleData.getTenantData() != null) {
       for (ExportNodeRoleTenantData tenantData : roleData.getTenantData()) {
-        addTenant(tenantsMap, tenantData);
+        addTenant(tenants, tenantData);
       }
     }
 
-    if (!tenantsMap.isEmpty()) {
-      roleMap.put("tenants", tenantsMap);
+    if (!tenants.isEmpty()) {
+      roleMap.put("tenants", tenants);
     }
   }
 
-  private void addTenant(Map<String, Object> tenantsMap, ExportNodeRoleTenantData tenantData) {
+  private void addTenant(List<Map<String, Object>> tenants, ExportNodeRoleTenantData tenantData) {
     Map<String, Object> tenantMap = new LinkedHashMap<>();
 
+    tenantMap.put("tenant", tenantData.getTenant());
     if (!tenantData.getRoles().isEmpty()) {
       tenantMap.put("roles", tenantData.getRoles());
     }
     tenantMap.put("config", cleanupConfig(tenantData.getConfig()));
 
-    tenantsMap.put(tenantData.getTenant(), tenantMap);
+    tenants.add(tenantMap);
   }
 
   private void save(Map<String, Object> modelMap, NodeModelExportContext context) {

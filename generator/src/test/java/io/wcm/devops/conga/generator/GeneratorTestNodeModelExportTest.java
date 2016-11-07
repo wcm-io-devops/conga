@@ -23,7 +23,6 @@ import static io.wcm.devops.conga.generator.TestUtils.assertDirectory;
 import static io.wcm.devops.conga.generator.TestUtils.assertFile;
 import static io.wcm.devops.conga.generator.TestUtils.setupGenerator;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +35,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -63,8 +63,7 @@ public class GeneratorTestNodeModelExportTest {
     File model1File = assertFile(node1Dir, "model.yaml");
     Map<String, Object> model1 = readYaml(model1File);
 
-    Map<String, Object> role1 = (Map<String, Object>)model1.get("role1");
-    assertNotNull(role1);
+    Map<String, Object> role1 = getRole(model1, "role1");
     assertFiles(role1,
         "text/test-role1.variant11.env1.node1.txt",
         "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml",
@@ -78,8 +77,7 @@ public class GeneratorTestNodeModelExportTest {
     assertEquals(ImmutableList.of(), getTenantRoles(role1, "tenant3"));
     assertEquals("\"value1\" äöüß€", getTenantConfig(role1, "tenant3", "defaultString"));
 
-    Map<String, Object> role2 = (Map<String, Object>)model1.get("role2");
-    assertNotNull(role2);
+    Map<String, Object> role2 = getRole(model1, "role2");
     assertFiles(role2,
         "json/test.json");
     assertEquals("globalValue äöüß€", getConfig(role2, "globalString"));
@@ -97,6 +95,19 @@ public class GeneratorTestNodeModelExportTest {
         Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
       return (Map<String, Object>)new Yaml().load(reader);
     }
+  }
+
+  private Map<String, Object> getRole(Map<String, Object> model, String role) {
+    List<Map<String, Object>> roles = (List<Map<String, Object>>)model.get("roles");
+    if (roles == null) {
+      return null;
+    }
+    for (Map<String, Object> item : roles) {
+      if (StringUtils.equals(role, (String)item.get("role"))) {
+        return item;
+      }
+    }
+    return null;
   }
 
   private void assertFiles(Map<String, Object> role, String... fileNamesExpected) {
@@ -117,11 +128,16 @@ public class GeneratorTestNodeModelExportTest {
   }
 
   private Map<String, Object> getTenant(Map<String, Object> role, String tenant) {
-    Map<String, Object> tenants = (Map<String, Object>)role.get("tenants");
+    List<Map<String, Object>> tenants = (List<Map<String, Object>>)role.get("tenants");
     if (tenants == null) {
       return null;
     }
-    return (Map<String, Object>)tenants.get(tenant);
+    for (Map<String, Object> item : tenants) {
+      if (StringUtils.equals(tenant, (String)item.get("tenant"))) {
+        return item;
+      }
+    }
+    return null;
   }
 
   private Object getTenantConfig(Map<String, Object> role, String tenant, String key) {
