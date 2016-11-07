@@ -83,6 +83,13 @@ public class GeneratorTestNodeModelExportTest {
     assertFiles(role2,
         "json/test.json");
     assertEquals("globalValue äöüß€", getConfig(role2, "globalString"));
+    assertEquals("globalValue äöüß€", getConfig(role2, "globalString"));
+    assertEquals(ImmutableList.of("tenantRole1", "tenantRole2"), getTenantRoles(role2, "tenant1"));
+    assertEquals("value2", getTenantConfig(role2, "tenant1", "defaultString"));
+    assertEquals(ImmutableList.of("tenantRole1"), getTenantRoles(role2, "tenant2"));
+    assertEquals("defaultFromTenant2", getTenantConfig(role2, "tenant2", "defaultString"));
+    assertEquals(ImmutableList.of(), getTenantRoles(role2, "tenant3"));
+    assertEquals("value2", getTenantConfig(role2, "tenant3", "defaultString"));
   }
 
   private Map<String, Object> readYaml(File file) throws IOException {
