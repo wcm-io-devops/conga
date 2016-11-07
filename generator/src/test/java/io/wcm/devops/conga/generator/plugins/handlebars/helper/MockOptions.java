@@ -19,8 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
@@ -80,10 +79,10 @@ public final class MockOptions extends Options {
   private static Context getContext() {
     Context context = mock(Context.class);
 
-    when(context.propertySet(anyObject())).thenAnswer(new Answer<Set<Entry<String, Object>>>() {
+    when(context.propertySet(any())).thenAnswer(new Answer<Set<Entry<String, Object>>>() {
       @Override
       public Set<Entry<String, Object>> answer(InvocationOnMock invocation) throws Throwable {
-        Object object = invocation.getArgumentAt(0, Object.class);
+        Object object = invocation.getArgument(0);
         return MapValueResolver.INSTANCE.propertySet(object);
       }
     });
@@ -97,13 +96,13 @@ public final class MockOptions extends Options {
       when(template.apply(any(Context.class))).then(new Answer<String>() {
         @Override
         public String answer(InvocationOnMock invocation) throws Throwable {
-          return getFnForContext(invocation.getArgumentAt(0, Context.class));
+          return getFnForContext(invocation.getArgument(0));
         }
       });
-      when(template.apply(anyObject())).then(new Answer<String>() {
+      when(template.apply(any())).then(new Answer<String>() {
         @Override
         public String answer(InvocationOnMock invocation) throws Throwable {
-          Object arg = invocation.getArgumentAt(0, Object.class);
+          Object arg = invocation.getArgument(0);
           if (arg instanceof Context) {
             return getFnForContext((Context)arg);
           }
@@ -130,7 +129,7 @@ public final class MockOptions extends Options {
     Template template = mock(Template.class);
     try {
       when(template.apply(any(Context.class))).thenReturn(INVERSE_RETURN);
-      when(template.apply(anyObject())).thenReturn(INVERSE_RETURN);
+      when(template.apply(any())).thenReturn(INVERSE_RETURN);
     }
     catch (IOException ex) {
       throw new RuntimeException(ex);
