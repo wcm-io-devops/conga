@@ -20,11 +20,13 @@
 package io.wcm.devops.conga.generator.plugins.export;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
@@ -121,12 +123,13 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
   }
 
   private void save(Map<String, Object> modelMap, NodeModelExportContext context) {
-    File modelFile = new File(context.getNodeDir(), MODEL_FILE);
-    try (FileWriter fileWriter = new FileWriter(modelFile)) {
-      new Yaml().dump(modelMap, fileWriter);
+    File file = new File(context.getNodeDir(), MODEL_FILE);
+    try (FileOutputStream os = new FileOutputStream(file);
+        OutputStreamWriter writer = new OutputStreamWriter(os, CharEncoding.UTF_8)) {
+      new Yaml().dump(modelMap, writer);
     }
     catch (Throwable ex) {
-      throw new GeneratorException("Unable to write model file: " + FileUtil.getCanonicalPath(modelFile), ex);
+      throw new GeneratorException("Unable to write model file: " + FileUtil.getCanonicalPath(file), ex);
     }
   }
 
