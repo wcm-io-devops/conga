@@ -27,6 +27,9 @@
       <action type="add" dev="sseifert">
         Add support for dumping "Model YAML" files for each node to make integration with build automation tools like Ansible more convenient.
       </action>
+      <action type="update" dev="sseifert">
+        Remove timestamp from file headers.
+      </action>
     </release>
 
     <release version="1.2.0" date="2016-06-15">
