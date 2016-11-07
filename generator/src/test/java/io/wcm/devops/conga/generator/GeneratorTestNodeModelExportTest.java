@@ -69,7 +69,7 @@ public class GeneratorTestNodeModelExportTest {
         "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml",
         "xml/test.tenant2.tenantRole1.env1.xml",
         "text/test-conditional-tenant1.txt");
-    assertEquals("globalValue äöüß€", getConfig(role1, "globalString"));
+    assertEquals("globalFromRole1", getConfig(role1, "globalString"));
     assertEquals(ImmutableList.of("tenantRole1", "tenantRole2"), getTenantRoles(role1, "tenant1"));
     assertEquals("\"value1\" äöüß€", getTenantConfig(role1, "tenant1", "defaultString"));
     assertEquals(ImmutableList.of("tenantRole1"), getTenantRoles(role1, "tenant2"));

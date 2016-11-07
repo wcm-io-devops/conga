@@ -96,7 +96,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
         })
         .collect(Collectors.toList()));
 
-    roleMap.put("config", cleanupConfig(context.getConfig()));
+    roleMap.put("config", cleanupConfig(roleData.getConfig()));
 
     addTenants(roleMap, roleData);
 
