@@ -60,7 +60,7 @@ public class RoleReaderTest {
     assertEquals("tomcat-services", role.getTemplateDir());
 
     List<RoleFile> files = role.getFiles();
-    assertEquals(5, files.size());
+    assertEquals(6, files.size());
 
     assertEquals(ImmutableMap.of(
         "var1", "value1",
@@ -101,6 +101,14 @@ public class RoleReaderTest {
     assertEquals("tenant", vhostFile.getMultiply());
     assertEquals(ImmutableMap.of("roles", ImmutableList.of("website")), vhostFile.getMultiplyOptions());
     assertEquals(LineEndings.unix, vhostFile.getLineEndings());
+  }
+
+  @Test
+  public void testDownload() {
+    RoleFile file = role.getFiles().get(5);
+
+    assertEquals("download", file.getDir());
+    assertEquals("classpath://xyz.txt", file.getUrl());
   }
 
 }
