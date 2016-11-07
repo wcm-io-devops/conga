@@ -35,6 +35,7 @@ public final class Environment extends AbstractConfigurable {
   private List<Node> nodes = new ArrayList<>();
   private List<RoleConfig> roleConfig = new ArrayList<>();
   private List<Tenant> tenants = new ArrayList<>();
+  private List<ExportModel> exportModel = new ArrayList<>();
 
   /**
    * Defines nodes for the environment.
@@ -50,8 +51,7 @@ public final class Environment extends AbstractConfigurable {
 
   /**
    * Defines role-specific configuration. In this section it is possible to define configuration parameters that affect
-   * each
-   * node that has this role defined.
+   * each node that has this role defined.
    * @return Configurations per role
    */
   public List<RoleConfig> getRoleConfig() {
@@ -63,9 +63,8 @@ public final class Environment extends AbstractConfigurable {
   }
 
   /**
-   * Defines a list of tenants for configuration files that have tenant-specific system configurations. E.g. vhosts
-   * files
-   * for Apache Webserver.
+   * Defines a list of tenants for configuration files that have tenant-specific system configurations.
+   * E.g. vhosts files for Apache Webserver.
    * @return List of tenans
    */
   public List<Tenant> getTenants() {
@@ -74,6 +73,18 @@ public final class Environment extends AbstractConfigurable {
 
   public void setTenants(List<Tenant> tenants) {
     this.tenants = defaultEmptyList(tenants);
+  }
+
+  /**
+   * Defines a list of export model plugin configurations.
+   * @return List of export model plugin configurations
+   */
+  public List<ExportModel> getExportModel() {
+    return this.exportModel;
+  }
+
+  public void setExportModel(List<ExportModel> exportModel) {
+    this.exportModel = defaultEmptyList(exportModel);
   }
 
 }

@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class UnixShellScriptFileHeaderTest {
   public void testApply() throws Exception {
     File file = new File("target/generation-test/fileHeader.sh");
     FileUtils.write(file, "#!/bin/bash\n"
-        + "myscript");
+        + "myscript", CharEncoding.ISO_8859_1);
 
     List<String> lines = ImmutableList.of("Der Jodelkaiser", "aus dem Oetztal", "ist wieder daheim.");
     FileHeaderContext context = new FileHeaderContext().commentLines(lines);
@@ -59,7 +60,7 @@ public class UnixShellScriptFileHeaderTest {
     assertTrue(underTest.accepts(fileContext, context));
     underTest.apply(fileContext, context);
 
-    String content = FileUtils.readFileToString(file);
+    String content = FileUtils.readFileToString(file, CharEncoding.UTF_8);
     assertTrue(StringUtils.contains(content, "# Der Jodelkaiser\n# aus dem Oetztal\n# ist wieder daheim.\n"));
     assertTrue(StringUtils.endsWith(content, "\nmyscript"));
     assertTrue(StringUtils.startsWith(content, "#!/bin/bash\n"));

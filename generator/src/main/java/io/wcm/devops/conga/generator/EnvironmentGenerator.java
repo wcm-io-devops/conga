@@ -36,13 +36,15 @@ import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import io.wcm.devops.conga.generator.export.NodeExportModel;
+import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
+import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.EnvironmentExpander;
 import io.wcm.devops.conga.generator.util.FileUtil;
@@ -113,7 +115,7 @@ class EnvironmentGenerator {
     log.info("----- Node '{}' -----", node.getNode());
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
-    NodeExportModel exportModelGenerator = new NodeExportModel(nodeDir);
+    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, pluginManager);
 
     for (NodeRole nodeRole : node.getRoles()) {
       Role role = roles.get(nodeRole.getRole());
@@ -132,18 +134,19 @@ class EnvironmentGenerator {
       mergedConfig.putAll(environmentContextProperties);
       mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
+      // collect role and tenant information for export model
+      ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(nodeRole.getRole(), variant, mergedConfig);
+
       // generate files
       List<GeneratedFileContext> allFiles = new ArrayList<>();
       for (RoleFile roleFile : role.getFiles()) {
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
-          allFiles.addAll(multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
-              nodeRole.getRole(), variant, roleFile.getTemplate()));
+          multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
+              nodeRole.getRole(), variant, roleFile.getTemplate(), allFiles);
         }
       }
-
-      // collect information for export model
-      exportModelGenerator.addRole(nodeRole.getRole(), variant, allFiles, mergedConfig);
+      exportNodeRoleData.files(allFiles);
     }
 
     // save export model
@@ -195,8 +198,8 @@ class EnvironmentGenerator {
         .getName();
   }
 
-  private List<GeneratedFileContext> multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
-      String roleName, String roleVariantName, String templateName) {
+  private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
+      String roleName, String roleVariantName, String templateName, List<GeneratedFileContext> generatedFiles) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
@@ -208,8 +211,6 @@ class EnvironmentGenerator {
         .environment(environment)
         .config(config)
         .logger(log);
-
-    List<GeneratedFileContext> generatedFiles = new ArrayList<>();
 
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
@@ -224,8 +225,6 @@ class EnvironmentGenerator {
       generatedFiles.addAll(generateFile(roleFile, dir, file, resolvedConfig, nodeDir, template,
           roleName, roleVariantName, templateName));
     }
-
-    return generatedFiles;
   }
 
   private List<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template,
