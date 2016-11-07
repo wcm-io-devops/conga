@@ -10,7 +10,7 @@ Please note that the Java Bean naming conventions are applied: For the property 
 ### Role defintions
 
 Example role definitions:<br/>
-https://github.com/wcm-io-devops/conga/tree/master/example/definitions/src/main/roles
+https://github.com/wcm-io-devops/conga/tree/develop/example/definitions/src/main/roles
 
 The filename of the role YAML file is the role name.
 
@@ -21,7 +21,7 @@ The documentation of all role and file configuration options can be found in the
 ### Environment definitions
 
 Example environment definitions:<br/>
-https://github.com/wcm-io-devops/conga/tree/master/example/environments/src/main/environments
+https://github.com/wcm-io-devops/conga/tree/develop/example/environments/src/main/environments
 
 The filename of the environment YAML file is the environment name.
 
@@ -110,7 +110,7 @@ Additionally to the variables defined in the configuration parameter maps a set 
 You can export the "model data" (expanded configuration, list of generated files and tenants) from the current CONGA run to an external file per node to pick this up in infrastructure automation tools like Ansible for executing the further development steps.
 
 Example environment definitions:<br/>
-https://github.com/wcm-io-devops/conga/tree/master/example/environments/src/main/environments
+https://github.com/wcm-io-devops/conga/tree/develop/example/environments/src/main/environments
 
 Example export definition within an environment definition - dumps model data for each node using the plugin `yaml`:
 
