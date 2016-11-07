@@ -82,7 +82,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     roleMap.put("files", roleData.getFiles().stream()
         .map(item -> {
           Map<String, Object> itemMap = new LinkedHashMap<String, Object>();
-          itemMap.put("path", StringUtils.substring(item.getFileContext().getCanonicalPath(), nodeDirPath.length() + 1));
+          itemMap.put("path", cleanupFileName(item.getFileContext().getCanonicalPath(), nodeDirPath));
           if (!item.getPostProcessors().isEmpty()) {
             itemMap.put("postProcessors", ImmutableList.copyOf(item.getPostProcessors()));
           }
@@ -135,6 +135,11 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
   private Map<String, Object> cleanupConfig(Map<String, Object> config) {
     return ContextPropertiesBuilder.removeContextVariables(config);
+  }
+
+  private String cleanupFileName(String fileName, String basePath) {
+    String relativePath = StringUtils.substring(fileName, basePath.length() + 1);
+    return StringUtils.replace(relativePath, File.separator, "/");
   }
 
 }
