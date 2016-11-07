@@ -129,6 +129,7 @@ public final class ContextPropertiesBuilder {
   /**
    * Removes all context variables.
    * @param config Configuration
+   * @return Configuration
    */
   public static Map<String, Object> removeContextVariables(Map<String, Object> config) {
     Map<String, Object> map = new HashMap<>(config);

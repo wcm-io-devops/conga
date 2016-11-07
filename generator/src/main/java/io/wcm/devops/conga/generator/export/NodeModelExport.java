@@ -83,6 +83,7 @@ public final class NodeModelExport {
    * @param role Role name
    * @param roleVariant Role variant name
    * @param config Merged configuration (unresolved)
+   * @return Node role data
    */
   public ExportNodeRoleData addRole(String role, String roleVariant, Map<String, Object> config) {
     if (!isActive()) {

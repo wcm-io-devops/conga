@@ -59,7 +59,7 @@ public final class CongaCli {
   /**
    * CLI entry point
    * @param args Command line arguments
-   * @throws Exception
+   * @throws Exception Exception
    */
   //CHECKSTYLE:OFF
   public static void main(String[] args) throws Exception {

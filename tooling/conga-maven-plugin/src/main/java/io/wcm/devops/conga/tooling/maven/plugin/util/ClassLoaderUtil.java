@@ -43,7 +43,7 @@ public final class ClassLoaderUtil {
    * Build class loader from dependency of a maven project.
    * @param project Maven project
    * @return Class loader
-   * @throws MojoExecutionException
+   * @throws MojoExecutionException Mojo execution exception
    */
   public static ClassLoader buildDependencyClassLoader(MavenProject project) throws MojoExecutionException {
     try {
