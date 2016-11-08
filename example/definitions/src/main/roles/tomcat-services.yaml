@@ -39,7 +39,7 @@ files:
   charset: ISO-8859-1
   lineEndings: windows
 
-# Copy file from local filesystem
+# Copy file from classpath
 - file: mysample.txt
   dir: download
   url: classpath:/sample.txt
