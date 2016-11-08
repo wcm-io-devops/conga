@@ -23,13 +23,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -217,22 +216,16 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
 
   private String resolveArtifactVersion(String artifactId, String groupId, String packaging, String classifier,
       MavenUrlFilePluginContext context) {
-    String version = findVersion(context.getProject().getDependencies(), artifactId, groupId, packaging, classifier);
+    String version = findVersion(context.getProject().getArtifacts(), artifactId, groupId, packaging, classifier);
     if (version != null) {
       return version;
-    }
-    if (context.getProject().getDependencyManagement() != null) {
-      version = findVersion(context.getProject().getDependencyManagement().getDependencies(), artifactId, groupId, packaging, classifier);
-      if (version != null) {
-        return version;
-      }
     }
     return null;
   }
 
-  private String findVersion(List<Dependency> dependencies, String artifactId, String groupId, String packaging, String classifier) {
+  private String findVersion(Set<Artifact> dependencies, String artifactId, String groupId, String packaging, String classifier) {
     if (dependencies != null) {
-      for (Dependency dependency : dependencies) {
+      for (Artifact dependency : dependencies) {
         if (artifactEquals(dependency, artifactId, groupId, packaging, classifier)) {
           return dependency.getVersion();
         }
@@ -241,7 +234,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     return null;
   }
 
-  private boolean artifactEquals(Dependency dependency, String artifactId, String groupId, String packaging, String classifier) {
+  private boolean artifactEquals(Artifact dependency, String artifactId, String groupId, String packaging, String classifier) {
     return StringUtils.equals(dependency.getGroupId(), groupId)
         && StringUtils.equals(dependency.getArtifactId(), artifactId)
         && StringUtils.equals(dependency.getClassifier(), classifier)
