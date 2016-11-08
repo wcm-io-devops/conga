@@ -127,8 +127,11 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
 
     // include resources
     for (org.apache.maven.model.Resource resource : project.getResources()) {
-      archiver.getArchiver().addDirectory(new File(resource.getDirectory()),
-          toArray(resource.getIncludes()), toArray(resource.getExcludes()));
+      File resourceDir = new File(resource.getDirectory());
+      if (resourceDir.exists()) {
+        archiver.getArchiver().addDirectory(resourceDir,
+            toArray(resource.getIncludes()), toArray(resource.getExcludes()));
+      }
     }
 
     try {
