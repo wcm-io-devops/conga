@@ -23,11 +23,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -112,8 +114,8 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
    * @return Artifact object
    * @throws MojoFailureException if coordinates are semantically invalid
    */
-  private Artifact getArtifactFromMavenCoordinates(final String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
-    String[] parts = StringUtils.split(artifact, ":");
+  private Artifact getArtifactFromMavenCoordinates(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
+    String[] parts = StringUtils.splitPreserveAllTokens(artifact, ":");
 
     String version = null;
     String packaging = null;
@@ -149,7 +151,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     String groupId = StringUtils.defaultIfBlank(parts[0], null);
     String artifactId = StringUtils.defaultIfBlank(parts[1], null);
 
-    return createArtifact(artifactId, groupId, version, packaging, classifier, context);
+    return createArtifact(artifactId, groupId, packaging, classifier, version, context);
   }
 
   /**
@@ -159,8 +161,8 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
    * @return Artifact object
    * @throws MojoFailureException if coordinates are semantically invalid
    */
-  private Artifact getArtifactFromMavenCoordinatesSlingStartStyle(final String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
-    String[] parts = StringUtils.split(artifact, "/");
+  private Artifact getArtifactFromMavenCoordinatesSlingStartStyle(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
+    String[] parts = StringUtils.splitPreserveAllTokens(artifact, "/");
 
     String version = null;
     String packaging = null;
@@ -196,15 +198,54 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     String groupId = StringUtils.defaultIfBlank(parts[0], null);
     String artifactId = StringUtils.defaultIfBlank(parts[1], null);
 
-    return createArtifact(artifactId, groupId, version, packaging, classifier, context);
+    return createArtifact(artifactId, groupId, packaging, classifier, version, context);
   }
 
-  private Artifact createArtifact(final String artifactId, final String groupId, final String version, final String packaging, String classifier,
+  private Artifact createArtifact(String artifactId, String groupId, String packaging, String classifier, String version,
       MavenUrlFilePluginContext context) {
-    if (StringUtils.isEmpty(classifier)) {
-      return context.getRepository().createArtifact(groupId, artifactId, version, packaging);
+
+    String artifactVersion = version;
+    if (artifactVersion == null) {
+      artifactVersion = resolveArtifactVersion(artifactId, groupId, packaging, classifier, context);
     }
-    return context.getRepository().createArtifactWithClassifier(groupId, artifactId, version, packaging, classifier);
+
+    if (StringUtils.isEmpty(classifier)) {
+      return context.getRepository().createArtifact(groupId, artifactId, artifactVersion, packaging);
+    }
+    return context.getRepository().createArtifactWithClassifier(groupId, artifactId, artifactVersion, packaging, classifier);
+  }
+
+  private String resolveArtifactVersion(String artifactId, String groupId, String packaging, String classifier,
+      MavenUrlFilePluginContext context) {
+    String version = findVersion(context.getProject().getDependencies(), artifactId, groupId, packaging, classifier);
+    if (version != null) {
+      return version;
+    }
+    if (context.getProject().getDependencyManagement() != null) {
+      version = findVersion(context.getProject().getDependencyManagement().getDependencies(), artifactId, groupId, packaging, classifier);
+      if (version != null) {
+        return version;
+      }
+    }
+    return null;
+  }
+
+  private String findVersion(List<Dependency> dependencies, String artifactId, String groupId, String packaging, String classifier) {
+    if (dependencies != null) {
+      for (Dependency dependency : dependencies) {
+        if (artifactEquals(dependency, artifactId, groupId, packaging, classifier)) {
+          return dependency.getVersion();
+        }
+      }
+    }
+    return null;
+  }
+
+  private boolean artifactEquals(Dependency dependency, String artifactId, String groupId, String packaging, String classifier) {
+    return StringUtils.equals(dependency.getGroupId(), groupId)
+        && StringUtils.equals(dependency.getArtifactId(), artifactId)
+        && StringUtils.equals(dependency.getClassifier(), classifier)
+        && StringUtils.equals(dependency.getType(), packaging);
   }
 
 }

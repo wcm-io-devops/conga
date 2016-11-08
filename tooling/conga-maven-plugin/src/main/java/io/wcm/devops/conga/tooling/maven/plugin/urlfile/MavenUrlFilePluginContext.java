@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.tooling.maven.plugin.urlfile;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.RepositorySystem;
 
 /**
@@ -27,9 +28,26 @@ import org.apache.maven.repository.RepositorySystem;
  */
 public final class MavenUrlFilePluginContext {
 
+  private MavenProject project;
   private RepositorySystem repository;
   private ArtifactRepository localRepository;
   private java.util.List<ArtifactRepository> remoteRepositories;
+
+  /**
+   * @return Maven project
+   */
+  public MavenProject getProject() {
+    return this.project;
+  }
+
+  /**
+   * @param value Maven project
+   * @return this
+   */
+  public MavenUrlFilePluginContext project(MavenProject value) {
+    this.project = value;
+    return this;
+  }
 
   /**
    * @return Maven repository

@@ -46,7 +46,7 @@ files:
 
 # Download file from maven repository, use remove filename
 - dir: download
-  url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel/1.0.2/xml/site
+  url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel//xml/site
 
 
 # Defines configuration parameters and default values

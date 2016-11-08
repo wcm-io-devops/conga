@@ -264,7 +264,7 @@ class EnvironmentGenerator {
     }
 
     FileGenerator fileGenerator = new FileGenerator(environmentName, roleName, roleVariantName, templateName,
-        nodeDir, file, roleFile, config, template, pluginManager, urlFileManager,
+        nodeDir, file, url, roleFile, config, template, pluginManager, urlFileManager,
         version, dependencyVersions, log);
     try {
       List<GeneratedFileContext> generatedFiles = fileGenerator.generate();

@@ -67,6 +67,7 @@ class FileGenerator {
   private final String templateName;
   private final File nodeDir;
   private final File file;
+  private final String url;
   private final RoleFile roleFile;
   private final Map<String, Object> config;
   private final Template template;
@@ -80,7 +81,7 @@ class FileGenerator {
 
   //CHECKSTYLE:OFF
   FileGenerator(String environmentName, String roleName, String roleVariantName, String templateName,
-      File nodeDir, File file, RoleFile roleFile, Map<String, Object> config,
+      File nodeDir, File file, String url, RoleFile roleFile, Map<String, Object> config,
       Template template, PluginManager pluginManager, UrlFileManager urlFileManager,
       String version, List<String> dependencyVersions, Logger log) {
     //CHECKSTYLE:ON
@@ -90,6 +91,7 @@ class FileGenerator {
     this.templateName = templateName;
     this.nodeDir = nodeDir;
     this.file = file;
+    this.url = url;
     this.roleFile = roleFile;
     this.template = template;
     this.pluginManager = pluginManager;
@@ -174,8 +176,6 @@ class FileGenerator {
    * @throws IOException
    */
   public List<GeneratedFileContext> generate() throws IOException {
-    log.info("Generate file {}", getFilenameForLog(fileContext));
-
     File dir = file.getParentFile();
     if (!dir.exists()) {
       dir.mkdirs();
@@ -183,6 +183,8 @@ class FileGenerator {
 
     Map<String, GeneratedFileContext> postProcessedFiles = new LinkedHashMap<>();
     if (template != null) {
+      log.info("Generate file {}", getFilenameForLog(fileContext));
+
       // generate with template
       generateWithTemplate();
 
@@ -192,7 +194,9 @@ class FileGenerator {
       postProcessedFiles.putAll(applyPostProcessor(fileContext));
 
     }
-    else if (StringUtils.isNotBlank(roleFile.getUrl())) {
+    else if (StringUtils.isNotBlank(url)) {
+      log.info("Copy file {} from {}", getFilenameForLog(fileContext), url);
+
       // generate by downloading/copying from URL
       generateFromUrlFile();
     }
@@ -228,7 +232,7 @@ class FileGenerator {
    */
   private void generateFromUrlFile() throws IOException {
     try (FileOutputStream fos = new FileOutputStream(file);
-        InputStream is = urlFileManager.getFile(roleFile.getUrl())) {
+        InputStream is = urlFileManager.getFile(url)) {
       IOUtils.copy(is, fos);
       fos.flush();
     }
