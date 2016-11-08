@@ -1,0 +1,3 @@
+io.wcm.devops.conga.generator.plugins.urlfile.ClasspathUrlFilePlugin
+io.wcm.devops.conga.generator.plugins.urlfile.FilesystemUrlFilePlugin
+io.wcm.devops.conga.generator.plugins.urlfile.HttpUrlFilePlugin
