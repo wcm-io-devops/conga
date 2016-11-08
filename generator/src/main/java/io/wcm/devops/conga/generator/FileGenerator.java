@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
@@ -69,6 +71,7 @@ class FileGenerator {
   private final Map<String, Object> config;
   private final Template template;
   private final PluginManager pluginManager;
+  private final UrlFileManager urlFileManager;
   private final Logger log;
   private final FileContext fileContext;
   private final FileHeaderContext fileHeaderContext;
@@ -78,7 +81,8 @@ class FileGenerator {
   //CHECKSTYLE:OFF
   FileGenerator(String environmentName, String roleName, String roleVariantName, String templateName,
       File nodeDir, File file, RoleFile roleFile, Map<String, Object> config,
-      Template template, PluginManager pluginManager, String version, List<String> dependencyVersions, Logger log) {
+      Template template, PluginManager pluginManager, UrlFileManager urlFileManager,
+      String version, List<String> dependencyVersions, Logger log) {
     //CHECKSTYLE:ON
     this.environmentName = environmentName;
     this.roleName = roleName;
@@ -89,6 +93,7 @@ class FileGenerator {
     this.roleFile = roleFile;
     this.template = template;
     this.pluginManager = pluginManager;
+    this.urlFileManager = urlFileManager;
     this.log = log;
     this.fileContext = new FileContext().file(file).charset(roleFile.getCharset());
 
@@ -176,20 +181,24 @@ class FileGenerator {
       dir.mkdirs();
     }
 
-    // generate file with handlebars template
-    // use unix file endings by default
-    try (FileOutputStream fos = new FileOutputStream(file);
-        Writer fileWriter = new OutputStreamWriter(fos, roleFile.getCharset())) {
-      StringWriter stringWriter = new StringWriter();
-      template.apply(config, stringWriter);
-      fileWriter.write(normalizeLineEndings(stringWriter.toString()));
-      fileWriter.flush();
-    }
+    Map<String, GeneratedFileContext> postProcessedFiles = new LinkedHashMap<>();
+    if (template != null) {
+      // generate with template
+      generateWithTemplate();
 
-    // add file header, validate and post-process generated file
-    applyFileHeader(fileContext, roleFile.getFileHeader());
-    applyValidation(fileContext, roleFile.getValidators());
-    Map<String, GeneratedFileContext> postProcessedFiles = applyPostProcessor(fileContext);
+      // add file header, validate and post-process generated file
+      applyFileHeader(fileContext, roleFile.getFileHeader());
+      applyValidation(fileContext, roleFile.getValidators());
+      postProcessedFiles.putAll(applyPostProcessor(fileContext));
+
+    }
+    else if (StringUtils.isNotBlank(roleFile.getUrl())) {
+      // generate by downloading/copying from URL
+      generateFromUrlFile();
+    }
+    else {
+      throw new IOException("No template and nor URL defined for file: " + FileUtil.getFileInfo(roleName, roleFile));
+    }
 
     // generate distinct list of existing files generated (directly or by postprocessors)
     List<GeneratedFileContext> generatedFiles = new ArrayList<>();
@@ -198,6 +207,31 @@ class FileGenerator {
     }
     generatedFiles.addAll(postProcessedFiles.values());
     return generatedFiles;
+  }
+
+  /**
+   * Generate file with handlebars template.
+   * Use unix file endings by default.
+   */
+  private void generateWithTemplate() throws IOException {
+    try (FileOutputStream fos = new FileOutputStream(file);
+        Writer fileWriter = new OutputStreamWriter(fos, roleFile.getCharset())) {
+      StringWriter stringWriter = new StringWriter();
+      template.apply(config, stringWriter);
+      fileWriter.write(normalizeLineEndings(stringWriter.toString()));
+      fileWriter.flush();
+    }
+  }
+
+  /**
+   * Generate file by downloading/copying from URL
+   */
+  private void generateFromUrlFile() throws IOException {
+    try (FileOutputStream fos = new FileOutputStream(file);
+        InputStream is = urlFileManager.getFile(roleFile.getUrl())) {
+      IOUtils.copy(is, fos);
+      fos.flush();
+    }
   }
 
   private String normalizeLineEndings(String value) {

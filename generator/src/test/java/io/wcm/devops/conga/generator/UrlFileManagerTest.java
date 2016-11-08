@@ -39,7 +39,7 @@ public class UrlFileManagerTest {
 
   @Before
   public void setUp() {
-    UrlFilePluginContext context = new UrlFilePluginContext().baseDir(new File("."));
+    UrlFilePluginContext context = new UrlFilePluginContext();
     underTest = new UrlFileManager(new PluginManager(), context);
   }
 

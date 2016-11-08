@@ -19,8 +19,6 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.validation;
 
-import java.io.IOException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -58,10 +56,9 @@ public final class RoleTemplateFileValidator implements DefinitionValidator {
       for (RoleFile roleFile : role.getFiles()) {
         Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, roleFile.getCharset());
         String templateFile = FileUtil.getTemplatePath(role, roleFile);
-        if (StringUtils.isEmpty(templateFile)) {
-          throw new IOException("File '" + roleFile.getFile() + "' from role '" + resource.getName() + "' has no template assigned.");
+        if (StringUtils.isNotEmpty(templateFile)) {
+          handlebars.compile(templateFile);
         }
-        handlebars.compile(templateFile);
       }
     }
     catch (Throwable ex) {

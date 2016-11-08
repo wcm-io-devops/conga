@@ -70,6 +70,7 @@ class EnvironmentGenerator {
   private final File destDir;
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
+  private final UrlFileManager urlFileManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
   private final String version;
   private final List<String> dependencyVersions;
@@ -78,8 +79,8 @@ class EnvironmentGenerator {
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
 
-  EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
-      File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager,
+  EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment, File destDir,
+      PluginManager pluginManager, HandlebarsManager handlebarsManager, UrlFileManager urlFileManager,
       String version, List<String> dependencyVersions, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
@@ -87,6 +88,8 @@ class EnvironmentGenerator {
     this.destDir = destDir;
     this.pluginManager = pluginManager;
     this.handlebarsManager = handlebarsManager;
+    this.urlFileManager = urlFileManager;
+
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
     this.version = version;
     this.dependencyVersions = dependencyVersions;
@@ -169,14 +172,19 @@ class EnvironmentGenerator {
   private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {
     String templateFile = FileUtil.getTemplatePath(role, roleFile);
     if (StringUtils.isEmpty(templateFile)) {
-      throw new GeneratorException("No template defined for file: " + nodeRole.getRole() + "/" + roleFile.getFile());
+      if (StringUtils.isEmpty(roleFile.getUrl())) {
+        throw new GeneratorException("No template defined for file: " + FileUtil.getFileInfo(nodeRole, roleFile));
+      }
+      else {
+        return null;
+      }
     }
     try {
       Handlebars handlebars = handlebarsManager.get(getEscapingStrategy(roleFile), roleFile.getCharset());
       return handlebars.compile(templateFile);
     }
     catch (IOException ex) {
-      throw new GeneratorException("Unable to compile handlebars template: " + nodeRole.getRole() + "/" + roleFile.getFile(), ex);
+      throw new GeneratorException("Unable to compile handlebars template: " + FileUtil.getFileInfo(nodeRole, roleFile), ex);
     }
   }
 
@@ -218,18 +226,31 @@ class EnvironmentGenerator {
       // resolve variables
       Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig, false);
 
-      // replace placeholders in dir/filename with context variables
+      // replace placeholders with context variables
       String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
       String file = VariableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
+      String url = VariableStringResolver.resolve(roleFile.getUrl(), resolvedConfig);
 
-      generatedFiles.addAll(generateFile(roleFile, dir, file, resolvedConfig, nodeDir, template,
-          roleName, roleVariantName, templateName));
+      generatedFiles.addAll(generateFile(roleFile, dir, file, url,
+          resolvedConfig, nodeDir, template, roleName, roleVariantName, templateName));
     }
   }
 
-  private List<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template,
+  private List<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
+      Map<String, Object> config, File nodeDir, Template template,
       String roleName, String roleVariantName, String templateName) {
-    File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, fileName) : fileName);
+
+    String generatedFileName = fileName;
+    if (StringUtils.isBlank(generatedFileName) && StringUtils.isNotBlank(url)) {
+      try {
+        generatedFileName = urlFileManager.getFileName(url);
+      }
+      catch (IOException ex) {
+        throw new GeneratorException("Unable to get file name from URL: " + url, ex);
+      }
+    }
+
+    File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, generatedFileName) : generatedFileName);
     if (file.exists()) {
       file.delete();
     }
@@ -243,7 +264,7 @@ class EnvironmentGenerator {
     }
 
     FileGenerator fileGenerator = new FileGenerator(environmentName, roleName, roleVariantName, templateName,
-        nodeDir, file, roleFile, config, template, pluginManager,
+        nodeDir, file, roleFile, config, template, pluginManager, urlFileManager,
         version, dependencyVersions, log);
     try {
       List<GeneratedFileContext> generatedFiles = fileGenerator.generate();

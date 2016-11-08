@@ -39,6 +39,15 @@ files:
   charset: ISO-8859-1
   lineEndings: windows
 
+# Copy file from local filesystem
+- file: mysample.txt
+  dir: download
+  url: classpath:/sample.txt
+
+# Download file from maven repository, use remove filename
+- dir: download
+  url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel/1.0.2/xml/site
+
 
 # Defines configuration parameters and default values
 config:

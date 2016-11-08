@@ -38,6 +38,14 @@ public interface UrlFilePlugin extends Plugin {
   boolean accepts(String url, UrlFilePluginContext context);
 
   /**
+   * Get filename for external file.
+   * @param url URL (including prefix)
+   * @param context Context objects
+   * @return Filename
+   */
+  String getFileName(String url, UrlFilePluginContext context) throws IOException;
+
+  /**
    * Get binary data of external file.
    * @param url URL (including prefix)
    * @param context Context objects

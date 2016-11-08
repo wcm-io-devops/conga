@@ -51,12 +51,23 @@ public class ClasspathUrlFilePlugin implements UrlFilePlugin {
   }
 
   @Override
+  public String getFileName(String url, UrlFilePluginContext context) {
+    String classpathRef = StringUtils.substringAfter(url, PREFIX);
+    if (StringUtils.contains(classpathRef, "/")) {
+      return classpathRef;
+    }
+    else {
+      return StringUtils.substringAfterLast(classpathRef, "/");
+    }
+  }
+
+  @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
     String classpathRef = StringUtils.substringAfter(url, PREFIX);
     if (StringUtils.startsWith(classpathRef, "/")) {
       classpathRef = StringUtils.substringAfter(classpathRef, "/");
     }
-    InputStream is = getClass().getClassLoader().getResourceAsStream(classpathRef);
+    InputStream is = context.getResourceClassLoader().getResourceAsStream(classpathRef);
     if (is == null) {
       throw new FileNotFoundException("Classpath reference not found: " + classpathRef);
     }

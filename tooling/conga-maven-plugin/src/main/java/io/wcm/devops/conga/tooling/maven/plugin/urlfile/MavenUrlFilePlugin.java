@@ -57,11 +57,22 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
   }
 
   @Override
+  public String getFileName(String url, UrlFilePluginContext context) throws IOException {
+    String mavenCoords = StringUtils.substringAfter(url, PREFIX);
+    MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
+    try {
+      File file = getArtifactFile(mavenCoords, mavenContext);
+      return file.getName();
+    }
+    catch (MojoFailureException | MojoExecutionException ex) {
+      throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
+    }
+  }
+
+  @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
     String mavenCoords = StringUtils.substringAfter(url, PREFIX);
-
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
-
     try {
       File file = getArtifactFile(mavenCoords, mavenContext);
       return new FileInputStream(file);
@@ -73,7 +84,13 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
 
   private File getArtifactFile(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException, MojoExecutionException {
 
-    Artifact artifactObject = getArtifactFromMavenCoordinates(artifact, context);
+    Artifact artifactObject;
+    if (StringUtils.contains(artifact, "/")) {
+      artifactObject = getArtifactFromMavenCoordinatesSlingStartStyle(artifact, context);
+    }
+    else {
+      artifactObject = getArtifactFromMavenCoordinates(artifact, context);
+    }
 
     // resolve artifact
     ArtifactResolutionRequest request = new ArtifactResolutionRequest();
@@ -96,38 +113,88 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
    * @throws MojoFailureException if coordinates are semantically invalid
    */
   private Artifact getArtifactFromMavenCoordinates(final String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
-
     String[] parts = StringUtils.split(artifact, ":");
 
-    String version;
+    String version = null;
     String packaging = null;
     String classifier = null;
 
     switch (parts.length) {
+      case 2:
+        // groupId:artifactId
+        break;
+
       case 3:
         // groupId:artifactId:version
-        version = parts[2];
+        version = StringUtils.defaultIfBlank(parts[2], null);
         break;
 
       case 4:
         // groupId:artifactId:packaging:version
-        packaging = parts[2];
-        version = parts[3];
+        packaging = StringUtils.defaultIfBlank(parts[2], null);
+        version = StringUtils.defaultIfBlank(parts[3], null);
         break;
 
       case 5:
         // groupId:artifactId:packaging:classifier:version
-        packaging = parts[2];
-        classifier = parts[3];
-        version = parts[4];
+        packaging = StringUtils.defaultIfBlank(parts[2], null);
+        classifier = StringUtils.defaultIfBlank(parts[3], null);
+        version = StringUtils.defaultIfBlank(parts[4], null);
         break;
 
       default:
         throw new MojoFailureException("Invalid artifact: " + artifact);
     }
 
-    String groupId = parts[0];
-    String artifactId = parts[1];
+    String groupId = StringUtils.defaultIfBlank(parts[0], null);
+    String artifactId = StringUtils.defaultIfBlank(parts[1], null);
+
+    return createArtifact(artifactId, groupId, version, packaging, classifier, context);
+  }
+
+  /**
+   * Parse coordinates in slingstart style following definition from
+   * https://sling.apache.org/documentation/development/slingstart.html
+   * @param artifact Artifact coordinates
+   * @return Artifact object
+   * @throws MojoFailureException if coordinates are semantically invalid
+   */
+  private Artifact getArtifactFromMavenCoordinatesSlingStartStyle(final String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
+    String[] parts = StringUtils.split(artifact, "/");
+
+    String version = null;
+    String packaging = null;
+    String classifier = null;
+
+    switch (parts.length) {
+      case 2:
+        // groupId/artifactId
+        break;
+
+      case 3:
+        // groupId/artifactId/version
+        version = StringUtils.defaultIfBlank(parts[2], null);
+        break;
+
+      case 4:
+        // groupId/artifactId/version/type
+        packaging = StringUtils.defaultIfBlank(parts[3], null);
+        version = StringUtils.defaultIfBlank(parts[2], null);
+        break;
+
+      case 5:
+        // groupId/artifactId/version/type/classifier
+        packaging = StringUtils.defaultIfBlank(parts[3], null);
+        classifier = StringUtils.defaultIfBlank(parts[4], null);
+        version = StringUtils.defaultIfBlank(parts[2], null);
+        break;
+
+      default:
+        throw new MojoFailureException("Invalid artifact: " + artifact);
+    }
+
+    String groupId = StringUtils.defaultIfBlank(parts[0], null);
+    String artifactId = StringUtils.defaultIfBlank(parts[1], null);
 
     return createArtifact(artifactId, groupId, version, packaging, classifier, context);
   }

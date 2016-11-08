@@ -41,7 +41,7 @@ public class FilesystemUrlFilePluginTest {
   @Before
   public void setUp() {
     underTest = new FilesystemUrlFilePlugin();
-    context = new UrlFilePluginContext().baseDir(new File("."));
+    context = new UrlFilePluginContext();
   }
 
   @Test

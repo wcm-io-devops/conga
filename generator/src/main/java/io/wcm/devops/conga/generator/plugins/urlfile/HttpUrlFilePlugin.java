@@ -50,6 +50,11 @@ public class HttpUrlFilePlugin implements UrlFilePlugin {
   }
 
   @Override
+  public String getFileName(String url, UrlFilePluginContext context) {
+    return StringUtils.substringAfterLast(url, "/");
+  }
+
+  @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
     URL urlObject = new URL(url);
     return urlObject.openStream();

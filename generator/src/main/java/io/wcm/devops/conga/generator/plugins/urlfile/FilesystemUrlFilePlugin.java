@@ -54,20 +54,29 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   }
 
   @Override
+  public String getFileName(String url, UrlFilePluginContext context) {
+    File file = getFileInternal(url, context);
+    return file.getName();
+  }
+
+  @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
-    File file;
-    if (StringUtils.startsWith(url, PREFIX)) {
-      String absoultePath = StringUtils.substringAfter(url, PREFIX);
-      file = new File(absoultePath);
-    }
-    else {
-      String revaltivePath = url;
-      file = new File(context.getBaseDir(), revaltivePath);
-    }
+    File file = getFileInternal(url, context);
     if (!file.exists()) {
       throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
     }
     return new FileInputStream(file);
+  }
+
+  private File getFileInternal(String url, UrlFilePluginContext context) {
+    if (StringUtils.startsWith(url, PREFIX)) {
+      String absoultePath = StringUtils.substringAfter(url, PREFIX);
+      return new File(absoultePath);
+    }
+    else {
+      String revaltivePath = url;
+      return new File(context.getBaseDir(), revaltivePath);
+    }
   }
 
 }

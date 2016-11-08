@@ -51,6 +51,37 @@ class UrlFileManager {
     this.context = context;
   }
 
+  /**
+   * Get file name from URL.
+   * @param url URL
+   * @return File name
+   * @throws IOException
+   */
+  public String getFileName(String url) throws IOException {
+    if (StringUtils.isBlank(url)) {
+      throw new IllegalArgumentException("No URL given.");
+    }
+
+    for (UrlFilePlugin plugin : urlFilePlugins) {
+      if (plugin.accepts(url, context)) {
+        return plugin.getFileName(url, context);
+      }
+    }
+
+    // if path does not contain any prefix try to resolve relative path from filesystem
+    if (!URL_WITH_PREFIX.matcher(url).matches()) {
+      return defaultUrlFilePlugins.getFileName(url, context);
+    }
+
+    throw new IOException("No file URL plugin exists that supports the URL: " + url);
+  }
+
+  /**
+   * Get file binary data from URL.
+   * @param url URL
+   * @return Input stream
+   * @throws IOException
+   */
   public InputStream getFile(String url) throws IOException {
     if (StringUtils.isBlank(url)) {
       throw new IllegalArgumentException("No URL given.");
