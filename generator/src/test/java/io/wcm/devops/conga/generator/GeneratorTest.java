@@ -88,6 +88,12 @@ public class GeneratorTest {
     assertContains(xml1tenant2, "<globalString>globalFromTenant2</globalString>");
     assertContains(xml1tenant2, "<variableString>The v1-tenant2${novar}</variableString>");
 
+    File sample1a = assertFile(node1Dir, "files/sample.txt");
+    assertContains(sample1a, "This is an example text file: äöüß€");
+
+    File sample1b = assertFile(node1Dir, "files/sample-filesystem.txt");
+    assertContains(sample1b, "This is an example text file: äöüß€");
+
     File node2Dir = assertDirectory(destDir, "env1/node2");
 
     File xml2tenant1 = assertFile(node2Dir, "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml");
