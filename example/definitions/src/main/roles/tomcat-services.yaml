@@ -12,7 +12,7 @@ files:
   - services
   dir: conf/Catalina/localhost
   template: ROOT.xml.hbs
-  # Allows to define speciyl validators.
+  # Allows to define special validators.
   # If missing the best-match validator is picked automatically.
   validators:
   - xml
@@ -30,7 +30,7 @@ files:
 - file: setenv.sh
   dir: bin
   template: setenv.sh.hbs
-  # Default charset ist UTF-8 unless specified otherwise
+  # Default charset is UTF-8 unless specified otherwise
   charset: ISO-8859-1
 
 - file: setenv.bat

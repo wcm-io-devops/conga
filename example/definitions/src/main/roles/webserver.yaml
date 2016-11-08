@@ -6,7 +6,7 @@ files:
 - file: "${tenant}_vhost.conf"
   dir: vhosts
   template: tenant_vhost.conf.hbs
-  # Mulitply file for each tenant that has the given roles
+  # Multiply file for each tenant that has the given roles
   multiply: tenant
   multiplyOptions:
     roles:
