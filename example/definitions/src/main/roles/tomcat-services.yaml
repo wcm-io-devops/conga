@@ -44,9 +44,9 @@ files:
   dir: download
   url: classpath:/sample.txt
 
-# Download file from maven repository, use remove filename
-- dir: download
-  url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel//xml/site
+# Download file from maven repository, use artifact filename. Derive version from maven project.
+- url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel//xml/site
+  dir: download
 
 
 # Defines configuration parameters and default values
