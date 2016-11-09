@@ -2,9 +2,7 @@
 
 ### Targets System Configuration
 
-The configuration generator focuses on **system configuration** that is usually defined at deployment time and is static at runtime.
-
-It is not targeted to “runtime configuration” like site configuration, tenant configuration that can be changed at any time by authorized users.
+The configuration generator focuses on **system configuration** that is usually defined at deployment time and is static at runtime. It is not targeted to “runtime configuration” like site configuration, tenant configuration that can be changed at any time by authorized users.
 
 This tool is **not a deployment automation tool**. It focuses only on configuration generation and can be integrated in a manual or automated deployment process.
 
@@ -32,6 +30,8 @@ Examples:
 * AEM Content Package containing OSGi configurations
 
 Basically all text-based files types can be generated. And with post processor plugins even binary files.
+
+Additionally it is possible to copy/download files from external sources and include them in the configuration process. External sources are e.g. local filesystem, classpath, HTTP/HTTPS URLs or Maven Artifact references.
 
 
 ### Configuration definition model
@@ -62,4 +62,4 @@ Basically all text-based files types can be generated. And with post processor p
 * Implemented in Java 8
 * Definition and Configuration Files in [YAML 1.1](http://yaml.org/)
 * Template script language: [Handlebars for Java](https://github.com/jknack/handlebars.java)
-* Runnable from [Apache Maven](http://maven.apache.org/) or standalone
+* Runnable from [Apache Maven](http://maven.apache.org/) (recommended) or standalone

@@ -55,6 +55,8 @@ files:
     roles:
     - website
 
+- url: classpath://xyz.txt
+  dir: download
 
 # Defines configuration parameters and default values
 config:

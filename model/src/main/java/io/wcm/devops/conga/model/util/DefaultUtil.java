@@ -35,6 +35,7 @@ public final class DefaultUtil {
 
   /**
    * Returns the given list, or an empty (modifiable) list if given null.
+   * @param <T> Type
    * @param list Given list
    * @return List (never null)
    */
@@ -49,6 +50,8 @@ public final class DefaultUtil {
 
   /**
    * Returns the given map, or an empty (modifiable) map if given null.
+   * @param <K> Key type
+   * @param <V> Value type
    * @param map Given map
    * @return Map (never null)
    */

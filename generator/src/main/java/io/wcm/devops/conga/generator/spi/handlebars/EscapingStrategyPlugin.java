@@ -32,7 +32,7 @@ public interface EscapingStrategyPlugin extends Plugin, EscapingStrategy {
 
   /**
    * Checks if the plugin can be applied to files with the given file extension.
-   * @param fileExtension
+   * @param fileExtension File extension
    * @return true when the plugin can be applied to the given file.
    */
   boolean accepts(String fileExtension);

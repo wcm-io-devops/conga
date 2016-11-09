@@ -34,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
@@ -48,14 +49,17 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.RepositorySystem;
 
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.Generator;
 import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePluginContext;
 import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 
 /**
@@ -87,11 +91,19 @@ public class GenerateMojo extends AbstractCongaMojo {
   @Parameter(property = "session", readonly = true, required = true)
   private MavenSession mavenSession;
 
+  @Component
+  private RepositorySystem repository;
+  @Parameter(property = "localRepository", required = true, readonly = true)
+  private ArtifactRepository localRepository;
+  @Parameter(property = "project.remoteArtifactRepositories", required = true, readonly = true)
+  private java.util.List<ArtifactRepository> remoteRepositories;
+
   private ResourceLoader resourceLoader;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    resourceLoader = new ResourceLoader(ClassLoaderUtil.buildDependencyClassLoader(project));
+    ClassLoader resourceClassLoader = ClassLoaderUtil.buildDependencyClassLoader(project);
+    resourceLoader = new ResourceLoader(resourceClassLoader);
 
     List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
         getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_ROLES_DIR));
@@ -100,7 +112,16 @@ public class GenerateMojo extends AbstractCongaMojo {
     List<ResourceCollection> environmentDirs = ImmutableList.of(getEnvironmentDir(),
         getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_ENVIRONMENTS_DIR));
 
-    Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir());
+    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
+        .baseDir(project.getBasedir())
+        .resourceClassLoader(resourceClassLoader)
+        .containerContext(new MavenUrlFilePluginContext()
+            .project(project)
+            .repository(repository)
+            .localRepository(localRepository)
+            .remoteRepositories(remoteRepositories));
+
+    Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir(), urlFilePluginContext);
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
     generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
     generator.setVersion(project.getVersion());
@@ -120,8 +141,8 @@ public class GenerateMojo extends AbstractCongaMojo {
         .filter(this::hasCongaDefinitions)
         // transform to string
         .map(dependency -> dependency.getGroupId() + "/" + dependency.getArtifactId() + "/" + dependency.getVersion()
-            + (dependency.getClassifier() != null ? "/" + dependency.getClassifier() : ""))
-            .collect(Collectors.toList());
+        + (dependency.getClassifier() != null ? "/" + dependency.getClassifier() : ""))
+        .collect(Collectors.toList());
   }
 
   /**

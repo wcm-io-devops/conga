@@ -20,10 +20,8 @@ Other plugins:
 
 * **Mulitply Plugin**: Plugin controls the generation of multiple files from a single file definition.
 * **Handlebars Helper Plugin**: Plugin allows to register your own Handlebar helper to define custom handlebar expression usable in the CONGA templates.
-
-Export plugins:
-
 * **Node Model Export Plugin**: Allows to export "model data" (expanded configurations, list of generated files and tenants) from CONGA to a file which can be picked up by infrastructure automation tools
+* **URL File Plugin**: Allows to copy or download files from external sources identified via "URL prefixes"
 
 See API documentation for the detailed plugin interfaces:
 
@@ -55,6 +53,15 @@ Export plugins:
 | Plugin name | Description
 |-------------|-------------
 | `yaml`      | Dumps all "model data" (expanded configuration, list of generated files and tenants) from CONGA to "model.yaml" files for each node. This file can be piced up by infrastructure automation tools e.g. Ansible to execute the further deployment steps.
+
+URL File Plugins plugins:
+
+| Plugin name  | URL Prefix            | Description
+|--------------|-----------------------|-------------
+| `filesystem` | `file:`               | Copy files from local filesystem
+| `classpath`  | `classpath:`          | Copy files from classpath
+| `http`       | `http://`, `https://` | Download files from HTTP or HTTPS URLs
+| `maven`      | `mvn:`                | Download files from Maven Artifact repository (only supported when CONGA runs inside Maven)
 
 Handlebars Helper plugins: see [Handlebars quickstart][handlebars-quickstart].
 

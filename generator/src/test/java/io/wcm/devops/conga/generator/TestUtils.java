@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
 
+import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
@@ -47,11 +48,13 @@ public final class TestUtils {
   public static Generator setupGenerator(File destDir) {
     ResourceLoader resourceLoader = new ResourceLoader();
     ResourceCollection baseDir = resourceLoader.getResourceCollection("src/test/definitions");
+    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext();
     Generator underTest = new Generator(
         ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")),
         ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")),
         ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")),
-        destDir);
+        destDir,
+        urlFilePluginContext);
     underTest.setVersion(TEST_VERSION);
     underTest.setDependencyVersions(ImmutableList.of(TEST_DEPENDENCY_VERSION));
     return underTest;

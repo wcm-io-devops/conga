@@ -12,7 +12,7 @@ files:
   - services
   dir: conf/Catalina/localhost
   template: ROOT.xml.hbs
-  # Allows to define speciyl validators.
+  # Allows to define special validators.
   # If missing the best-match validator is picked automatically.
   validators:
   - xml
@@ -30,7 +30,7 @@ files:
 - file: setenv.sh
   dir: bin
   template: setenv.sh.hbs
-  # Default charset ist UTF-8 unless specified otherwise
+  # Default charset is UTF-8 unless specified otherwise
   charset: ISO-8859-1
 
 - file: setenv.bat
@@ -38,6 +38,15 @@ files:
   template: setenv.bat.hbs
   charset: ISO-8859-1
   lineEndings: windows
+
+# Copy file from classpath
+- file: mysample.txt
+  dir: download
+  url: classpath:/sample.txt
+
+# Download file from maven repository, use artifact filename. Derive version from maven project.
+- url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel//xml/site
+  dir: download
 
 
 # Defines configuration parameters and default values

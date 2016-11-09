@@ -53,8 +53,9 @@ public final class VariableMapResolver {
    * Replace variable placeholders in values of a map with syntax ${key} with values from the map itself.
    * The variables can recursively reference each other.
    * @param config Config map with values with variable placeholders
+   * @param deescapeVariables De-escape variables
    * @return Config map with values with variable placeholders resolved
-   * @throws IllegalArgumentException when a variable name could not be resolve.d
+   * @throws IllegalArgumentException when a variable name could not be resolved.
    */
   public static Map<String, Object> resolve(Map<String, Object> config, boolean deescapeVariables) {
     return resolve(config, deescapeVariables, 0);

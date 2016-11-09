@@ -17,6 +17,21 @@ The filename of the role YAML file is the role name.
 The documentation of all role and file configuration options can be found in the<br/>
 [Role Model API documentation][role-model].
 
+Files are always generated using a Handlebars template. After generation a file header is added automatically, and the file syntax is checked for well-formedness. Optionally additional post-processors can be configured.
+
+Alternatively it is possible to specify an URL instead of a template. In this case the file is copied/downloaded from an external source. The following URL prefixes are supported out of the box:
+
+- `file:` - Absoulte filesystem path
+- `classpath:` - Classpath resource reference
+- `http://` or `https://` - External URL
+- `mvn:` - Maven Artifact coordinates (only supported when CONGA runs inside Maven)
+    - Maven Coordinates Syntax 1 (Maven-style): `groupId:artifactId[:packaging][:classifier]:version`
+    - Maven Coordinates Syntax 2 (SlingStart-style): `groupId/artifactId/version[/type][/classifier]`
+    - `classifier` and  `type` are optional.
+    - If the version is empty in the role file it is resolved from the Maven project.
+
+If no prefix is specified the URL is interpreted as relative path in the local filesystem.
+
 
 ### Environment definitions
 

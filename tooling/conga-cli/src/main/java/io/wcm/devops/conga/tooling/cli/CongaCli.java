@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.Generator;
+import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
 
@@ -59,7 +60,7 @@ public final class CongaCli {
   /**
    * CLI entry point
    * @param args Command line arguments
-   * @throws Exception
+   * @throws Exception Exception
    */
   //CHECKSTYLE:OFF
   public static void main(String[] args) throws Exception {
@@ -86,7 +87,8 @@ public final class CongaCli {
     List<ResourceCollection> environmentDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + environmentDir));
     File targetDirecotry = new File(targetDir);
 
-    Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, targetDirecotry);
+    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext();
+    Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, targetDirecotry, urlFilePluginContext);
     generator.setDeleteBeforeGenerate(true);
     generator.generate(environments);
   }

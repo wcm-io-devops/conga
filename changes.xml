@@ -27,8 +27,14 @@
       <action type="add" dev="sseifert">
         Add support for dumping "Model YAML" files for each node to make integration with build automation tools like Ansible more convenient.
       </action>
+      <action type="add" dev="sseifert">
+        Add support for downloading files in roles from HTTP, filesystem, classpath or Maven Artifact Repository.
+      </action>
       <action type="update" dev="sseifert">
         Remove timestamp from file headers.
+      </action>
+      <action type="update" dev="sseifert">
+        Maven 'config-definition' projects: Include resources of maven project in definition JAR file.
       </action>
     </release>
 

@@ -10,7 +10,7 @@ nodes:
     topologyConnectorPath: /specialConnector
   roles:
   - role: tomcat-services
-    # Variants allow to pic a specific sub-configuration of a role
+    # Variants allow to pick a specific sub-configuration of a role
     variant: importer
     # Config only for this role
     config:
@@ -53,7 +53,7 @@ config:
   - "http://host2${topologyConnectorPath}"
 
 
-# Tenant defintions
+# Tenant definitions
 tenants:
 
 # Tenant with two tenant roles (can be used for filtering file multiply)

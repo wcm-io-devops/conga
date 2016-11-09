@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -54,6 +55,7 @@ public final class Generator {
   private final File destDir;
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
+  private final UrlFileManager urlFileManager;
   private Logger log = LoggerFactory.getLogger(getClass());
   private boolean deleteBeforeGenerate;
   private String version;
@@ -64,13 +66,16 @@ public final class Generator {
    * @param templateDirs Template base directories
    * @param environmentDirs Directories with environment definitions. Filename without extension = environment name.
    * @param destDir Destination directory for generated file
+   * @param urlFilePluginContext URL file plugin context
    */
-  public Generator(List<ResourceCollection> roleDirs, List<ResourceCollection> templateDirs, List<ResourceCollection> environmentDirs, File destDir) {
+  public Generator(List<ResourceCollection> roleDirs, List<ResourceCollection> templateDirs, List<ResourceCollection> environmentDirs,
+      File destDir, UrlFilePluginContext urlFilePluginContext) {
     this.pluginManager = new PluginManager();
     this.roles = readModels(roleDirs, new RoleReader());
     this.environments = readModels(environmentDirs, new EnvironmentReader());
     this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);
     this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginManager);
+    this.urlFileManager = new UrlFileManager(this.pluginManager, urlFilePluginContext);
   }
 
   /**
@@ -155,7 +160,7 @@ public final class Generator {
         environmentDestDir.mkdir();
       }
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDestDir, pluginManager, handlebarsManager, version, dependencyVersions, log);
+          environmentDestDir, pluginManager, handlebarsManager, urlFileManager, version, dependencyVersions, log);
       environmentGenerator.generate();
     }
   }

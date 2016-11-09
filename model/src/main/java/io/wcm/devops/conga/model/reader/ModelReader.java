@@ -42,7 +42,7 @@ public interface ModelReader<T> {
    * Read model
    * @param file Model file
    * @return Model object
-   * @throws IOException
+   * @throws IOException is thrown when I/O exception occurs
    */
   T read(Resource file) throws IOException;
 
@@ -50,7 +50,7 @@ public interface ModelReader<T> {
    * Read model
    * @param is Model file
    * @return Model object
-   * @throws IOException
+   * @throws IOException is thrown when I/O exception occurs
    */
   T read(InputStream is) throws IOException;
 
