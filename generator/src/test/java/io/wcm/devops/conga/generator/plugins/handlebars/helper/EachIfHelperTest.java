@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import static org.junit.Assert.assertEquals;
+import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,28 +43,28 @@ public class EachIfHelperTest {
 
   @Test
   public void testNull() throws Exception {
-    assertEquals("", helper.apply(null, new MockOptions()));
-    assertEquals("", helper.apply(null, new MockOptions("a")));
+    assertHelper("", helper, null, new MockOptions());
+    assertHelper("", helper, null, new MockOptions("a"));
   }
 
   @Test
   public void testSingleValue() throws Exception {
-    assertEquals("", helper.apply("v1", new MockOptions()));
-    assertEquals("", helper.apply("v1", new MockOptions("a")));
+    assertHelper("", helper, "v1", new MockOptions());
+    assertHelper("", helper, "v1", new MockOptions("a"));
   }
 
   @Test
   public void testList() throws Exception {
-    assertEquals("", helper.apply(ImmutableList.of("v1", "v2"), new MockOptions()));
-    assertEquals("", helper.apply(ImmutableList.of("v1", "v2"), new MockOptions("a")));
-    assertEquals("fn({a=1})", helper.apply(ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("b", "2")), new MockOptions("a")));
-    assertEquals("fn({a=1})fn({a=2})", helper.apply(ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", "2")), new MockOptions("a")));
+    assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions());
+    assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions("a"));
+    assertHelper("fn({a=1})", helper, ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("b", "2")), new MockOptions("a"));
+    assertHelper("fn({a=1})fn({a=2})", helper, ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", "2")), new MockOptions("a"));
   }
 
   @Test
   public void testListDeepMap() throws Exception {
-    assertEquals("fn({a={b=1}})",
-        helper.apply(ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", ImmutableMap.of("b", "1"))), new MockOptions("a.b")));
+    assertHelper("fn({a={b=1}})", helper,
+        ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", ImmutableMap.of("b", "1"))), new MockOptions("a.b"));
   }
 
 }

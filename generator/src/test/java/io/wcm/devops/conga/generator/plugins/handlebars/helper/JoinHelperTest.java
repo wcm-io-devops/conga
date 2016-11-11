@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import static org.junit.Assert.assertEquals;
+import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class JoinHelperTest {
 
   @Test
   public void testApply() throws Exception {
-    assertEquals("a|b|c", helper.apply(ImmutableList.of("a", "b", "c"), new MockOptions("|")));
+    assertHelper("a|b|c", helper, ImmutableList.of("a", "b", "c"), new MockOptions("|"));
   }
 
 }

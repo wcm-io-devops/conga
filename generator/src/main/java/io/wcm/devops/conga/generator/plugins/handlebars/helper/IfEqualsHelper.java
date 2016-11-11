@@ -42,7 +42,7 @@ public final class IfEqualsHelper implements HelperPlugin<Object> {
   }
 
   @Override
-  public CharSequence apply(Object context, Options options) throws IOException {
+  public Object apply(Object context, Options options) throws IOException {
     if (!options.isFalsy(context)
         && options.params.length > 0
         && Objects.equals(context, options.param(0))) {

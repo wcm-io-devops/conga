@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import static org.junit.Assert.assertEquals;
+import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,9 +41,9 @@ public class DefaultIfEmptyHelperTest {
 
   @Test
   public void testApply() throws Exception {
-    assertEquals("a", helper.apply("a", new MockOptions()));
-    assertEquals("a", helper.apply("a", new MockOptions("b")));
-    assertEquals("b", helper.apply(null, new MockOptions("b")));
+    assertHelper("a", helper, "a", new MockOptions());
+    assertHelper("a", helper, "a", new MockOptions("b"));
+    assertHelper("b", helper, null, new MockOptions("b"));
   }
 
 }

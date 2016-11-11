@@ -20,7 +20,7 @@
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.MockOptions.FN_RETURN;
-import static org.junit.Assert.assertEquals;
+import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,21 +43,21 @@ public class IfEqualsHelperTest {
 
   @Test
   public void testEquals() throws Exception {
-    assertEquals(FN_RETURN, helper.apply("abc", new MockOptions("abc")));
-    assertEquals(FN_RETURN, helper.apply(ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("a", "b", "c"))));
+    assertHelper(FN_RETURN, helper, "abc", new MockOptions("abc"));
+    assertHelper(FN_RETURN, helper, ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("a", "b", "c")));
   }
 
   @Test
   public void testNotEquals() throws Exception {
-    assertEquals("", helper.apply("abc", new MockOptions("def")));
-    assertEquals("", helper.apply(ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("d", "e", "f"))));
+    assertHelper("", helper, "abc", new MockOptions("def"));
+    assertHelper("", helper, ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("d", "e", "f")));
   }
 
   @Test
   public void testNull() throws Exception {
-    assertEquals("", helper.apply(null, new MockOptions("def")));
-    assertEquals("", helper.apply("abc", new MockOptions()));
-    assertEquals("", helper.apply(null, new MockOptions()));
+    assertHelper("", helper, null, new MockOptions("def"));
+    assertHelper("", helper, "abc", new MockOptions());
+    assertHelper("", helper, null, new MockOptions());
   }
 
 }

@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import static org.junit.Assert.assertEquals;
+import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
@@ -42,8 +42,8 @@ public class RegexQuoteHelperTest {
 
   @Test
   public void testApply() throws Exception {
-    assertEquals("\\Qabc\\E", helper.apply("abc", new MockOptions()));
-    assertEquals("\\Qa.b.c\\E", helper.apply("a.b.c", new MockOptions()));
+    assertHelper("\\Qabc\\E", helper, "abc", new MockOptions());
+    assertHelper("\\Qa.b.c\\E", helper, "a.b.c", new MockOptions());
   }
 
   @Test

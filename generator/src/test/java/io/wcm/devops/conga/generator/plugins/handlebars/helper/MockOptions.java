@@ -25,8 +25,6 @@ import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -36,7 +34,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
-import com.github.jknack.handlebars.context.MapValueResolver;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -69,25 +67,12 @@ public final class MockOptions extends Options {
     super(mock(Handlebars.class),
         "dummyHelperName",
         TagType.VAR,
-        getContext(),
+        Context.newBuilder(null).build(),
         getFnTemplate(),
         getInverseTemplate(),
         params,
-        ImmutableMap.of());
-  }
-
-  private static Context getContext() {
-    Context context = mock(Context.class);
-
-    when(context.propertySet(any())).thenAnswer(new Answer<Set<Entry<String, Object>>>() {
-      @Override
-      public Set<Entry<String, Object>> answer(InvocationOnMock invocation) throws Throwable {
-        Object object = invocation.getArgument(0);
-        return MapValueResolver.INSTANCE.propertySet(object);
-      }
-    });
-
-    return context;
+        ImmutableMap.of(),
+        ImmutableList.of());
   }
 
   private static Template getFnTemplate() {
@@ -117,7 +102,7 @@ public final class MockOptions extends Options {
   }
 
   private static String getFnForContext(Context context) {
-    if (context == null || mockingDetails(context).isMock()) {
+    if (context == null || context.model() == null || mockingDetails(context).isMock()) {
       return FN_RETURN;
     }
     else {

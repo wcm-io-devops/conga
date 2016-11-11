@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2015 wcm.io
+ * Copyright (C) 2016 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,32 +19,27 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 
+import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.helper.StringHelpers;
+import com.github.jknack.handlebars.Options.Buffer;
 
-import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+final class TestUtils {
 
-/**
- * Handlebars helper that joins a list to a single string.
- * Uses {@link StringHelpers#join}.
- */
-public final class JoinHelper implements HelperPlugin<Object> {
-
-  /**
-   * Plugin/Helper name
-   */
-  public static final String NAME = "join";
-
-  @Override
-  public String getName() {
-    return NAME;
+  private TestUtils() {
+    // static methods only
   }
 
-  @Override
-  public Object apply(Object context, Options options) throws IOException {
-    return StringHelpers.join.apply(context, options);
+  public static void assertHelper(String expected, Helper<Object> helper, Object context, Options options) throws IOException {
+    Object result = helper.apply(context, options);
+    if (result instanceof Buffer) {
+      Buffer buffer = (Buffer)result;
+      result = buffer.subSequence(0, buffer.length());
+    }
+    assertEquals(expected, result);
   }
 
 }
