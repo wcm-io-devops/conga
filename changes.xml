@@ -36,6 +36,9 @@
       <action type="update" dev="sseifert">
         Maven 'config-definition' projects: Include resources of maven project in definition JAR file.
       </action>
+      <action type="update" dev="sseifert">
+        Update to latest handlebars 4.x version.
+      </action>
     </release>
 
     <release version="1.2.0" date="2016-06-15">
