@@ -42,6 +42,7 @@ public interface UrlFilePlugin extends Plugin {
    * @param url URL (including prefix)
    * @param context Context objects
    * @return Filename
+   * @throws IOException I/O exception
    */
   String getFileName(String url, UrlFilePluginContext context) throws IOException;
 

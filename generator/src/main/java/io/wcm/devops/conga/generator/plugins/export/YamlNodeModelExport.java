@@ -93,8 +93,12 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
             itemMap.put("postProcessors", ImmutableList.copyOf(item.getPostProcessors()));
           }
           Map<String, Object> modelOptions = item.getFileContext().getModelOptions();
-          if (modelOptions != null && !modelOptions.isEmpty()) {
-            itemMap.putAll(item.getFileContext().getModelOptions());
+          if (modelOptions != null) {
+            for (Map.Entry<String, Object> entry : modelOptions.entrySet()) {
+              if (!itemMap.containsKey(entry.getKey())) {
+                itemMap.put(entry.getKey(), entry.getValue());
+              }
+            }
           }
           return itemMap;
         })

@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -236,7 +237,7 @@ class EnvironmentGenerator {
     }
   }
 
-  private List<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
+  private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
       Map<String, Object> config, File nodeDir, Template template,
       String roleName, String roleVariantName, String templateName) {
 
@@ -267,7 +268,7 @@ class EnvironmentGenerator {
         nodeDir, file, url, roleFile, config, template, pluginManager, urlFileManager,
         version, dependencyVersions, log);
     try {
-      List<GeneratedFileContext> generatedFiles = fileGenerator.generate();
+      Collection<GeneratedFileContext> generatedFiles = fileGenerator.generate();
 
       // check for path duplicates
       generatedFiles.forEach(generatedFileContext -> {

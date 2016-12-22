@@ -27,6 +27,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -178,13 +179,13 @@ class FileGenerator {
    * @return List of files that where generated directly or indirectly (by post processors).
    * @throws IOException
    */
-  public List<GeneratedFileContext> generate() throws IOException {
+  public Collection<GeneratedFileContext> generate() throws IOException {
     File dir = file.getParentFile();
     if (!dir.exists()) {
       dir.mkdirs();
     }
 
-    Map<String, GeneratedFileContext> postProcessedFiles = new LinkedHashMap<>();
+    Collection<GeneratedFileContext> postProcessedFiles;
     if (template != null) {
       log.info("Generate file {}", getFilenameForLog(fileContext));
 
@@ -194,7 +195,7 @@ class FileGenerator {
       // add file header, validate and post-process generated file
       applyFileHeader(fileContext, roleFile.getFileHeader());
       applyValidation(fileContext, roleFile.getValidators());
-      postProcessedFiles.putAll(applyPostProcessor(fileContext));
+      postProcessedFiles = applyPostProcessor(fileContext);
 
     }
     else if (StringUtils.isNotBlank(url)) {
@@ -202,19 +203,13 @@ class FileGenerator {
 
       // generate by downloading/copying from URL, and post-process downloaded file
       generateFromUrlFile();
-      postProcessedFiles.putAll(applyPostProcessor(fileContext));
+      postProcessedFiles = applyPostProcessor(fileContext);
     }
     else {
       throw new IOException("No template and nor URL defined for file: " + FileUtil.getFileInfo(roleName, roleFile));
     }
 
-    // generate distinct list of existing files generated (directly or by postprocessors)
-    List<GeneratedFileContext> generatedFiles = new ArrayList<>();
-    if (!postProcessedFiles.containsKey(fileContext.getCanonicalPath()) && file.exists()) {
-      generatedFiles.add(new GeneratedFileContext().fileContext(fileContext));
-    }
-    generatedFiles.addAll(postProcessedFiles.values());
-    return generatedFiles;
+    return postProcessedFiles;
   }
 
   /**
@@ -294,15 +289,28 @@ class FileGenerator {
     plugin.apply(fileItem, validatorContext);
   }
 
-  private Map<String, GeneratedFileContext> applyPostProcessor(FileContext fileItem) {
+  private Collection<GeneratedFileContext> applyPostProcessor(FileContext fileItem) {
     // collect distinct list of files returned by each post processor
     // if a file is returned by multiple post processors combine to single entry with multiple plugin names
     Map<String, GeneratedFileContext> consolidatedFiles = new LinkedHashMap<>();
 
+    // start with original file
+    consolidatedFiles.put(fileContext.getCanonicalPath(), new GeneratedFileContext().fileContext(fileContext));
+
+    // process all processors. if multiple processors each processor processed the files of the previous one.
     roleFile.getPostProcessors().stream()
-    .map(name -> pluginManager.get(name, PostProcessorPlugin.class))
-    .forEach(plugin -> {
-      List<FileContext> processedFiles = applyPostProcessor(fileItem, plugin);
+        .map(name -> pluginManager.get(name, PostProcessorPlugin.class))
+        .forEach(plugin -> applyPostProcessor(consolidatedFiles, plugin));
+
+    return consolidatedFiles.values();
+  }
+
+  private void applyPostProcessor(Map<String, GeneratedFileContext> consolidatedFiles, PostProcessorPlugin plugin) {
+
+    // process all files from given map
+    ImmutableList.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
+      List<FileContext> processedFiles = applyPostProcessor(fileItem.getFileContext(), plugin);
+      fileItem.postProcessor(plugin.getName());
       processedFiles.forEach(item -> {
         GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
         if (generatedFileContext == null) {
@@ -313,7 +321,13 @@ class FileGenerator {
       });
     });
 
-    return consolidatedFiles;
+    // remove items that do no longer exist
+    ImmutableList.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
+      if (!fileItem.getFileContext().getFile().exists()) {
+        consolidatedFiles.remove(fileItem.getFileContext().getCanonicalPath());
+      }
+    });
+
   }
 
   private List<FileContext> applyPostProcessor(FileContext fileItem, PostProcessorPlugin plugin) {

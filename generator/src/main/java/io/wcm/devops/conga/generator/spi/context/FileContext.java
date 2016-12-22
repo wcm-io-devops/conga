@@ -75,11 +75,6 @@ public final class FileContext {
     return this;
   }
 
-  @Override
-  public String toString() {
-    return canonicalPath;
-  }
-
   /**
    * @return Model options
    */
@@ -94,6 +89,11 @@ public final class FileContext {
   public FileContext modelOptions(Map<String, Object> value) {
     this.modelOptions = value;
     return this;
+  }
+
+  @Override
+  public String toString() {
+    return canonicalPath;
   }
 
 }

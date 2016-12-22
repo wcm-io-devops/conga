@@ -64,4 +64,9 @@ public final class GeneratedFileContext {
     return this;
   }
 
+  @Override
+  public String toString() {
+    return fileContext.toString();
+  }
+
 }
