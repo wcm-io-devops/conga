@@ -200,8 +200,9 @@ class FileGenerator {
     else if (StringUtils.isNotBlank(url)) {
       log.info("Copy file {} from {}", getFilenameForLog(fileContext), url);
 
-      // generate by downloading/copying from URL
+      // generate by downloading/copying from URL, and post-process downloaded file
       generateFromUrlFile();
+      postProcessedFiles.putAll(applyPostProcessor(fileContext));
     }
     else {
       throw new IOException("No template and nor URL defined for file: " + FileUtil.getFileInfo(roleName, roleFile));
