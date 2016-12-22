@@ -54,6 +54,7 @@ public final class RoleFile extends AbstractModel {
   private String charset = CharEncoding.UTF_8;
   private LineEndings lineEndings = LineEndings.unix;
   private String escapingStrategy;
+  private Map<String, Object> modelOptions = new HashMap<>();
 
   /**
    * Defines the file name of the generated or downloaded file.
@@ -271,5 +272,19 @@ public final class RoleFile extends AbstractModel {
   public void setEscapingStrategy(String escapingStrategy) {
     this.escapingStrategy = escapingStrategy;
   }
+
+  /**
+   * Defines additional options that are written to the exported model metadata for this file.
+   * @return Model options
+   */
+  public Map<String, Object> getModelOptions() {
+    return this.modelOptions;
+  }
+
+
+  public void setModelOptions(Map<String, Object> modelOptions) {
+    this.modelOptions = modelOptions;
+  }
+
 
 }

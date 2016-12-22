@@ -97,7 +97,10 @@ class FileGenerator {
     this.pluginManager = pluginManager;
     this.urlFileManager = urlFileManager;
     this.log = log;
-    this.fileContext = new FileContext().file(file).charset(roleFile.getCharset());
+    this.fileContext = new FileContext()
+        .file(file)
+        .charset(roleFile.getCharset())
+        .modelOptions(roleFile.getModelOptions());
 
     this.fileHeaderContext = new FileHeaderContext()
         .commentLines(buildFileHeaderCommentLines(version, dependencyVersions));

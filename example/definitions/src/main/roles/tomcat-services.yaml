@@ -43,6 +43,9 @@ files:
 - file: mysample.txt
   dir: download
   url: classpath:/sample.txt
+  modelOptions:
+    customOption1: value1
+    customOption2: 123
 
 # Download file from maven repository, use artifact filename. Derive version from maven project.
 - url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel//xml/site

@@ -22,7 +22,10 @@ package io.wcm.devops.conga.generator;
 import static io.wcm.devops.conga.generator.TestUtils.assertDirectory;
 import static io.wcm.devops.conga.generator.TestUtils.assertFile;
 import static io.wcm.devops.conga.generator.TestUtils.setupGenerator;
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,11 +39,13 @@ import java.util.Map;
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.model.util.MapExpander;
 
@@ -71,6 +76,10 @@ public class GeneratorTestNodeModelExportTest {
         "text/test-conditional-tenant1.txt",
         "files/sample.txt",
         "files/sample-filesystem.txt");
+
+    assertFileModelOptions(role1, "files/sample-filesystem.txt",
+        ImmutableMap.<String, Object>of("modelOption1", "value1"));
+
     assertEquals("globalFromRole1", getConfig(role1, "globalString"));
     assertEquals(ImmutableList.of("tenantRole1", "tenantRole2"), getTenantRoles(role1, "tenant1"));
     assertEquals("\"value1\" äöüß€", getTenantConfig(role1, "tenant1", "defaultString"));
@@ -119,6 +128,19 @@ public class GeneratorTestNodeModelExportTest {
       files.forEach(item -> fileNamesFound.add((String)item.get("path")));
     }
     assertEquals(ImmutableList.copyOf(fileNamesExpected), fileNamesFound);
+  }
+
+  private void assertFileModelOptions(Map<String, Object> role, String fileName, Map<String, Object> expectedOptions) {
+    List<Map<String, Object>> files = (List<Map<String, Object>>)role.get("files");
+    if (files != null) {
+      for (Map<String, Object> item : files) {
+        if (StringUtils.equals((String)item.get("path"), fileName)) {
+          assertThat(item.entrySet(), (Matcher)hasItems(expectedOptions.entrySet().toArray()));
+          return;
+        }
+      }
+    }
+    fail("File not found: " + fileName);
   }
 
   private Object getConfig(Map<String, Object> configurable, String key) {

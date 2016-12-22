@@ -57,6 +57,8 @@ files:
 
 - url: classpath://xyz.txt
   dir: download
+  modelOptions:
+    modelOption1: value1
 
 # Defines configuration parameters and default values
 config:

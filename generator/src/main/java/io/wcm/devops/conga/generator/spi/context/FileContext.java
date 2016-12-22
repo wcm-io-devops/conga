@@ -20,6 +20,8 @@
 package io.wcm.devops.conga.generator.spi.context;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.wcm.devops.conga.generator.util.FileUtil;
 
@@ -31,6 +33,7 @@ public final class FileContext {
   private File file;
   private String canonicalPath;
   private String charset;
+  private Map<String, Object> modelOptions = new HashMap<>();
 
   /**
    * @return File
@@ -75,6 +78,22 @@ public final class FileContext {
   @Override
   public String toString() {
     return canonicalPath;
+  }
+
+  /**
+   * @return Model options
+   */
+  public Map<String, Object> getModelOptions() {
+    return this.modelOptions;
+  }
+
+  /**
+   * @param value Model options
+   * @return this
+   */
+  public FileContext modelOptions(Map<String, Object> value) {
+    this.modelOptions = value;
+    return this;
   }
 
 }
