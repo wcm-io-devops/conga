@@ -34,28 +34,27 @@ Basically all text-based files types can be generated. And with post processor p
 Additionally it is possible to copy/download files from external sources and include them in the configuration process. External sources are e.g. local filesystem, classpath, HTTP/HTTPS URLs or Maven Artifact references.
 
 
-### Configuration definition model
+### Configuration meta model
 
-![Configuration definition model](images/configuration-definition-model.png)
+![Configuration meta model](images/configuration-meta-model.png)
 
-#### DEV terminology
+#### Configuration definitions
 
-* **Node Role**: A set of functionality/application part that can be deployed to a node/machine, e.g. "AEM CMS", "AEM Dispatcher", "Tomcat Service Layer"
+* **Node role**: A set of functionality/application part that can be deployed to a node/machine, e.g. "AEM CMS", "AEM Dispatcher", "Tomcat Service Layer"
     * **Variant**: Variants of a role with same deployment artifacts but different configuration; e.g. "Author", "Publish", "Importer".
-    * **Configuration Parameter**: Definition of configuration parameters for that operation can define configuration values that are inserted into the file templates when generating the configuration.
+    * **Configuration parameter**: Definition of configuration parameters for that operation can define configuration values that are inserted into the file templates when generating the configuration.
     * **File**: Defines file to be generated for Role/Variant based on a File Template
-* **Tenant Role**: Allows to define features required for a tenant, e.g. Tenant Website with or without special features
-* **File Template**: Script-based template the contains static configuration parts and placeholders for configuration values defined by operations
+* **Tenant role**: Allows to define features required for a tenant, e.g. Tenant Website with or without special features
+* **File template**: Script-based template the contains static configuration parts and placeholders for configuration values defined by operations
 
-
-#### OPS terminology
+#### Configuration environments
 
 * **Environment**: Environment for a specific project or group of projects with a selection of nodes that work together, e.g. "QS", "Prelive", "Prod" etc.
 * **Node**: A system to deploy to, e.g. a physical machine, virtual machine, Docker container or any other deployment target.
     * For each node multiple roles can be assigned; for each role one variant
 * **Tenant**: A tenant needs a special subset of system configuration parameters, e.g. an own virtual host definition with the tenants public domain name in the Apache webserver
     * For each tenant multiple roles can be assigned
-* **Configuration Value**: Configuration value for a configuration parameter in context of environments, nodes, roles and tenants.
+* **Configuration value**: Configuration value for a configuration parameter in context of environments, nodes, roles and tenants.
 
 
 ### Technology stack
