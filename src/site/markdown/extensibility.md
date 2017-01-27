@@ -14,7 +14,7 @@ CONGA allows to provider custom plugins that are applied on generated files:
 * **Handlebars Escaping Strategy Plugin**: Plugin allows to define escaping rules for special chars. *)
 * **Post Processor Plugin**: Plugin that operations on a generated file, e.g. to convert it to a binary file.
 
-*) Theses plugins detect files with certain extensions, and are executed automatically on them.
+*) These plugins detect files with certain extensions, and are executed automatically on them.
 
 Other plugins:
 
@@ -52,7 +52,7 @@ Export plugins:
 
 | Plugin name | Description
 |-------------|-------------
-| `yaml`      | Dumps all "model data" (expanded configuration, list of generated files and tenants) from CONGA to "model.yaml" files for each node. This file can be piced up by infrastructure automation tools e.g. Ansible to execute the further deployment steps.
+| `yaml`      | Dumps all "model data" (expanded configuration, list of generated files and tenants) from CONGA to "model.yaml" files for each node. This file can be picked up by infrastructure automation tools e.g. Ansible to execute the further deployment steps.
 
 URL File Plugins plugins:
 
