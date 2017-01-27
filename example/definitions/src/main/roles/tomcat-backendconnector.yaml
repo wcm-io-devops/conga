@@ -1,5 +1,6 @@
 # Defines a role
 
+# Relative path to lookup the template files
 templateDir: tomcat
 
 files:

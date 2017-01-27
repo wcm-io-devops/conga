@@ -7,7 +7,7 @@ CONGA uses [YAML][yaml] to describe roles and environments.
 Please note that the Java Bean naming conventions are applied: For the property names in the YAML files the "get" prefix from the model class is omitted, and the property is written in headless camel case. Example: `getRoleConfig()` method name results in `roleConfig` property name.
 
 
-### Role defintions
+### Role definitions
 
 Example role definitions:<br/>
 https://github.com/wcm-io-devops/conga/tree/develop/example/definitions/src/main/roles
@@ -17,11 +17,11 @@ The filename of the role YAML file is the role name.
 The documentation of all role and file configuration options can be found in the<br/>
 [Role Model API documentation][role-model].
 
-Files are always generated using a Handlebars template. After generation a file header is added automatically, and the file syntax is checked for well-formedness. Optionally additional post-processors can be configured.
+Files are generated using a Handlebars template. After generation a file header is added automatically, and the file syntax is checked for well-formedness. Optionally additional post-processors can be configured.
 
 Alternatively it is possible to specify an URL instead of a template. In this case the file is copied/downloaded from an external source. The following URL prefixes are supported out of the box:
 
-- `file:` - Absoulte filesystem path
+- `file:` - Absolute filesystem path
 - `classpath:` - Classpath resource reference
 - `http://` or `https://` - External URL
 - `mvn:` - Maven Artifact coordinates (only supported when CONGA runs inside Maven)
@@ -75,7 +75,7 @@ config:
   - listValue2
 ```
 
-Within the configuration parameters maps other parameters can be references using a variable notation. Example: `${group1.param1}`. Nested variable references are supported, just make sure you define no cyclic dependencies.
+Within the configuration parameters maps other parameters can be referenced using a variable notation. Example: `${group1.param1}`. Nested variable references are supported, just make sure you define no cyclic dependencies.
 
 Configuration parameter maps are inherited to "deeper levels" within the YAML structure, and the maps are merged on each level. The configuration parameters on the "deeper levels" overwrite the parameters from the higher level.
 
