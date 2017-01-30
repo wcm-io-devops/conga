@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
+import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 
@@ -41,6 +42,11 @@ public final class NoneFileHeader implements FileHeaderPlugin {
   @Override
   public boolean accepts(FileContext file, FileHeaderContext context) {
     return true;
+  }
+
+  @Override
+  public ImplicitApplyOptions implicitApply(FileContext file, FileHeaderContext context) {
+    return ImplicitApplyOptions.NEVER;
   }
 
   @Override

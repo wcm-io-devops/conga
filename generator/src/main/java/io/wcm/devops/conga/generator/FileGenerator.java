@@ -43,6 +43,8 @@ import com.google.common.collect.ImmutableList;
 import io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader;
 import io.wcm.devops.conga.generator.plugins.validator.NoneValidator;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
+import io.wcm.devops.conga.generator.spi.FilePlugin;
+import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
@@ -244,21 +246,45 @@ class FileGenerator {
     return LineEndingConverter.convertTo(normalizedLineEndings, roleFile.getLineEndings());
   }
 
-  private void applyFileHeader(FileContext fileItem, String pluginName) {
-    Stream<FileHeaderPlugin> fileHeaders;
-    if (StringUtils.isEmpty(pluginName)) {
-      // auto-detect matching file header plugin if none are defined
-      fileHeaders = pluginManager.getAll(FileHeaderPlugin.class).stream()
-          .filter(plugin -> plugin.accepts(fileItem, fileHeaderContext));
+  /**
+   * Collect all file plugins that are either configured explicitely, or apply implicitely, or should always apply.
+   * @param pluginClass File plugin class
+   * @param fileItem File item
+   * @param contextObject File plugin context object
+   * @param pluginNames List of configured plugin names
+   * @return List of plugins that should apply
+   * @param <T> Plugin context object type.
+   * @param <R> Return type of the plugin apply method.
+   * @param <P> Plugin class
+   */
+  private <T, R, P extends FilePlugin<T, R>> Stream<P> collectFilePlugins(Class<P> pluginClass, FileContext fileItem, T contextObject,
+      List<String> pluginNames) {
+    Stream<P> plugins;
+    if (pluginNames.isEmpty()) {
+      // auto-detect matching plugins if none are defined
+      plugins = pluginManager.getAll(pluginClass).stream()
+          .filter(plugin -> plugin.accepts(fileItem, contextObject))
+          .filter(plugin -> plugin.implicitApply(fileItem, contextObject) == ImplicitApplyOptions.WHEN_UNCONFIGURED);
     }
     else {
-      // otherwise apply selected file header plugin
-      fileHeaders = Stream.of(pluginName)
-          .map(name -> pluginManager.get(name, FileHeaderPlugin.class));
+      // otherwise apply selected plugins
+      plugins = pluginNames.stream()
+          .map(name -> pluginManager.get(name, pluginClass));
     }
-    fileHeaders
-    .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneFileHeader.NAME))
-    .findFirst().ifPresent(plugin -> applyFileHeader(fileItem, plugin));
+    // add plugins that should always apply
+    return Stream.concat(plugins, pluginManager.getAll(pluginClass).stream()
+        .filter(plugin -> plugin.accepts(fileItem, contextObject))
+        .filter(plugin -> plugin.implicitApply(fileItem, contextObject) == ImplicitApplyOptions.ALWAYS));
+  }
+
+  private void applyFileHeader(FileContext fileItem, String pluginName) {
+    List<String> pluginNames = new ArrayList<>();
+    if (!StringUtils.isEmpty(pluginName)) {
+      pluginNames.add(pluginName);
+    }
+    collectFilePlugins(FileHeaderPlugin.class, fileItem, fileHeaderContext, pluginNames)
+        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneFileHeader.NAME))
+        .forEach(plugin -> applyFileHeader(fileItem, plugin));
   }
 
   private void applyFileHeader(FileContext fileItem, FileHeaderPlugin plugin) {
@@ -267,21 +293,9 @@ class FileGenerator {
   }
 
   private void applyValidation(FileContext fileItem, List<String> pluginNames) {
-    Stream<ValidatorPlugin> validators;
-    if (pluginNames.isEmpty()) {
-      // auto-detect matching validators if none are defined
-      validators = pluginManager.getAll(ValidatorPlugin.class).stream()
-          .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneFileHeader.NAME))
-          .filter(plugin -> plugin.accepts(fileItem, validatorContext));
-    }
-    else {
-      // otherwise apply selected validators
-      validators = pluginNames.stream()
-          .map(name -> pluginManager.get(name, ValidatorPlugin.class));
-    }
-    validators
-    .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneValidator.NAME))
-    .forEach(plugin -> applyValidation(fileItem, plugin));
+    collectFilePlugins(ValidatorPlugin.class, fileItem, validatorContext, pluginNames)
+        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneValidator.NAME))
+        .forEach(plugin -> applyValidation(fileItem, plugin));
   }
 
   private void applyValidation(FileContext fileItem, ValidatorPlugin plugin) {
@@ -297,10 +311,12 @@ class FileGenerator {
     // start with original file
     consolidatedFiles.put(fileContext.getCanonicalPath(), new GeneratedFileContext().fileContext(fileContext));
 
+    // collect postprocessor plugins
+    Stream<PostProcessorPlugin> postProcessors = collectFilePlugins(PostProcessorPlugin.class, fileItem, postProcessorContext,
+        roleFile.getPostProcessors());
+
     // process all processors. if multiple processors each processor processed the files of the previous one.
-    roleFile.getPostProcessors().stream()
-        .map(name -> pluginManager.get(name, PostProcessorPlugin.class))
-        .forEach(plugin -> applyPostProcessor(consolidatedFiles, plugin));
+    postProcessors.forEach(plugin -> applyPostProcessor(consolidatedFiles, plugin));
 
     return consolidatedFiles.values();
   }

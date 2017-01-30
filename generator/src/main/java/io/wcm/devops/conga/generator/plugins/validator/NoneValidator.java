@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.validator;
 
+import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
@@ -42,6 +43,11 @@ public final class NoneValidator implements ValidatorPlugin {
   @Override
   public boolean accepts(FileContext file, ValidatorContext context) {
     return true;
+  }
+
+  @Override
+  public ImplicitApplyOptions implicitApply(FileContext file, ValidatorContext context) {
+    return ImplicitApplyOptions.NEVER;
   }
 
   @Override

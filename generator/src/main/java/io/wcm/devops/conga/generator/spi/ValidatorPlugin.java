@@ -28,6 +28,17 @@ import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 public interface ValidatorPlugin extends FilePlugin<ValidatorContext, Void> {
 
   /**
+   * Whether to apply this plugin implicitly.
+   * @param file Context file
+   * @param context Context objects
+   * @return Implicit apply option
+   */
+  @Override
+  default ImplicitApplyOptions implicitApply(FileContext file, ValidatorContext context) {
+    return ImplicitApplyOptions.WHEN_UNCONFIGURED;
+  }
+
+  /**
    * Validates the given file
    * @param file Context file
    * @param context Context objects

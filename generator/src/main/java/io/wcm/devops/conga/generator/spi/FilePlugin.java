@@ -37,6 +37,14 @@ public interface FilePlugin<T, R> extends Plugin {
   boolean accepts(FileContext file, T context);
 
   /**
+   * Whether to apply this plugin implicitly.
+   * @param file Context file
+   * @param context Context objects
+   * @return Implicit apply option
+   */
+  ImplicitApplyOptions implicitApply(FileContext file, T context);
+
+  /**
    * Applies the plugin operation.
    * @param file Context file
    * @param context Context objects
