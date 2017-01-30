@@ -37,6 +37,7 @@ import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.ModelReader;
@@ -70,7 +71,7 @@ public final class Generator {
    */
   public Generator(List<ResourceCollection> roleDirs, List<ResourceCollection> templateDirs, List<ResourceCollection> environmentDirs,
       File destDir, UrlFilePluginContext urlFilePluginContext) {
-    this.pluginManager = new PluginManager();
+    this.pluginManager = new PluginManagerImpl();
     this.roles = readModels(roleDirs, new RoleReader());
     this.environments = readModels(environmentDirs, new EnvironmentReader());
     this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);

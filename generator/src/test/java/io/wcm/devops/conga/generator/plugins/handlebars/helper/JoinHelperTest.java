@@ -28,7 +28,7 @@ import com.github.jknack.handlebars.Helper;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class JoinHelperTest {
 
@@ -37,7 +37,7 @@ public class JoinHelperTest {
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() {
-    helper = new PluginManager().get(JoinHelper.NAME, HelperPlugin.class);
+    helper = new PluginManagerImpl().get(JoinHelper.NAME, HelperPlugin.class);
   }
 
   @Test

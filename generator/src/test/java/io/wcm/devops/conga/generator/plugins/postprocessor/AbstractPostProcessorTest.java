@@ -35,7 +35,7 @@ import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class AbstractPostProcessorTest {
 
@@ -50,7 +50,7 @@ public class AbstractPostProcessorTest {
     new JsonFileHeader().apply(fileContext, fileHeader);
 
     PostProcessorPlugin postProcessor = new DummyPostProcessor();
-    PostProcessorContext postProcessorContext = new PostProcessorContext().pluginManager(new PluginManager());
+    PostProcessorContext postProcessorContext = new PostProcessorContext().pluginManager(new PluginManagerImpl());
 
     List<FileContext> result = postProcessor.apply(fileContext, postProcessorContext);
 

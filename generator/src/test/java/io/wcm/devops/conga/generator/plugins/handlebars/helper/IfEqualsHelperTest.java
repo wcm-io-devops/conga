@@ -29,7 +29,7 @@ import com.github.jknack.handlebars.Helper;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class IfEqualsHelperTest {
 
@@ -38,7 +38,7 @@ public class IfEqualsHelperTest {
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() {
-    helper = new PluginManager().get(IfEqualsHelper.NAME, HelperPlugin.class);
+    helper = new PluginManagerImpl().get(IfEqualsHelper.NAME, HelperPlugin.class);
   }
 
   @Test

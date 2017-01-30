@@ -28,7 +28,7 @@ import org.junit.Test;
 import com.github.jknack.handlebars.Helper;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class RegexQuoteHelperTest {
 
@@ -37,7 +37,7 @@ public class RegexQuoteHelperTest {
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() {
-    helper = new PluginManager().get(RegexQuoteHelper.NAME, HelperPlugin.class);
+    helper = new PluginManagerImpl().get(RegexQuoteHelper.NAME, HelperPlugin.class);
   }
 
   @Test

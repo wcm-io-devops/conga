@@ -36,7 +36,7 @@ import com.google.common.collect.ImmutableList;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class XmlFileHeaderTest {
 
@@ -44,7 +44,7 @@ public class XmlFileHeaderTest {
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(XmlFileHeader.NAME, FileHeaderPlugin.class);
+    underTest = new PluginManagerImpl().get(XmlFileHeader.NAME, FileHeaderPlugin.class);
   }
 
   @Test

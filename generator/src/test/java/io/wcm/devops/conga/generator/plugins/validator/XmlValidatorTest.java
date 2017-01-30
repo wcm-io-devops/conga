@@ -30,7 +30,7 @@ import org.junit.Test;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 
 public class XmlValidatorTest {
@@ -39,7 +39,7 @@ public class XmlValidatorTest {
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(XmlValidator.NAME, ValidatorPlugin.class);
+    underTest = new PluginManagerImpl().get(XmlValidator.NAME, ValidatorPlugin.class);
   }
 
   @Test

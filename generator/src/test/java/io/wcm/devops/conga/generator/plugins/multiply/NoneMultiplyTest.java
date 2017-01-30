@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
@@ -47,7 +47,7 @@ public class NoneMultiplyTest {
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(NoneMultiply.NAME, MultiplyPlugin.class);
+    underTest = new PluginManagerImpl().get(NoneMultiply.NAME, MultiplyPlugin.class);
 
     role = new Role();
     roleFile = new RoleFile();

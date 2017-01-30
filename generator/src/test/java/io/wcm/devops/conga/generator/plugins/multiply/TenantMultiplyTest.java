@@ -34,7 +34,7 @@ import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Tenant;
 import io.wcm.devops.conga.model.role.Role;
@@ -53,7 +53,7 @@ public class TenantMultiplyTest {
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(TenantMultiply.NAME, MultiplyPlugin.class);
+    underTest = new PluginManagerImpl().get(TenantMultiply.NAME, MultiplyPlugin.class);
 
     role = new Role();
     roleFile = new RoleFile();
