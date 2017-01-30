@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class UrlFileManagerTest {
 
@@ -40,7 +40,7 @@ public class UrlFileManagerTest {
   @Before
   public void setUp() {
     UrlFilePluginContext context = new UrlFilePluginContext();
-    underTest = new UrlFileManager(new PluginManager(), context);
+    underTest = new UrlFileManager(new PluginManagerImpl(), context);
   }
 
   @Test

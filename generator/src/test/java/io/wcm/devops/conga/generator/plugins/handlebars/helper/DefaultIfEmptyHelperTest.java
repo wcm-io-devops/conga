@@ -27,7 +27,7 @@ import org.junit.Test;
 import com.github.jknack.handlebars.Helper;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class DefaultIfEmptyHelperTest {
 
@@ -36,7 +36,7 @@ public class DefaultIfEmptyHelperTest {
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() {
-    helper = new PluginManager().get(DefaultIfEmptyHelper.NAME, HelperPlugin.class);
+    helper = new PluginManagerImpl().get(DefaultIfEmptyHelper.NAME, HelperPlugin.class);
   }
 
   @Test

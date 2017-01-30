@@ -30,6 +30,9 @@
       <action type="add" dev="sseifert">
         Add support for downloading files in roles from HTTP, filesystem, classpath or Maven Artifact Repository.
       </action>
+      <action type="add" dev="sseifert">
+        File plugins (validation, file header, post processor) can specify "implicit apply options" whether they shoud never, always or only when unconfigured implictely apply.
+      </action>
       <action type="update" dev="sseifert">
         Remove timestamp from file headers.
       </action>

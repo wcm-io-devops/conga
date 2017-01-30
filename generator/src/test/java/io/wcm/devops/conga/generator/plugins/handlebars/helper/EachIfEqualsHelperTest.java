@@ -29,7 +29,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class EachIfEqualsHelperTest {
 
@@ -38,7 +38,7 @@ public class EachIfEqualsHelperTest {
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() {
-    helper = new PluginManager().get(EachIfEqualsHelper.NAME, HelperPlugin.class);
+    helper = new PluginManagerImpl().get(EachIfEqualsHelper.NAME, HelperPlugin.class);
   }
 
   @Test

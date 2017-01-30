@@ -36,7 +36,7 @@ import com.google.common.collect.ImmutableList;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class UnixShellScriptFileHeaderTest {
 
@@ -44,7 +44,7 @@ public class UnixShellScriptFileHeaderTest {
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(UnixShellScriptFileHeader.NAME, FileHeaderPlugin.class);
+    underTest = new PluginManagerImpl().get(UnixShellScriptFileHeader.NAME, FileHeaderPlugin.class);
   }
 
   @Test
