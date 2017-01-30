@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,6 +38,7 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.CharEncoding;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +53,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
@@ -59,8 +62,8 @@ import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.role.RoleFile;
 
-@RunWith(MockitoJUnitRunner.class)
-public class FileGeneratorTest {
+@RunWith(MockitoJUnitRunner.Silent.class)
+public class FileGeneratorPostProcessorTest {
 
   private File destDir;
   private File file;
@@ -84,7 +87,12 @@ public class FileGeneratorTest {
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext();
     urlFileManager = new UrlFileManager(pluginManager, urlFilePluginContext);
 
-    when(pluginManager.getAll(PostProcessorPlugin.class)).thenReturn(ImmutableList.copyOf(postProcessorPlugins.values()));
+    when(pluginManager.getAll(PostProcessorPlugin.class)).thenAnswer(new Answer<List<PostProcessorPlugin>>() {
+      @Override
+      public List<PostProcessorPlugin> answer(InvocationOnMock invocation) throws Throwable {
+        return ImmutableList.copyOf(postProcessorPlugins.values());
+      }
+    });
     when(pluginManager.get(anyString(), eq(PostProcessorPlugin.class))).thenAnswer(new Answer<PostProcessorPlugin>() {
       @Override
       public PostProcessorPlugin answer(InvocationOnMock invocation) throws Throwable {
@@ -99,16 +107,20 @@ public class FileGeneratorTest {
   }
 
   @Test
-  public void testWithoutPostProcessors() throws Exception {
+  public void testWithoutPostProcessor() throws Exception {
+    PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
+
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of());
+
+    verify(one, never()).apply(any(FileContext.class), any(PostProcessorContext.class));
   }
 
   @Test
-  public void testOnePostProcessors() throws Exception {
-    PostProcessorPlugin one = mockPostProcessor("one");
+  public void testOnePostProcessor() throws Exception {
+    PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setPostProcessors(ImmutableList.of("one"));
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -120,8 +132,8 @@ public class FileGeneratorTest {
   }
 
   @Test
-  public void testOnePostProcessorsWithRewrite() throws Exception {
-    PostProcessorPlugin one = mockPostProcessor("one");
+  public void testOnePostProcessorWithRewrite() throws Exception {
+    PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
       @Override
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
@@ -138,12 +150,14 @@ public class FileGeneratorTest {
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.abc", ImmutableMap.of(), ImmutableSet.of("one"));
+
+    verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
   }
 
   @Test
   public void testTwoPostProcessors() throws Exception {
-    PostProcessorPlugin one = mockPostProcessor("one");
-    PostProcessorPlugin two = mockPostProcessor("two");
+    PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
+    PostProcessorPlugin two = mockPostProcessor("two", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setPostProcessors(ImmutableList.of("one", "two"));
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -157,7 +171,7 @@ public class FileGeneratorTest {
 
   @Test
   public void testTwoPostProcessorsWithRewrite() throws Exception {
-    PostProcessorPlugin one = mockPostProcessor("one");
+    PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
       @Override
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
@@ -169,7 +183,7 @@ public class FileGeneratorTest {
       }
     });
 
-    PostProcessorPlugin two = mockPostProcessor("two");
+    PostProcessorPlugin two = mockPostProcessor("two", "abc", ImplicitApplyOptions.NEVER);
     when(two.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
       @Override
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
@@ -189,6 +203,58 @@ public class FileGeneratorTest {
     assertItem(result.get(1), "test.def", ImmutableMap.of(), ImmutableSet.of("two"));
   }
 
+  @Test
+  public void testImplicitPostProcessor() throws Exception {
+    PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
+
+    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+
+    assertEquals(1, result.size());
+    assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of("one"));
+
+    verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
+  }
+
+  @Test
+  public void testAlwaysPostProcessor() throws Exception {
+    PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.ALWAYS);
+
+    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+
+    assertEquals(1, result.size());
+    assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of("one"));
+
+    verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
+  }
+
+  @Test
+  public void testPostProcessorWithRewriteAndImplicit() throws Exception {
+    PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
+    when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
+      @Override
+      public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
+        // delete input file and create new file test.abc instead
+        FileContext input = invocation.getArgument(0);
+        assertItem(input, "test.txt", ImmutableMap.of());
+        return ImmutableList.of(newFile("test.abc"));
+      }
+    });
+    PostProcessorPlugin two = mockPostProcessor("two", "txt", ImplicitApplyOptions.ALWAYS);
+    PostProcessorPlugin three = mockPostProcessor("three", "abc", ImplicitApplyOptions.ALWAYS);
+
+    roleFile.setPostProcessors(ImmutableList.of("one"));
+
+    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+
+    assertEquals(2, result.size());
+    assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of("one", "two"));
+    assertItem(result.get(1), "test.abc", ImmutableMap.of(), ImmutableSet.of("one", "three"));
+
+    verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
+    verify(two, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
+    verify(three, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
+  }
+
   private void assertItem(GeneratedFileContext item, String expectedFileName, Map<String, Object> expectedModelOptions,
       Set<String> expectedPostProcessors) {
     assertItem(item.getFileContext(), expectedFileName, expectedModelOptions);
@@ -200,9 +266,17 @@ public class FileGeneratorTest {
     assertEquals(expectedModelOptions, item.getModelOptions());
   }
 
-  private PostProcessorPlugin mockPostProcessor(String pluginName) {
+  private PostProcessorPlugin mockPostProcessor(String pluginName, String extension, ImplicitApplyOptions implicitApply) {
     PostProcessorPlugin plugin = mock(PostProcessorPlugin.class);
     when(plugin.getName()).thenReturn(pluginName);
+    when(plugin.accepts(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<Boolean>() {
+      @Override
+      public Boolean answer(InvocationOnMock invocation) throws Throwable {
+        FileContext input = invocation.getArgument(0);
+        return StringUtils.endsWith(input.getFile().getName(), "." + extension);
+      }
+    });
+    when(plugin.implicitApply(any(FileContext.class), any(PostProcessorContext.class))).thenReturn(implicitApply);
     postProcessorPlugins.put(pluginName, plugin);
     return plugin;
   }

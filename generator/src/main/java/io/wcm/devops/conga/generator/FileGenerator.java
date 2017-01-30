@@ -273,8 +273,8 @@ class FileGenerator {
     }
     // add plugins that should always apply
     return Stream.concat(plugins, pluginManager.getAll(pluginClass).stream()
-        .filter(plugin -> plugin.accepts(fileItem, contextObject))
-        .filter(plugin -> plugin.implicitApply(fileItem, contextObject) == ImplicitApplyOptions.ALWAYS));
+          .filter(plugin -> plugin.accepts(fileItem, contextObject))
+          .filter(plugin -> plugin.implicitApply(fileItem, contextObject) == ImplicitApplyOptions.ALWAYS));
   }
 
   private void applyFileHeader(FileContext fileItem, String pluginName) {
@@ -324,17 +324,49 @@ class FileGenerator {
   private void applyPostProcessor(Map<String, GeneratedFileContext> consolidatedFiles, PostProcessorPlugin plugin) {
 
     // process all files from given map
-    ImmutableList.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
-      List<FileContext> processedFiles = applyPostProcessor(fileItem.getFileContext(), plugin);
-      fileItem.postProcessor(plugin.getName());
-      processedFiles.forEach(item -> {
-        GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
-        if (generatedFileContext == null) {
-          generatedFileContext = new GeneratedFileContext().fileContext(item);
-          consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
-        }
-        generatedFileContext.postProcessor(plugin.getName());
+    ImmutableList.copyOf(consolidatedFiles.values()).stream()
+        // do not apply post processor twice
+        .filter(fileItem -> !fileItem.getPostProcessors().contains(plugin.getName()))
+        .filter(fileItem -> plugin.accepts(fileItem.getFileContext(), postProcessorContext))
+        .forEach(fileItem -> {
+          List<FileContext> processedFiles = applyPostProcessor(fileItem.getFileContext(), plugin);
+          fileItem.postProcessor(plugin.getName());
+          processedFiles.forEach(item -> {
+            GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
+            if (generatedFileContext == null) {
+              generatedFileContext = new GeneratedFileContext().fileContext(item);
+              consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
+            }
+            generatedFileContext.postProcessor(plugin.getName());
+          });
       });
+
+    // remove items that do no longer exist
+    ImmutableList.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
+      if (!fileItem.getFileContext().getFile().exists()) {
+        consolidatedFiles.remove(fileItem.getFileContext().getCanonicalPath());
+      }
+    });
+
+    // apply post processor configured as implicit ALWAYS
+    consolidatedFiles.values().forEach(fileItem -> {
+      pluginManager.getAll(PostProcessorPlugin.class).stream()
+          .filter(implicitPlugin -> implicitPlugin.accepts(fileItem.getFileContext(), postProcessorContext))
+          .filter(implicitPlugin -> implicitPlugin.implicitApply(fileItem.getFileContext(), postProcessorContext) == ImplicitApplyOptions.ALWAYS)
+          // do not apply post processor twice
+          .filter(implicitPlugin -> !fileItem.getPostProcessors().contains(implicitPlugin.getName()))
+          .forEach(implicitPlugin -> {
+            List<FileContext> processedFiles = applyPostProcessor(fileItem.getFileContext(), implicitPlugin);
+            fileItem.postProcessor(implicitPlugin.getName());
+            processedFiles.forEach(item -> {
+              GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
+              if (generatedFileContext == null) {
+                generatedFileContext = new GeneratedFileContext().fileContext(item);
+                consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
+              }
+              generatedFileContext.postProcessor(implicitPlugin.getName());
+            });
+          });
     });
 
     // remove items that do no longer exist
@@ -351,10 +383,12 @@ class FileGenerator {
 
     List<FileContext> processedFiles = plugin.apply(fileItem, postProcessorContext);
 
-    // validate processed files
     if (processedFiles != null) {
-      processedFiles.forEach(processedFile -> applyFileHeader(processedFile, (String)null));
-      processedFiles.forEach(processedFile -> applyValidation(processedFile, ImmutableList.of()));
+      // add file header, validate files
+      processedFiles.forEach(processedFile -> {
+            applyFileHeader(processedFile, (String)null);
+            applyValidation(processedFile, ImmutableList.of());
+      });
     }
 
     return processedFiles;
