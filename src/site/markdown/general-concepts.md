@@ -38,23 +38,34 @@ Additionally it is possible to copy/download files from external sources and inc
 
 ![Configuration meta model](images/configuration-meta-model.png)
 
-#### Configuration definitions
-
-* **Node role**: A set of functionality/application part that can be deployed to a node/machine, e.g. "AEM CMS", "AEM Dispatcher", "Tomcat Service Layer"
-    * **Variant**: Variants of a role with same deployment artifacts but different configuration; e.g. "Author", "Publish", "Importer".
-    * **Configuration parameter**: Definition of configuration parameters for that operation can define configuration values that are inserted into the file templates when generating the configuration.
-    * **File**: Defines file to be generated for Role/Variant based on a File Template
-* **Tenant role**: Allows to define features required for a tenant, e.g. Tenant Website with or without special features
-* **File template**: Script-based template the contains static configuration parts and placeholders for configuration values defined by operations
-
-#### Configuration environments
+#### Environments
 
 * **Environment**: Environment for a specific project or group of projects with a selection of nodes that work together, e.g. "QS", "Prelive", "Prod" etc.
 * **Node**: A system to deploy to, e.g. a physical machine, virtual machine, Docker container or any other deployment target.
     * For each node multiple roles can be assigned; for each role one variant
-* **Tenant**: A tenant needs a special subset of system configuration parameters, e.g. an own virtual host definition with the tenants public domain name in the Apache webserver
-    * For each tenant multiple roles can be assigned
+* **Tenant**: List of tenants in the environment and their configuration
+    * For each tenant multiple tenant roles can be assigned
 * **Configuration value**: Configuration value for a configuration parameter in context of environments, nodes, roles and tenants.
+
+#### Configuration definitions
+
+* **Node role**: A set of functionality/application part that can be deployed to a node/machine, e.g. "AEM CMS", "AEM Dispatcher", "Tomcat Service Layer"
+    * **Variant**: Variants of a role with same deployment artifacts but different configuration; e.g. "Author", "Publish", "Importer".
+    * **Configuration parameter**: Definition of configuration parameters that can be set for each environment. The configuration parameter values are merged with the file templates when generating the configuration.
+    * **File**: Defines file to be generated for Role/Variant based on a File Template
+* **Tenant role**: Allows to define features required for a tenant, e.g. Tenant Website with or without special features
+* **File template**: Script-based template the contains static configuration parts and placeholders for the configuration parameter values
+
+#### Multitenancy
+
+* Often a single infrastructure environment is used to host applications and websites for multiple tenants (e.g. for multiple markets or different brands)
+* Most of this multi-tenancy aspects are managed outside the system configuration (e.g. in content hierarchy and content pages, context-aware configuration in repository)
+* But in some occasions the system configuration is affected as well, e.g.
+    * One vhost file for each tenant's website in the webserver configuration
+    * Short URL Mapping in Dispatcher and AEM for each website
+* To support this tenants may be defined in each environment, and it is possible to override some of the configuration parameters with tenant-specific values
+* Using the “Tenant Multiply” plugin it is possible to generate multiple configuration files (one per tenant) based on a single file template.
+* Tenants are independent from roles and role variants from the configuration definition. Tenant roles are specific to tenants and allow to express different characteristics of tenants e.g. with our without a specific feature-set.
 
 
 ### Technology stack
