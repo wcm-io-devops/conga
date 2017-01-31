@@ -11,7 +11,7 @@ Make sure you have installed:
 To start with the example project by cloning this GIT repository:
 https://github.com/wcm-io-devops/conga/
 
-The example project is in a subfolder `example'.
+The example project is in a subfolder `example`.
 
 
 ### Definitions
@@ -64,6 +64,6 @@ You find the generated files at `target/configuration`, they are packed as well 
 ### Using from command line
 
 It is possible to use CONGA outside Maven from the command line using this prepackaged JAR with all dependencies:
-http://search.maven.org/#search|ga|1|a%3A%22io.wcm.devops.conga.tooling.cli%22
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.wcm.devops.conga/io.wcm.devops.conga.tooling.cli/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.wcm.devops.conga/io.wcm.devops.conga.tooling.cli)
 
 This mode lacks some features like building definition artifacts, versioning etc. So it is recommended to use the Maven plugin whenever possible.
