@@ -65,7 +65,7 @@ Additionally it is possible to copy/download files from external sources and inc
     * Short URL Mapping in Dispatcher and AEM for each website
 * To support this tenants may be defined in each environment, and it is possible to override some of the configuration parameters with tenant-specific values
 * Using the “Tenant Multiply” plugin it is possible to generate multiple configuration files (one per tenant) based on a single file template.
-* Tenants are independent from roles and role variants from the configuration definition. Tenant roles are specific to tenants and allow to express different characteristics of tenants e.g. with our without a specific feature-set.
+* Tenants are independent from roles and role variants from the configuration definition. Tenant roles are specific to tenants and allow to express different characteristics of tenants e.g. with or without a specific feature-set.
 
 
 ### Technology stack
