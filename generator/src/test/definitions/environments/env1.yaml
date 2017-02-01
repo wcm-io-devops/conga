@@ -29,6 +29,7 @@ roleConfig:
 # Global configuration
 config:
   globalString: globalValue äöüß€
+  varWithContext: ${tenant} ${version} ${node} ${nodeRole}
 
 
 # Tenant defintions

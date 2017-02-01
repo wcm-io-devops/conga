@@ -40,6 +40,9 @@
         Make sure all post-processed files are processed when chaining multiple post processors.
       </action>
       <action type="update" dev="sseifert">
+        Allow to reference context variables like tenant, node, nodeRole from configuration parameters in environment.
+      </action>
+      <action type="update" dev="sseifert">
         Maven 'config-definition' projects: Include resources of maven project in definition JAR file.
       </action>
       <action type="update" dev="sseifert">
