@@ -44,7 +44,7 @@ import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 
 /**
  * Validates that the CONGA maven plugin version and CONGA plugin versions match or are newer than those versions
- * used when generating the dependency artefacts.
+ * used when generating the dependency artifacts.
  */
 @Mojo(name = "validate-version-info", defaultPhase = LifecyclePhase.VALIDATE, requiresProject = true, threadSafe = true,
 requiresDependencyResolution = ResolutionScope.COMPILE)

@@ -57,7 +57,7 @@ import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
 
 /**
- * Packages the definitions in a ZIP file.
+ * Packages the definitions in a JAR file.
  */
 @Mojo(name = "definition-package", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
 public class DefinitionPackageMojo extends AbstractCongaMojo {
