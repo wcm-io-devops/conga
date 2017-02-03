@@ -1,1 +1,2 @@
+io.wcm.devops.conga.generator.plugins.export.NoneNodeModelExport
 io.wcm.devops.conga.generator.plugins.export.YamlNodeModelExport
