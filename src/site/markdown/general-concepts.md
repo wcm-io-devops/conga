@@ -68,6 +68,13 @@ Additionally it is possible to copy/download files from external sources and inc
 * Tenants are independent from roles and role variants from the configuration definition. Tenant roles are specific to tenants and allow to express different characteristics of tenants e.g. with or without a specific feature-set.
 
 
+### Exporting model data
+
+By default CONGA exports "model data" for each node to a file "model.yaml". This file includes expanded configuration, list of generated files and tenants from the current CONGA run. This information can be picked by infrastructure automation tools like Ansible for executing the further development steps.
+
+Within the CONGA Maven plugin configuration you can disable this export or switch to different plugins if you need the model data in different formats.
+
+
 ### Technology stack
 
 * Implemented in Java 8

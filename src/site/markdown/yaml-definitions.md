@@ -118,18 +118,3 @@ Additionally to the variables defined in the configuration parameter maps a set 
 [tenant-model]: generator/apidocs/io/wcm/devops/conga/model/environment/Tenant.html
 [yaml]: http://yaml.org/
 [snakeyaml]: http://www.snakeyaml.org/
-
-
-### Exporting model data
-
-You can export the "model data" (expanded configuration, list of generated files and tenants) from the current CONGA run to an external file per node to pick this up in infrastructure automation tools like Ansible for executing the further development steps.
-
-Example environment definitions:<br/>
-https://github.com/wcm-io-devops/conga/tree/develop/example/environments/src/main/environments
-
-Example export definition within an environment definition - dumps model data for each node using the plugin `yaml`:
-
-```yaml
-exportModel:
-- node: yaml
-```
