@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
 
+import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.resource.ResourceCollection;
@@ -49,15 +50,21 @@ public final class TestUtils {
     ResourceLoader resourceLoader = new ResourceLoader();
     ResourceCollection baseDir = resourceLoader.getResourceCollection("src/test/definitions");
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext();
-    Generator underTest = new Generator(
-        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")),
-        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")),
-        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")),
-        destDir,
-        urlFilePluginContext);
-    underTest.setVersion(TEST_VERSION);
-    underTest.setDependencyVersions(ImmutableList.of(TEST_DEPENDENCY_VERSION));
-    return underTest;
+
+    GeneratorOptions options = new GeneratorOptions();
+    options.setRoleDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")));
+    options.setTemplateDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")));
+    options.setEnvironmentDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")));
+    options.setDestDir(destDir);
+    options.setUrlFilePluginContext(urlFilePluginContext);
+    options.setVersion(TEST_VERSION);
+    options.setDependencyVersions(ImmutableList.of(TEST_DEPENDENCY_VERSION));
+
+    ModelExport modelExport = new ModelExport();
+    modelExport.setNode(ImmutableList.of("yaml"));
+    options.setModelExport(modelExport);
+
+    return new Generator(options);
   }
 
   public static File assertDirectory(File assertBaseDir, String path) {

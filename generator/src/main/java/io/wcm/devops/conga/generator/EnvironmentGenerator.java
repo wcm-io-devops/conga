@@ -37,6 +37,7 @@ import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
@@ -75,6 +76,7 @@ class EnvironmentGenerator {
   private final MultiplyPlugin defaultMultiplyPlugin;
   private final String version;
   private final List<String> dependencyVersions;
+  private final ModelExport modelExport;
   private final Logger log;
 
   private final Map<String, Object> environmentContextProperties;
@@ -82,7 +84,7 @@ class EnvironmentGenerator {
 
   EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment, File destDir,
       PluginManager pluginManager, HandlebarsManager handlebarsManager, UrlFileManager urlFileManager,
-      String version, List<String> dependencyVersions, Logger log) {
+      String version, List<String> dependencyVersions, ModelExport modelExport, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = EnvironmentExpander.expandNodes(environment, environmentName);
@@ -94,6 +96,7 @@ class EnvironmentGenerator {
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
     this.version = version;
     this.dependencyVersions = dependencyVersions;
+    this.modelExport = modelExport;
     this.log = log;
     this.environmentContextProperties = ImmutableMap.copyOf(
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, version));
@@ -119,7 +122,7 @@ class EnvironmentGenerator {
     log.info("----- Node '{}' -----", node.getNode());
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
-    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, pluginManager);
+    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, modelExport, pluginManager);
 
     for (NodeRole nodeRole : node.getRoles()) {
       Role role = roles.get(nodeRole.getRole());

@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
-import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -57,26 +57,26 @@ public final class Generator {
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
   private final UrlFileManager urlFileManager;
+  private final boolean deleteBeforeGenerate;
+  private final String version;
+  private final List<String> dependencyVersions;
+  private final ModelExport modelExport;
   private Logger log = LoggerFactory.getLogger(getClass());
-  private boolean deleteBeforeGenerate;
-  private String version;
-  private List<String> dependencyVersions;
 
   /**
-   * @param roleDirs Directories with role definitions. Filename without extension = role name.
-   * @param templateDirs Template base directories
-   * @param environmentDirs Directories with environment definitions. Filename without extension = environment name.
-   * @param destDir Destination directory for generated file
-   * @param urlFilePluginContext URL file plugin context
+   * @param options Generator options
    */
-  public Generator(List<ResourceCollection> roleDirs, List<ResourceCollection> templateDirs, List<ResourceCollection> environmentDirs,
-      File destDir, UrlFilePluginContext urlFilePluginContext) {
+  public Generator(GeneratorOptions options) {
     this.pluginManager = new PluginManagerImpl();
-    this.roles = readModels(roleDirs, new RoleReader());
-    this.environments = readModels(environmentDirs, new EnvironmentReader());
-    this.destDir = FileUtil.ensureDirExistsAutocreate(destDir);
-    this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginManager);
-    this.urlFileManager = new UrlFileManager(this.pluginManager, urlFilePluginContext);
+    this.roles = readModels(options.getRoleDirs(), new RoleReader());
+    this.environments = readModels(options.getEnvironmentDirs(), new EnvironmentReader());
+    this.destDir = FileUtil.ensureDirExistsAutocreate(options.getDestDir());
+    this.handlebarsManager = new HandlebarsManager(options.getTemplateDirs(), this.pluginManager);
+    this.urlFileManager = new UrlFileManager(this.pluginManager, options.getUrlFilePluginContext());
+    this.deleteBeforeGenerate = options.isDeleteBeforeGenerate();
+    this.version = options.getVersion();
+    this.dependencyVersions = options.getDependencyVersions();
+    this.modelExport = options.getModelExport();
   }
 
   /**
@@ -84,29 +84,6 @@ public final class Generator {
    */
   public void setLogger(Logger logger) {
     log = logger;
-  }
-
-  /**
-   * @param deleteBeforeGenerate Set to true when the generate should delete the environment folders before generating
-   *          new (default: false)
-   */
-  public void setDeleteBeforeGenerate(boolean deleteBeforeGenerate) {
-    this.deleteBeforeGenerate = deleteBeforeGenerate;
-  }
-
-  /**
-   * @param version The main version of the environment definition.
-   */
-  public void setVersion(String version) {
-    this.version = version;
-  }
-
-  /**
-   * @param dependencyVersions List of versions to include as dependency information in generated file headers,
-   *          e.g. the versions of the references role/template definition artifacts.
-   */
-  public void setDependencyVersions(List<String> dependencyVersions) {
-    this.dependencyVersions = dependencyVersions;
   }
 
   private static <T> Map<String, T> readModels(List<ResourceCollection> dirs, ModelReader<T> reader) {
@@ -161,7 +138,7 @@ public final class Generator {
         environmentDestDir.mkdir();
       }
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDestDir, pluginManager, handlebarsManager, urlFileManager, version, dependencyVersions, log);
+          environmentDestDir, pluginManager, handlebarsManager, urlFileManager, version, dependencyVersions, modelExport, log);
       environmentGenerator.generate();
     }
   }

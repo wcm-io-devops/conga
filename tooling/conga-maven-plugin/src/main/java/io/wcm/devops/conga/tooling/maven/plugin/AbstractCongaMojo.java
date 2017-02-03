@@ -21,9 +21,13 @@ package io.wcm.devops.conga.tooling.maven.plugin;
 
 import java.io.File;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.google.common.collect.ImmutableList;
+
+import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
 
@@ -56,6 +60,14 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter(defaultValue = "${basedir}/src/main/environments")
   private String environmentDir;
 
+  /**
+   * List for plugins for exporting model data for nodes.
+   * You can specify multiple plugins separated by ",".
+   * To disable export of model data set to "none".
+   */
+  @Parameter(defaultValue = "yaml")
+  private String modelExportNode;
+
   protected ResourceCollection getTemplateDir() {
     return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + templateDir);
   }
@@ -70,6 +82,17 @@ abstract class AbstractCongaMojo extends AbstractMojo {
 
   protected File getTargetDir() {
     return new File(target);
+  }
+
+  protected ModelExport getModelExport() {
+    ModelExport modelExport = new ModelExport();
+
+    String[] nodeExportPlugins = StringUtils.split(this.modelExportNode, ",");
+    if (nodeExportPlugins != null) {
+      modelExport.setNode(ImmutableList.copyOf(nodeExportPlugins));
+    }
+
+    return modelExport;
   }
 
   protected abstract ResourceLoader getResourceLoader();

@@ -53,8 +53,3 @@ tenants:
 - tenant: tenant3
   config:
     generateConditionalFile: false
-
-
-# Export definitions
-exportModel:
-- node: yaml

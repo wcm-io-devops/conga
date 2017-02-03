@@ -34,7 +34,6 @@ import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.model.environment.Environment;
-import io.wcm.devops.conga.model.environment.ExportModel;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.Tenant;
 import io.wcm.devops.conga.model.util.MapMerger;
@@ -47,7 +46,7 @@ public final class NodeModelExport {
   private final File nodeDir;
   private final Node node;
   private final Environment environment;
-  private final List<NodeModelExportPluginItem> nodeModelExportPlugins = new ArrayList<>();
+  private final List<NodeModelExportPlugin> nodeModelExportPlugins = new ArrayList<>();
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
@@ -55,21 +54,21 @@ public final class NodeModelExport {
    * @param nodeDir Target directory for node
    * @param node Node
    * @param environment Environment
+   * @param modelExport Model export
    * @param pluginManager Plugin manager
    */
-  public NodeModelExport(File nodeDir, Node node, Environment environment, PluginManager pluginManager) {
+  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
 
     // get export plugins
-    List<ExportModel> exportModels = environment.getExportModel();
-    if (exportModels != null) {
-      for (ExportModel exportModel : exportModels) {
-        NodeModelExportPluginItem item = new NodeModelExportPluginItem();
-        item.plugin = pluginManager.get(exportModel.getNode(), NodeModelExportPlugin.class);
-        item.config = exportModel.getConfig();
-        nodeModelExportPlugins.add(item);
+    if (modelExport != null) {
+      List<String> nodeExportPlugins = modelExport.getNode();
+      if (nodeExportPlugins != null) {
+        for (String nodeExportPlugin : nodeExportPlugins) {
+          nodeModelExportPlugins.add(pluginManager.get(nodeExportPlugin, NodeModelExportPlugin.class));
+        }
       }
     }
   }
@@ -128,19 +127,13 @@ public final class NodeModelExport {
       return;
     }
 
-    for (NodeModelExportPluginItem item : nodeModelExportPlugins) {
-      item.plugin.export(new NodeModelExportContext()
+    for (NodeModelExportPlugin plugin : nodeModelExportPlugins) {
+      plugin.export(new NodeModelExportContext()
           .node(node)
           .environment(environment)
           .roleData(roleData)
-          .nodeDir(nodeDir)
-          .config(item.config));
+          .nodeDir(nodeDir));
     }
-  }
-
-  private class NodeModelExportPluginItem {
-    private NodeModelExportPlugin plugin;
-    private Map<String, Object> config;
   }
 
 }

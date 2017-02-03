@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2015 wcm.io
+ * Copyright (C) 2017 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,29 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.environment;
+package io.wcm.devops.conga.generator.plugins.export;
 
-import io.wcm.devops.conga.model.shared.AbstractConfigurable;
+import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
+import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 
 /**
- * Defines an export configuration for model information.
+ * Export plugin that does nothing (to deactivate export).
  */
-public final class ExportModel extends AbstractConfigurable {
-
-  private String node;
+public class NoneNodeModelExport implements NodeModelExportPlugin {
 
   /**
-   * Defines node export plugin name.
-   * @return Node export plugin name.
+   * Plugin name
    */
-  public String getNode() {
-    return this.node;
+  public static final String NAME = "none";
+
+  @Override
+  public String getName() {
+    return NAME;
   }
 
-  public void setNode(String node) {
-    this.node = node;
+  @Override
+  public void export(NodeModelExportContext context) {
+    // do nothing
   }
 
 }

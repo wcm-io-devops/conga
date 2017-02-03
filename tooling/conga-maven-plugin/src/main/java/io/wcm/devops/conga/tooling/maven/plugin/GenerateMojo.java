@@ -55,6 +55,7 @@ import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.Generator;
 import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.GeneratorOptions;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.resource.ResourceCollection;
@@ -121,11 +122,19 @@ public class GenerateMojo extends AbstractCongaMojo {
             .localRepository(localRepository)
             .remoteRepositories(remoteRepositories));
 
-    Generator generator = new Generator(roleDirs, templateDirs, environmentDirs, getTargetDir(), urlFilePluginContext);
+    GeneratorOptions options = new GeneratorOptions();
+    options.setRoleDirs(roleDirs);
+    options.setTemplateDirs(templateDirs);
+    options.setEnvironmentDirs(environmentDirs);
+    options.setDestDir(getTargetDir());
+    options.setUrlFilePluginContext(urlFilePluginContext);
+    options.setDeleteBeforeGenerate(deleteBeforeGenerate);
+    options.setVersion(project.getVersion());
+    options.setDependencyVersions(buildDependencyVersionList());
+    options.setModelExport(getModelExport());
+
+    Generator generator = new Generator(options);
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));
-    generator.setDeleteBeforeGenerate(deleteBeforeGenerate);
-    generator.setVersion(project.getVersion());
-    generator.setDependencyVersions(buildDependencyVersionList());
     generator.generate(environments);
   }
 

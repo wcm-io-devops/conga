@@ -35,7 +35,6 @@ public final class Environment extends AbstractConfigurable {
   private List<Node> nodes = new ArrayList<>();
   private List<RoleConfig> roleConfig = new ArrayList<>();
   private List<Tenant> tenants = new ArrayList<>();
-  private List<ExportModel> exportModel = new ArrayList<>();
 
   /**
    * Defines nodes for the environment.
@@ -73,18 +72,6 @@ public final class Environment extends AbstractConfigurable {
 
   public void setTenants(List<Tenant> tenants) {
     this.tenants = defaultEmptyList(tenants);
-  }
-
-  /**
-   * Defines a list of export model plugin configurations.
-   * @return List of export model plugin configurations
-   */
-  public List<ExportModel> getExportModel() {
-    return this.exportModel;
-  }
-
-  public void setExportModel(List<ExportModel> exportModel) {
-    this.exportModel = defaultEmptyList(exportModel);
   }
 
 }
