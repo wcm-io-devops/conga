@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2015 wcm.io
+ * Copyright (C) 2017 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,33 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.model.environment;
+package io.wcm.devops.conga.generator.export;
+
+import java.util.List;
 
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 /**
  * Defines an export configuration for model information.
  */
-public final class ExportModel extends AbstractConfigurable {
+public final class ModelExport extends AbstractConfigurable {
 
-  private String node;
+  private List<String> node;
 
   /**
-   * Defines node export plugin name.
-   * @return Node export plugin name.
+   * Defines node export plugin names.
+   * @return Node export plugin names.
    */
-  public String getNode() {
+  public List<String> getNode() {
     return this.node;
   }
 
-  public void setNode(String node) {
-    this.node = node;
+  /**
+   * Defines node export plugin names.
+   * @param pluginNames Node export plugin names.
+   */
+  public void setNode(List<String> pluginNames) {
+    this.node = pluginNames;
   }
 
 }
