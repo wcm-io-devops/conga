@@ -59,7 +59,7 @@ If you want to add a separator between each item but not after the last:
 
 ```
 {{#each group1.list}}
-  "{{this.param1}}"{{#unless @last}},{{/unless}}{{/each}}
+  "{{this.param1}}"{{#unless @last}},{{/unless}}
 {{/each}}
 ```
 
