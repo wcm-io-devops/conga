@@ -52,7 +52,7 @@ abstract class AbstractEachIfHelper implements HelperPlugin {
 
   @SuppressWarnings("unchecked")
   @Override
-  public final CharSequence apply(Object context, Options options) throws IOException {
+  public final Object apply(Object context, Options options) throws IOException {
     if (context != null && !options.isFalsy(context)) {
       if (context instanceof Iterable) {
         String propertyName = options.param(0, null);

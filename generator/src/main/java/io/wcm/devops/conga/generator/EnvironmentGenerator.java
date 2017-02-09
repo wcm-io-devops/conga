@@ -21,6 +21,8 @@ package io.wcm.devops.conga.generator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +34,19 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.export.ModelExport;
+import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
+import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.EnvironmentExpander;
 import io.wcm.devops.conga.generator.util.FileUtil;
@@ -65,26 +72,31 @@ class EnvironmentGenerator {
   private final File destDir;
   private final PluginManager pluginManager;
   private final HandlebarsManager handlebarsManager;
+  private final UrlFileManager urlFileManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
   private final String version;
   private final List<String> dependencyVersions;
+  private final ModelExport modelExport;
   private final Logger log;
 
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
 
-  EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment,
-      File destDir, PluginManager pluginManager, HandlebarsManager handlebarsManager,
-      String version, List<String> dependencyVersions, Logger log) {
+  EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment, File destDir,
+      PluginManager pluginManager, HandlebarsManager handlebarsManager, UrlFileManager urlFileManager,
+      String version, List<String> dependencyVersions, ModelExport modelExport, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = EnvironmentExpander.expandNodes(environment, environmentName);
     this.destDir = destDir;
     this.pluginManager = pluginManager;
     this.handlebarsManager = handlebarsManager;
+    this.urlFileManager = urlFileManager;
+
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
     this.version = version;
     this.dependencyVersions = dependencyVersions;
+    this.modelExport = modelExport;
     this.log = log;
     this.environmentContextProperties = ImmutableMap.copyOf(
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, version));
@@ -109,6 +121,9 @@ class EnvironmentGenerator {
     log.info("");
     log.info("----- Node '{}' -----", node.getNode());
 
+    File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
+    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, modelExport, pluginManager);
+
     for (NodeRole nodeRole : node.getRoles()) {
       Role role = roles.get(nodeRole.getRole());
       if (role == null) {
@@ -126,19 +141,23 @@ class EnvironmentGenerator {
       mergedConfig.putAll(environmentContextProperties);
       mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
+      // collect role and tenant information for export model
+      ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(nodeRole.getRole(), variant, mergedConfig);
+
       // generate files
-      File nodeDir = new File(destDir, node.getNode());
-      if (!nodeDir.exists()) {
-        nodeDir.mkdir();
-      }
+      List<GeneratedFileContext> allFiles = new ArrayList<>();
       for (RoleFile roleFile : role.getFiles()) {
         if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
           multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
-              nodeRole.getRole(), variant, roleFile.getTemplate());
+              nodeRole.getRole(), variant, roleFile.getTemplate(), allFiles);
         }
       }
+      exportNodeRoleData.files(allFiles);
     }
+
+    // save export model
+    exportModelGenerator.generate();
   }
 
   private RoleVariant getRoleVariant(Role role, String variant, String roleName, Node node) {
@@ -157,14 +176,19 @@ class EnvironmentGenerator {
   private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {
     String templateFile = FileUtil.getTemplatePath(role, roleFile);
     if (StringUtils.isEmpty(templateFile)) {
-      throw new GeneratorException("No template defined for file: " + nodeRole.getRole() + "/" + roleFile.getFile());
+      if (StringUtils.isEmpty(roleFile.getUrl())) {
+        throw new GeneratorException("No template defined for file: " + FileUtil.getFileInfo(nodeRole, roleFile));
+      }
+      else {
+        return null;
+      }
     }
     try {
       Handlebars handlebars = handlebarsManager.get(getEscapingStrategy(roleFile), roleFile.getCharset());
       return handlebars.compile(templateFile);
     }
     catch (IOException ex) {
-      throw new GeneratorException("Unable to compile handlebars template: " + nodeRole.getRole() + "/" + roleFile.getFile(), ex);
+      throw new GeneratorException("Unable to compile handlebars template: " + FileUtil.getFileInfo(nodeRole, roleFile), ex);
     }
   }
 
@@ -187,7 +211,7 @@ class EnvironmentGenerator {
   }
 
   private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
-      String roleName, String roleVariantName, String templateName) {
+      String roleName, String roleVariantName, String templateName, List<GeneratedFileContext> generatedFiles) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
@@ -206,19 +230,31 @@ class EnvironmentGenerator {
       // resolve variables
       Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig, false);
 
-      // replace placeholders in dir/filename with context variables
+      // replace placeholders with context variables
       String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
       String file = VariableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
+      String url = VariableStringResolver.resolve(roleFile.getUrl(), resolvedConfig);
 
-      generateFile(roleFile, dir, file, resolvedConfig, nodeDir, template,
-          roleName, roleVariantName, templateName);
+      generatedFiles.addAll(generateFile(roleFile, dir, file, url,
+          resolvedConfig, nodeDir, template, roleName, roleVariantName, templateName));
     }
   }
 
-  private void generateFile(RoleFile roleFile, String dir, String fileName, Map<String, Object> config, File nodeDir, Template template,
+  private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
+      Map<String, Object> config, File nodeDir, Template template,
       String roleName, String roleVariantName, String templateName) {
-    File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, fileName) : fileName);
-    boolean duplicateFile = generatedFilePaths.contains(FileUtil.getCanonicalPath(file));
+
+    String generatedFileName = fileName;
+    if (StringUtils.isBlank(generatedFileName) && StringUtils.isNotBlank(url)) {
+      try {
+        generatedFileName = urlFileManager.getFileName(url);
+      }
+      catch (IOException ex) {
+        throw new GeneratorException("Unable to get file name from URL: " + url, ex);
+      }
+    }
+
+    File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, generatedFileName) : generatedFileName);
     if (file.exists()) {
       file.delete();
     }
@@ -227,19 +263,28 @@ class EnvironmentGenerator {
     if (StringUtils.isNotEmpty(roleFile.getCondition())) {
       String condition = VariableStringResolver.resolve(roleFile.getCondition(), config);
       if (StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false")) {
-        return;
+        return ImmutableList.of();
       }
     }
 
     FileGenerator fileGenerator = new FileGenerator(environmentName, roleName, roleVariantName, templateName,
-        nodeDir, file, roleFile, config, template, pluginManager,
+        nodeDir, file, url, roleFile, config, template, pluginManager, urlFileManager,
         version, dependencyVersions, log);
     try {
-      fileGenerator.generate();
-      generatedFilePaths.add(FileUtil.getCanonicalPath(file));
-      if (duplicateFile) {
-        log.warn("File was generated already, check for file name clashes: " + FileUtil.getCanonicalPath(file));
-      }
+      Collection<GeneratedFileContext> generatedFiles = fileGenerator.generate();
+
+      // check for path duplicates
+      generatedFiles.forEach(generatedFileContext -> {
+        String path = generatedFileContext.getFileContext().getCanonicalPath();
+        if (generatedFilePaths.contains(path)) {
+          log.warn("File was generated already, check for file name clashes: " + path);
+        }
+        else {
+          generatedFilePaths.add(path);
+        }
+      });
+
+      return generatedFiles;
     }
     catch (ValidationException ex) {
       throw new GeneratorException("File validation failed " + FileUtil.getCanonicalPath(file) + " - " + ex.getMessage());

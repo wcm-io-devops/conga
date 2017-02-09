@@ -30,6 +30,17 @@ import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 public interface PostProcessorPlugin extends FilePlugin<PostProcessorContext, List<FileContext>> {
 
   /**
+   * Whether to apply this plugin implicitly.
+   * @param file Context file
+   * @param context Context objects
+   * @return Implicit apply option
+   */
+  @Override
+  default ImplicitApplyOptions implicitApply(FileContext file, PostProcessorContext context) {
+    return ImplicitApplyOptions.NEVER;
+  }
+
+  /**
    * Applies the post processing.
    * @param file Context file
    * @param context Context objects

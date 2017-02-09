@@ -19,8 +19,10 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
 import io.wcm.devops.conga.model.shared.Configurable;
 
 /**
@@ -33,7 +35,12 @@ public final class VariableObjectTreeResolver extends AbstractConfigurableObject
   private static final ConfigurableProcessor<Object> PROCESSOR = new ConfigurableProcessor<Object>() {
     @Override
     public Object process(Configurable configurable, Object payload) {
-      Map<String, Object> resolvedconfig = VariableMapResolver.resolve(configurable.getConfig());
+      Map<String, Object> config = new HashMap<>(configurable.getConfig());
+
+      // add all context variables with empty value so references to them do not lead to "unknown variable" errors
+      config.putAll(ContextPropertiesBuilder.getEmptyContextVariables());
+
+      Map<String, Object> resolvedconfig = VariableMapResolver.resolve(config);
       configurable.setConfig(resolvedconfig);
       return null;
     }

@@ -34,13 +34,14 @@ import io.wcm.devops.conga.model.shared.LineEndings;
 import io.wcm.devops.conga.model.util.MapExpander;
 
 /**
- * Defines a file to be generated for a role.
+ * Defines a file to be generated or downloaded for a role.
  */
 public final class RoleFile extends AbstractModel {
 
   private String file;
   private String dir;
   private String template;
+  private String url;
   private List<String> variants = new ArrayList<>();
   private String condition;
   private List<String> validators = new ArrayList<>();
@@ -53,9 +54,10 @@ public final class RoleFile extends AbstractModel {
   private String charset = CharEncoding.UTF_8;
   private LineEndings lineEndings = LineEndings.unix;
   private String escapingStrategy;
+  private Map<String, Object> modelOptions = new HashMap<>();
 
   /**
-   * Defines the file name of the generated file.
+   * Defines the file name of the generated or downloaded file.
    * Variable placeholders can be used to reference variables or context properties, e.g. <code>${tenant}</code> for the
    * current tenant name if a tenant multiply plugin is used.
    * @return File name
@@ -69,8 +71,8 @@ public final class RoleFile extends AbstractModel {
   }
 
   /**
-   * Sets the directory to generate the file in. The directory name is relative to the configuration target directory of
-   * the node.
+   * Sets the directory to generate or download the file in.
+   * The directory name is relative to the configuration target directory of the node.
    * Variable placeholders can be used to reference variables or context properties, e.g. <code>${tenant}</code> for the
    * current tenant name if a tenant multiply plugin is used.
    * @return Directory name
@@ -94,6 +96,20 @@ public final class RoleFile extends AbstractModel {
 
   public void setTemplate(String template) {
     this.template = template;
+  }
+
+  /**
+   * URL to download file from. If a URL is defined the template is ignored, and the target file property optional.
+   * If not file property is defined, the file name of the downloaded file is used.
+   * For URL protocols you can use http://, https://, classpath:// file:// or mvn://.
+   * @return Download URL
+   */
+  public String getUrl() {
+    return this.url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
   }
 
   /**
@@ -256,5 +272,19 @@ public final class RoleFile extends AbstractModel {
   public void setEscapingStrategy(String escapingStrategy) {
     this.escapingStrategy = escapingStrategy;
   }
+
+  /**
+   * Defines additional options that are written to the exported model metadata for this file.
+   * @return Model options
+   */
+  public Map<String, Object> getModelOptions() {
+    return this.modelOptions;
+  }
+
+
+  public void setModelOptions(Map<String, Object> modelOptions) {
+    this.modelOptions = modelOptions;
+  }
+
 
 }

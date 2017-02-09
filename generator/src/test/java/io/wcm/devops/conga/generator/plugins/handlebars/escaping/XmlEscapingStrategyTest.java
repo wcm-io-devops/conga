@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class XmlEscapingStrategyTest {
 
@@ -35,7 +35,7 @@ public class XmlEscapingStrategyTest {
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(XmlEscapingStrategy.NAME, EscapingStrategyPlugin.class);
+    underTest = new PluginManagerImpl().get(XmlEscapingStrategy.NAME, EscapingStrategyPlugin.class);
   }
 
   @Test

@@ -19,13 +19,28 @@
  */
 package io.wcm.devops.conga.generator;
 
+import static io.wcm.devops.conga.generator.ContextProperties.ENVIRONMENT;
+import static io.wcm.devops.conga.generator.ContextProperties.NODE;
+import static io.wcm.devops.conga.generator.ContextProperties.NODES;
+import static io.wcm.devops.conga.generator.ContextProperties.NODES_BY_ROLE;
+import static io.wcm.devops.conga.generator.ContextProperties.NODES_BY_ROLE_VARIANT;
+import static io.wcm.devops.conga.generator.ContextProperties.ROLE;
+import static io.wcm.devops.conga.generator.ContextProperties.ROLE_VARIANT;
+import static io.wcm.devops.conga.generator.ContextProperties.TENANT;
+import static io.wcm.devops.conga.generator.ContextProperties.TENANTS;
+import static io.wcm.devops.conga.generator.ContextProperties.TENANTS_BY_ROLE;
+import static io.wcm.devops.conga.generator.ContextProperties.TENANT_ROLES;
+import static io.wcm.devops.conga.generator.ContextProperties.VERSION;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.ImmutableMap;
 import com.rits.cloning.Cloner;
 
 import io.wcm.devops.conga.generator.util.VariableObjectTreeResolver;
@@ -37,7 +52,22 @@ import io.wcm.devops.conga.model.environment.Tenant;
 /**
  * Builds context variables
  */
-final class ContextPropertiesBuilder {
+public final class ContextPropertiesBuilder {
+
+  static final Map<String, Object> EMPTY_CONTEXT_VARIABLES = ImmutableMap.<String, Object>builder()
+      .put(VERSION, "")
+      .put(ENVIRONMENT, "")
+      .put(NODES, Collections.EMPTY_LIST)
+      .put(NODES_BY_ROLE, Collections.EMPTY_MAP)
+      .put(NODES_BY_ROLE_VARIANT, Collections.EMPTY_MAP)
+      .put(TENANTS, Collections.EMPTY_LIST)
+      .put(TENANTS_BY_ROLE, Collections.EMPTY_MAP)
+      .put(ROLE, "")
+      .put(ROLE_VARIANT, "")
+      .put(NODE, "")
+      .put(TENANT, "")
+      .put(TENANT_ROLES, Collections.EMPTY_LIST)
+      .build();
 
   private ContextPropertiesBuilder() {
     // static methods only
@@ -52,19 +82,19 @@ final class ContextPropertiesBuilder {
    */
   public static Map<String, Object> buildEnvironmentContextVariables(String environmentName,
       Environment environment, String version) {
-    Map<String, Object> map = new HashMap<>();
+    Map<String, Object> map = new HashMap<>(EMPTY_CONTEXT_VARIABLES);
 
-    map.put(ContextProperties.VERSION, version);
-    map.put(ContextProperties.ENVIRONMENT, environmentName);
+    map.put(VERSION, version);
+    map.put(ENVIRONMENT, environmentName);
 
     // clone environment before resolving variables to make sure they are resolved only for this context, not for file generation
-    Environment clonedEnvironemnt = new Cloner().deepClone(environment);
+    Environment clonedEnvironemnt = Cloner.standard().deepClone(environment);
 
     // resolve all variables at any level in environment
     VariableObjectTreeResolver.resolve(clonedEnvironemnt);
 
     // list of nodes
-    map.put(ContextProperties.NODES, clonedEnvironemnt.getNodes());
+    map.put(NODES, clonedEnvironemnt.getNodes());
     Map<String, List<Node>> nodesByRole = new HashMap<>();
     Map<String, Map<String, List<Node>>> nodesByRoleVariant = new HashMap<>();
     for (Node node : clonedEnvironemnt.getNodes()) {
@@ -91,11 +121,11 @@ final class ContextPropertiesBuilder {
         }
       }
     }
-    map.put(ContextProperties.NODES_BY_ROLE, nodesByRole);
-    map.put(ContextProperties.NODES_BY_ROLE_VARIANT, nodesByRoleVariant);
+    map.put(NODES_BY_ROLE, nodesByRole);
+    map.put(NODES_BY_ROLE_VARIANT, nodesByRoleVariant);
 
     // list of tenants
-    map.put(ContextProperties.TENANTS, clonedEnvironemnt.getTenants());
+    map.put(TENANTS, clonedEnvironemnt.getTenants());
     Map<String, List<Tenant>> tenantsByRole = new HashMap<>();
     for (Tenant tenant : clonedEnvironemnt.getTenants()) {
       for (String tenantRoleName : tenant.getRoles()) {
@@ -107,7 +137,7 @@ final class ContextPropertiesBuilder {
         tenants.add(tenant);
       }
     }
-    map.put(ContextProperties.TENANTS_BY_ROLE, tenantsByRole);
+    map.put(TENANTS_BY_ROLE, tenantsByRole);
 
     return map;
   }
@@ -120,11 +150,40 @@ final class ContextPropertiesBuilder {
    */
   public static Map<String, Object> buildCurrentContextVariables(Node node, NodeRole nodeRole) {
     Map<String, Object> map = new HashMap<>();
-    map.put(ContextProperties.ROLE, nodeRole.getRole());
-    map.put(ContextProperties.ROLE_VARIANT, nodeRole.getVariant());
-    map.put(ContextProperties.NODE, node.getNode());
+    map.put(ROLE, nodeRole.getRole());
+    map.put(ROLE_VARIANT, nodeRole.getVariant());
+    map.put(NODE, node.getNode());
     return map;
   }
 
+  /**
+   * Removes all context variables.
+   * @param config Configuration
+   * @return Configuration
+   */
+  public static Map<String, Object> removeContextVariables(Map<String, Object> config) {
+    Map<String, Object> map = new HashMap<>(config);
+    map.remove(VERSION);
+    map.remove(ENVIRONMENT);
+    map.remove(NODES);
+    map.remove(NODES_BY_ROLE);
+    map.remove(NODES_BY_ROLE_VARIANT);
+    map.remove(TENANTS);
+    map.remove(TENANTS_BY_ROLE);
+    map.remove(ROLE);
+    map.remove(ROLE_VARIANT);
+    map.remove(NODE);
+    map.remove(TENANT);
+    map.remove(TENANT_ROLES);
+    return map;
+  }
+
+  /**
+   * Get map with all context variables set to empty values.
+   * @return Map with context variables
+   */
+  public static Map<String, Object> getEmptyContextVariables() {
+    return EMPTY_CONTEXT_VARIABLES;
+  }
 
 }

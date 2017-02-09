@@ -29,6 +29,7 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.SortedSet;
 
 import org.apache.commons.io.FileUtils;
@@ -56,7 +57,7 @@ import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
 
 /**
- * Packages the definitions in a ZIP file.
+ * Packages the definitions in a JAR file.
  */
 @Mojo(name = "definition-package", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, threadSafe = true)
 public class DefinitionPackageMojo extends AbstractCongaMojo {
@@ -121,7 +122,18 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
     archiver.setOutputFile(jarFile);
     archive.setForced(true);
 
+    // include definitions
     archiver.getArchiver().addDirectory(contentDirectory);
+
+    // include resources
+    for (org.apache.maven.model.Resource resource : project.getResources()) {
+      File resourceDir = new File(resource.getDirectory());
+      if (resourceDir.exists()) {
+        archiver.getArchiver().addDirectory(resourceDir,
+            toArray(resource.getIncludes()), toArray(resource.getExcludes()));
+      }
+    }
+
     try {
       archiver.createArchive(session, project, archive);
     }
@@ -130,6 +142,13 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
     }
 
     return jarFile;
+  }
+
+  private String[] toArray(List<String> values) {
+    if (values == null || values.isEmpty()) {
+      return null;
+    }
+    return values.toArray(new String[values.size()]);
   }
 
   private String buildJarFileName() {

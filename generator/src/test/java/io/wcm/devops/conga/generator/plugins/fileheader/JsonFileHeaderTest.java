@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ import com.google.common.collect.ImmutableList;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class JsonFileHeaderTest {
 
@@ -43,7 +44,7 @@ public class JsonFileHeaderTest {
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(JsonFileHeader.NAME, FileHeaderPlugin.class);
+    underTest = new PluginManagerImpl().get(JsonFileHeader.NAME, FileHeaderPlugin.class);
   }
 
   @Test
@@ -58,7 +59,7 @@ public class JsonFileHeaderTest {
     assertTrue(underTest.accepts(fileContext, context));
     underTest.apply(fileContext, context);
 
-    assertTrue(StringUtils.contains(FileUtils.readFileToString(file),
+    assertTrue(StringUtils.contains(FileUtils.readFileToString(file, CharEncoding.UTF_8),
         "Der Jodelkaiser\naus dem Oetztal\nist wieder daheim.\n"));
 
     FileHeaderContext extractContext = underTest.extract(fileContext);

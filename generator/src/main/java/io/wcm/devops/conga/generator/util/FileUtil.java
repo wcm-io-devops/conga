@@ -26,6 +26,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
 
@@ -56,9 +57,11 @@ public final class FileUtil {
    * Get canoncial path of file
    * @param fileContext File context
    * @return Canonical path
+   * @deprecated use {@link FileContext#getCanonicalPath()} instead.
    */
+  @Deprecated
   public static String getCanonicalPath(FileContext fileContext) {
-    return getCanonicalPath(fileContext.getFile());
+    return fileContext.getCanonicalPath();
   }
 
   /**
@@ -133,6 +136,36 @@ public final class FileUtil {
       path = FilenameUtils.concat(role.getTemplateDir(), path);
     }
     return path;
+  }
+
+  /**
+   * Generates information to identify a file in a role definition by its file name or URL.
+   * @param nodeRole Node role
+   * @param roleFile Role file
+   * @return Info string for role and file
+   */
+  public static String getFileInfo(NodeRole nodeRole, RoleFile roleFile) {
+    return getFileInfo(nodeRole.getRole(), roleFile);
+  }
+
+  /**
+   * Generates information to identify a file in a role definition by its file name or URL.
+   * @param roleName Role name
+   * @param roleFile Role file
+   * @return Info string for role and file
+   */
+  public static String getFileInfo(String roleName, RoleFile roleFile) {
+    StringBuilder sb = new StringBuilder().append(roleName).append("/");
+    if (StringUtils.isNotEmpty(roleFile.getFile())) {
+      sb.append(roleFile.getFile());
+    }
+    else if (StringUtils.isNotEmpty(roleFile.getUrl())) {
+      sb.append(roleFile.getUrl());
+    }
+    else {
+      sb.append("?");
+    }
+    return sb.toString();
   }
 
 }

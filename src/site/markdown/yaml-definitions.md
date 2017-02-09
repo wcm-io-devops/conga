@@ -7,21 +7,36 @@ CONGA uses [YAML][yaml] to describe roles and environments.
 Please note that the Java Bean naming conventions are applied: For the property names in the YAML files the "get" prefix from the model class is omitted, and the property is written in headless camel case. Example: `getRoleConfig()` method name results in `roleConfig` property name.
 
 
-### Role defintions
+### Role definitions
 
 Example role definitions:<br/>
-https://github.com/wcm-io-devops/conga/tree/master/example/definitions/src/main/roles
+https://github.com/wcm-io-devops/conga/tree/develop/example/definitions/src/main/roles
 
 The filename of the role YAML file is the role name.
 
 The documentation of all role and file configuration options can be found in the<br/>
 [Role Model API documentation][role-model].
 
+Files are generated using a Handlebars template. After generation a file header is added automatically, and the file syntax is checked for well-formedness. Optionally additional post-processors can be configured.
+
+Alternatively it is possible to specify an URL instead of a template. In this case the file is copied/downloaded from an external source. The following URL prefixes are supported out of the box:
+
+- `file:` - Absolute filesystem path
+- `classpath:` - Classpath resource reference
+- `http://` or `https://` - External URL
+- `mvn:` - Maven Artifact coordinates (only supported when CONGA runs inside Maven)
+    - Maven Coordinates Syntax 1 (Maven-style): `groupId:artifactId[:packaging][:classifier]:version`
+    - Maven Coordinates Syntax 2 (SlingStart-style): `groupId/artifactId/version[/type][/classifier]`
+    - `classifier` and  `type` are optional.
+    - If the version is empty in the role file it is resolved from the Maven project.
+
+If no prefix is specified the URL is interpreted as relative path in the local filesystem.
+
 
 ### Environment definitions
 
 Example environment definitions:<br/>
-https://github.com/wcm-io-devops/conga/tree/master/example/environments/src/main/environments
+https://github.com/wcm-io-devops/conga/tree/develop/example/environments/src/main/environments
 
 The filename of the environment YAML file is the environment name.
 
@@ -60,7 +75,7 @@ config:
   - listValue2
 ```
 
-Within the configuration parameters maps other parameters can be references using a variable notation. Example: `${group1.param1}`. Nested variable references are supported, just make sure you define no cyclic dependencies.
+Within the configuration parameters maps other parameters can be referenced using a variable notation. Example: `${group1.param1}`. Nested variable references are supported, just make sure you define no cyclic dependencies.
 
 Configuration parameter maps are inherited to "deeper levels" within the YAML structure, and the maps are merged on each level. The configuration parameters on the "deeper levels" overwrite the parameters from the higher level.
 
@@ -73,6 +88,7 @@ Inheritance order (higher number has higher precedence):
 5. Global role configuration from environment
 6. Role configuration from node
 7. Variant configuration from node
+8. Configuration from multiply plugins, e.g. the tenant-specific configuration
 
 There is a special support when merging list parameter. By default a list value on a deeper lever overwrites a list inherited from a parameter map on a higher level completely. If you insert the keyword `_merge_` as list item on either of the list values, they are merged and the special keyword entry is removed.
 

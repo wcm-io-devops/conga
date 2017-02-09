@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ import com.google.common.collect.ImmutableList;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class ConfFileHeaderTest {
 
@@ -43,13 +44,13 @@ public class ConfFileHeaderTest {
 
   @Before
   public void setUp() {
-    underTest = new PluginManager().get(ConfFileHeader.NAME, FileHeaderPlugin.class);
+    underTest = new PluginManagerImpl().get(ConfFileHeader.NAME, FileHeaderPlugin.class);
   }
 
   @Test
   public void testApply() throws Exception {
     File file = new File("target/generation-test/fileHeader.conf");
-    FileUtils.write(file, "myscript");
+    FileUtils.write(file, "myscript", CharEncoding.ISO_8859_1);
 
     List<String> lines = ImmutableList.of("Der Jodelkaiser", "aus dem Oetztal", "ist wieder daheim.");
     FileHeaderContext context = new FileHeaderContext().commentLines(lines);
@@ -58,7 +59,7 @@ public class ConfFileHeaderTest {
     assertTrue(underTest.accepts(fileContext, context));
     underTest.apply(fileContext, context);
 
-    assertTrue(StringUtils.contains(FileUtils.readFileToString(file),
+    assertTrue(StringUtils.contains(FileUtils.readFileToString(file, CharEncoding.UTF_8),
         "# Der Jodelkaiser\n# aus dem Oetztal\n# ist wieder daheim.\n"));
 
     FileHeaderContext extractContext = underTest.extract(fileContext);

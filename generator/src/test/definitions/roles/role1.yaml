@@ -32,6 +32,15 @@ files:
   charset: ISO-8859-1
   multiply: tenant
 
+- url: classpath:/files/sample.txt
+  dir: files
+
+- file: sample-filesystem.txt
+  url: src/test/resources/files/sample.txt
+  dir: files
+  modelOptions:
+    modelOption1: value1
+
 
 config:
   generateConditionalFile: false

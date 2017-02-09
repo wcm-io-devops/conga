@@ -39,6 +39,8 @@ abstract class AbstractConfigurableObjectTreeProcessor<T> {
    * Iterator over object tree an visit all {@link Configurable} instances. Payload
    * can be inherited from down the hierarchy levels.
    * @param object Root object of object tree
+   * @param processor Processor
+   * @param parentPayload Parent payload
    */
   protected void process(Object object, ConfigurableProcessor<T> processor, T parentPayload) {
     if (object instanceof Map) {

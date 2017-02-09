@@ -43,7 +43,7 @@ public final class DefaultIfEmptyHelper implements HelperPlugin<Object> {
   }
 
   @Override
-  public CharSequence apply(Object context, Options options) throws IOException {
+  public Object apply(Object context, Options options) throws IOException {
     return StringHelpers.defaultIfEmpty.apply(context, options);
   }
 

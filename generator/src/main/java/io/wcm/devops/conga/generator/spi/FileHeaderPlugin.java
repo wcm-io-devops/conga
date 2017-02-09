@@ -29,6 +29,17 @@ import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 public interface FileHeaderPlugin extends FilePlugin<FileHeaderContext, Void> {
 
   /**
+   * Whether to apply this plugin implicitly.
+   * @param file Context file
+   * @param context Context objects
+   * @return Implicit apply option
+   */
+  @Override
+  default ImplicitApplyOptions implicitApply(FileContext file, FileHeaderContext context) {
+    return ImplicitApplyOptions.WHEN_UNCONFIGURED;
+  }
+
+  /**
    * Applies the comment file header.
    * @param file Context file
    * @param context Context objects

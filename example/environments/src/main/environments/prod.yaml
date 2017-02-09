@@ -1,5 +1,4 @@
 # Defines an environment
-
 nodes:
 
 # Example node with 2 roles
@@ -10,11 +9,13 @@ nodes:
     topologyConnectorPath: /specialConnector
   roles:
   - role: tomcat-services
-    # Variants allow to pic a specific sub-configuration of a role
+    # Variants allow to pick a specific sub-configuration of a role
     variant: importer
     # Config only for this role
     config:
       topologyConnectors:
+      # Merge with list defined already for this parameter
+      - _merge_
       - "http://host3${topologyConnectorPath}"
   - role: tomcat-backendconnector
 
@@ -28,6 +29,8 @@ nodes:
 - node: webserver
   roles:
   - role: webserver
+
+
 
 
 # Role-specific global configuration
@@ -53,7 +56,7 @@ config:
   - "http://host2${topologyConnectorPath}"
 
 
-# Tenant defintions
+# Tenant definitions
 tenants:
 
 # Tenant with two tenant roles (can be used for filtering file multiply)
@@ -65,7 +68,7 @@ tenants:
     domain: mysite.de
     website.hostname: www.${domain}
 
-# Tenant with one tenant roles
+# Tenant with one tenant role
 - tenant: tenant2
   roles:
   - website

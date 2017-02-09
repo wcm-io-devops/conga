@@ -1,6 +1,7 @@
 <img src="http://wcm.io/images/favicon-16@2x.png"/> CONGA - CONfiguration GenerAtor
 ======
 [![Build Status](https://travis-ci.org/wcm-io-devops/conga.png?branch=develop)](https://travis-ci.org/wcm-io-devops/conga)
+[![Code Coverage](https://codecov.io/gh/wcm-io-devops/conga/branch/develop/graph/badge.svg)](https://codecov.io/gh/wcm-io-devops/conga)
 
 wcm.io DevOps CONGA Configuration Generator.
 

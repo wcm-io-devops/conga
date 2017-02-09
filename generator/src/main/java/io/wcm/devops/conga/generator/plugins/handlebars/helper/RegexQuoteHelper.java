@@ -42,7 +42,7 @@ public final class RegexQuoteHelper implements HelperPlugin<Object> {
   }
 
   @Override
-  public CharSequence apply(Object context, Options options) throws IOException {
+  public Object apply(Object context, Options options) throws IOException {
     if (options.isFalsy(context)) {
       return null;
     }

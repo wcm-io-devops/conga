@@ -9,17 +9,19 @@ For the plugin architecture the Java ServiceLoader concept is used. See the Orac
 
 CONGA allows to provider custom plugins that are applied on generated files:
 
-* **File Header Plugin**: Plugin is used to add a CONGA file header to all generated files. The plugin controls at which position and with which comment syntax the headers are inserted.
-* **Validator Plugin**: Plugin validates files after generation to ensure they are syntactically correct.
-* **Handlebars Escaping Strategy Plugin**: Plugin allows to define escaping rules for special chars.
+* **File Header Plugin**: Plugin is used to add a CONGA file header to all generated files. The plugin controls at which position and with which comment syntax the headers are inserted. *)
+* **Validator Plugin**: Plugin validates files after generation to ensure they are syntactically correct. *)
+* **Handlebars Escaping Strategy Plugin**: Plugin allows to define escaping rules for special chars. *)
 * **Post Processor Plugin**: Plugin that operations on a generated file, e.g. to convert it to a binary file.
 
-Theses plugins detect files with certain extensions, and are executed automatically on them.
+*) These plugins detect files with certain extensions, and are executed automatically on them.
 
 Other plugins:
 
-* **Mulitply Plugin**: Plugin controls the generation of multiple files from a single file definition.
+* **Multiply Plugin**: Plugin controls the generation of multiple files from a single file definition.
 * **Handlebars Helper Plugin**: Plugin allows to register your own Handlebar helper to define custom handlebar expression usable in the CONGA templates.
+* **Node Model Export Plugin**: Allows to export "model data" (expanded configurations, list of generated files and tenants) from CONGA to a file which can be picked up by infrastructure automation tools
+* **URL File Plugin**: Allows to copy or download files from external sources identified via "URL prefixes"
 
 See API documentation for the detailed plugin interfaces:
 
@@ -46,6 +48,20 @@ Multiply plugins:
 |-------------|-------------
 | `tenant`    | Allows to generate a file for each tenant defined in the environment.
 
+Export plugins:
+
+| Plugin name | Description
+|-------------|-------------
+| `yaml`      | Dumps all "model data" (expanded configuration, list of generated files and tenants) from CONGA to "model.yaml" files for each node. This file can be picked up by infrastructure automation tools e.g. Ansible to execute the further deployment steps.
+
+URL File Plugins plugins:
+
+| Plugin name  | URL Prefix            | Description
+|--------------|-----------------------|-------------
+| `filesystem` | `file:`               | Copy files from local filesystem
+| `classpath`  | `classpath:`          | Copy files from classpath
+| `http`       | `http://`, `https://` | Download files from HTTP or HTTPS URLs
+| `maven`      | `mvn:`                | Download files from Maven Artifact repository (only supported when CONGA runs inside Maven)
 
 Handlebars Helper plugins: see [Handlebars quickstart][handlebars-quickstart].
 

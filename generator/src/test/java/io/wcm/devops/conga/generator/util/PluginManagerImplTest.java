@@ -32,13 +32,13 @@ import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.plugins.multiply.TenantMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 
-public class PluginManagerTest {
+public class PluginManagerImplTest {
 
   private PluginManager underTest;
 
   @Before
   public void setUp() {
-    underTest = new PluginManager();
+    underTest = new PluginManagerImpl();
   }
 
   @Test

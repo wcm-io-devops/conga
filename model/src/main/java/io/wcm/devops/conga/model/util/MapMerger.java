@@ -43,6 +43,7 @@ public final class MapMerger {
 
   /**
    * Deep merges two maps. Map1 has higher priority.
+   * @param <K> Key type
    * @param map1 Map 1
    * @param map2 Map 2
    * @return Merged map

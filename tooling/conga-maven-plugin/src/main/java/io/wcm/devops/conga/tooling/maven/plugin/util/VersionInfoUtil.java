@@ -37,6 +37,7 @@ public final class VersionInfoUtil {
 
   /**
    * Detects versions from maven-conga-plugin and additional CONGA plugins used.
+   * @param project Maven project
    * @return Properties with versions
    */
   public static Properties getVersionInfoProperties(MavenProject project) {

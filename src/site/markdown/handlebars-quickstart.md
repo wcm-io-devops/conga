@@ -59,7 +59,7 @@ If you want to add a separator between each item but not after the last:
 
 ```
 {{#each group1.list}}
-  "{{this.param1}}"{{#unless @last}},{{/unless}}{{/each}}
+  "{{this.param1}}"{{#unless @last}},{{/unless}}
 {{/each}}
 ```
 
@@ -74,7 +74,7 @@ To insert the list index from the for each loop:
 
 #### Whitespace handling
 
-You can control whitespace handling around handlebar expressions by inserting `~` at the beginning or end of the handlebars expression. On this side of this expression all whitespaces are removed up to the next handlebars expression or non-white space content.
+You can control whitespace handling around handlebar expressions by inserting `~` at the beginning or end of the handlebars expression. On the side of this expression all whitespaces are removed up to the next handlebars expression or non-white space content.
 
 Example: Remove all whitespaces inside the expression:
 
@@ -143,7 +143,7 @@ You can overwrite parts from the shared file by overwriting single blocks with a
 
 #### Comments
 
-To put a comment in a handlebars file that is not included in the generated file:
+To include a comment that is stripped from the generated file:
 
 ```
 {{!-- my comment --}}
@@ -189,7 +189,7 @@ Conditional if statement - block is rendered if expression equals to an argument
 To insert a default value if the given variable expression is not set:
 
 ```
-{{defaultIfEmpty group1.param1 "defaultValue" }}
+{{defaultIfEmpty group1.param1 "defaultValue"}}
 ```
 
 

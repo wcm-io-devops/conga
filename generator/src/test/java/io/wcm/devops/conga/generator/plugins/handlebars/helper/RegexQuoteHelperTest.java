@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import static org.junit.Assert.assertEquals;
+import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
@@ -28,7 +28,7 @@ import org.junit.Test;
 import com.github.jknack.handlebars.Helper;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class RegexQuoteHelperTest {
 
@@ -37,13 +37,13 @@ public class RegexQuoteHelperTest {
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() {
-    helper = new PluginManager().get(RegexQuoteHelper.NAME, HelperPlugin.class);
+    helper = new PluginManagerImpl().get(RegexQuoteHelper.NAME, HelperPlugin.class);
   }
 
   @Test
   public void testApply() throws Exception {
-    assertEquals("\\Qabc\\E", helper.apply("abc", new MockOptions()));
-    assertEquals("\\Qa.b.c\\E", helper.apply("a.b.c", new MockOptions()));
+    assertHelper("\\Qabc\\E", helper, "abc", new MockOptions());
+    assertHelper("\\Qa.b.c\\E", helper, "a.b.c", new MockOptions());
   }
 
   @Test

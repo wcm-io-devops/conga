@@ -2,9 +2,7 @@
 
 ### Targets System Configuration
 
-The configuration generator focuses on **system configuration** that is usually defined at deployment time and is static at runtime.
-
-It is not targeted to “runtime configuration” like site configuration, tenant configuration that can be changed at any time by authorized users.
+The configuration generator focuses on **system configuration** that is usually defined at deployment time and is static at runtime. It is not targeted to "runtime configuration" like site configuration, tenant configuration that can be changed at any time by authorized users.
 
 This tool is **not a deployment automation tool**. It focuses only on configuration generation and can be integrated in a manual or automated deployment process.
 
@@ -33,33 +31,53 @@ Examples:
 
 Basically all text-based files types can be generated. And with post processor plugins even binary files.
 
-
-### Configuration definition model
-
-![Configuration definition model](images/configuration-definition-model.png)
-
-#### DEV terminology
-
-* **Node Role**: A set of functionality/application part that can be deployed to a node, e.g. “AEM CMS”, “AEM Dispatcher”, “Tomcat Service Layer”
-    * **Variant**: Variants of a role with same deployment artifacts but different configuration; e.g. “Author”, “Publish”, “Importer”.
-    * **Configuration Parameter**: Definition of configuration parameters for that operation can define configuration values that are inserted into the file templates when generating the configuration.
-    * **File**: Defines file to be generated for Role/Variant based on a File Template
-* **Tenant Role**: Allows to define features required for a tenant, e.g. Tenant Website with or without additional applications like car configurator
-* **File Template**: Script-based template the contains static configuration parts and placeholders for configuration values defined by operations
+Additionally it is possible to copy/download files from external sources and include them in the configuration process. External sources are e.g. local filesystem, classpath, HTTP/HTTPS URLs or Maven Artifact references.
 
 
-#### OPS terminology
+### Configuration meta model
 
-* **Environment**: Environment for a specific project or group of projects with a selection of nodes that work together, e.g. “Market Website Prod”, “Market Website T&I” etc.
+![Configuration meta model](images/configuration-meta-model.png)
+
+#### Environments
+
+* **Environment**: Environment for a specific project or group of projects with a selection of nodes that work together, e.g. "QS", "Prelive", "Prod" etc.
 * **Node**: A system to deploy to, e.g. a physical machine, virtual machine, Docker container or any other deployment target.
-    * For each Node multiple Roles can be assigned; for each Role one Variant
-* **Tenant**: A tenant needs a special subset of system configuration parameters, e.g. an own virtual host definition with the tenants public domain name in the Apache webserver
-    * For each Tenant multiple Roles can be assigned
-* **Configuration Value**: Configuration value for a Configuration parameter in context of environments, nodes, roles and tenants.
+    * For each node multiple roles can be assigned; for each role one variant
+* **Tenant**: List of tenants in the environment and their configuration
+    * For each tenant multiple tenant roles can be assigned
+* **Configuration value**: Configuration value for a configuration parameter in context of environments, nodes, roles and tenants.
+
+#### Configuration definitions
+
+* **Node role**: A set of functionality/application part that can be deployed to a node/machine, e.g. "AEM CMS", "AEM Dispatcher", "Tomcat Service Layer"
+    * **Variant**: Variants of a role with same deployment artifacts but different configuration; e.g. "Author", "Publish", "Importer".
+    * **Configuration parameter**: Definition of configuration parameters that can be set for each environment. The configuration parameter values are merged with the file templates when generating the configuration.
+    * **File**: Defines file to be generated for Role/Variant based on a File Template
+* **Tenant role**: Allows to define features required for a tenant, e.g. Tenant Website with or without special features
+* **File template**: Script-based template the contains static configuration parts and placeholders for the configuration parameter values
+
+#### Multitenancy
+
+* Often a single infrastructure environment is used to host applications and websites for multiple tenants (e.g. for multiple markets or different brands)
+* Most of this multi-tenancy aspects are managed outside the system configuration (e.g. in content hierarchy and content pages, context-aware configuration in repository)
+* But in some occasions the system configuration is affected as well, e.g.
+    * One vhost file for each tenant's website in the webserver configuration
+    * Short URL Mapping in Dispatcher and AEM for each website
+* To support this tenants may be defined in each environment, and it is possible to override some of the configuration parameters with tenant-specific values
+* Using the “Tenant Multiply” plugin it is possible to generate multiple configuration files (one per tenant) based on a single file template.
+* Tenants are independent from roles and role variants from the configuration definition. Tenant roles are specific to tenants and allow to express different characteristics of tenants e.g. with or without a specific feature-set.
+
+
+### Exporting model data
+
+By default CONGA exports "model data" for each node to a file "model.yaml". This file includes expanded configuration, list of generated files and tenants from the current CONGA run. This information can be picked by infrastructure automation tools like Ansible for executing the further development steps.
+
+Within the CONGA Maven plugin configuration you can disable this export or switch to different plugins if you need the model data in different formats.
+
 
 ### Technology stack
 
 * Implemented in Java 8
 * Definition and Configuration Files in [YAML 1.1](http://yaml.org/)
 * Template script language: [Handlebars for Java](https://github.com/jknack/handlebars.java)
-* Runnable from [Apache Maven](http://maven.apache.org/) or standalone
+* Runnable from [Apache Maven](http://maven.apache.org/) (recommended) or standalone

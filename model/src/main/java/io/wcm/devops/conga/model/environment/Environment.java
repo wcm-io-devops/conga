@@ -50,8 +50,7 @@ public final class Environment extends AbstractConfigurable {
 
   /**
    * Defines role-specific configuration. In this section it is possible to define configuration parameters that affect
-   * each
-   * node that has this role defined.
+   * each node that has this role defined.
    * @return Configurations per role
    */
   public List<RoleConfig> getRoleConfig() {
@@ -63,9 +62,8 @@ public final class Environment extends AbstractConfigurable {
   }
 
   /**
-   * Defines a list of tenants for configuration files that have tenant-specific system configurations. E.g. vhosts
-   * files
-   * for Apache Webserver.
+   * Defines a list of tenants for configuration files that have tenant-specific system configurations.
+   * E.g. vhosts files for Apache Webserver.
    * @return List of tenans
    */
   public List<Tenant> getTenants() {

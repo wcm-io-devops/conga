@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import static org.junit.Assert.assertEquals;
+import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import com.github.jknack.handlebars.Helper;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class JoinHelperTest {
 
@@ -37,12 +37,12 @@ public class JoinHelperTest {
   @SuppressWarnings("unchecked")
   @Before
   public void setUp() {
-    helper = new PluginManager().get(JoinHelper.NAME, HelperPlugin.class);
+    helper = new PluginManagerImpl().get(JoinHelper.NAME, HelperPlugin.class);
   }
 
   @Test
   public void testApply() throws Exception {
-    assertEquals("a|b|c", helper.apply(ImmutableList.of("a", "b", "c"), new MockOptions("|")));
+    assertHelper("a|b|c", helper, ImmutableList.of("a", "b", "c"), new MockOptions("|"));
   }
 
 }

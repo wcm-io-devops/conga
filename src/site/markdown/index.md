@@ -13,6 +13,7 @@ Configuration generator for DevOps Teams.
 * [Handlebars quickstart][handlebars-quickstart]
 * [Extensibility model][extensibility]
 * [API documentation][apidocs]
+* [CONGA Maven Plugin Documentation][plugindocs]
 * [Changelog][changelog]
 
 
@@ -48,6 +49,7 @@ Definitions for CONGA:
 
 
 [apidocs]: generator/apidocs/
+[plugindocs]: tooling/conga-maven-plugin/plugin-info.html
 [changelog]: changes-report.html
 [usage]: usage.html
 [general-concepts]: general-concepts.html

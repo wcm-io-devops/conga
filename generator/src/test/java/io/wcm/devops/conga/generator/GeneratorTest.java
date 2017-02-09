@@ -19,51 +19,34 @@
  */
 package io.wcm.devops.conga.generator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static io.wcm.devops.conga.generator.TestUtils.TEST_DEPENDENCY_VERSION;
+import static io.wcm.devops.conga.generator.TestUtils.TEST_VERSION;
+import static io.wcm.devops.conga.generator.TestUtils.assertContains;
+import static io.wcm.devops.conga.generator.TestUtils.assertDirectory;
+import static io.wcm.devops.conga.generator.TestUtils.assertFile;
+import static io.wcm.devops.conga.generator.TestUtils.assertNotFile;
+import static io.wcm.devops.conga.generator.TestUtils.setupGenerator;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.CharEncoding;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
-
-import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
-
 public class GeneratorTest {
 
-  private static final String TEST_VERSION = "testVersion1ForFileHeader";
-  private static final String TEST_DEPENDENCY_VERSION = "testVersion2ForFileHeader";
-
   private Generator underTest;
-  private ResourceCollection baseDir;
   private File destDir;
 
   @Before
   public void setUp() {
-    ResourceLoader resourceLoader = new ResourceLoader();
-    baseDir = resourceLoader.getResourceCollection("src/test/definitions");
-    destDir = new File("target/generation-test");
-    underTest = new Generator(
-        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")),
-        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")),
-        ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")),
-        destDir);
-    underTest.setVersion(TEST_VERSION);
-    underTest.setDependencyVersions(ImmutableList.of(TEST_DEPENDENCY_VERSION));
+    destDir = new File("target/generation-test/" + getClass().getSimpleName());
+    underTest = setupGenerator(destDir);
+    underTest.generate();
   }
 
   @Test
   public void testAllEnvironments() {
-    underTest.generate();
-
     File node1Dir = assertDirectory(destDir, "env1/node1");
 
     File text1 = assertFile(node1Dir, "text/test-role1.variant11.env1.node1.txt");
@@ -105,6 +88,12 @@ public class GeneratorTest {
     assertContains(xml1tenant2, "<globalString>globalFromTenant2</globalString>");
     assertContains(xml1tenant2, "<variableString>The v1-tenant2${novar}</variableString>");
 
+    File sample1a = assertFile(node1Dir, "files/sample.txt");
+    assertContains(sample1a, "This is an example text file: äöüß€");
+
+    File sample1b = assertFile(node1Dir, "files/sample-filesystem.txt");
+    assertContains(sample1b, "This is an example text file: äöüß€");
+
     File node2Dir = assertDirectory(destDir, "env1/node2");
 
     File xml2tenant1 = assertFile(node2Dir, "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml");
@@ -129,42 +118,6 @@ public class GeneratorTest {
     assertFile(node2Dir, "text/test-conditional-tenant1.txt");
     assertFile(node2Dir, "text/test-conditional-tenant2.txt");
     assertNotFile(node2Dir, "text/test-conditional-tenant3.txt");
-  }
-
-  private File assertDirectory(File assertBaseDir, String path) {
-    File dir = new File(assertBaseDir, path);
-    assertTrue("Directory does not exist: " + FileUtil.getCanonicalPath(dir), dir.exists() && dir.isDirectory());
-    return dir;
-  }
-
-  private File assertFile(File assertBaseDir, String path) {
-    File file = new File(assertBaseDir, path);
-    assertTrue("File does not exist: " + FileUtil.getCanonicalPath(file), file.exists() && file.isFile());
-    return file;
-  }
-
-  private void assertNotFile(File assertBaseDir, String path) {
-    File file = new File(assertBaseDir, path);
-    assertFalse("File does exist: " + FileUtil.getCanonicalPath(file), file.exists() && file.isFile());
-  }
-
-  private void assertContains(File file, String contains) {
-    assertContains(file, contains, CharEncoding.UTF_8);
-  }
-
-  private void assertContains(File file, String contains, String charset) {
-    try {
-      String fileContent = FileUtils.readFileToString(file, charset);
-      assertTrue("File " + FileUtil.getCanonicalPath(file) + " does not contain: " + contains, StringUtils.contains(fileContent, contains));
-    }
-    catch (IOException ex) {
-      throw new RuntimeException("Unable to read contents from: " + FileUtil.getCanonicalPath(file), ex);
-    }
-  }
-
-  @Test(expected = GeneratorException.class)
-  public void testInvalidEnvironments() {
-    underTest.generate("unknown");
   }
 
 }

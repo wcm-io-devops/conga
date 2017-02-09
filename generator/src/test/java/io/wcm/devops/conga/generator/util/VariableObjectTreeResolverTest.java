@@ -21,11 +21,15 @@ package io.wcm.devops.conga.generator.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope1;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope2;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope3;
@@ -89,19 +93,25 @@ public class VariableObjectTreeResolverTest {
     VariableObjectTreeResolver.resolve(root);
 
 
-    assertEquals(ImmutableMap.of("var1", "v1", "conf", "v1"), scope1.getConfig());
+    assertMap(ImmutableMap.of("var1", "v1", "conf", "v1"), scope1.getConfig());
 
-    assertEquals(ImmutableMap.of("var21", "v21", "conf21", "v21"), scope21.getConfig());
+    assertMap(ImmutableMap.of("var21", "v21", "conf21", "v21"), scope21.getConfig());
 
-    assertEquals(ImmutableMap.of("var22", "v22", "conf22", "v22"), scope22.getConfig());
+    assertMap(ImmutableMap.of("var22", "v22", "conf22", "v22"), scope22.getConfig());
 
-    assertEquals(ImmutableMap.of("var31", "v31", "conf31", "v31"), scope31.getConfig());
+    assertMap(ImmutableMap.of("var31", "v31", "conf31", "v31"), scope31.getConfig());
 
-    assertEquals(ImmutableMap.of("var32", "v32", "conf32", "v32"), scope32.getConfig());
+    assertMap(ImmutableMap.of("var32", "v32", "conf32", "v32"), scope32.getConfig());
 
-    assertEquals(ImmutableMap.of("varS1", "vS1", "confS1", "vS1"), simple1.getConfig());
+    assertMap(ImmutableMap.of("varS1", "vS1", "confS1", "vS1"), simple1.getConfig());
 
-    assertEquals(ImmutableMap.of("varS2", "vS2", "confS2", "vS2"), simple2.getConfig());
+    assertMap(ImmutableMap.of("varS2", "vS2", "confS2", "vS2"), simple2.getConfig());
+  }
+
+  private void assertMap(Map<String, Object> expected, Map<String, Object> actual) {
+    Map<String, Object> expectedWithDefault = new HashMap<>(expected);
+    expectedWithDefault.putAll(ContextPropertiesBuilder.getEmptyContextVariables());
+    assertEquals(expectedWithDefault, actual);
   }
 
 }

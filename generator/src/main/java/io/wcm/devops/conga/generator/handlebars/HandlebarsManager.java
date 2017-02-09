@@ -63,6 +63,7 @@ public class HandlebarsManager {
 
   /**
    * @param templateDirs Template base directories
+   * @param pluginManager Plugin manager
    */
   public HandlebarsManager(List<ResourceCollection> templateDirs, PluginManager pluginManager) {
     this.templateDirs = templateDirs;
@@ -70,7 +71,7 @@ public class HandlebarsManager {
   }
 
   /**
-   * Get handelbars instance with escaping for file extension and charset.
+   * Get handlebars instance with escaping for file extension and charset.
    * @param escapingStrategy Escaping strategy plugin name
    * @param charset Charset
    * @return Handlebars instance
