@@ -49,3 +49,5 @@ config:
   defaultInt: 55
   defaultBool: true
   variableString: "The ${var1}\\${novar}"
+  listParam:
+  - e0
