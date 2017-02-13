@@ -57,7 +57,7 @@ public class PackageMojo extends AbstractCongaMojo {
   /**
    * Selected environments to generate.
    */
-  @Parameter
+  @Parameter(property = "conga.environments")
   private String[] environments;
 
   /**

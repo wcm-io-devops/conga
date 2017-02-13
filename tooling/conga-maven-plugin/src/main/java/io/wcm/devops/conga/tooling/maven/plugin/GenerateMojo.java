@@ -73,7 +73,7 @@ public class GenerateMojo extends AbstractCongaMojo {
   /**
    * Selected environments to generate.
    */
-  @Parameter
+  @Parameter(property = "conga.environments")
   private String[] environments;
 
   /**
