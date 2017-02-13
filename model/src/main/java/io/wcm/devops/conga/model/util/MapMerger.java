@@ -19,7 +19,6 @@
  */
 package io.wcm.devops.conga.model.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,10 +75,10 @@ public final class MapMerger {
       else if (v1 instanceof List && v2 instanceof List) {
         List<Object> l1 = (List<Object>)v1;
         List<Object> l2 = (List<Object>)v2;
-        if (l1.contains(LIST_MERGE_ENTRY) || l2.contains(LIST_MERGE_ENTRY)) {
-          List<Object> mergedList = new ArrayList<>();
-          mergedList.addAll(l1);
-          mergedList.addAll(l2);
+        if (isMergeable(l1) || isMergeable(l2)) {
+          ArrayListWithMerge<Object> mergedList = new ArrayListWithMerge<>();
+          mergedList.addAllIfNotContained(l1);
+          mergedList.addAllIfNotContained(l2);
           mergedList.removeIf(item -> LIST_MERGE_ENTRY.equals(item));
           merged.put(key, mergedList);
         }
@@ -96,6 +95,10 @@ public final class MapMerger {
     }
 
     return merged;
+  }
+
+  private static boolean isMergeable(List<Object> list) {
+    return (list instanceof ArrayListWithMerge) || list.contains(LIST_MERGE_ENTRY);
   }
 
 }

@@ -118,6 +118,17 @@ public class GeneratorTest {
     assertFile(node2Dir, "text/test-conditional-tenant1.txt");
     assertFile(node2Dir, "text/test-conditional-tenant2.txt");
     assertNotFile(node2Dir, "text/test-conditional-tenant3.txt");
+
+
+    // check list param merging
+    assertContains(text1, "listParam: e3,e4,e1,e2,e0", CharEncoding.ISO_8859_1);
+    File node1Tenant1ConditionalText = assertFile(node1Dir, "text/test-conditional-tenant1.txt");
+    assertContains(node1Tenant1ConditionalText, "listParam: e1,e2,e3,e4,e0", CharEncoding.ISO_8859_1);
+    File node2Tenant1ConditionalText = assertFile(node2Dir, "text/test-conditional-tenant1.txt");
+    assertContains(node2Tenant1ConditionalText, "listParam: e1,e2,e0", CharEncoding.ISO_8859_1);
+    File node2Tenant2ConditionalText = assertFile(node2Dir, "text/test-conditional-tenant2.txt");
+    assertContains(node2Tenant2ConditionalText, "listParam: e5,e6,e1,e2,e0", CharEncoding.ISO_8859_1);
+
   }
 
 }

@@ -57,6 +57,10 @@ tenants:
     var1: v1-tenant2
     globalString: globalFromTenant2
     defaultString: defaultFromTenant2
+    listParam:
+    - e5
+    - e6
+    - _merge_
 
 - tenant: tenant3
   config:
