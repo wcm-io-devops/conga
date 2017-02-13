@@ -23,6 +23,9 @@ import static io.wcm.devops.conga.model.util.MapMerger.LIST_MERGE_ENTRY;
 import static io.wcm.devops.conga.model.util.MapMerger.merge;
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
@@ -97,6 +100,86 @@ public class MapMergerTest {
     assertEquals(ImmutableMap.of("k1", ImmutableList.of(ImmutableMap.of("k11", "v11"), "v12", ImmutableMap.of("k11", "v12", "k21", "v21"), "v13")),
         merge(ImmutableMap.of("k1", ImmutableList.of(LIST_MERGE_ENTRY, ImmutableMap.of("k11", "v11"), "v12")),
             ImmutableMap.of("k1", ImmutableList.of(LIST_MERGE_ENTRY, ImmutableMap.of("k11", "v12", "k21", "v21"), "v13"))));
+  }
+
+  @Test
+  public void testMergeList_MultiLevel0() {
+    List<Object> l1 = ImmutableList.of("e1", "e2");
+    List<Object> l2 = ImmutableList.of("e3", "e4");
+    List<Object> l3 = ImmutableList.of("e5", "e6");
+
+    Map<String, Object> result = MapMerger.merge(ImmutableMap.of("k1", l2), ImmutableMap.of("k1", l1));
+    result = MapMerger.merge(ImmutableMap.of("k1", l3), result);
+
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of("e5", "e6")), result);
+  }
+
+  @Test
+  public void testMergeList_MultiLevel1() {
+    List<Object> l1 = ImmutableList.of(LIST_MERGE_ENTRY, "e1", "e2");
+    List<Object> l2 = ImmutableList.of("e3", "e4");
+    List<Object> l3 = ImmutableList.of("e5", "e6");
+
+    Map<String, Object> result = MapMerger.merge(ImmutableMap.of("k1", l2), ImmutableMap.of("k1", l1));
+    result = MapMerger.merge(ImmutableMap.of("k1", l3), result);
+
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of("e5", "e6", "e3", "e4", "e1", "e2")), result);
+  }
+
+  @Test
+  public void testMergeList_MultiLevel2() {
+    List<Object> l1 = ImmutableList.of("e1", "e2");
+    List<Object> l2 = ImmutableList.of(LIST_MERGE_ENTRY, "e3", "e4");
+    List<Object> l3 = ImmutableList.of("e5", "e6");
+
+    Map<String, Object> result = MapMerger.merge(ImmutableMap.of("k1", l2), ImmutableMap.of("k1", l1));
+    result = MapMerger.merge(ImmutableMap.of("k1", l3), result);
+
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of("e5", "e6", "e3", "e4", "e1", "e2")), result);
+  }
+
+  @Test
+  public void testMergeList_MultiLevel3() {
+    List<Object> l1 = ImmutableList.of("e1", "e2");
+    List<Object> l2 = ImmutableList.of("e3", "e4");
+    List<Object> l3 = ImmutableList.of(LIST_MERGE_ENTRY, "e5", "e6");
+
+    Map<String, Object> result = MapMerger.merge(ImmutableMap.of("k1", l2), ImmutableMap.of("k1", l1));
+    result = MapMerger.merge(ImmutableMap.of("k1", l3), result);
+
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of("e5", "e6", "e3", "e4")), result);
+  }
+
+  @Test
+  public void testMergeList_MultiLevel1_MultiMerge() {
+    List<Object> l1 = ImmutableList.of(LIST_MERGE_ENTRY, "e1", "e2");
+    List<Object> l2 = ImmutableList.of("e3", "e4");
+    List<Object> l3 = ImmutableList.of("e5", "e6");
+
+    Map<String, Object> result = MapMerger.merge(ImmutableMap.of("k1", l2), ImmutableMap.of("k1", l1));
+    result = MapMerger.merge(ImmutableMap.of("k1", l1), result);
+    result = MapMerger.merge(ImmutableMap.of("k1", l2), result);
+    result = MapMerger.merge(ImmutableMap.of("k1", l3), result);
+    result = MapMerger.merge(ImmutableMap.of("k1", l3), result);
+
+    assertEquals(ImmutableMap.of("k1", ImmutableList.of("e5", "e6", "e3", "e4", "e1", "e2")), result);
+  }
+
+  @Test
+  public void testMergeList_MultiLevel1_MultiMerge_Objects() {
+    List<Object> l1 = ImmutableList.of(LIST_MERGE_ENTRY, "e1", ImmutableMap.of("k2", "e2"));
+    List<Object> l2 = ImmutableList.of("e3", ImmutableMap.of("k2", "e4"));
+    List<Object> l3 = ImmutableList.of("e5", ImmutableMap.of("k2", "e6"));
+
+    Map<String, Object> result = MapMerger.merge(ImmutableMap.of("k1", l2), ImmutableMap.of("k1", l1));
+    result = MapMerger.merge(ImmutableMap.of("k1", l1), result);
+    result = MapMerger.merge(ImmutableMap.of("k1", l2), result);
+    result = MapMerger.merge(ImmutableMap.of("k1", l3), result);
+    result = MapMerger.merge(ImmutableMap.of("k1", l3), result);
+
+    assertEquals(
+        ImmutableMap.of("k1", ImmutableList.of("e5", ImmutableMap.of("k2", "e6"), "e3", ImmutableMap.of("k2", "e4"), "e1", ImmutableMap.of("k2", "e2"))),
+        result);
   }
 
 }

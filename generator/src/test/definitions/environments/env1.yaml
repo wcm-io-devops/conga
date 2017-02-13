@@ -5,6 +5,10 @@ nodes:
   - role: role1
     variant: variant11
   - role: role2
+  config:
+    listParam:
+    - e3
+    - e4
 
 - nodes:
   - node2
@@ -30,6 +34,10 @@ roleConfig:
 config:
   globalString: globalValue äöüß€
   varWithContext: ${tenant} ${version} ${node} ${nodeRole}
+  listParam:
+  - e1
+  - e2
+  - _merge_
 
 
 # Tenant defintions
@@ -49,6 +57,10 @@ tenants:
     var1: v1-tenant2
     globalString: globalFromTenant2
     defaultString: defaultFromTenant2
+    listParam:
+    - e5
+    - e6
+    - _merge_
 
 - tenant: tenant3
   config:
