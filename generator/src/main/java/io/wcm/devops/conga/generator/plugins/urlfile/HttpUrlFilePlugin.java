@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.urlfile;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -57,7 +58,7 @@ public class HttpUrlFilePlugin implements UrlFilePlugin {
   @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
     URL urlObject = new URL(url);
-    return urlObject.openStream();
+    return new BufferedInputStream(urlObject.openStream());
   }
 
 }

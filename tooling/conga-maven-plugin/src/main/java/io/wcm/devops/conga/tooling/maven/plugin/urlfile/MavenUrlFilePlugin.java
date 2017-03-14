@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.urlfile;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -76,7 +77,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
     try {
       File file = getArtifactFile(mavenCoords, mavenContext);
-      return new FileInputStream(file);
+      return new BufferedInputStream(new FileInputStream(file));
     }
     catch (MojoFailureException | MojoExecutionException ex) {
       throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
