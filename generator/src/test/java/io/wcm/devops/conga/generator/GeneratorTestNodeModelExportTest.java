@@ -27,9 +27,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -102,7 +104,7 @@ public class GeneratorTestNodeModelExportTest {
   }
 
   private Map<String, Object> readYaml(File file) throws IOException {
-    try (FileInputStream is = new FileInputStream(file);
+    try (InputStream is = new BufferedInputStream(new FileInputStream(file));
         Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
       return (Map<String, Object>)new Yaml().load(reader);
     }
