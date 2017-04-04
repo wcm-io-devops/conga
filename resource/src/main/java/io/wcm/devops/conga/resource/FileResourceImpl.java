@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.resource;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -49,7 +50,7 @@ class FileResourceImpl extends AbstractFileResourceInfoImpl implements Resource 
   @Override
   public InputStream getInputStream() {
     try {
-      return new FileInputStream(file);
+      return new BufferedInputStream(new FileInputStream(file));
     }
     catch (FileNotFoundException ex) {
       throw new ResourceException("File does not exist: " + getCanonicalPath());

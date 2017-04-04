@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.urlfile;
 
+import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,7 +72,7 @@ public class ClasspathUrlFilePlugin implements UrlFilePlugin {
     if (is == null) {
       throw new FileNotFoundException("Classpath reference not found: " + classpathRef);
     }
-    return is;
+    return new BufferedInputStream(is);
   }
 
 }

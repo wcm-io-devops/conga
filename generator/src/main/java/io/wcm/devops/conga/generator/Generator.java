@@ -96,7 +96,7 @@ public final class Generator {
             ConfigInheritanceResolver.resolve(model);
             models.put(FilenameUtils.getBaseName(file.getName()), model);
           }
-          catch (Throwable ex) {
+          /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
             throw new GeneratorException("Unable to read definition: " + file.getCanonicalPath(), ex);
           }
         }

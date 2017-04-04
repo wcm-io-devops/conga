@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.validator;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,7 +71,7 @@ public final class JsonValidator implements ValidatorPlugin {
 
   @Override
   public Void apply(FileContext file, ValidatorContext context) throws ValidationException {
-    try (InputStream is = new FileInputStream(file.getFile());
+    try (InputStream is = new BufferedInputStream(new FileInputStream(file.getFile()));
         Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
       jsonParser.parse(reader);
     }

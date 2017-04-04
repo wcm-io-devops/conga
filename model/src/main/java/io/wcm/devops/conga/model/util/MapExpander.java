@@ -110,7 +110,13 @@ public final class MapExpander {
       return expand((Map<String, Object>)object);
     }
     if (object instanceof List) {
-      List<Object> expandedList = new ArrayList<>();
+      List<Object> expandedList;
+      if (object instanceof ArrayListWithMerge) {
+        expandedList = new ArrayListWithMerge<>();
+      }
+      else {
+        expandedList = new ArrayList<>();
+      }
       for (Object item : (List)object) {
         expandedList.add(expandDeep(item));
       }

@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.urlfile;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -65,7 +66,7 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
     if (!file.exists()) {
       throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
     }
-    return new FileInputStream(file);
+    return new BufferedInputStream(new FileInputStream(file));
   }
 
   private File getFileInternal(String url, UrlFilePluginContext context) {

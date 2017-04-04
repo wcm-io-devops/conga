@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.urlfile;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -76,7 +77,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
     try {
       File file = getArtifactFile(mavenCoords, mavenContext);
-      return new FileInputStream(file);
+      return new BufferedInputStream(new FileInputStream(file));
     }
     catch (MojoFailureException | MojoExecutionException ex) {
       throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
@@ -201,11 +202,20 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
   }
 
   private Artifact createArtifact(String artifactId, String groupId, String packaging, String classifier, String version,
-      MavenUrlFilePluginContext context) {
+      MavenUrlFilePluginContext context) throws MojoFailureException {
 
     String artifactVersion = version;
     if (artifactVersion == null) {
       artifactVersion = resolveArtifactVersion(artifactId, groupId, packaging, classifier, context);
+    }
+
+    if (StringUtils.isBlank(groupId) || StringUtils.isBlank(artifactId) || StringUtils.isBlank(artifactVersion)) {
+      throw new MojoFailureException("Invalid Maven artifact reference: "
+          + "artifactId=" + artifactId + ", "
+          + "groupId=" + groupId + ", "
+          + "version=" + artifactVersion + ", "
+          + "packaging=" + packaging + ", "
+          + "classifier=" + classifier);
     }
 
     if (StringUtils.isEmpty(classifier)) {

@@ -143,7 +143,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
         OutputStreamWriter writer = new OutputStreamWriter(os, CharEncoding.UTF_8)) {
       new Yaml().dump(modelMap, writer);
     }
-    catch (Throwable ex) {
+    /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
       throw new GeneratorException("Unable to write model file: " + FileUtil.getCanonicalPath(file), ex);
     }
   }
