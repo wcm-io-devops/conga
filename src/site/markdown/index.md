@@ -48,6 +48,11 @@ Definitions for CONGA:
 * [CONGA Definitions for Adobe Experience Manager (AEM)](definitions/aem)
 
 
+## Training Material
+
+* [wcm.io CONGA Training with exercises](http://training.wcm.io/conga/)
+
+
 [apidocs]: generator/apidocs/
 [plugindocs]: tooling/conga-maven-plugin/plugin-info.html
 [changelog]: changes-report.html
