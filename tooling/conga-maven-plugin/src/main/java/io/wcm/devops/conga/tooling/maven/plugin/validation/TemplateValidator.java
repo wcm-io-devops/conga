@@ -59,7 +59,7 @@ public final class TemplateValidator implements DefinitionValidator {
       try {
         handlebars.compile(templatePath);
       }
-      catch (Throwable ex) {
+      /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
         throw new MojoFailureException("Template " + pathForLog + " is invalid:\n" + ex.getMessage());
       }
     }

@@ -46,7 +46,7 @@ public final class ModelValidator implements DefinitionValidator {
     try {
       modelReader.read(resource);
     }
-    catch (Throwable ex) {
+    /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
       throw new MojoFailureException(modelName + " definition " + pathForLog + " is invalid:\n" + ex.getMessage());
     }
   }
