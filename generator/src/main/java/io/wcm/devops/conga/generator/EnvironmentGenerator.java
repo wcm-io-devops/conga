@@ -222,6 +222,8 @@ class EnvironmentGenerator {
         .roleFile(roleFile)
         .environment(environment)
         .config(config)
+        .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
         .logger(log);
 
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);

@@ -21,15 +21,12 @@ package io.wcm.devops.conga.generator.spi.context;
 
 import java.util.Map;
 
-import io.wcm.devops.conga.generator.util.PluginManager;
-
 /**
  * Context for {@link io.wcm.devops.conga.generator.spi.PostProcessorPlugin}.
  */
 public final class PostProcessorContext extends AbstractPluginContext<PostProcessorContext> {
 
   private Map<String, Object> options;
-  private PluginManager pluginManager;
 
   /**
    * @return Post processor options
@@ -44,22 +41,6 @@ public final class PostProcessorContext extends AbstractPluginContext<PostProces
    */
   public PostProcessorContext options(Map<String, Object> value) {
     options = value;
-    return this;
-  }
-
-  /**
-   * @return Plugin manager
-   */
-  public PluginManager getPluginManager() {
-    return this.pluginManager;
-  }
-
-  /**
-   * @param value Plugin manager
-   * @return this
-   */
-  public PostProcessorContext pluginManager(PluginManager value) {
-    this.pluginManager = value;
     return this;
   }
 
