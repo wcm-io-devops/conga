@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
@@ -50,6 +51,9 @@ public final class ClassLoaderUtil {
       List<URL> classLoaderUrls = new ArrayList<>();
       for (String path : project.getCompileClasspathElements()) {
         classLoaderUrls.add(new File(path).toURI().toURL());
+      }
+      for (Resource resource : project.getResources()) {
+        classLoaderUrls.add(new File(resource.getDirectory()).toURI().toURL());
       }
       return new URLClassLoader(classLoaderUrls.toArray(new URL[classLoaderUrls.size()]));
     }
