@@ -105,18 +105,24 @@ class FileGenerator {
         .charset(roleFile.getCharset())
         .modelOptions(roleFile.getModelOptions());
 
-    this.fileHeaderContext = new FileHeaderContext()
-        .commentLines(buildFileHeaderCommentLines(version, dependencyVersions));
-
     Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");
+
+    this.fileHeaderContext = new FileHeaderContext()
+        .commentLines(buildFileHeaderCommentLines(version, dependencyVersions))
+        .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
+        .logger(pluginLogger);
 
     this.validatorContext = new ValidatorContext()
         .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
+        .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
         .logger(pluginLogger);
 
     this.postProcessorContext = new PostProcessorContext()
         .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
         .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
         .logger(pluginLogger);
 
     this.config = VariableMapResolver.deescape(config);

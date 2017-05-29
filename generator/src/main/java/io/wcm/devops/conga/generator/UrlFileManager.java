@@ -34,7 +34,7 @@ import io.wcm.devops.conga.generator.util.PluginManager;
 /**
  * Manages copy/download of external files referenced in CONGA roles by URL, filesystem, classpath or Maven coordinates.
  */
-class UrlFileManager {
+public final class UrlFileManager {
 
   private final List<UrlFilePlugin> urlFilePlugins;
   private final UrlFilePlugin defaultUrlFilePlugins;
@@ -44,8 +44,9 @@ class UrlFileManager {
 
   /**
    * @param pluginManager Plugin manager
+   * @param context URL file plugin context
    */
-  UrlFileManager(PluginManager pluginManager, UrlFilePluginContext context) {
+  public UrlFileManager(PluginManager pluginManager, UrlFilePluginContext context) {
     this.urlFilePlugins = pluginManager.getAll(UrlFilePlugin.class);
     this.defaultUrlFilePlugins = pluginManager.get(FilesystemUrlFilePlugin.NAME, UrlFilePlugin.class);
     this.context = context;
@@ -55,7 +56,7 @@ class UrlFileManager {
    * Get file name from URL.
    * @param url URL
    * @return File name
-   * @throws IOException
+   * @throws IOException I/O exception
    */
   public String getFileName(String url) throws IOException {
     if (StringUtils.isBlank(url)) {
@@ -80,7 +81,7 @@ class UrlFileManager {
    * Get file binary data from URL.
    * @param url URL
    * @return Input stream
-   * @throws IOException
+   * @throws IOException I/O exception
    */
   public InputStream getFile(String url) throws IOException {
     if (StringUtils.isBlank(url)) {

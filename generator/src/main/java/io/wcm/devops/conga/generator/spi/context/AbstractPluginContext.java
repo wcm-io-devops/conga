@@ -21,12 +21,17 @@ package io.wcm.devops.conga.generator.spi.context;
 
 import org.slf4j.Logger;
 
+import io.wcm.devops.conga.generator.UrlFileManager;
+import io.wcm.devops.conga.generator.util.PluginManager;
+
 /**
  * Generic plugin context.
  */
 public abstract class AbstractPluginContext<T> {
 
   private Logger logger;
+  private PluginManager pluginManager;
+  private UrlFileManager urlFileManager;
 
   /**
    * @return Logger
@@ -42,6 +47,40 @@ public abstract class AbstractPluginContext<T> {
   @SuppressWarnings("unchecked")
   public T logger(Logger value) {
     logger = value;
+    return (T)this;
+  }
+
+  /**
+   * @return Plugin manager
+   */
+  public PluginManager getPluginManager() {
+    return this.pluginManager;
+  }
+
+  /**
+   * @param value Plugin manager
+   * @return this
+   */
+  @SuppressWarnings("unchecked")
+  public T pluginManager(PluginManager value) {
+    this.pluginManager = value;
+    return (T)this;
+  }
+
+  /**
+   * @return URL file manager
+   */
+  public UrlFileManager getUrlFileManager() {
+    return this.urlFileManager;
+  }
+
+  /**
+   * @param value URL file manager
+   * @return this
+   */
+  @SuppressWarnings("unchecked")
+  public T urlFileManager(UrlFileManager value) {
+    this.urlFileManager = value;
     return (T)this;
   }
 

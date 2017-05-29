@@ -61,7 +61,7 @@ public final class RoleTemplateFileValidator implements DefinitionValidator {
         }
       }
     }
-    catch (Throwable ex) {
+    /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
       throw new MojoFailureException("Role definition " + pathForLog + " is invalid:\n" + ex.getMessage());
     }
   }
