@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -130,28 +131,35 @@ class EnvironmentGenerator {
         throw new GeneratorException("Role '" + nodeRole.getRole() + "' "
             + "from " + environmentName + "/" + node.getNode() + " does not exist.");
       }
-      // TODO: support multiple variants!
-      String variant = nodeRole.getVariant();
-      RoleVariant roleVariant = getRoleVariant(role, variant, nodeRole.getRole(), node);
 
       // merge default values to config
-      Map<String, Object> roleConfig = roleVariant != null ? roleVariant.getConfig() : role.getConfig();
-      Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), roleConfig);
+      List<String> variants = nodeRole.getAggregatedVariants();
+      Map<String, Object> mergedConfig = nodeRole.getConfig();
+      if (variants.isEmpty()) {
+        mergedConfig = MapMerger.merge(mergedConfig, role.getConfig());
+      }
+      else {
+        for (String variant : variants) {
+          RoleVariant roleVariant = getRoleVariant(role, variant, nodeRole.getRole(), node);
+          mergedConfig = MapMerger.merge(mergedConfig, roleVariant.getConfig());
+        }
+      }
 
       // additionally set context variables
       mergedConfig.putAll(environmentContextProperties);
       mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
       // collect role and tenant information for export model
-      ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(nodeRole.getRole(), variant, mergedConfig);
+      ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(nodeRole.getRole(), variants, mergedConfig);
 
       // generate files
       List<GeneratedFileContext> allFiles = new ArrayList<>();
       for (RoleFile roleFile : role.getFiles()) {
-        if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
+        // generate file if no variant is required, or at least one of the given variants is defined for the node/role
+        if (roleFile.getVariants().isEmpty() || CollectionUtils.containsAny(roleFile.getVariants(), variants)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
           multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
-              nodeRole.getRole(), variant, roleFile.getTemplate(), allFiles);
+              nodeRole.getRole(), variants, roleFile.getTemplate(), allFiles);
         }
       }
       exportNodeRoleData.files(allFiles);
@@ -162,9 +170,6 @@ class EnvironmentGenerator {
   }
 
   private RoleVariant getRoleVariant(Role role, String variant, String roleName, Node node) {
-    if (StringUtils.isEmpty(variant)) {
-      return null;
-    }
     for (RoleVariant roleVariant : role.getVariants()) {
       if (StringUtils.equals(variant, roleVariant.getVariant())) {
         return roleVariant;
@@ -212,7 +217,7 @@ class EnvironmentGenerator {
   }
 
   private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
-      String roleName, String roleVariantName, String templateName, List<GeneratedFileContext> generatedFiles) {
+      String roleName, List<String> roleVariantNames, String templateName, List<GeneratedFileContext> generatedFiles) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
@@ -239,13 +244,13 @@ class EnvironmentGenerator {
       String url = VariableStringResolver.resolve(roleFile.getUrl(), resolvedConfig);
 
       generatedFiles.addAll(generateFile(roleFile, dir, file, url,
-          resolvedConfig, nodeDir, template, roleName, roleVariantName, templateName));
+          resolvedConfig, nodeDir, template, roleName, roleVariantNames, templateName));
     }
   }
 
   private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
       Map<String, Object> config, File nodeDir, Template template,
-      String roleName, String roleVariantName, String templateName) {
+      String roleName, List<String> roleVariantNames, String templateName) {
 
     String generatedFileName = fileName;
     if (StringUtils.isBlank(generatedFileName) && StringUtils.isNotBlank(url)) {
@@ -270,7 +275,7 @@ class EnvironmentGenerator {
       }
     }
 
-    FileGenerator fileGenerator = new FileGenerator(environmentName, roleName, roleVariantName, templateName,
+    FileGenerator fileGenerator = new FileGenerator(environmentName, roleName, roleVariantNames, templateName,
         nodeDir, file, url, roleFile, config, template, pluginManager, urlFileManager,
         version, dependencyVersions, log);
     try {

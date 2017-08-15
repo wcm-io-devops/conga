@@ -95,7 +95,7 @@ public class FileGeneratorFileHeaderTest {
       }
     });
 
-    underTest = new FileGenerator("env1", "role1", "variant1", "template1",
+    underTest = new FileGenerator("env1", "role1", ImmutableList.of("variant1"), "template1",
         destDir, file, null, roleFile, ImmutableMap.<String, Object>of(),
         template, pluginManager, urlFileManager,
         "1.0", ImmutableList.<String>of(), logger);

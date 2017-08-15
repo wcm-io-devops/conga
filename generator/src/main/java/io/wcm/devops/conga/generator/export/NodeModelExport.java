@@ -81,11 +81,11 @@ public final class NodeModelExport {
   /**
    * Add role information
    * @param role Role name
-   * @param roleVariant Role variant name
+   * @param roleVariants Role variant name
    * @param config Merged configuration (unresolved)
    * @return Node role data
    */
-  public ExportNodeRoleData addRole(String role, String roleVariant, Map<String, Object> config) {
+  public ExportNodeRoleData addRole(String role, List<String> roleVariants, Map<String, Object> config) {
     if (!isActive()) {
       return new ExportNodeRoleData();
     }
@@ -113,7 +113,7 @@ public final class NodeModelExport {
 
     ExportNodeRoleData item = new ExportNodeRoleData()
         .role(role)
-        .roleVariant(roleVariant)
+        .roleVariant(roleVariants)
         .config(resolvedConfig)
         .tenantData(tenantData);
     roleData.add(item);
