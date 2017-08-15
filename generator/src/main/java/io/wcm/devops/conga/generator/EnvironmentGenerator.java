@@ -130,6 +130,7 @@ class EnvironmentGenerator {
         throw new GeneratorException("Role '" + nodeRole.getRole() + "' "
             + "from " + environmentName + "/" + node.getNode() + " does not exist.");
       }
+      // TODO: support multiple variants!
       String variant = nodeRole.getVariant();
       RoleVariant roleVariant = getRoleVariant(role, variant, nodeRole.getRole(), node);
 
