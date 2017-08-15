@@ -34,7 +34,7 @@ script:
 # Remove wcm.io artefacts from repository before cache
 - rm -rf $HOME/.m2/repository/io/wcm
 
-# exlude release tags like xyz-1.0.0 or xyz-1
+# exlude release tags like 1.0.0
 branches:
   except:
   - /^.*\-\d+(\.\d+\.\d+)?(\..*|\-.*)?$/
