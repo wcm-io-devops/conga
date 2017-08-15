@@ -33,6 +33,7 @@ import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.Tenant;
@@ -92,7 +93,7 @@ public final class NodeModelExport {
     // clone config to make sure it is not tampered by the plugin
     Map<String, Object> clonedConfig = Cloner.standard().deepClone(config);
 
-    // resolve variables in configuration, and remove context properites
+    // resolve variables in configuration, and remove context properties
     Map<String, Object> resolvedConfig = VariableMapResolver.resolve(clonedConfig, false);
 
     // generate tenants and tenant config
@@ -101,7 +102,7 @@ public final class NodeModelExport {
       Map<String, Object> tenantConfig = MapMerger.merge(tenant.getConfig(), clonedConfig);
 
       // set tenant-specific context variables
-      tenantConfig.put(ContextProperties.TENANT, tenant.getTenant());
+      tenantConfig.put(ContextProperties.TENANT, VariableStringResolver.resolve(tenant.getTenant(), tenantConfig));
       tenantConfig.put(ContextProperties.TENANT_ROLES, tenant.getRoles());
 
       tenantData.add(new ExportNodeRoleTenantData()

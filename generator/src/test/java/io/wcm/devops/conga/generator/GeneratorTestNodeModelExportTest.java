@@ -87,8 +87,8 @@ public class GeneratorTestNodeModelExportTest {
     assertEquals("\"value1\" äöüß€", getTenantConfig(role1, "tenant1", "defaultString"));
     assertEquals(ImmutableList.of("tenantRole1"), getTenantRoles(role1, "tenant2"));
     assertEquals("defaultFromTenant2", getTenantConfig(role1, "tenant2", "defaultString"));
-    assertEquals(ImmutableList.of(), getTenantRoles(role1, "tenant3"));
-    assertEquals("\"value1\" äöüß€", getTenantConfig(role1, "tenant3", "defaultString"));
+    assertEquals(ImmutableList.of(), getTenantRoles(role1, "tenant3_TenantSuffix"));
+    assertEquals("\"value1\" äöüß€", getTenantConfig(role1, "tenant3_TenantSuffix", "defaultString"));
 
     Map<String, Object> role2 = getRole(model1, "role2");
     assertFiles(role2,
@@ -99,8 +99,8 @@ public class GeneratorTestNodeModelExportTest {
     assertEquals("value2", getTenantConfig(role2, "tenant1", "defaultString"));
     assertEquals(ImmutableList.of("tenantRole1"), getTenantRoles(role2, "tenant2"));
     assertEquals("defaultFromTenant2", getTenantConfig(role2, "tenant2", "defaultString"));
-    assertEquals(ImmutableList.of(), getTenantRoles(role2, "tenant3"));
-    assertEquals("value2", getTenantConfig(role2, "tenant3", "defaultString"));
+    assertEquals(ImmutableList.of(), getTenantRoles(role2, "tenant3_TenantSuffix"));
+    assertEquals("value2", getTenantConfig(role2, "tenant3_TenantSuffix", "defaultString"));
   }
 
   private Map<String, Object> readYaml(File file) throws IOException {

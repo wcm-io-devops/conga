@@ -63,7 +63,7 @@ public class GeneratorTest {
     assertContains(text1, ContextProperties.NODES + ": node1,node2,node3", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.NODES_BY_ROLE + ": node1,node2,node3", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.NODES_BY_ROLE_VARIANT + ": node1", CharEncoding.ISO_8859_1);
-    assertContains(text1, ContextProperties.TENANTS + ": tenant1,tenant2,tenant3", CharEncoding.ISO_8859_1);
+    assertContains(text1, ContextProperties.TENANTS + ": tenant1,tenant2,tenant3_TenantSuffix", CharEncoding.ISO_8859_1);
     assertContains(text1, ContextProperties.TENANTS_BY_ROLE + ": tenant1,tenant2", CharEncoding.ISO_8859_1);
 
     File json1 = assertFile(node1Dir, "json/test.json");
@@ -114,10 +114,10 @@ public class GeneratorTest {
     // check conditional files
     assertFile(node1Dir, "text/test-conditional-tenant1.txt");
     assertNotFile(node1Dir, "text/test-conditional-tenant2.txt");
-    assertNotFile(node1Dir, "text/test-conditional-tenant3.txt");
+    assertNotFile(node1Dir, "text/test-conditional-tenant3_TenantSuffix.txt");
     assertFile(node2Dir, "text/test-conditional-tenant1.txt");
     assertFile(node2Dir, "text/test-conditional-tenant2.txt");
-    assertNotFile(node2Dir, "text/test-conditional-tenant3.txt");
+    assertNotFile(node2Dir, "text/test-conditional-tenant3_TenantSuffix.txt");
 
 
     // check list param merging

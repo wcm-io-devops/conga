@@ -38,6 +38,7 @@ config:
   - e1
   - e2
   - _merge_
+  tenantNameSuffix: _TenantSuffix
 
 
 # Tenant defintions
@@ -62,6 +63,6 @@ tenants:
     - e6
     - _merge_
 
-- tenant: tenant3
+- tenant: tenant3${tenantNameSuffix}
   config:
     generateConditionalFile: false

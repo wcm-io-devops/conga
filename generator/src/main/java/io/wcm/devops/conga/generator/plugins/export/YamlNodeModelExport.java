@@ -41,6 +41,7 @@ import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
 
 /**
  * Exports model information for each node in YAML format.
@@ -128,7 +129,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
   private void addTenant(List<Map<String, Object>> tenants, ExportNodeRoleTenantData tenantData) {
     Map<String, Object> tenantMap = new LinkedHashMap<>();
 
-    tenantMap.put("tenant", tenantData.getTenant());
+    tenantMap.put("tenant", VariableStringResolver.resolve(tenantData.getTenant(), tenantData.getConfig()));
     if (!tenantData.getRoles().isEmpty()) {
       tenantMap.put("roles", tenantData.getRoles());
     }

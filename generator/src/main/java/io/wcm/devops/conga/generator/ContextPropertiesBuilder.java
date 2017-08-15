@@ -44,10 +44,12 @@ import com.google.common.collect.ImmutableMap;
 import com.rits.cloning.Cloner;
 
 import io.wcm.devops.conga.generator.util.VariableObjectTreeResolver;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.environment.Tenant;
+import io.wcm.devops.conga.model.util.MapMerger;
 
 /**
  * Builds context variables
@@ -128,6 +130,12 @@ public final class ContextPropertiesBuilder {
     map.put(TENANTS, clonedEnvironemnt.getTenants());
     Map<String, List<Tenant>> tenantsByRole = new HashMap<>();
     for (Tenant tenant : clonedEnvironemnt.getTenants()) {
+
+      // resolve placeholders in tentant name
+      Map<String, Object> tenantConfig = MapMerger.merge(clonedEnvironemnt.getConfig(), tenant.getConfig());
+      String tenantName = VariableStringResolver.resolve(tenant.getTenant(), tenantConfig);
+      tenant.setTenant(tenantName);
+
       for (String tenantRoleName : tenant.getRoles()) {
         List<Tenant> tenants = tenantsByRole.get(tenantRoleName);
         if (tenants == null) {
