@@ -83,6 +83,7 @@ Inheritance order (higher number has higher precedence):
 
 1. Global configuration parameters from role definition
 2. Configuration from role variant definition
+    * If multiple variants are assigned to a node/role their configs are merged, first variants have higher precedence
 3. Global configuration from environment
 4. Node configuration from environment
 5. Global role configuration from environment
@@ -100,7 +101,8 @@ Additionally to the variables defined in the configuration parameter maps a set 
 |----------------------|-------------
 | `version`            | Environment version
 | `nodeRole`           | Current node role name
-| `nodeRoleVariant`    | Current node role variant name
+| `nodeRoleVariant`    | Current node role variant name (only set if the role has exactly one variant)
+| `nodeRoleVariants`   | List of current node role variant names
 | `environment`        | Environment name
 | `node`               | Current node name
 | `nodes`              | List of all nodes. Each node has properties as defined in the [Node model][node-model].
