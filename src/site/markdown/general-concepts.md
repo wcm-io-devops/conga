@@ -42,7 +42,8 @@ Additionally it is possible to copy/download files from external sources and inc
 
 * **Environment**: Environment for a specific project or group of projects with a selection of nodes that work together, e.g. "QS", "Prelive", "Prod" etc.
 * **Node**: A system to deploy to, e.g. a physical machine, virtual machine, Docker container or any other deployment target.
-    * For each node multiple roles can be assigned; for each role one or multiple variants
+    * For each node multiple roles can be assigned
+    * For each role one or multiple variants
 * **Tenant**: List of tenants in the environment and their configuration
     * For each tenant multiple tenant roles can be assigned
 * **Configuration value**: Configuration value for a configuration parameter in context of environments, nodes, roles and tenants.
