@@ -82,8 +82,13 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
     Map<String, Object> roleMap = new LinkedHashMap<>();
     roleMap.put("role", roleData.getRole());
-    if (StringUtils.isNotEmpty(roleData.getRoleVariant())) {
-      roleMap.put("variant", roleData.getRoleVariant());
+
+    List<String> variants = roleData.getRoleVariants();
+    if (variants.size() == 1) {
+      roleMap.put("variant", variants.get(0));
+    }
+    if (!variants.isEmpty()) {
+      roleMap.put("variants", variants);
     }
 
     roleMap.put("files", roleData.getFiles().stream()

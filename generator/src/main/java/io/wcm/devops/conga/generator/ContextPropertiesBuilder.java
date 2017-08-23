@@ -26,6 +26,7 @@ import static io.wcm.devops.conga.generator.ContextProperties.NODES_BY_ROLE;
 import static io.wcm.devops.conga.generator.ContextProperties.NODES_BY_ROLE_VARIANT;
 import static io.wcm.devops.conga.generator.ContextProperties.ROLE;
 import static io.wcm.devops.conga.generator.ContextProperties.ROLE_VARIANT;
+import static io.wcm.devops.conga.generator.ContextProperties.ROLE_VARIANTS;
 import static io.wcm.devops.conga.generator.ContextProperties.TENANT;
 import static io.wcm.devops.conga.generator.ContextProperties.TENANTS;
 import static io.wcm.devops.conga.generator.ContextProperties.TENANTS_BY_ROLE;
@@ -37,8 +38,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableMap;
 import com.rits.cloning.Cloner;
@@ -108,16 +107,17 @@ public final class ContextPropertiesBuilder {
         }
         nodes.add(node);
 
-        if (StringUtils.isNotEmpty(nodeRole.getVariant())) {
+        List<String> variants = nodeRole.getAggregatedVariants();
+        for (String variant : variants) {
           Map<String, List<Node>> nodesByVariant = nodesByRoleVariant.get(nodeRole.getRole());
           if (nodesByVariant == null) {
             nodesByVariant = new HashMap<>();
             nodesByRoleVariant.put(nodeRole.getRole(), nodesByVariant);
           }
-          List<Node> variantNodes = nodesByVariant.get(nodeRole.getVariant());
+          List<Node> variantNodes = nodesByVariant.get(variant);
           if (variantNodes == null) {
             variantNodes = new ArrayList<>();
-            nodesByVariant.put(nodeRole.getVariant(), variantNodes);
+            nodesByVariant.put(variant, variantNodes);
           }
           variantNodes.add(node);
         }
@@ -159,7 +159,16 @@ public final class ContextPropertiesBuilder {
   public static Map<String, Object> buildCurrentContextVariables(Node node, NodeRole nodeRole) {
     Map<String, Object> map = new HashMap<>();
     map.put(ROLE, nodeRole.getRole());
-    map.put(ROLE_VARIANT, nodeRole.getVariant());
+
+    List<String> variants = nodeRole.getAggregatedVariants();
+    if (variants.size() == 1) {
+      map.put(ROLE_VARIANT, variants.get(0));
+    }
+    else {
+      map.put(ROLE_VARIANT, null);
+    }
+    map.put(ROLE_VARIANTS, variants);
+
     map.put(NODE, node.getNode());
     return map;
   }

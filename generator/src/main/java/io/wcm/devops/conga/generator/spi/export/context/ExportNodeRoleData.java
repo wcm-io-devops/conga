@@ -28,7 +28,7 @@ import java.util.Map;
 public final class ExportNodeRoleData {
 
   private String role;
-  private String roleVariant;
+  private List<String> roleVariants;
   private List<GeneratedFileContext> files;
   private Map<String, Object> config;
   private List<ExportNodeRoleTenantData> tenantData;
@@ -50,18 +50,18 @@ public final class ExportNodeRoleData {
   }
 
   /**
-   * @return Role variant name
+   * @return Role variant names
    */
-  public String getRoleVariant() {
-    return this.roleVariant;
+  public List<String> getRoleVariants() {
+    return this.roleVariants;
   }
 
   /**
-   * @param value Role variant name
+   * @param values Role variant names
    * @return this
    */
-  public ExportNodeRoleData roleVariant(String value) {
-    this.roleVariant = value;
+  public ExportNodeRoleData roleVariant(List<String> values) {
+    this.roleVariants = values;
     return this;
   }
 

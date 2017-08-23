@@ -19,6 +19,11 @@
  */
 package io.wcm.devops.conga.model.environment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 /**
@@ -28,6 +33,7 @@ public final class NodeRole extends AbstractConfigurable {
 
   private String role;
   private String variant;
+  private List<String> variants;
 
   /**
    * Defines the role name.
@@ -42,7 +48,8 @@ public final class NodeRole extends AbstractConfigurable {
   }
 
   /**
-   * Defines the role variant name. Only ony variant can be chosen per role. The role has to define the variant.
+   * Defines the role variant name. The role has to define the variant.
+   * With this parameter only one variant can be chosen per role.
    * @return Role variant name
    */
   public String getVariant() {
@@ -51,6 +58,34 @@ public final class NodeRole extends AbstractConfigurable {
 
   public void setVariant(String variant) {
     this.variant = variant;
+  }
+
+  /**
+   * Defines multiple role variant names. The role has to define the variants.
+   * If this is set any value set to the 'variant' parameter is ignored.
+   * @return Role variant names
+   */
+  public List<String> getVariants() {
+    return this.variants;
+  }
+
+  public void setVariants(List<String> variants) {
+    this.variants = variants;
+  }
+
+  /**
+   * Get list of defined variants, regardless if the 'variant' or 'variants' parameter was used.
+   * @return List of defined variants
+   */
+  public List<String> getAggregatedVariants() {
+    List<String> result = new ArrayList<>();
+    if (this.variants != null) {
+      result.addAll(this.variants);
+    }
+    else if (StringUtils.isNotBlank(this.variant)) {
+      result.add(this.variant);
+    }
+    return result;
   }
 
 }

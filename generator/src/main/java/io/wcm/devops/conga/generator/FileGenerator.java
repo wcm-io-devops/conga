@@ -66,7 +66,7 @@ class FileGenerator {
 
   private final String environmentName;
   private final String roleName;
-  private final String roleVariantName;
+  private final List<String> roleVariantNames;
   private final String templateName;
   private final File nodeDir;
   private final File file;
@@ -83,14 +83,14 @@ class FileGenerator {
   private final PostProcessorContext postProcessorContext;
 
   //CHECKSTYLE:OFF
-  FileGenerator(String environmentName, String roleName, String roleVariantName, String templateName,
+  FileGenerator(String environmentName, String roleName, List<String> roleVariantNames, String templateName,
       File nodeDir, File file, String url, RoleFile roleFile, Map<String, Object> config,
       Template template, PluginManager pluginManager, UrlFileManager urlFileManager,
       String version, List<String> dependencyVersions, Logger log) {
     //CHECKSTYLE:ON
     this.environmentName = environmentName;
     this.roleName = roleName;
-    this.roleVariantName = roleVariantName;
+    this.roleVariantNames = roleVariantNames;
     this.templateName = templateName;
     this.nodeDir = nodeDir;
     this.file = file;
@@ -145,8 +145,8 @@ class FileGenerator {
     // add information how this file was generated
     lines.add("Environment: " + environmentName);
     lines.add("Role: " + roleName);
-    if (StringUtils.isNotBlank(roleVariantName)) {
-      lines.add("Variant: " + roleVariantName);
+    if (!roleVariantNames.isEmpty()) {
+      lines.add("Variant: " + StringUtils.join(roleVariantNames, ","));
     }
     lines.add("Template: " + templateName);
 
