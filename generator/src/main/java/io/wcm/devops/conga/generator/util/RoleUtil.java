@@ -52,6 +52,7 @@ public final class RoleUtil {
    * Resolve role/role variant inheritance.
    * As a result a aggregated role object is created that can be used without respecting any inheritance.
    * @param roleName Role name - role may contain inheritance relations
+   * @param environmentContext Context information.
    * @param roles All roles for the system
    * @return Resolved role without pending inheritance relations
    * @throws GeneratorException when role or any of it's inheritance relations is not found
