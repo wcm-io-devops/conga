@@ -1,3 +1,7 @@
+inherits:
+- role: superRole1
+- role: superRole2
+
 variants:
 - variant: services
   config:

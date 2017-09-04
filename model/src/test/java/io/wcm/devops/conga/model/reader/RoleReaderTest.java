@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.role.RoleInherit;
 import io.wcm.devops.conga.model.role.RoleVariant;
 import io.wcm.devops.conga.model.shared.LineEndings;
 
@@ -54,6 +55,9 @@ public class RoleReaderTest {
   @Test
   public void testRole() {
 
+    List<RoleInherit> inherits = role.getInherits();
+    assertEquals(2, inherits.size());
+
     List<RoleVariant> variants = role.getVariants();
     assertEquals(2, variants.size());
 
@@ -68,6 +72,13 @@ public class RoleReaderTest {
         "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("min", "512m", "max", "2048m"), "permgenspace", ImmutableMap.of("max", "256m")),
         "topologyConnectors", ImmutableList.of("http://localhost:8080/libs/sling/topology/connector")
         ), role.getConfig());
+  }
+
+  @Test
+  public void testInherit() {
+    RoleInherit inherit = role.getInherits().get(0);
+
+    assertEquals("superRole1", inherit.getRole());
   }
 
   @Test
