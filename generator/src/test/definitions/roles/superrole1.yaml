@@ -1,0 +1,20 @@
+variants:
+- variant: variant11
+  config:
+    var1: v1-superrole1-variant11
+    varS1: vS1-superrole1-variant11
+- variant: variant12
+
+
+templateDir: superrole1
+
+files:
+
+- file: test-superrole1.txt
+  dir: text
+  template: superrole1.txt.hbs
+  charset: ISO-8859-1
+
+
+config:
+  varS1: vS1-superrole1

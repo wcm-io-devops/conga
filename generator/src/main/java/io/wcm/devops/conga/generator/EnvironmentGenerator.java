@@ -52,6 +52,7 @@ import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.EnvironmentExpander;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.RoleUtil;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -126,11 +127,8 @@ class EnvironmentGenerator {
     NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, modelExport, pluginManager);
 
     for (NodeRole nodeRole : node.getRoles()) {
-      Role role = roles.get(nodeRole.getRole());
-      if (role == null) {
-        throw new GeneratorException("Role '" + nodeRole.getRole() + "' "
-            + "from " + environmentName + "/" + node.getNode() + " does not exist.");
-      }
+      // get role and resolve all inheritance relations
+      Role role = RoleUtil.resolveRole(nodeRole.getRole(), environmentName + "/" + node.getNode(), roles);
 
       // merge default values to config
       List<String> variants = nodeRole.getAggregatedVariants();
