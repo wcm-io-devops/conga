@@ -17,6 +17,8 @@ The filename of the role YAML file is the role name.
 The documentation of all role and file configuration options can be found in the<br/>
 [Role Model API documentation][role-model].
 
+#### Files
+
 Files are generated using a Handlebars template. After generation a file header is added automatically, and the file syntax is checked for well-formedness. Optionally additional post-processors can be configured.
 
 Alternatively it is possible to specify an URL instead of a template. In this case the file is copied/downloaded from an external source. The following URL prefixes are supported out of the box:
@@ -31,6 +33,17 @@ Alternatively it is possible to specify an URL instead of a template. In this ca
     - If the version is empty in the role file it is resolved from the Maven project.
 
 If no prefix is specified the URL is interpreted as relative path in the local filesystem.
+
+#### Role Inheritance
+
+A role can inherit from one or multiple other roles:
+
+```yaml
+inherits:
+- role: superRole
+```
+
+In this case the current role inherits all configuration and files from the super role(s). Configuration maps are merged, the config of the current role has higher precedence. If the super role defines variants, the current has to define the same variants as well.
 
 
 ### Environment definitions
@@ -92,6 +105,7 @@ Inheritance order (higher number has higher precedence):
 8. Configuration from multiply plugins, e.g. the tenant-specific configuration
 
 There is a special support when merging list parameter. By default a list value on a deeper lever overwrites a list inherited from a parameter map on a higher level completely. If you insert the keyword `_merge_` as list item on either of the list values, they are merged and the special keyword entry is removed.
+
 
 ### Default context properties
 
