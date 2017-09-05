@@ -46,6 +46,7 @@ import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
@@ -99,9 +100,13 @@ class EnvironmentGenerator {
     this.handlebarsManager = handlebarsManager;
     this.urlFileManager = urlFileManager;
 
-    this.variableStringResolver = new VariableStringResolver(this.pluginManager);
-    this.variableMapResolver = new VariableMapResolver(this.pluginManager);
-    this.variableObjectTreeResolver = new VariableObjectTreeResolver(this.pluginManager);
+    ValueProviderContext valueProviderContext = new ValueProviderContext()
+        .pluginManager(pluginManager)
+        .logger(log)
+        .urlFileManager(urlFileManager);
+    this.variableStringResolver = new VariableStringResolver(valueProviderContext);
+    this.variableMapResolver = new VariableMapResolver(valueProviderContext);
+    this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderContext);
 
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
     this.version = version;
@@ -133,7 +138,8 @@ class EnvironmentGenerator {
     log.info("----- Node '{}' -----", node.getNode());
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
-    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, modelExport, pluginManager);
+    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, modelExport, pluginManager,
+        variableStringResolver, variableMapResolver);
 
     for (NodeRole nodeRole : node.getRoles()) {
       // get role and resolve all inheritance relations
@@ -237,7 +243,9 @@ class EnvironmentGenerator {
         .config(config)
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
-        .logger(log);
+        .logger(log)
+        .variableStringResolver(variableStringResolver)
+        .variableMapResolver(variableMapResolver);
 
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
@@ -284,7 +292,7 @@ class EnvironmentGenerator {
 
     FileGenerator fileGenerator = new FileGenerator(environmentName, roleName, roleVariantNames, templateName,
         nodeDir, file, url, roleFile, config, template, pluginManager, urlFileManager,
-        version, dependencyVersions, log);
+        version, dependencyVersions, log, variableMapResolver);
     try {
       Collection<GeneratedFileContext> generatedFiles = fileGenerator.generate();
 

@@ -59,13 +59,16 @@ public final class NodeModelExport {
    * @param environment Environment
    * @param modelExport Model export
    * @param pluginManager Plugin manager
+   * @param variableStringResolver Variable string resolver
+   * @param variableMapResolver Variable map resolver
    */
-  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager) {
+  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager,
+      VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
-    this.variableStringResolver = new VariableStringResolver(pluginManager);
-    this.variableMapResolver = new VariableMapResolver(pluginManager);
+    this.variableStringResolver = variableStringResolver;
+    this.variableMapResolver = variableMapResolver;
 
     // get export plugins
     if (modelExport != null) {
@@ -137,7 +140,10 @@ public final class NodeModelExport {
           .node(node)
           .environment(environment)
           .roleData(roleData)
-          .nodeDir(nodeDir));
+          .nodeDir(nodeDir)
+          .variableStringResolver(variableStringResolver)
+          .variableMapResolver(variableMapResolver));
+
     }
   }
 

@@ -34,7 +34,11 @@ import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Tenant;
 import io.wcm.devops.conga.model.role.Role;
@@ -53,7 +57,8 @@ public class TenantMultiplyTest {
 
   @Before
   public void setUp() {
-    underTest = new PluginManagerImpl().get(TenantMultiply.NAME, MultiplyPlugin.class);
+    PluginManager pluginManager = new PluginManagerImpl();
+    underTest = pluginManager.get(TenantMultiply.NAME, MultiplyPlugin.class);
 
     role = new Role();
     roleFile = new RoleFile();
@@ -62,7 +67,16 @@ public class TenantMultiplyTest {
 
     environment = new Environment();
 
-    context = new MultiplyContext().role(role).roleFile(roleFile).environment(environment).config(config);
+    ValueProviderContext valueProviderContext = new ValueProviderContext()
+        .pluginManager(pluginManager);
+    context = new MultiplyContext()
+        .role(role)
+        .roleFile(roleFile)
+        .environment(environment)
+        .config(config)
+        .pluginManager(pluginManager)
+        .variableStringResolver(new VariableStringResolver(valueProviderContext))
+        .variableMapResolver(new VariableMapResolver(valueProviderContext));
   }
 
   @Test

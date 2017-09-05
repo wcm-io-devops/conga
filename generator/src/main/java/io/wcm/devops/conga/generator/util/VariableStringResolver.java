@@ -28,6 +28,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.model.util.MapExpander;
 
 /**
@@ -35,16 +38,16 @@ import io.wcm.devops.conga.model.util.MapExpander;
  */
 public final class VariableStringResolver {
 
-  private static final Pattern VARIABLE_PATTERN = Pattern.compile("(\\\\?\\$)\\{([^\\}\\{\\$]+)\\}");
+  private static final Pattern VARIABLE_PATTERN = Pattern.compile("(\\\\?\\$)\\{(([^\\\\}\\\\{\\\\$]+)\\:)?([^\\}\\{\\$]+)\\}");
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
-  private final PluginManager pluginManager;
+  private final ValueProviderContext context;
 
   /**
-   * @param pluginManager Plugin manager
+   * @param context Value provider context
    */
-  public VariableStringResolver(PluginManager pluginManager) {
-    this.pluginManager = pluginManager;
+  public VariableStringResolver(ValueProviderContext context) {
+    this.context = context;
   }
 
   /**
@@ -89,7 +92,7 @@ public final class VariableStringResolver {
    * @return String with de-escaped variable references.
    */
   public String deescape(String value) {
-    return VARIABLE_PATTERN.matcher(value).replaceAll("\\$\\{$2\\}");
+    return VARIABLE_PATTERN.matcher(value).replaceAll("\\$\\{$4\\}");
   }
 
   private String resolve(String value, Map<String, Object> variables, int iterationCount) {
@@ -102,11 +105,35 @@ public final class VariableStringResolver {
     boolean replacedAny = false;
     while (matcher.find()) {
       boolean escapedVariable = StringUtils.equals(matcher.group(1), "\\$");
-      String variable = matcher.group(2);
+      String valueProviderName = matcher.group(3);
+      String variable = matcher.group(4);
+
+      // keep escaped variables intact
       if (escapedVariable) {
-        // keep escaped variables intact
         matcher.appendReplacement(sb, Matcher.quoteReplacement("\\${" + variable + "}"));
       }
+
+      // resolver value from value provider
+      else if (StringUtils.isNotEmpty(valueProviderName)) {
+        ValueProviderPlugin valueProvider;
+        try {
+          valueProvider = context.getPluginManager().get(valueProviderName, ValueProviderPlugin.class);
+        }
+        catch (GeneratorException ex) {
+          throw new IllegalArgumentException("Unable to resolve variable from value provider: " + valueProviderName + ":" + variable, ex);
+        }
+        Object valueObject = valueProvider.resolve(variable, context);
+        if (valueObject != null) {
+          String variableValue = valueToString(valueObject);
+          matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
+          replacedAny = true;
+        }
+        else {
+          throw new IllegalArgumentException("Unknown variable: " + variable);
+        }
+      }
+
+      // resolve value from variable map
       else {
         Object valueObject = MapExpander.getDeep(variables, variable);
         if (valueObject != null) {
@@ -118,6 +145,7 @@ public final class VariableStringResolver {
           throw new IllegalArgumentException("Unknown variable: " + variable);
         }
       }
+
     }
     matcher.appendTail(sb);
     if (replacedAny) {

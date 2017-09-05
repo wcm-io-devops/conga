@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope1;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope2;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope3;
@@ -44,7 +45,8 @@ public class VariableObjectTreeResolverTest {
 
   @Before
   public void setUp() {
-    underTest = new VariableObjectTreeResolver(new PluginManagerImpl());
+    ValueProviderContext context = new ValueProviderContext().pluginManager(new PluginManagerImpl());
+    underTest = new VariableObjectTreeResolver(context);
   }
 
   @Test

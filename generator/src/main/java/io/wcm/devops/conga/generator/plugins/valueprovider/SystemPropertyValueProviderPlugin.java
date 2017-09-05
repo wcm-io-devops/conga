@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.plugins.valueprovider;
 
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 
 /**
  * Gets values from java system properties.
@@ -37,8 +38,8 @@ public class SystemPropertyValueProviderPlugin implements ValueProviderPlugin {
   }
 
   @Override
-  public Object resolve(String parameterName) {
-    return System.getProperty(parameterName);
+  public Object resolve(String variableName, ValueProviderContext context) {
+    return System.getProperty(variableName);
   }
 
 }

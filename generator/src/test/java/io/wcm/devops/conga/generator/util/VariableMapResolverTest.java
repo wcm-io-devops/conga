@@ -29,13 +29,16 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+
 public class VariableMapResolverTest {
 
   private VariableMapResolver underTest;
 
   @Before
   public void setUp() {
-    underTest = new VariableMapResolver(new PluginManagerImpl());
+    ValueProviderContext context = new ValueProviderContext().pluginManager(new PluginManagerImpl());
+    underTest = new VariableMapResolver(context);
   }
 
   @Test

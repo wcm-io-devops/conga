@@ -29,13 +29,16 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+
 public class VariableStringResolverTest {
 
   private VariableStringResolver underTest;
 
   @Before
   public void setUp() {
-    underTest = new VariableStringResolver(new PluginManagerImpl());
+    ValueProviderContext context = new ValueProviderContext().pluginManager(new PluginManagerImpl());
+    underTest = new VariableStringResolver(context);
   }
 
   @Test
@@ -98,6 +101,17 @@ public class VariableStringResolverTest {
     Map<String, Object> variables = ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22")));
 
     assertEquals("The k1=v1,k2=k21=v21,k22=v22", underTest.resolve("The ${var1}", variables));
+  }
+
+  @Test
+  public void testValueProvider() {
+    System.setProperty("test.prop1", "value1");
+
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1");
+
+    assertEquals("The v1 and value1", underTest.resolve("The ${var1} and ${system:test.prop1}", variables));
+
+    System.clearProperty("test.prop1");
   }
 
 }

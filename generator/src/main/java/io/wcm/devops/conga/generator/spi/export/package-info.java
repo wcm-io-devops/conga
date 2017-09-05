@@ -17,21 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.spi;
-
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
-
 /**
- * Provides configuation values from external sources.
+ * CONGA Export SPI with interfaces for the supported plugin types.
  */
-public interface ValueProviderPlugin extends Plugin {
-
-  /**
-   * Gets parameter value from value provider.
-   * @param variableName Variable name
-   * @param context Context
-   * @return Parameter value or null if none found
-   */
-  Object resolve(String variableName, ValueProviderContext context);
-
-}
+package io.wcm.devops.conga.generator.spi.export;

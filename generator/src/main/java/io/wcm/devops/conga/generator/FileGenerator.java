@@ -81,13 +81,13 @@ class FileGenerator {
   private final FileHeaderContext fileHeaderContext;
   private final ValidatorContext validatorContext;
   private final PostProcessorContext postProcessorContext;
-  private final VariableMapResolver variableMapResolver;
 
   //CHECKSTYLE:OFF
   FileGenerator(String environmentName, String roleName, List<String> roleVariantNames, String templateName,
       File nodeDir, File file, String url, RoleFile roleFile, Map<String, Object> config,
       Template template, PluginManager pluginManager, UrlFileManager urlFileManager,
-      String version, List<String> dependencyVersions, Logger log) {
+      String version, List<String> dependencyVersions, Logger log,
+      VariableMapResolver variableMapResolver) {
     //CHECKSTYLE:ON
     this.environmentName = environmentName;
     this.roleName = roleName;
@@ -105,7 +105,6 @@ class FileGenerator {
         .file(file)
         .charset(roleFile.getCharset())
         .modelOptions(roleFile.getModelOptions());
-    this.variableMapResolver = new VariableMapResolver(this.pluginManager);
 
     Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");
 

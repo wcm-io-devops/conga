@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+
 /**
  * Resolve variables in a map referencing other entries from the same map.
  */
@@ -36,10 +38,10 @@ public final class VariableMapResolver {
   private final VariableStringResolver variableStringResolver;
 
   /**
-   * @param pluginManager Plugin manager
+   * @param context Value provider context
    */
-  public VariableMapResolver(PluginManager pluginManager) {
-    this.variableStringResolver = new VariableStringResolver(pluginManager);
+  public VariableMapResolver(ValueProviderContext context) {
+    this.variableStringResolver = new VariableStringResolver(context);
   }
 
   /**

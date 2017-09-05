@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.model.shared.Configurable;
 
 /**
@@ -49,10 +50,10 @@ public final class VariableObjectTreeResolver extends AbstractConfigurableObject
   };
 
   /**
-   * @param pluginManager Plugin manager
+   * @param context Value provider context
    */
-  public VariableObjectTreeResolver(PluginManager pluginManager) {
-    this.variableMapResolver = new VariableMapResolver(pluginManager);
+  public VariableObjectTreeResolver(ValueProviderContext context) {
+    this.variableMapResolver = new VariableMapResolver(context);
   }
 
   /**

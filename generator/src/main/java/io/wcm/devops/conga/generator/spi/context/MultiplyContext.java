@@ -21,6 +21,8 @@ package io.wcm.devops.conga.generator.spi.context;
 
 import java.util.Map;
 
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
@@ -34,6 +36,8 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   private RoleFile roleFile;
   private Environment environment;
   private Map<String, Object> config;
+  private VariableStringResolver variableStringResolver;
+  private VariableMapResolver variableMapResolver;
 
   /**
    * @return Role
@@ -96,6 +100,38 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
    */
   public MultiplyContext config(Map<String, Object> value) {
     config = value;
+    return this;
+  }
+
+  /**
+   * @return Variable string resolver
+   */
+  public VariableStringResolver getVariableStringResolver() {
+    return this.variableStringResolver;
+  }
+
+  /**
+   * @param value Variable string resolver
+   * @return this
+   */
+  public MultiplyContext variableStringResolver(VariableStringResolver value) {
+    this.variableStringResolver = value;
+    return this;
+  }
+
+  /**
+   * @return Variable map resolver
+   */
+  public VariableMapResolver getVariableMapResolver() {
+    return this.variableMapResolver;
+  }
+
+  /**
+   * @param value Variable map resolver
+   * @return this
+   */
+  public MultiplyContext variableMapResolver(VariableMapResolver value) {
+    this.variableMapResolver = value;
     return this;
   }
 

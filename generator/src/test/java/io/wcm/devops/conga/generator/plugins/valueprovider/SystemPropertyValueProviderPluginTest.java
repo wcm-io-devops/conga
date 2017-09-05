@@ -26,24 +26,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 
 public class SystemPropertyValueProviderPluginTest {
 
   private ValueProviderPlugin underTest;
+  private ValueProviderContext context;
 
   @Before
   public void setUp() {
-    underTest = new PluginManagerImpl().get(SystemPropertyValueProviderPlugin.NAME, ValueProviderPlugin.class);
+    PluginManager pluginManager = new PluginManagerImpl();
+    underTest = pluginManager.get(SystemPropertyValueProviderPlugin.NAME, ValueProviderPlugin.class);
+    context = new ValueProviderContext().pluginManager(pluginManager);
   }
 
   @Test
   public void testResolve() {
     System.setProperty("test.prop1", "value1");
 
-    assertEquals("value1", underTest.resolve("test.prop1"));
-    assertNull(underTest.resolve("test.prop2"));
+    assertEquals("value1", underTest.resolve("test.prop1", context));
+    assertNull(underTest.resolve("test.prop2", context));
 
     System.clearProperty("test.prop1");
   }
