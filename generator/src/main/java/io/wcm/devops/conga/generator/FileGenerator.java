@@ -81,6 +81,7 @@ class FileGenerator {
   private final FileHeaderContext fileHeaderContext;
   private final ValidatorContext validatorContext;
   private final PostProcessorContext postProcessorContext;
+  private final VariableMapResolver variableMapResolver;
 
   //CHECKSTYLE:OFF
   FileGenerator(String environmentName, String roleName, List<String> roleVariantNames, String templateName,
@@ -104,6 +105,7 @@ class FileGenerator {
         .file(file)
         .charset(roleFile.getCharset())
         .modelOptions(roleFile.getModelOptions());
+    this.variableMapResolver = new VariableMapResolver(this.pluginManager);
 
     Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");
 
@@ -114,18 +116,18 @@ class FileGenerator {
         .logger(pluginLogger);
 
     this.validatorContext = new ValidatorContext()
-        .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
+        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
         .logger(pluginLogger);
 
     this.postProcessorContext = new PostProcessorContext()
-        .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
+        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
         .logger(pluginLogger);
 
-    this.config = VariableMapResolver.deescape(config);
+    this.config = variableMapResolver.deescape(config);
   }
 
   /**

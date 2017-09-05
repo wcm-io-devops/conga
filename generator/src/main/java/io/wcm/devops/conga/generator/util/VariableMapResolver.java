@@ -33,8 +33,13 @@ public final class VariableMapResolver {
 
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
-  private VariableMapResolver() {
-    // static methods only
+  private final VariableStringResolver variableStringResolver;
+
+  /**
+   * @param pluginManager Plugin manager
+   */
+  public VariableMapResolver(PluginManager pluginManager) {
+    this.variableStringResolver = new VariableStringResolver(pluginManager);
   }
 
   /**
@@ -45,7 +50,7 @@ public final class VariableMapResolver {
    * @return Config map with values with variable placeholders resolved
    * @throws IllegalArgumentException when a variable name could not be resolve.d
    */
-  public static Map<String, Object> resolve(Map<String, Object> config) {
+  public Map<String, Object> resolve(Map<String, Object> config) {
     return resolve(config, true);
   }
 
@@ -57,7 +62,7 @@ public final class VariableMapResolver {
    * @return Config map with values with variable placeholders resolved
    * @throws IllegalArgumentException when a variable name could not be resolved.
    */
-  public static Map<String, Object> resolve(Map<String, Object> config, boolean deescapeVariables) {
+  public Map<String, Object> resolve(Map<String, Object> config, boolean deescapeVariables) {
     return resolve(config, deescapeVariables, 0);
   }
 
@@ -66,11 +71,11 @@ public final class VariableMapResolver {
    * @param config Config map with values that my contain escaped variable references (starting with \$)
    * @return Map with de-escaped variable references.
    */
-  public static Map<String, Object> deescape(Map<String, Object> config) {
+  public Map<String, Object> deescape(Map<String, Object> config) {
     return deescapeMap(config);
   }
 
-  private static Map<String, Object> resolve(Map<String, Object> config, boolean deescapeVariables, int iterationCount) {
+  private Map<String, Object> resolve(Map<String, Object> config, boolean deescapeVariables, int iterationCount) {
     if (iterationCount >= REPLACEMENT_MAX_ITERATIONS) {
       throw new IllegalArgumentException("Cyclic dependencies in config map detected: " + config);
     }
@@ -93,7 +98,7 @@ public final class VariableMapResolver {
   }
 
   @SuppressWarnings("unchecked")
-  private static Object replaceAny(Object value, Map<String, Object> variables) {
+  private Object replaceAny(Object value, Map<String, Object> variables) {
     if (value instanceof String) {
       return replaceString((String)value, variables);
     }
@@ -108,8 +113,8 @@ public final class VariableMapResolver {
     }
   }
 
-  private static String replaceString(String value, Map<String, Object> variables) {
-    String replacedValue = VariableStringResolver.resolve(value, variables, false);
+  private String replaceString(String value, Map<String, Object> variables) {
+    String replacedValue = variableStringResolver.resolve(value, variables, false);
     if (StringUtils.equals(value, replacedValue)) {
       return value;
     }
@@ -118,7 +123,7 @@ public final class VariableMapResolver {
     }
   }
 
-  private static List<Object> replaceList(List<Object> list, Map<String, Object> variables) {
+  private List<Object> replaceList(List<Object> list, Map<String, Object> variables) {
     boolean replacedAny = false;
     List<Object> listCopy = new ArrayList<>(list);
     for (int i = 0; i < listCopy.size(); i++) {
@@ -137,7 +142,7 @@ public final class VariableMapResolver {
     }
   }
 
-  private static Map<String, Object> replaceMap(Map<String, Object> map, Map<String, Object> variables) {
+  private Map<String, Object> replaceMap(Map<String, Object> map, Map<String, Object> variables) {
     boolean replacedAny = false;
     Map<String, Object> mapCopy = new HashMap<>(map);
     for (Map.Entry<String, Object> entry : mapCopy.entrySet()) {
@@ -157,7 +162,7 @@ public final class VariableMapResolver {
   }
 
   @SuppressWarnings("unchecked")
-  private static Object deescapeAny(Object value) {
+  private Object deescapeAny(Object value) {
     if (value instanceof String) {
       return deescapeString((String)value);
     }
@@ -172,11 +177,11 @@ public final class VariableMapResolver {
     }
   }
 
-  private static String deescapeString(String value) {
-    return VariableStringResolver.deescape(value);
+  private String deescapeString(String value) {
+    return variableStringResolver.deescape(value);
   }
 
-  private static List<Object> deescapeList(List<Object> list) {
+  private List<Object> deescapeList(List<Object> list) {
     List<Object> listCopy = new ArrayList<>(list);
     for (int i = 0; i < listCopy.size(); i++) {
       Object item = listCopy.get(i);
@@ -188,7 +193,7 @@ public final class VariableMapResolver {
     return listCopy;
   }
 
-  private static Map<String, Object> deescapeMap(Map<String, Object> map) {
+  private Map<String, Object> deescapeMap(Map<String, Object> map) {
     Map<String, Object> mapCopy = new HashMap<>(map);
     for (Map.Entry<String, Object> entry : mapCopy.entrySet()) {
       Object deescapedValue = deescapeAny(entry.getValue());

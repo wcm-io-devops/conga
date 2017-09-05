@@ -54,6 +54,7 @@ import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.RoleUtil;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
+import io.wcm.devops.conga.generator.util.VariableObjectTreeResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
@@ -80,6 +81,9 @@ class EnvironmentGenerator {
   private final List<String> dependencyVersions;
   private final ModelExport modelExport;
   private final Logger log;
+  private final VariableStringResolver variableStringResolver;
+  private final VariableMapResolver variableMapResolver;
+  private final VariableObjectTreeResolver variableObjectTreeResolver;
 
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
@@ -95,13 +99,18 @@ class EnvironmentGenerator {
     this.handlebarsManager = handlebarsManager;
     this.urlFileManager = urlFileManager;
 
+    this.variableStringResolver = new VariableStringResolver(this.pluginManager);
+    this.variableMapResolver = new VariableMapResolver(this.pluginManager);
+    this.variableObjectTreeResolver = new VariableObjectTreeResolver(this.pluginManager);
+
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
     this.version = version;
     this.dependencyVersions = dependencyVersions;
     this.modelExport = modelExport;
     this.log = log;
     this.environmentContextProperties = ImmutableMap.copyOf(
-        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, version));
+        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, version,
+            variableObjectTreeResolver, variableStringResolver));
   }
 
   public void generate() {
@@ -234,12 +243,12 @@ class EnvironmentGenerator {
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
 
       // resolve variables
-      Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig, false);
+      Map<String, Object> resolvedConfig = variableMapResolver.resolve(muliplyConfig, false);
 
       // replace placeholders with context variables
-      String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
-      String file = VariableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
-      String url = VariableStringResolver.resolve(roleFile.getUrl(), resolvedConfig);
+      String dir = variableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
+      String file = variableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
+      String url = variableStringResolver.resolve(roleFile.getUrl(), resolvedConfig);
 
       generatedFiles.addAll(generateFile(roleFile, dir, file, url,
           resolvedConfig, nodeDir, template, roleName, roleVariantNames, templateName));
@@ -267,7 +276,7 @@ class EnvironmentGenerator {
 
     // skip file if condition does not evaluate to a non-empty string or is "false"
     if (StringUtils.isNotEmpty(roleFile.getCondition())) {
-      String condition = VariableStringResolver.resolve(roleFile.getCondition(), config);
+      String condition = variableStringResolver.resolve(roleFile.getCondition(), config);
       if (StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false")) {
         return ImmutableList.of();
       }

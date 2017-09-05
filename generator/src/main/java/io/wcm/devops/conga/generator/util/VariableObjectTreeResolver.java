@@ -31,8 +31,10 @@ import io.wcm.devops.conga.model.shared.Configurable;
  */
 public final class VariableObjectTreeResolver extends AbstractConfigurableObjectTreeProcessor<Object> {
 
+  private final VariableMapResolver variableMapResolver;
+
   // payload not used for this processor
-  private static final ConfigurableProcessor<Object> PROCESSOR = new ConfigurableProcessor<Object>() {
+  private final ConfigurableProcessor<Object> processor = new ConfigurableProcessor<Object>() {
     @Override
     public Object process(Configurable configurable, Object payload) {
       Map<String, Object> config = new HashMap<>(configurable.getConfig());
@@ -40,22 +42,25 @@ public final class VariableObjectTreeResolver extends AbstractConfigurableObject
       // add all context variables with empty value so references to them do not lead to "unknown variable" errors
       config.putAll(ContextPropertiesBuilder.getEmptyContextVariables());
 
-      Map<String, Object> resolvedconfig = VariableMapResolver.resolve(config);
+      Map<String, Object> resolvedconfig = variableMapResolver.resolve(config);
       configurable.setConfig(resolvedconfig);
       return null;
     }
   };
 
-  private VariableObjectTreeResolver() {
-    // static methods only
+  /**
+   * @param pluginManager Plugin manager
+   */
+  public VariableObjectTreeResolver(PluginManager pluginManager) {
+    this.variableMapResolver = new VariableMapResolver(pluginManager);
   }
 
   /**
    * Resolve all variables.
    * @param object Model with {@link Configurable} instances at any nested level.
    */
-  public static void resolve(Object object) {
-    new VariableObjectTreeResolver().process(object, PROCESSOR, null);
+  public void resolve(Object object) {
+    process(object, processor, null);
   }
 
 }

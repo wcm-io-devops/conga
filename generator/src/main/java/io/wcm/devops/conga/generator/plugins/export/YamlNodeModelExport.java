@@ -63,11 +63,12 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
   @Override
   public void export(NodeModelExportContext context) {
+    VariableStringResolver variableStringResolver = new VariableStringResolver(context.getPluginManager());
 
     // generate YAML data
     List<Map<String, Object>> roles = new ArrayList<>();
     for (ExportNodeRoleData roleData : context.getRoleData()) {
-      addRole(roles, roleData, context);
+      addRole(roles, roleData, context, variableStringResolver);
     }
 
     Map<String, Object> modelMap = new LinkedHashMap<>();
@@ -77,7 +78,8 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     save(modelMap, context);
   }
 
-  private void addRole(List<Map<String, Object>> modelList, ExportNodeRoleData roleData, NodeModelExportContext context) {
+  private void addRole(List<Map<String, Object>> modelList, ExportNodeRoleData roleData, NodeModelExportContext context,
+      VariableStringResolver variableStringResolver) {
     String nodeDirPath = FileUtil.getCanonicalPath(context.getNodeDir());
 
     Map<String, Object> roleMap = new LinkedHashMap<>();
@@ -112,17 +114,17 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
     roleMap.put("config", cleanupConfig(roleData.getConfig()));
 
-    addTenants(roleMap, roleData);
+    addTenants(roleMap, roleData, variableStringResolver);
 
     modelList.add(roleMap);
   }
 
-  private void addTenants(Map<String, Object> roleMap, ExportNodeRoleData roleData) {
+  private void addTenants(Map<String, Object> roleMap, ExportNodeRoleData roleData, VariableStringResolver variableStringResolver) {
     List<Map<String, Object>> tenants = new ArrayList<>();
 
     if (roleData.getTenantData() != null) {
       for (ExportNodeRoleTenantData tenantData : roleData.getTenantData()) {
-        addTenant(tenants, tenantData);
+        addTenant(tenants, tenantData, variableStringResolver);
       }
     }
 
@@ -131,10 +133,10 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     }
   }
 
-  private void addTenant(List<Map<String, Object>> tenants, ExportNodeRoleTenantData tenantData) {
+  private void addTenant(List<Map<String, Object>> tenants, ExportNodeRoleTenantData tenantData, VariableStringResolver variableStringResolver) {
     Map<String, Object> tenantMap = new LinkedHashMap<>();
 
-    tenantMap.put("tenant", VariableStringResolver.resolve(tenantData.getTenant(), tenantData.getConfig()));
+    tenantMap.put("tenant", variableStringResolver.resolve(tenantData.getTenant(), tenantData.getConfig()));
     if (!tenantData.getRoles().isEmpty()) {
       tenantMap.put("roles", tenantData.getRoles());
     }

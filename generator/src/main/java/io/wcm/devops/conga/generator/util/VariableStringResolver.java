@@ -38,8 +38,13 @@ public final class VariableStringResolver {
   private static final Pattern VARIABLE_PATTERN = Pattern.compile("(\\\\?\\$)\\{([^\\}\\{\\$]+)\\}");
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
-  private VariableStringResolver() {
-    // static methods only
+  private final PluginManager pluginManager;
+
+  /**
+   * @param pluginManager Plugin manager
+   */
+  public VariableStringResolver(PluginManager pluginManager) {
+    this.pluginManager = pluginManager;
   }
 
   /**
@@ -51,7 +56,7 @@ public final class VariableStringResolver {
    * @return Value with variable placeholders resolved.
    * @throws IllegalArgumentException when a variable name could not be resolve.d
    */
-  public static String resolve(String value, Map<String, Object> variables) {
+  public String resolve(String value, Map<String, Object> variables) {
     return resolve(value, variables, true);
   }
 
@@ -64,7 +69,7 @@ public final class VariableStringResolver {
    * @return Value with variable placeholders resolved.
    * @throws IllegalArgumentException when a variable name could not be resolve.d
    */
-  public static String resolve(String value, Map<String, Object> variables, boolean deescapeVariables) {
+  public String resolve(String value, Map<String, Object> variables, boolean deescapeVariables) {
     if (value == null) {
       return null;
     }
@@ -83,11 +88,11 @@ public final class VariableStringResolver {
    * @param value String that may contain escaped variable references (starting with \$)
    * @return String with de-escaped variable references.
    */
-  public static String deescape(String value) {
+  public String deescape(String value) {
     return VARIABLE_PATTERN.matcher(value).replaceAll("\\$\\{$2\\}");
   }
 
-  private static String resolve(String value, Map<String, Object> variables, int iterationCount) {
+  private String resolve(String value, Map<String, Object> variables, int iterationCount) {
     if (iterationCount >= REPLACEMENT_MAX_ITERATIONS) {
       throw new IllegalArgumentException("Cyclic dependencies in variable string detected: " + value);
     }
@@ -125,7 +130,7 @@ public final class VariableStringResolver {
   }
 
   @SuppressWarnings("unchecked")
-  private static String valueToString(Object value) {
+  private String valueToString(Object value) {
     if (value == null) {
       return "";
     }

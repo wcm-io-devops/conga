@@ -62,7 +62,8 @@ public final class TenantMultiply implements MultiplyPlugin {
         Map<String, Object> mergedConfig = MapMerger.merge(tenant.getConfig(), context.getConfig());
 
         // set tenant-specific context variables
-        mergedConfig.put(ContextProperties.TENANT, VariableStringResolver.resolve(tenant.getTenant(), mergedConfig));
+        VariableStringResolver variableStringResolver = new VariableStringResolver(context.getPluginManager());
+        mergedConfig.put(ContextProperties.TENANT, variableStringResolver.resolve(tenant.getTenant(), mergedConfig));
         mergedConfig.put(ContextProperties.TENANT_ROLES, tenant.getRoles());
 
         contexts.add(mergedConfig);
