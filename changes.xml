@@ -36,6 +36,9 @@
       <action type="add" dev="sseifert" issue="WDCONGA-15">
         Add "Value Provider" plugin concept and an implementation for System Properties.
       </action>
+      <action type="add" dev="sseifert">
+        Enable iteration over lists in config variables using special _iterate_ keyword.
+      </action>
       <action type="fix" dev="sseifert" issue="WDCONGA-10">
         Allow to use configuration placeholder in tenant name.
       </action>

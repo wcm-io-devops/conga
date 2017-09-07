@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import static io.wcm.devops.conga.generator.util.VariableMapResolver.ITEM_VARIABLE;
+import static io.wcm.devops.conga.generator.util.VariableMapResolver.LIST_VARIABLE_ITERATE;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
@@ -29,6 +31,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 
 public class VariableMapResolverTest {
@@ -102,6 +105,59 @@ public class VariableMapResolverTest {
 
     assertEquals(ImmutableMap.of("var1", "${novar}", "var2", "${novar}v2", "var3", "${novar}${novar}v2v3",
         "key1", "The ${novar} and ${novar}v2 and ${novar}${novar}v2v3"), underTest.resolve(map));
+  }
+
+  @Test
+  public void testIterateDirect() {
+    Map<String, Object> map = ImmutableMap.of(
+        "var1", "value1",
+        "object1", ImmutableMap.of(
+            LIST_VARIABLE_ITERATE, ImmutableList.of("item1", "item2", "item3"),
+            "item", "${" + ITEM_VARIABLE + "}",
+            "refvar1", "${var1}"));
+
+    assertEquals(ImmutableMap.of(
+        "var1", "value1",
+        "object1", ImmutableList.of(
+            ImmutableMap.of("item", "item1", "refvar1", "value1"),
+            ImmutableMap.of("item", "item2", "refvar1", "value1"),
+            ImmutableMap.of("item", "item3", "refvar1", "value1"))),
+        underTest.resolve(map));
+  }
+
+  @Test
+  public void testIterateVariable() {
+    Map<String, Object> map = ImmutableMap.of(
+        "var1", "value1",
+        "listholder", ImmutableList.of(
+            ImmutableMap.of("name", "item1", "var2", "value21"),
+            ImmutableMap.of("name", "item2", "var2", "value22"),
+            ImmutableMap.of("name", "item3", "var2", "value23")),
+        "object1", ImmutableMap.of(
+            LIST_VARIABLE_ITERATE, "${listholder}",
+            "item", "${" + ITEM_VARIABLE + ".name}",
+            "refvar1", "${var1}",
+            "refvar2", "${" + ITEM_VARIABLE + ".var2}"));
+
+    assertEquals(ImmutableMap.of(
+        "var1", "value1",
+        "listholder", ImmutableList.of(
+            ImmutableMap.of("name", "item1", "var2", "value21"),
+            ImmutableMap.of("name", "item2", "var2", "value22"),
+            ImmutableMap.of("name", "item3", "var2", "value23")),
+        "object1", ImmutableList.of(
+            ImmutableMap.of("item", "item1", "refvar1", "value1", "refvar2", "value21"),
+            ImmutableMap.of("item", "item2", "refvar1", "value1", "refvar2", "value22"),
+            ImmutableMap.of("item", "item3", "refvar1", "value1", "refvar2", "value23"))),
+        underTest.resolve(map));
+  }
+
+  @Test(expected = GeneratorException.class)
+  public void testIterateInvalid() {
+    Map<String, Object> map = ImmutableMap.of(
+        "var1", "value1",
+        "object1", ImmutableMap.of(LIST_VARIABLE_ITERATE, "${var1}"));
+    underTest.resolve(map);
   }
 
 }

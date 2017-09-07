@@ -28,26 +28,25 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.wcm.devops.conga.generator.GeneratorException;
-import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
-import io.wcm.devops.conga.model.util.MapExpander;
 
 /**
  * Resolve variables in a string referencing entries from a map.
  */
 public final class VariableStringResolver {
 
-  private static final Pattern VARIABLE_PATTERN = Pattern.compile("(\\\\?\\$)\\{(([^\\\\}\\\\{\\\\$]+)\\:)?([^\\}\\{\\$]+)\\}");
+  private static final String VARIABLE_PATTERN_STRING = "(\\\\?\\$)\\{(([^\\\\}\\\\{\\\\$]+)\\:)?([^\\}\\{\\$]+)\\}";
+  static final Pattern SINGLE_VARIABLE_PATTERN = Pattern.compile("^" + VARIABLE_PATTERN_STRING + "$");
+  static final Pattern MULTI_VARIABLE_PATTERN = Pattern.compile(VARIABLE_PATTERN_STRING);
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
-  private final ValueProviderContext context;
+  private final VariableResolver variableResolver;
 
   /**
    * @param context Value provider context
    */
   public VariableStringResolver(ValueProviderContext context) {
-    this.context = context;
+    this.variableResolver = new VariableResolver(context);
   }
 
   /**
@@ -92,7 +91,7 @@ public final class VariableStringResolver {
    * @return String with de-escaped variable references.
    */
   public String deescape(String value) {
-    return VARIABLE_PATTERN.matcher(value).replaceAll("\\$\\{$4\\}");
+    return MULTI_VARIABLE_PATTERN.matcher(value).replaceAll("\\$\\{$4\\}");
   }
 
   private String resolve(String value, Map<String, Object> variables, int iterationCount) {
@@ -100,7 +99,7 @@ public final class VariableStringResolver {
       throw new IllegalArgumentException("Cyclic dependencies in variable string detected: " + value);
     }
 
-    Matcher matcher = VARIABLE_PATTERN.matcher(value);
+    Matcher matcher = MULTI_VARIABLE_PATTERN.matcher(value);
     StringBuffer sb = new StringBuffer();
     boolean replacedAny = false;
     while (matcher.find()) {
@@ -113,29 +112,9 @@ public final class VariableStringResolver {
         matcher.appendReplacement(sb, Matcher.quoteReplacement("\\${" + variable + "}"));
       }
 
-      // resolver value from value provider
-      else if (StringUtils.isNotEmpty(valueProviderName)) {
-        ValueProviderPlugin valueProvider;
-        try {
-          valueProvider = context.getPluginManager().get(valueProviderName, ValueProviderPlugin.class);
-        }
-        catch (GeneratorException ex) {
-          throw new IllegalArgumentException("Unable to resolve variable from value provider: " + valueProviderName + ":" + variable, ex);
-        }
-        Object valueObject = valueProvider.resolve(variable, context);
-        if (valueObject != null) {
-          String variableValue = valueToString(valueObject);
-          matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
-          replacedAny = true;
-        }
-        else {
-          throw new IllegalArgumentException("Unknown variable: " + variable);
-        }
-      }
-
-      // resolve value from variable map
+      // resolve variable
       else {
-        Object valueObject = MapExpander.getDeep(variables, variable);
+        Object valueObject = variableResolver.resolve(valueProviderName, variable, variables);
         if (valueObject != null) {
           String variableValue = valueToString(valueObject);
           matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
