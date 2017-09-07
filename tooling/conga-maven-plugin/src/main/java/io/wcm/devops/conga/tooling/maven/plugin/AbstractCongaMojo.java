@@ -116,7 +116,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     ManifestHeader header = ManifestHeader.parse(this.valueProvider);
     for (ManifestHeader.Entry entry : header.getEntries()) {
       Map<String, Object> config = new HashMap<>();
-      for (NameValuePair nameValue : entry.getDirectives()) {
+      for (NameValuePair nameValue : entry.getAttributes()) {
         config.put(nameValue.getName(), nameValue.getValue());
       }
       valueProviderConfig.put(entry.getValue(), Collections.unmodifiableMap(config));
