@@ -45,12 +45,15 @@ public class SystemPropertyValueProviderPluginTest {
 
   @Test
   public void testResolve() {
-    System.setProperty("test.prop1", "value1");
+    String propertyName1 = getClass().getName() + "-test.prop1";
+    String propertyName2 = getClass().getName() + "-test.prop2";
 
-    assertEquals("value1", underTest.resolve("test.prop1", context));
-    assertNull(underTest.resolve("test.prop2", context));
+    System.setProperty(propertyName1, "value1");
 
-    System.clearProperty("test.prop1");
+    assertEquals("value1", underTest.resolve(propertyName1, context));
+    assertNull(underTest.resolve(propertyName2, context));
+
+    System.clearProperty(propertyName1);
   }
 
 }

@@ -79,6 +79,8 @@ public final class ContextPropertiesBuilder {
    * @param environmentName Environment name
    * @param environment Environment
    * @param version Environment version
+   * @param variableObjectTreeResolver Variable object tree resolver
+   * @param variableStringResolver Variable string resolver
    * @return Context variables map
    */
   public static Map<String, Object> buildEnvironmentContextVariables(String environmentName,

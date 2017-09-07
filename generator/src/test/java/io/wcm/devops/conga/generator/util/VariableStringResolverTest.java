@@ -105,13 +105,14 @@ public class VariableStringResolverTest {
 
   @Test
   public void testValueProvider() {
-    System.setProperty("test.prop1", "value1");
+    String propertyName = getClass().getName() + "-test.prop1";
+    System.setProperty(propertyName, "value1");
 
     Map<String, Object> variables = ImmutableMap.of("var1", "v1");
 
-    assertEquals("The v1 and value1", underTest.resolve("The ${var1} and ${system:test.prop1}", variables));
+    assertEquals("The v1 and value1", underTest.resolve("The ${var1} and ${system:" + propertyName + "}", variables));
 
-    System.clearProperty("test.prop1");
+    System.clearProperty(propertyName + "-test.prop1");
   }
 
 }

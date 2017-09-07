@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -31,9 +32,25 @@ public final class ValueProviderContext extends AbstractPluginContext<ValueProvi
   /**
    * @return Configuration for value providers.
    *         The outer map uses the value provider plugin name as key, the inner map contain the config properties.
+   *         Never null.
    */
   public Map<String, Map<String, Object>> getValueProviderConfig() {
+    if (this.valueProviderConfig == null) {
+      return Collections.emptyMap();
+    }
     return this.valueProviderConfig;
+  }
+
+  /**
+   * @param valueProviderPluginName Value provider plugin name
+   * @return Configuration for the given value provider. Never null.
+   */
+  public Map<String, Object> getValueProviderConfig(String valueProviderPluginName) {
+    Map<String, Object> config = getValueProviderConfig().get(valueProviderPluginName);
+    if (config == null) {
+      return Collections.emptyMap();
+    }
+    return config;
   }
 
   /**
