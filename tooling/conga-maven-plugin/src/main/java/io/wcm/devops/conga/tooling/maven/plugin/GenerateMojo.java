@@ -132,6 +132,7 @@ public class GenerateMojo extends AbstractCongaMojo {
     options.setVersion(project.getVersion());
     options.setDependencyVersions(buildDependencyVersionList());
     options.setModelExport(getModelExport());
+    options.setValueProviderConfig(getValueProviderConfig());
 
     Generator generator = new Generator(options);
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));

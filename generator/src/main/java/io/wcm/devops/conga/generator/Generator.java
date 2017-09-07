@@ -61,6 +61,7 @@ public final class Generator {
   private final String version;
   private final List<String> dependencyVersions;
   private final ModelExport modelExport;
+  private Map<String, Map<String, Object>> valueProviderConfig;
   private Logger log = LoggerFactory.getLogger(getClass());
 
   /**
@@ -77,6 +78,7 @@ public final class Generator {
     this.version = options.getVersion();
     this.dependencyVersions = options.getDependencyVersions();
     this.modelExport = options.getModelExport();
+    this.valueProviderConfig = options.getValueProviderConfig();
   }
 
   /**
@@ -138,7 +140,8 @@ public final class Generator {
         environmentDestDir.mkdir();
       }
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDestDir, pluginManager, handlebarsManager, urlFileManager, version, dependencyVersions, modelExport, log);
+          environmentDestDir, pluginManager, handlebarsManager, urlFileManager, version, dependencyVersions,
+          modelExport, valueProviderConfig, log);
       environmentGenerator.generate();
     }
   }

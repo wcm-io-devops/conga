@@ -91,7 +91,8 @@ class EnvironmentGenerator {
 
   EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment, File destDir,
       PluginManager pluginManager, HandlebarsManager handlebarsManager, UrlFileManager urlFileManager,
-      String version, List<String> dependencyVersions, ModelExport modelExport, Logger log) {
+      String version, List<String> dependencyVersions, ModelExport modelExport,
+      Map<String, Map<String, Object>> valueProviderConfig, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = EnvironmentExpander.expandNodes(environment, environmentName);
@@ -103,7 +104,8 @@ class EnvironmentGenerator {
     ValueProviderContext valueProviderContext = new ValueProviderContext()
         .pluginManager(pluginManager)
         .logger(log)
-        .urlFileManager(urlFileManager);
+        .urlFileManager(urlFileManager)
+        .valueProviderConfig(valueProviderConfig);
     this.variableStringResolver = new VariableStringResolver(valueProviderContext);
     this.variableMapResolver = new VariableMapResolver(valueProviderContext);
     this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderContext);

@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
@@ -40,6 +41,7 @@ public class GeneratorOptions {
   private String version;
   private List<String> dependencyVersions;
   private ModelExport modelExport;
+  private Map<String, Map<String, Object>> valueProviderConfig;
 
   /**
    * Directories with role definitions. Filename without extension = role name.
@@ -149,6 +151,19 @@ public class GeneratorOptions {
 
   public void setModelExport(ModelExport modelExport) {
     this.modelExport = modelExport;
+  }
+
+  /**
+   * @return Configuration for value providers.
+   *         The outer map uses the value provider plugin name as key, the inner map contain the config properties.
+   */
+  public Map<String, Map<String, Object>> getValueProviderConfig() {
+    return this.valueProviderConfig;
+  }
+
+
+  public void setValueProviderConfig(Map<String, Map<String, Object>> valueProviderConfig) {
+    this.valueProviderConfig = valueProviderConfig;
   }
 
 }
