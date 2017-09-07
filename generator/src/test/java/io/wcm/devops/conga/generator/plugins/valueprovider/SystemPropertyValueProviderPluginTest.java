@@ -25,6 +25,8 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
+
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -47,11 +49,14 @@ public class SystemPropertyValueProviderPluginTest {
   public void testResolve() {
     String propertyName1 = getClass().getName() + "-test.prop1";
     String propertyName2 = getClass().getName() + "-test.prop2";
+    String propertyName3 = getClass().getName() + "-test.prop3";
 
     System.setProperty(propertyName1, "value1");
+    System.setProperty(propertyName2, "value1,value2,value3");
 
     assertEquals("value1", underTest.resolve(propertyName1, context));
-    assertNull(underTest.resolve(propertyName2, context));
+    assertEquals(ImmutableList.of("value1", "value2", "value3"), underTest.resolve(propertyName2, context));
+    assertNull(underTest.resolve(propertyName3, context));
 
     System.clearProperty(propertyName1);
   }
