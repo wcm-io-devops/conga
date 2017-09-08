@@ -47,8 +47,7 @@ public final class VariableResolver {
    * @param valueProviderName Value provider name or null if local variable is referenced.
    * @param variable Variable name
    * @param variables Variable map
-   * @return Variable value (never null)
-   * @throws IllegalArgumentException If no value could be looked up for the variable
+   * @return Variable value or null if none was found
    */
   public Object resolve(String valueProviderName, String variable, Map<String, Object> variables) {
 
@@ -66,7 +65,7 @@ public final class VariableResolver {
         return valueObject;
       }
       else {
-        throw new IllegalArgumentException("Unknown variable: " + variable);
+        return null;
       }
     }
 
@@ -77,7 +76,7 @@ public final class VariableResolver {
         return valueObject;
       }
       else {
-        throw new IllegalArgumentException("Unknown variable: " + variable);
+        return null;
       }
     }
   }

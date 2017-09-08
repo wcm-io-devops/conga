@@ -50,6 +50,14 @@ public class VariableStringResolverTest {
   }
 
   @Test
+  public void testDefaultValue() {
+
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1");
+
+    assertEquals("The v1 and theDefValue2", underTest.resolve("The ${var1:theDefValue1} and ${var2:theDefValue2}", variables));
+  }
+
+  @Test
   public void testNestedVariables() {
 
     Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "${var1}${var1}", "var3", "${var2}${var1}");
@@ -83,6 +91,16 @@ public class VariableStringResolverTest {
   }
 
   @Test
+  public void testEscapedVariables_Provider_DefValue() {
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "\\${var1}${var1}", "var3", "${var2}${var1}");
+
+    assertEquals("\\${provider::var1},\\${var2:defValue},\\${provider::var3:defValue}",
+        underTest.resolve("\\${provider::var1},\\${var2:defValue},\\${provider::var3:defValue}", variables, false));
+    assertEquals("${provider::var1},${var2:defValue},${provider::var3:defValue}",
+        underTest.deescape("\\${provider::var1},\\${var2:defValue},\\${provider::var3:defValue}"));
+  }
+
+  @Test
   public void testDeepMapVariable() {
     Map<String, Object> variables = ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22")));
 
@@ -105,14 +123,16 @@ public class VariableStringResolverTest {
 
   @Test
   public void testValueProvider() {
-    String propertyName = getClass().getName() + "-test.prop1";
-    System.setProperty(propertyName, "value1");
+    String propertyName1 = getClass().getName() + "-test.prop1";
+    String propertyName2 = getClass().getName() + "-test.prop2";
+    System.setProperty(propertyName1, "value1");
 
     Map<String, Object> variables = ImmutableMap.of("var1", "v1");
 
-    assertEquals("The v1 and value1", underTest.resolve("The ${var1} and ${system:" + propertyName + "}", variables));
+    assertEquals("The v1 and value1", underTest.resolve("The ${var1} and ${system::" + propertyName1 + "}", variables));
+    assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${system::" + propertyName2 + ":theDefValue}", variables));
 
-    System.clearProperty(propertyName + "-test.prop1");
+    System.clearProperty(propertyName1 + "-test.prop1");
   }
 
 }

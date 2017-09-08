@@ -31,7 +31,6 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 
 public class VariableMapResolverTest {
@@ -152,12 +151,16 @@ public class VariableMapResolverTest {
         underTest.resolve(map));
   }
 
-  @Test(expected = GeneratorException.class)
-  public void testIterateInvalid() {
+  @Test
+  public void testIterateSingleValue() {
     Map<String, Object> map = ImmutableMap.of(
         "var1", "value1",
-        "object1", ImmutableMap.of(LIST_VARIABLE_ITERATE, "${var1}"));
-    underTest.resolve(map);
+        "object1", ImmutableMap.of(LIST_VARIABLE_ITERATE, "${var1}",
+            "item", "${" + ITEM_VARIABLE + "}"));
+    assertEquals(ImmutableMap.of(
+        "var1", "value1",
+        "object1", ImmutableList.of(ImmutableMap.of("item", "value1"))),
+        underTest.resolve(map));
   }
 
 }

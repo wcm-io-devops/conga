@@ -21,6 +21,9 @@ package io.wcm.devops.conga.generator.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -70,6 +73,45 @@ public final class ValueUtil {
       list.add(stringToValue(valueString));
     }
     return list;
+  }
+
+  /**
+   * Convert a value to it's string representation.
+   * @param value Value
+   * @return String representation
+   */
+  @SuppressWarnings("unchecked")
+  public static String valueToString(Object value) {
+    if (value == null) {
+      return "";
+    }
+    else if (value instanceof List) {
+      StringBuilder sb = new StringBuilder();
+      for (Object item : ((List)value)) {
+        if (sb.length() > 0) {
+          sb.append(",");
+        }
+        sb.append(valueToString(item));
+      }
+      return sb.toString();
+    }
+    else if (value instanceof Map) {
+      StringBuilder sb = new StringBuilder();
+      // use sorted map to ensure consistent order of keys
+      SortedMap<Object, Object> sortedMap = new TreeMap<>((Map<Object, Object>)value);
+      for (Map.Entry<Object, Object> entry : sortedMap.entrySet()) {
+        if (sb.length() > 0) {
+          sb.append(",");
+        }
+        sb.append(valueToString(entry.getKey()));
+        sb.append("=");
+        sb.append(valueToString(entry.getValue()));
+      }
+      return sb.toString();
+    }
+    else {
+      return value.toString();
+    }
   }
 
 }

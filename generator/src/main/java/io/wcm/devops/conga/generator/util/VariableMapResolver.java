@@ -19,6 +19,11 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import static io.wcm.devops.conga.generator.util.VariableStringResolver.PATTERN_POS_DEFAULT_VALUE;
+import static io.wcm.devops.conga.generator.util.VariableStringResolver.PATTERN_POS_VALUE_PROVIDER_NAME;
+import static io.wcm.devops.conga.generator.util.VariableStringResolver.PATTERN_POS_VARIABLE;
+import static io.wcm.devops.conga.generator.util.VariableStringResolver.SINGLE_VARIABLE_PATTERN;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,9 +33,9 @@ import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.ImmutableList;
 import com.rits.cloning.Cloner;
 
-import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 
 /**
@@ -197,15 +202,24 @@ public final class VariableMapResolver {
   private List<Object> replaceIterate(Map<String, Object> map, Map<String, Object> variables) {
     Object listObject = map.get(LIST_VARIABLE_ITERATE);
     if (listObject instanceof String) {
-      Matcher matcher = VariableStringResolver.SINGLE_VARIABLE_PATTERN.matcher((String)listObject);
+      Matcher matcher = SINGLE_VARIABLE_PATTERN.matcher((String)listObject);
       if (matcher.matches()) {
-        String valueProviderName = matcher.group(3);
-        String variable = matcher.group(4);
+        String valueProviderName = matcher.group(PATTERN_POS_VALUE_PROVIDER_NAME);
+        String variable = matcher.group(PATTERN_POS_VARIABLE);
+        String defaultValueString = matcher.group(PATTERN_POS_DEFAULT_VALUE);
+
         listObject = variableResolver.resolve(valueProviderName, variable, variables);
+        if (listObject == null && defaultValueString != null) {
+          listObject = ValueUtil.stringToValue(defaultValueString);
+        }
+        if (listObject == null) {
+          throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
+        }
       }
     }
     if (!(listObject instanceof List)) {
-      throw new GeneratorException("'" + LIST_VARIABLE_ITERATE + "' property must reference a list value: " + map.get(LIST_VARIABLE_ITERATE));
+      // allow to iterate over single values as well
+      listObject = ImmutableList.of(listObject);
     }
     Map<String, Object> variablesClone = new LinkedHashMap<>(Cloner.standard().deepClone(variables));
     List<Object> result = new ArrayList<>();
