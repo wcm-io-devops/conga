@@ -19,12 +19,9 @@
  */
 package io.wcm.devops.conga.generator.plugins.valueprovider;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.util.ValueUtil;
 
 /**
  * Gets values from java system properties.
@@ -36,8 +33,6 @@ public class SystemPropertyValueProviderPlugin implements ValueProviderPlugin {
    */
   public static final String NAME = "system";
 
-  private static final String LIST_SEPARATOR = ",";
-
   @Override
   public String getName() {
     return NAME;
@@ -46,12 +41,7 @@ public class SystemPropertyValueProviderPlugin implements ValueProviderPlugin {
   @Override
   public Object resolve(String variableName, ValueProviderContext context) {
     String value = System.getProperty(variableName);
-    if (StringUtils.contains(value, LIST_SEPARATOR)) {
-      return ImmutableList.copyOf(StringUtils.split(value, LIST_SEPARATOR));
-    }
-    else {
-      return value;
-    }
+    return ValueUtil.stringToValue(value);
   }
 
 }
