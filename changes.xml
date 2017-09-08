@@ -39,6 +39,9 @@
       <action type="add" dev="sseifert">
         Enable iteration over lists in config variables using special _iterate_ keyword.
       </action>
+      <action type="add" dev="update">
+        Allow to specify default values for variable resolution.
+      </action>
       <action type="fix" dev="sseifert" issue="WDCONGA-10">
         Allow to use configuration placeholder in tenant name.
       </action>
