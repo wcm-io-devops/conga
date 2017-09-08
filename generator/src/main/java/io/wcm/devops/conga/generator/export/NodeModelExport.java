@@ -48,6 +48,8 @@ public final class NodeModelExport {
   private final Node node;
   private final Environment environment;
   private final List<NodeModelExportPlugin> nodeModelExportPlugins = new ArrayList<>();
+  private final VariableStringResolver variableStringResolver;
+  private final VariableMapResolver variableMapResolver;
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
@@ -57,11 +59,16 @@ public final class NodeModelExport {
    * @param environment Environment
    * @param modelExport Model export
    * @param pluginManager Plugin manager
+   * @param variableStringResolver Variable string resolver
+   * @param variableMapResolver Variable map resolver
    */
-  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager) {
+  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager,
+      VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
+    this.variableStringResolver = variableStringResolver;
+    this.variableMapResolver = variableMapResolver;
 
     // get export plugins
     if (modelExport != null) {
@@ -94,7 +101,7 @@ public final class NodeModelExport {
     Map<String, Object> clonedConfig = Cloner.standard().deepClone(config);
 
     // resolve variables in configuration, and remove context properties
-    Map<String, Object> resolvedConfig = VariableMapResolver.resolve(clonedConfig, false);
+    Map<String, Object> resolvedConfig = variableMapResolver.resolve(clonedConfig, false);
 
     // generate tenants and tenant config
     List<ExportNodeRoleTenantData> tenantData = new ArrayList<>();
@@ -102,7 +109,7 @@ public final class NodeModelExport {
       Map<String, Object> tenantConfig = MapMerger.merge(tenant.getConfig(), clonedConfig);
 
       // set tenant-specific context variables
-      tenantConfig.put(ContextProperties.TENANT, VariableStringResolver.resolve(tenant.getTenant(), tenantConfig));
+      tenantConfig.put(ContextProperties.TENANT, variableStringResolver.resolve(tenant.getTenant(), tenantConfig));
       tenantConfig.put(ContextProperties.TENANT_ROLES, tenant.getRoles());
 
       tenantData.add(new ExportNodeRoleTenantData()
@@ -133,7 +140,10 @@ public final class NodeModelExport {
           .node(node)
           .environment(environment)
           .roleData(roleData)
-          .nodeDir(nodeDir));
+          .nodeDir(nodeDir)
+          .variableStringResolver(variableStringResolver)
+          .variableMapResolver(variableMapResolver));
+
     }
   }
 

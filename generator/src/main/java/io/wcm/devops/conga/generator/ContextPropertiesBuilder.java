@@ -79,10 +79,13 @@ public final class ContextPropertiesBuilder {
    * @param environmentName Environment name
    * @param environment Environment
    * @param version Environment version
+   * @param variableObjectTreeResolver Variable object tree resolver
+   * @param variableStringResolver Variable string resolver
    * @return Context variables map
    */
   public static Map<String, Object> buildEnvironmentContextVariables(String environmentName,
-      Environment environment, String version) {
+      Environment environment, String version,
+      VariableObjectTreeResolver variableObjectTreeResolver, VariableStringResolver variableStringResolver) {
     Map<String, Object> map = new HashMap<>(EMPTY_CONTEXT_VARIABLES);
 
     map.put(VERSION, version);
@@ -92,7 +95,7 @@ public final class ContextPropertiesBuilder {
     Environment clonedEnvironemnt = Cloner.standard().deepClone(environment);
 
     // resolve all variables at any level in environment
-    VariableObjectTreeResolver.resolve(clonedEnvironemnt);
+    variableObjectTreeResolver.resolve(clonedEnvironemnt);
 
     // list of nodes
     map.put(NODES, clonedEnvironemnt.getNodes());
@@ -133,7 +136,7 @@ public final class ContextPropertiesBuilder {
 
       // resolve placeholders in tentant name
       Map<String, Object> tenantConfig = MapMerger.merge(clonedEnvironemnt.getConfig(), tenant.getConfig());
-      String tenantName = VariableStringResolver.resolve(tenant.getTenant(), tenantConfig);
+      String tenantName = variableStringResolver.resolve(tenant.getTenant(), tenantConfig);
       tenant.setTenant(tenantName);
 
       for (String tenantRoleName : tenant.getRoles()) {

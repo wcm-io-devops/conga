@@ -86,7 +86,8 @@ class FileGenerator {
   FileGenerator(String environmentName, String roleName, List<String> roleVariantNames, String templateName,
       File nodeDir, File file, String url, RoleFile roleFile, Map<String, Object> config,
       Template template, PluginManager pluginManager, UrlFileManager urlFileManager,
-      String version, List<String> dependencyVersions, Logger log) {
+      String version, List<String> dependencyVersions, Logger log,
+      VariableMapResolver variableMapResolver) {
     //CHECKSTYLE:ON
     this.environmentName = environmentName;
     this.roleName = roleName;
@@ -114,18 +115,18 @@ class FileGenerator {
         .logger(pluginLogger);
 
     this.validatorContext = new ValidatorContext()
-        .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
+        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
         .logger(pluginLogger);
 
     this.postProcessorContext = new PostProcessorContext()
-        .options(VariableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
+        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
         .logger(pluginLogger);
 
-    this.config = VariableMapResolver.deescape(config);
+    this.config = variableMapResolver.deescape(config);
   }
 
   /**

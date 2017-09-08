@@ -58,8 +58,10 @@ import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.model.role.RoleFile;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -103,7 +105,8 @@ public class FileGeneratorPostProcessorTest {
     underTest = new FileGenerator("env1", "role1", ImmutableList.of("variant1"), "template1",
         destDir, file, null, roleFile, ImmutableMap.<String, Object>of(),
         template, pluginManager, urlFileManager,
-        "1.0", ImmutableList.<String>of(), logger);
+        "1.0", ImmutableList.<String>of(), logger,
+        new VariableMapResolver(new ValueProviderContext().pluginManager(pluginManager)));
   }
 
   @Test

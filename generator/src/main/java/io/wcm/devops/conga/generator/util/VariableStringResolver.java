@@ -19,27 +19,51 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.wcm.devops.conga.model.util.MapExpander;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 
 /**
  * Resolve variables in a string referencing entries from a map.
  */
 public final class VariableStringResolver {
 
-  private static final Pattern VARIABLE_PATTERN = Pattern.compile("(\\\\?\\$)\\{([^\\}\\{\\$]+)\\}");
+  /*
+   * variable pattern examples:
+   * ${var1}
+   * \${var1}
+   * ${var1:defaultValue}
+   * ${provider::var1}
+   * ${provider::Var1:defaultValue}
+   */
+  private static final String NAME_PATTERN_STRING = "[^\\}\\{\\$\\:]+";
+  private static final String VARIABLE_PATTERN_STRING = "(\\\\?\\$)"
+      + "\\{((" + NAME_PATTERN_STRING + ")\\:\\:)?"
+      + "(" + NAME_PATTERN_STRING + ")"
+      + "(\\:(" + NAME_PATTERN_STRING + "))?\\}";
+
+  static final int PATTERN_POS_DOLLAR_SIGN = 1;
+  static final int PATTERN_POS_VALUE_PROVIDER_NAME_WITH_COLON = 2;
+  static final int PATTERN_POS_VALUE_PROVIDER_NAME = 3;
+  static final int PATTERN_POS_VARIABLE = 4;
+  static final int PATTERN_POS_DEFAULT_VALUE_WITH_COLON = 5;
+  static final int PATTERN_POS_DEFAULT_VALUE = 6;
+
+  static final Pattern SINGLE_VARIABLE_PATTERN = Pattern.compile("^" + VARIABLE_PATTERN_STRING + "$");
+  static final Pattern MULTI_VARIABLE_PATTERN = Pattern.compile(VARIABLE_PATTERN_STRING);
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
-  private VariableStringResolver() {
-    // static methods only
+  private final VariableResolver variableResolver;
+
+  /**
+   * @param context Value provider context
+   */
+  public VariableStringResolver(ValueProviderContext context) {
+    this.variableResolver = new VariableResolver(context);
   }
 
   /**
@@ -51,7 +75,7 @@ public final class VariableStringResolver {
    * @return Value with variable placeholders resolved.
    * @throws IllegalArgumentException when a variable name could not be resolve.d
    */
-  public static String resolve(String value, Map<String, Object> variables) {
+  public String resolve(String value, Map<String, Object> variables) {
     return resolve(value, variables, true);
   }
 
@@ -64,7 +88,7 @@ public final class VariableStringResolver {
    * @return Value with variable placeholders resolved.
    * @throws IllegalArgumentException when a variable name could not be resolve.d
    */
-  public static String resolve(String value, Map<String, Object> variables, boolean deescapeVariables) {
+  public String resolve(String value, Map<String, Object> variables, boolean deescapeVariables) {
     if (value == null) {
       return null;
     }
@@ -83,36 +107,45 @@ public final class VariableStringResolver {
    * @param value String that may contain escaped variable references (starting with \$)
    * @return String with de-escaped variable references.
    */
-  public static String deescape(String value) {
-    return VARIABLE_PATTERN.matcher(value).replaceAll("\\$\\{$2\\}");
+  public String deescape(String value) {
+    return MULTI_VARIABLE_PATTERN.matcher(value).replaceAll("\\$\\{"
+        + "$" + PATTERN_POS_VALUE_PROVIDER_NAME_WITH_COLON
+        + "$" + PATTERN_POS_VARIABLE
+        + "$" + PATTERN_POS_DEFAULT_VALUE_WITH_COLON + "\\}");
   }
 
-  private static String resolve(String value, Map<String, Object> variables, int iterationCount) {
+  private String resolve(String value, Map<String, Object> variables, int iterationCount) {
     if (iterationCount >= REPLACEMENT_MAX_ITERATIONS) {
       throw new IllegalArgumentException("Cyclic dependencies in variable string detected: " + value);
     }
 
-    Matcher matcher = VARIABLE_PATTERN.matcher(value);
+    Matcher matcher = MULTI_VARIABLE_PATTERN.matcher(value);
     StringBuffer sb = new StringBuffer();
     boolean replacedAny = false;
     while (matcher.find()) {
-      boolean escapedVariable = StringUtils.equals(matcher.group(1), "\\$");
-      String variable = matcher.group(2);
+      boolean escapedVariable = StringUtils.equals(matcher.group(PATTERN_POS_DOLLAR_SIGN), "\\$");
+      String valueProviderName = matcher.group(PATTERN_POS_VALUE_PROVIDER_NAME);
+      String variable = matcher.group(PATTERN_POS_VARIABLE);
+      String defaultValueString = matcher.group(PATTERN_POS_DEFAULT_VALUE);
+
+      // keep escaped variables intact
       if (escapedVariable) {
-        // keep escaped variables intact
-        matcher.appendReplacement(sb, Matcher.quoteReplacement("\\${" + variable + "}"));
+        matcher.appendReplacement(sb, Matcher.quoteReplacement(matcher.group(0)));
       }
+
+      // resolve variable
       else {
-        Object valueObject = MapExpander.getDeep(variables, variable);
+        Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
         if (valueObject != null) {
-          String variableValue = valueToString(valueObject);
+          String variableValue = ValueUtil.valueToString(valueObject);
           matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
           replacedAny = true;
         }
         else {
-          throw new IllegalArgumentException("Unknown variable: " + variable);
+          throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
         }
       }
+
     }
     matcher.appendTail(sb);
     if (replacedAny) {
@@ -121,40 +154,6 @@ public final class VariableStringResolver {
     }
     else {
       return sb.toString();
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  private static String valueToString(Object value) {
-    if (value == null) {
-      return "";
-    }
-    else if (value instanceof List) {
-      StringBuilder sb = new StringBuilder();
-      for (Object item : ((List)value)) {
-        if (sb.length() > 0) {
-          sb.append(",");
-        }
-        sb.append(valueToString(item));
-      }
-      return sb.toString();
-    }
-    else if (value instanceof Map) {
-      StringBuilder sb = new StringBuilder();
-      // use sorted map to ensure consistent order of keys
-      SortedMap<Object, Object> sortedMap = new TreeMap<>((Map<Object, Object>)value);
-      for (Map.Entry<Object, Object> entry : sortedMap.entrySet()) {
-        if (sb.length() > 0) {
-          sb.append(",");
-        }
-        sb.append(valueToString(entry.getKey()));
-        sb.append("=");
-        sb.append(valueToString(entry.getValue()));
-      }
-      return sb.toString();
-    }
-    else {
-      return value.toString();
     }
   }
 

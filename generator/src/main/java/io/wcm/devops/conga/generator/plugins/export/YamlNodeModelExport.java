@@ -41,7 +41,6 @@ import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.generator.util.VariableStringResolver;
 
 /**
  * Exports model information for each node in YAML format.
@@ -112,17 +111,17 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
     roleMap.put("config", cleanupConfig(roleData.getConfig()));
 
-    addTenants(roleMap, roleData);
+    addTenants(roleMap, roleData, context);
 
     modelList.add(roleMap);
   }
 
-  private void addTenants(Map<String, Object> roleMap, ExportNodeRoleData roleData) {
+  private void addTenants(Map<String, Object> roleMap, ExportNodeRoleData roleData, NodeModelExportContext context) {
     List<Map<String, Object>> tenants = new ArrayList<>();
 
     if (roleData.getTenantData() != null) {
       for (ExportNodeRoleTenantData tenantData : roleData.getTenantData()) {
-        addTenant(tenants, tenantData);
+        addTenant(tenants, tenantData, context);
       }
     }
 
@@ -131,10 +130,10 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     }
   }
 
-  private void addTenant(List<Map<String, Object>> tenants, ExportNodeRoleTenantData tenantData) {
+  private void addTenant(List<Map<String, Object>> tenants, ExportNodeRoleTenantData tenantData, NodeModelExportContext context) {
     Map<String, Object> tenantMap = new LinkedHashMap<>();
 
-    tenantMap.put("tenant", VariableStringResolver.resolve(tenantData.getTenant(), tenantData.getConfig()));
+    tenantMap.put("tenant", context.getVariableStringResolver().resolve(tenantData.getTenant(), tenantData.getConfig()));
     if (!tenantData.getRoles().isEmpty()) {
       tenantMap.put("roles", tenantData.getRoles());
     }

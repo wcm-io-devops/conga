@@ -24,12 +24,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope1;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope2;
 import io.wcm.devops.conga.generator.util.testmodel.ConfScope3;
@@ -37,8 +39,15 @@ import io.wcm.devops.conga.generator.util.testmodel.Root;
 import io.wcm.devops.conga.generator.util.testmodel.SampleNode;
 import io.wcm.devops.conga.generator.util.testmodel.SimpleConf;
 
-
 public class VariableObjectTreeResolverTest {
+
+  private VariableObjectTreeResolver underTest;
+
+  @Before
+  public void setUp() {
+    ValueProviderContext context = new ValueProviderContext().pluginManager(new PluginManagerImpl());
+    underTest = new VariableObjectTreeResolver(context);
+  }
 
   @Test
   public void testResolve() {
@@ -90,7 +99,7 @@ public class VariableObjectTreeResolverTest {
     simple2.setConfig(ImmutableMap.of("varS2", "vS2", "confS2", "${varS2}"));
 
 
-    VariableObjectTreeResolver.resolve(root);
+    underTest.resolve(root);
 
 
     assertMap(ImmutableMap.of("var1", "v1", "conf", "v1"), scope1.getConfig());

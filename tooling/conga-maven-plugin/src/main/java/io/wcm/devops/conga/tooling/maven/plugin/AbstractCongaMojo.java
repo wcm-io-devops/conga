@@ -20,10 +20,15 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.sling.commons.osgi.ManifestHeader;
+import org.apache.sling.commons.osgi.ManifestHeader.NameValuePair;
 
 import com.google.common.collect.ImmutableList;
 
@@ -68,6 +73,14 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter(defaultValue = "yaml")
   private String modelExportNode;
 
+  /**
+   * Configuration for value providers.
+   * This uses the same syntax as OSGi manifest headers - example:
+   * <code>valueProviderPluginName1;param1=value1;param2=value2,valueProviderPluginName2;param3=value3</code>
+   */
+  @Parameter
+  private String valueProvider;
+
   protected ResourceCollection getTemplateDir() {
     return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + templateDir);
   }
@@ -93,6 +106,22 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     }
 
     return modelExport;
+  }
+
+  protected Map<String, Map<String, Object>> getValueProviderConfig() {
+    if (StringUtils.isEmpty(this.valueProvider)) {
+      return Collections.emptyMap();
+    }
+    Map<String, Map<String, Object>> valueProviderConfig = new HashMap<>();
+    ManifestHeader header = ManifestHeader.parse(this.valueProvider);
+    for (ManifestHeader.Entry entry : header.getEntries()) {
+      Map<String, Object> config = new HashMap<>();
+      for (NameValuePair nameValue : entry.getAttributes()) {
+        config.put(nameValue.getName(), nameValue.getValue());
+      }
+      valueProviderConfig.put(entry.getValue(), Collections.unmodifiableMap(config));
+    }
+    return Collections.unmodifiableMap(valueProviderConfig);
   }
 
   protected abstract ResourceLoader getResourceLoader();

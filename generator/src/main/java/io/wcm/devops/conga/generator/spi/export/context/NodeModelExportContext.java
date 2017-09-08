@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.wcm.devops.conga.generator.spi.context.AbstractPluginContext;
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 
@@ -37,6 +39,8 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   private List<ExportNodeRoleData> roleData;
   private File nodeDir;
   private Map<String, Object> config;
+  private VariableStringResolver variableStringResolver;
+  private VariableMapResolver variableMapResolver;
 
   /**
    * @return Node
@@ -115,6 +119,38 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
    */
   public NodeModelExportContext config(Map<String, Object> value) {
     config = value;
+    return this;
+  }
+
+  /**
+   * @return Variable string resolver
+   */
+  public VariableStringResolver getVariableStringResolver() {
+    return this.variableStringResolver;
+  }
+
+  /**
+   * @param value Variable string resolver
+   * @return this
+   */
+  public NodeModelExportContext variableStringResolver(VariableStringResolver value) {
+    this.variableStringResolver = value;
+    return this;
+  }
+
+  /**
+   * @return Variable map resolver
+   */
+  public VariableMapResolver getVariableMapResolver() {
+    return this.variableMapResolver;
+  }
+
+  /**
+   * @param value Variable map resolver
+   * @return this
+   */
+  public NodeModelExportContext variableMapResolver(VariableMapResolver value) {
+    this.variableMapResolver = value;
     return this;
   }
 

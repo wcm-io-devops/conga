@@ -29,7 +29,6 @@ import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
-import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Tenant;
 import io.wcm.devops.conga.model.util.MapMerger;
 
@@ -62,7 +61,7 @@ public final class TenantMultiply implements MultiplyPlugin {
         Map<String, Object> mergedConfig = MapMerger.merge(tenant.getConfig(), context.getConfig());
 
         // set tenant-specific context variables
-        mergedConfig.put(ContextProperties.TENANT, VariableStringResolver.resolve(tenant.getTenant(), mergedConfig));
+        mergedConfig.put(ContextProperties.TENANT, context.getVariableStringResolver().resolve(tenant.getTenant(), mergedConfig));
         mergedConfig.put(ContextProperties.TENANT_ROLES, tenant.getRoles());
 
         contexts.add(mergedConfig);
