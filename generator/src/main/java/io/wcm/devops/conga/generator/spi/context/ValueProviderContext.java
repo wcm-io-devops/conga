@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.spi.context;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,6 +29,7 @@ import java.util.Map;
 public final class ValueProviderContext extends AbstractPluginContext<ValueProviderContext> {
 
   private Map<String, Map<String, Object>> valueProviderConfig;
+  private Map<String, Object> valueProviderCache = new HashMap<>();
 
   /**
    * @return Configuration for value providers.
@@ -61,6 +63,27 @@ public final class ValueProviderContext extends AbstractPluginContext<ValueProvi
   public ValueProviderContext valueProviderConfig(Map<String, Map<String, Object>> value) {
     this.valueProviderConfig = value;
     return this;
+  }
+
+  /**
+   * Get cache object put by value provider plugin implementation.
+   * @param valueProviderPluginName Value provider plugin name
+   * @return Cache object or null if none was set yet
+   * @param <T> Cache object type
+   */
+  @SuppressWarnings("unchecked")
+  public <T> T getValueProviderCache(String valueProviderPluginName) {
+    return (T)valueProviderCache.get(valueProviderPluginName);
+  }
+
+  /**
+   * Put cache object from value provider plugin implementation.
+   * @param valueProviderPluginName Value provider plugin name
+   * @param object Cache object
+   * @param <T> Cache object type
+   */
+  public <T> void setValueProviderCache(String valueProviderPluginName, T object) {
+    valueProviderCache.put(valueProviderPluginName, object);
   }
 
 }
