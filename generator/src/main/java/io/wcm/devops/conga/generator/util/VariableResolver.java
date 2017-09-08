@@ -46,10 +46,12 @@ public final class VariableResolver {
    * Resolves a variable.
    * @param valueProviderName Value provider name or null if local variable is referenced.
    * @param variable Variable name
+   * @param defaultValueString Default value as string
    * @param variables Variable map
    * @return Variable value or null if none was found
    */
-  public Object resolve(String valueProviderName, String variable, Map<String, Object> variables) {
+  public Object resolve(String valueProviderName, String variable, String defaultValueString, Map<String, Object> variables) {
+    Object result;
 
     // resolve value from value provider
     if (StringUtils.isNotEmpty(valueProviderName)) {
@@ -60,25 +62,20 @@ public final class VariableResolver {
       catch (GeneratorException ex) {
         throw new IllegalArgumentException("Unable to resolve variable from value provider: " + valueProviderName + ":" + variable, ex);
       }
-      Object valueObject = valueProvider.resolve(variable, context);
-      if (valueObject != null) {
-        return valueObject;
-      }
-      else {
-        return null;
-      }
+      result = valueProvider.resolve(variable, context);
     }
 
     // resolve value from variable map
     else {
-      Object valueObject = MapExpander.getDeep(variables, variable);
-      if (valueObject != null) {
-        return valueObject;
-      }
-      else {
-        return null;
-      }
+      result = MapExpander.getDeep(variables, variable);
     }
+
+    if (result == null && defaultValueString != null) {
+      // fallback to default value
+      result = ValueUtil.stringToValue(defaultValueString);
+    }
+
+    return result;
   }
 
 }

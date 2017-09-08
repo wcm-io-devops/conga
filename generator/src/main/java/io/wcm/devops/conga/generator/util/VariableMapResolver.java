@@ -208,10 +208,7 @@ public final class VariableMapResolver {
         String variable = matcher.group(PATTERN_POS_VARIABLE);
         String defaultValueString = matcher.group(PATTERN_POS_DEFAULT_VALUE);
 
-        listObject = variableResolver.resolve(valueProviderName, variable, variables);
-        if (listObject == null && defaultValueString != null) {
-          listObject = ValueUtil.stringToValue(defaultValueString);
-        }
+        listObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
         if (listObject == null) {
           throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
         }

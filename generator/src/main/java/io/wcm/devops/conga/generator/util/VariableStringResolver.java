@@ -135,10 +135,7 @@ public final class VariableStringResolver {
 
       // resolve variable
       else {
-        Object valueObject = variableResolver.resolve(valueProviderName, variable, variables);
-        if (valueObject == null && defaultValueString != null) {
-          valueObject = ValueUtil.stringToValue(defaultValueString);
-        }
+        Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
         if (valueObject != null) {
           String variableValue = ValueUtil.valueToString(valueObject);
           matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
