@@ -19,9 +19,10 @@ CONGA allows to provider custom plugins that are applied on generated files:
 Other plugins:
 
 * **Multiply Plugin**: Plugin controls the generation of multiple files from a single file definition.
-* **Handlebars Helper Plugin**: Plugin allows to register your own Handlebar helper to define custom handlebar expression usable in the CONGA templates.
+* **Value Provider Plugin**: Allows to provide values form external sources, which can be referenced like variables
 * **Node Model Export Plugin**: Allows to export "model data" (expanded configurations, list of generated files and tenants) from CONGA to a file which can be picked up by infrastructure automation tools
 * **URL File Plugin**: Allows to copy or download files from external sources identified via "URL prefixes"
+* **Handlebars Helper Plugin**: Plugin allows to register your own Handlebar helper to define custom handlebar expression usable in the CONGA templates.
 
 See API documentation for the detailed plugin interfaces:
 
@@ -41,12 +42,17 @@ File plugins:
 | `unixShellScript`    | .sh          | X           |           |          |                |
 | `windowsShellScript` | .bat, .cmd   | X           |           |          |                |
 
-
 Multiply plugins:
 
 | Plugin name | Description
 |-------------|-------------
 | `tenant`    | Allows to generate a file for each tenant defined in the environment.
+
+Value Provider plugins:
+
+| Plugin name | Description
+|-------------|-------------
+| `system`    | Allows to reference Java System Parameters in variable definitions, e.g. `${system::mysystemparam}`
 
 Export plugins:
 

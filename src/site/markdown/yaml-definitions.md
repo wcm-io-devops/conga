@@ -107,6 +107,75 @@ Inheritance order (higher number has higher precedence):
 There is a special support when merging list parameter. By default a list value on a deeper lever overwrites a list inherited from a parameter map on a higher level completely. If you insert the keyword `_merge_` as list item on either of the list values, they are merged and the special keyword entry is removed.
 
 
+### Variable references
+
+You can reference variables defined in the environment, or as default values in the roles using this syntax:
+
+```
+${myvariable}
+${mygroup.myvariable}
+```
+
+If no value is defined for this variable, the configuration generation fails. It is recommended to define a default value in the role definition for each variable it uses. An alternative is to define a default value within the variable reference like this:
+
+```
+${myvariable:defaultValue}
+${myvariable:defaultListItem1,item2,item3}
+```
+
+You can reference values from external source via value providers (see [Extensibility model][extensibility]), e.g. from the "System Parameter Value Provider":
+
+```
+${system::my.system.parameter}
+${system::my.system.parameter:defaultValue}
+```
+
+
+### Iterate over variable list values
+
+When reading a variable with list of values from external source via a value provider, it may be required to generate a list of configuration statements within an environment definition. In this case the `_iterate_` keyword can be used.
+
+Example from an environment definition file:
+
+```
+- node: author1
+  roles:
+  - role: aem-cms
+    variant: aem-author
+  config:
+    replication.author.publishTargets:
+      _iterate_: ${system::publishTransportUrls}
+      name: publish{_itemIndex_}
+      host: ${_item_}
+      transportUser: ...
+      transportPassword: ...
+```
+
+In this example a list of hostnames/transport URLs is read from system parameter `publishTransportUrls`. For each item a configuration block is generated. The following implicit variables can be references inside the 'iterate' block:
+
+* `_item_`: The list item value
+* `_itemIndex_` The list item index (starting with 0)
+
+The example above results in an environment configuration like this when the configuration is generated:
+
+```
+- node: author1
+  roles:
+  - role: aem-cms
+    variant: aem-author
+  config:
+    replication.author.publishTargets:
+    - name: publish0
+      host: http://publish1:4503
+      transportUser: ...
+      transportPassword: ...
+    - name: publish1
+      host: http://publish2:4503
+      transportUser: ...
+      transportPassword: ...
+```
+
+
 ### Default context properties
 
 Additionally to the variables defined in the configuration parameter maps a set of default context properties are defined automatically by CONGA and merged with the parameter maps:
@@ -134,3 +203,4 @@ Additionally to the variables defined in the configuration parameter maps a set 
 [tenant-model]: generator/apidocs/io/wcm/devops/conga/model/environment/Tenant.html
 [yaml]: http://yaml.org/
 [snakeyaml]: http://www.snakeyaml.org/
+[extensibility]: extensibility.html
