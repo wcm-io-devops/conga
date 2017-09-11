@@ -32,7 +32,7 @@ See API documentation for the detailed plugin interfaces:
 
 ### Built-in plugins
 
-File plugins:
+#### File plugins
 
 | Plugin name          | File name(s) | File Header | Validator | Escaping | Post Processor |
 |----------------------|--------------|:-----------:|:---------:|:--------:|:--------------:|
@@ -42,25 +42,25 @@ File plugins:
 | `unixShellScript`    | .sh          | X           |           |          |                |
 | `windowsShellScript` | .bat, .cmd   | X           |           |          |                |
 
-Multiply plugins:
+#### Multiply plugins
 
 | Plugin name | Description
 |-------------|-------------
 | `tenant`    | Allows to generate a file for each tenant defined in the environment.
 
-Value Provider plugins:
+#### Value Provider plugins
 
 | Plugin name | Description
 |-------------|-------------
 | `system`    | Allows to reference Java System Parameters in variable definitions, e.g. `${system::mysystemparam}`
 
-Export plugins:
+#### Export plugins
 
 | Plugin name | Description
 |-------------|-------------
 | `yaml`      | Dumps all "model data" (expanded configuration, list of generated files and tenants) from CONGA to "model.yaml" files for each node. This file can be picked up by infrastructure automation tools e.g. Ansible to execute the further deployment steps.
 
-URL File Plugins plugins:
+#### URL File Plugins plugins
 
 | Plugin name  | URL Prefix            | Description
 |--------------|-----------------------|-------------
@@ -68,6 +68,8 @@ URL File Plugins plugins:
 | `classpath`  | `classpath:`          | Copy files from classpath
 | `http`       | `http://`, `https://` | Download files from HTTP or HTTPS URLs
 | `maven`      | `mvn:`                | Download files from Maven Artifact repository (only supported when CONGA runs inside Maven)
+
+#### Other plugins
 
 Handlebars Helper plugins: see [Handlebars quickstart][handlebars-quickstart].
 
