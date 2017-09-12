@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -45,13 +46,16 @@ import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.EnvironmentExpander;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.RoleUtil;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
+import io.wcm.devops.conga.generator.util.VariableObjectTreeResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
@@ -78,13 +82,17 @@ class EnvironmentGenerator {
   private final List<String> dependencyVersions;
   private final ModelExport modelExport;
   private final Logger log;
+  private final VariableStringResolver variableStringResolver;
+  private final VariableMapResolver variableMapResolver;
+  private final VariableObjectTreeResolver variableObjectTreeResolver;
 
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
 
   EnvironmentGenerator(Map<String, Role> roles, String environmentName, Environment environment, File destDir,
       PluginManager pluginManager, HandlebarsManager handlebarsManager, UrlFileManager urlFileManager,
-      String version, List<String> dependencyVersions, ModelExport modelExport, Logger log) {
+      String version, List<String> dependencyVersions, ModelExport modelExport,
+      Map<String, Map<String, Object>> valueProviderConfig, Logger log) {
     this.roles = roles;
     this.environmentName = environmentName;
     this.environment = EnvironmentExpander.expandNodes(environment, environmentName);
@@ -93,13 +101,23 @@ class EnvironmentGenerator {
     this.handlebarsManager = handlebarsManager;
     this.urlFileManager = urlFileManager;
 
+    ValueProviderContext valueProviderContext = new ValueProviderContext()
+        .pluginManager(pluginManager)
+        .logger(log)
+        .urlFileManager(urlFileManager)
+        .valueProviderConfig(valueProviderConfig);
+    this.variableStringResolver = new VariableStringResolver(valueProviderContext);
+    this.variableMapResolver = new VariableMapResolver(valueProviderContext);
+    this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderContext);
+
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
     this.version = version;
     this.dependencyVersions = dependencyVersions;
     this.modelExport = modelExport;
     this.log = log;
     this.environmentContextProperties = ImmutableMap.copyOf(
-        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, version));
+        ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, version,
+            variableObjectTreeResolver, variableStringResolver));
   }
 
   public void generate() {
@@ -122,35 +140,41 @@ class EnvironmentGenerator {
     log.info("----- Node '{}' -----", node.getNode());
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
-    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, modelExport, pluginManager);
+    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, modelExport, pluginManager,
+        variableStringResolver, variableMapResolver);
 
     for (NodeRole nodeRole : node.getRoles()) {
-      Role role = roles.get(nodeRole.getRole());
-      if (role == null) {
-        throw new GeneratorException("Role '" + nodeRole.getRole() + "' "
-            + "from " + environmentName + "/" + node.getNode() + " does not exist.");
-      }
-      String variant = nodeRole.getVariant();
-      RoleVariant roleVariant = getRoleVariant(role, variant, nodeRole.getRole(), node);
+      // get role and resolve all inheritance relations
+      Role role = RoleUtil.resolveRole(nodeRole.getRole(), environmentName + "/" + node.getNode(), roles);
 
       // merge default values to config
-      Map<String, Object> roleConfig = roleVariant != null ? roleVariant.getConfig() : role.getConfig();
-      Map<String, Object> mergedConfig = MapMerger.merge(nodeRole.getConfig(), roleConfig);
+      List<String> variants = nodeRole.getAggregatedVariants();
+      Map<String, Object> mergedConfig = nodeRole.getConfig();
+      if (variants.isEmpty()) {
+        mergedConfig = MapMerger.merge(mergedConfig, role.getConfig());
+      }
+      else {
+        for (String variant : variants) {
+          RoleVariant roleVariant = getRoleVariant(role, variant, nodeRole.getRole(), node);
+          mergedConfig = MapMerger.merge(mergedConfig, roleVariant.getConfig());
+        }
+      }
 
       // additionally set context variables
       mergedConfig.putAll(environmentContextProperties);
       mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
       // collect role and tenant information for export model
-      ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(nodeRole.getRole(), variant, mergedConfig);
+      ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(nodeRole.getRole(), variants, mergedConfig);
 
       // generate files
       List<GeneratedFileContext> allFiles = new ArrayList<>();
       for (RoleFile roleFile : role.getFiles()) {
-        if (roleFile.getVariants().isEmpty() || roleFile.getVariants().contains(variant)) {
+        // generate file if no variant is required, or at least one of the given variants is defined for the node/role
+        if (roleFile.getVariants().isEmpty() || CollectionUtils.containsAny(roleFile.getVariants(), variants)) {
           Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
           multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
-              nodeRole.getRole(), variant, roleFile.getTemplate(), allFiles);
+              nodeRole.getRole(), variants, roleFile.getTemplate(), allFiles);
         }
       }
       exportNodeRoleData.files(allFiles);
@@ -161,9 +185,6 @@ class EnvironmentGenerator {
   }
 
   private RoleVariant getRoleVariant(Role role, String variant, String roleName, Node node) {
-    if (StringUtils.isEmpty(variant)) {
-      return null;
-    }
     for (RoleVariant roleVariant : role.getVariants()) {
       if (StringUtils.equals(variant, roleVariant.getVariant())) {
         return roleVariant;
@@ -211,7 +232,7 @@ class EnvironmentGenerator {
   }
 
   private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
-      String roleName, String roleVariantName, String templateName, List<GeneratedFileContext> generatedFiles) {
+      String roleName, List<String> roleVariantNames, String templateName, List<GeneratedFileContext> generatedFiles) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
     if (StringUtils.isNotEmpty(roleFile.getMultiply())) {
       multiplyPlugin = pluginManager.get(roleFile.getMultiply(), MultiplyPlugin.class);
@@ -224,27 +245,29 @@ class EnvironmentGenerator {
         .config(config)
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
-        .logger(log);
+        .logger(log)
+        .variableStringResolver(variableStringResolver)
+        .variableMapResolver(variableMapResolver);
 
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
 
       // resolve variables
-      Map<String, Object> resolvedConfig = VariableMapResolver.resolve(muliplyConfig, false);
+      Map<String, Object> resolvedConfig = variableMapResolver.resolve(muliplyConfig, false);
 
       // replace placeholders with context variables
-      String dir = VariableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
-      String file = VariableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
-      String url = VariableStringResolver.resolve(roleFile.getUrl(), resolvedConfig);
+      String dir = variableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
+      String file = variableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
+      String url = variableStringResolver.resolve(roleFile.getUrl(), resolvedConfig);
 
       generatedFiles.addAll(generateFile(roleFile, dir, file, url,
-          resolvedConfig, nodeDir, template, roleName, roleVariantName, templateName));
+          resolvedConfig, nodeDir, template, roleName, roleVariantNames, templateName));
     }
   }
 
   private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
       Map<String, Object> config, File nodeDir, Template template,
-      String roleName, String roleVariantName, String templateName) {
+      String roleName, List<String> roleVariantNames, String templateName) {
 
     String generatedFileName = fileName;
     if (StringUtils.isBlank(generatedFileName) && StringUtils.isNotBlank(url)) {
@@ -263,15 +286,15 @@ class EnvironmentGenerator {
 
     // skip file if condition does not evaluate to a non-empty string or is "false"
     if (StringUtils.isNotEmpty(roleFile.getCondition())) {
-      String condition = VariableStringResolver.resolve(roleFile.getCondition(), config);
+      String condition = variableStringResolver.resolve(roleFile.getCondition(), config);
       if (StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false")) {
         return ImmutableList.of();
       }
     }
 
-    FileGenerator fileGenerator = new FileGenerator(environmentName, roleName, roleVariantName, templateName,
+    FileGenerator fileGenerator = new FileGenerator(environmentName, roleName, roleVariantNames, templateName,
         nodeDir, file, url, roleFile, config, template, pluginManager, urlFileManager,
-        version, dependencyVersions, log);
+        version, dependencyVersions, log, variableMapResolver);
     try {
       Collection<GeneratedFileContext> generatedFiles = fileGenerator.generate();
 

@@ -37,6 +37,7 @@ Based on the [extensibility model][extensibility] the wcm.io DevOps project host
 
 * [CONGA Plugin for Apache Sling](plugins/sling)
 * [CONGA Plugin for Adobe Experience Manager (AEM)](plugins/aem)
+* [CONGA Plugin for Ansible](plugins/ansible)
 
 
 ## Definitions

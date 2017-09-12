@@ -1,0 +1,18 @@
+This is a textfile дцья with ISO-8859-1 encoding.
+
+defaultString: {{defaultString}}
+defaultInt: {{defaultInt}}
+defaultBool: {{defaultBool}}
+globalString: {{globalString}}
+variableString: {{regexQuote variableString}}
+listParam: {{join listParam ","}}
+
+nodeRole: {{nodeRole}}
+nodeRoleVariant: {{nodeRoleVariant}}
+environment: {{environment}}
+node: {{node}}
+nodes: {{#each nodes}}{{this.node}}{{#unless @last}},{{/unless}}{{/each}}
+nodesByRole: {{#each nodesByRole.role1}}{{this.node}}{{#unless @last}},{{/unless}}{{/each}}
+nodesByRoleVariant: {{#each nodesByRoleVariant.role1.variant11}}{{this.node}}{{#unless @last}},{{/unless}}{{/each}}
+tenants: {{#each tenants}}{{this.tenant}}{{#unless @last}},{{/unless}}{{/each}}
+tenantsByRole: {{#each tenantsByRole.tenantRole1}}{{this.tenant}}{{#unless @last}},{{/unless}}{{/each}}

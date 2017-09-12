@@ -32,9 +32,22 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  */
 public final class Role extends AbstractConfigurable {
 
+  private List<RoleInherit> inherits = new ArrayList<>();
   private List<RoleVariant> variants = new ArrayList<>();
   private String templateDir;
   private List<RoleFile> files = new ArrayList<>();
+
+  /**
+   * Defines inheritance relations for this role.
+   * @return List of inheritance relations
+   */
+  public List<RoleInherit> getInherits() {
+    return this.inherits;
+  }
+
+  public void setInherits(List<RoleInherit> inherits) {
+    this.inherits = defaultEmptyList(inherits);
+  }
 
   /**
    * Defines the role variants available for this role. Role variants can be used to apply a slightly different

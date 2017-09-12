@@ -33,6 +33,7 @@ import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.Tenant;
@@ -47,6 +48,8 @@ public final class NodeModelExport {
   private final Node node;
   private final Environment environment;
   private final List<NodeModelExportPlugin> nodeModelExportPlugins = new ArrayList<>();
+  private final VariableStringResolver variableStringResolver;
+  private final VariableMapResolver variableMapResolver;
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
@@ -56,11 +59,16 @@ public final class NodeModelExport {
    * @param environment Environment
    * @param modelExport Model export
    * @param pluginManager Plugin manager
+   * @param variableStringResolver Variable string resolver
+   * @param variableMapResolver Variable map resolver
    */
-  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager) {
+  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager,
+      VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
+    this.variableStringResolver = variableStringResolver;
+    this.variableMapResolver = variableMapResolver;
 
     // get export plugins
     if (modelExport != null) {
@@ -80,11 +88,11 @@ public final class NodeModelExport {
   /**
    * Add role information
    * @param role Role name
-   * @param roleVariant Role variant name
+   * @param roleVariants Role variant name
    * @param config Merged configuration (unresolved)
    * @return Node role data
    */
-  public ExportNodeRoleData addRole(String role, String roleVariant, Map<String, Object> config) {
+  public ExportNodeRoleData addRole(String role, List<String> roleVariants, Map<String, Object> config) {
     if (!isActive()) {
       return new ExportNodeRoleData();
     }
@@ -92,8 +100,8 @@ public final class NodeModelExport {
     // clone config to make sure it is not tampered by the plugin
     Map<String, Object> clonedConfig = Cloner.standard().deepClone(config);
 
-    // resolve variables in configuration, and remove context properites
-    Map<String, Object> resolvedConfig = VariableMapResolver.resolve(clonedConfig, false);
+    // resolve variables in configuration, and remove context properties
+    Map<String, Object> resolvedConfig = variableMapResolver.resolve(clonedConfig, false);
 
     // generate tenants and tenant config
     List<ExportNodeRoleTenantData> tenantData = new ArrayList<>();
@@ -101,7 +109,7 @@ public final class NodeModelExport {
       Map<String, Object> tenantConfig = MapMerger.merge(tenant.getConfig(), clonedConfig);
 
       // set tenant-specific context variables
-      tenantConfig.put(ContextProperties.TENANT, tenant.getTenant());
+      tenantConfig.put(ContextProperties.TENANT, variableStringResolver.resolve(tenant.getTenant(), tenantConfig));
       tenantConfig.put(ContextProperties.TENANT_ROLES, tenant.getRoles());
 
       tenantData.add(new ExportNodeRoleTenantData()
@@ -112,7 +120,7 @@ public final class NodeModelExport {
 
     ExportNodeRoleData item = new ExportNodeRoleData()
         .role(role)
-        .roleVariant(roleVariant)
+        .roleVariant(roleVariants)
         .config(resolvedConfig)
         .tenantData(tenantData);
     roleData.add(item);
@@ -132,7 +140,10 @@ public final class NodeModelExport {
           .node(node)
           .environment(environment)
           .roleData(roleData)
-          .nodeDir(nodeDir));
+          .nodeDir(nodeDir)
+          .variableStringResolver(variableStringResolver)
+          .variableMapResolver(variableMapResolver));
+
     }
   }
 

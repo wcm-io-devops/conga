@@ -13,6 +13,9 @@ nodes:
       topologyConnectors:
       - "http://host3${topologyConnectorPath}"
   - role: tomcat-backendconnector
+    variants:
+    - var1
+    - var2
 
 - nodes:
   - services-1

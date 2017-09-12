@@ -84,13 +84,16 @@ public class EnvironmentReaderTest {
 
   @Test
   public void testNodeRole() {
-    NodeRole role = environment.getNodes().get(0).getRoles().get(0);
+    NodeRole role1 = environment.getNodes().get(0).getRoles().get(0);
+    assertEquals("tomcat-services", role1.getRole());
+    assertEquals("importer", role1.getVariant());
+    assertEquals(ImmutableList.of("importer"), role1.getAggregatedVariants());
+    assertEquals(ImmutableMap.of("topologyConnectors", ImmutableList.of("http://host3${topologyConnectorPath}")), role1.getConfig());
 
-    assertEquals("tomcat-services", role.getRole());
-
-    assertEquals("importer", role.getVariant());
-
-    assertEquals(ImmutableMap.of("topologyConnectors", ImmutableList.of("http://host3${topologyConnectorPath}")), role.getConfig());
+    NodeRole role2 = environment.getNodes().get(0).getRoles().get(1);
+    assertEquals("tomcat-backendconnector", role2.getRole());
+    assertEquals(ImmutableList.of("var1", "var2"), role2.getVariants());
+    assertEquals(ImmutableList.of("var1", "var2"), role2.getAggregatedVariants());
   }
 
   @Test

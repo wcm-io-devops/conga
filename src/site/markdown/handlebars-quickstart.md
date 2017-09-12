@@ -215,6 +215,17 @@ Conditional for each loop - loop is generated if expression equals to an argumen
 ```
 
 
+#### contains
+
+Checks for presence of a given value in a list:
+
+```
+{{#contains group1.list1 "myValue"}}
+  condition met block...
+{{/contains}}
+```
+
+
 
 [handlebars]: http://handlebarsjs.com/
 [handlebars-java]: https://github.com/jknack/handlebars.java

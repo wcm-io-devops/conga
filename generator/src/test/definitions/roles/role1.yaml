@@ -1,8 +1,17 @@
+inherits:
+- role: superrole1
+
 variants:
 - variant: variant11
   config:
     var1: v1-role1-variant11
+    var2: v2-role1-variant11
+    var3: v3-role1-variant11
 - variant: variant12
+- variant: variant13
+  config:
+    var2: v2-role1-variant13
+    var4: v4-role1-variant13
 
 
 templateDir: role1

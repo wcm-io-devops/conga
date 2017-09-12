@@ -1,3 +1,7 @@
+# Inheritance (example)
+#inherits:
+#- role: superRole1
+
 # Variants supported by this role
 variants:
 - variant: services

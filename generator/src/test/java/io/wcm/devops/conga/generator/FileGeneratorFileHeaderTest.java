@@ -53,8 +53,10 @@ import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.model.role.RoleFile;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -95,10 +97,11 @@ public class FileGeneratorFileHeaderTest {
       }
     });
 
-    underTest = new FileGenerator("env1", "role1", "variant1", "template1",
+    underTest = new FileGenerator("env1", "role1", ImmutableList.of("variant1"), "template1",
         destDir, file, null, roleFile, ImmutableMap.<String, Object>of(),
         template, pluginManager, urlFileManager,
-        "1.0", ImmutableList.<String>of(), logger);
+        "1.0", ImmutableList.<String>of(), logger,
+        new VariableMapResolver(new ValueProviderContext().pluginManager(pluginManager)));
   }
 
   @Test

@@ -23,15 +23,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>io.wcm.devops</groupId>
-    <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-    <version>1.0.6</version>
-    <relativePath />
+    <groupId>io.wcm.devops.conga</groupId>
+    <artifactId>io.wcm.devops.conga.parent</artifactId>
+    <version>1.4.0</version>
+    <relativePath>parent/pom.xml</relativePath>
   </parent>
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.root</artifactId>
-  <version>1.3.4</version>
+  <version>1.4.0</version>
   <packaging>pom</packaging>
 
   <name>CONGA</name>
@@ -68,6 +68,15 @@
         <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
           <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <!-- Deploy site -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skipDeploy>false</skipDeploy>
         </configuration>
       </plugin>
 

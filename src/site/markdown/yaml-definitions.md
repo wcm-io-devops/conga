@@ -17,6 +17,8 @@ The filename of the role YAML file is the role name.
 The documentation of all role and file configuration options can be found in the<br/>
 [Role Model API documentation][role-model].
 
+#### Files
+
 Files are generated using a Handlebars template. After generation a file header is added automatically, and the file syntax is checked for well-formedness. Optionally additional post-processors can be configured.
 
 Alternatively it is possible to specify an URL instead of a template. In this case the file is copied/downloaded from an external source. The following URL prefixes are supported out of the box:
@@ -31,6 +33,17 @@ Alternatively it is possible to specify an URL instead of a template. In this ca
     - If the version is empty in the role file it is resolved from the Maven project.
 
 If no prefix is specified the URL is interpreted as relative path in the local filesystem.
+
+#### Role Inheritance
+
+A role can inherit from one or multiple other roles:
+
+```yaml
+inherits:
+- role: superRole
+```
+
+In this case the current role inherits all configuration and files from the super role(s). Configuration maps are merged, the config of the current role has higher precedence. If the super role defines variants, the current has to define the same variants as well.
 
 
 ### Environment definitions
@@ -83,6 +96,7 @@ Inheritance order (higher number has higher precedence):
 
 1. Global configuration parameters from role definition
 2. Configuration from role variant definition
+    * If multiple variants are assigned to a node/role their configs are merged, first variants have higher precedence
 3. Global configuration from environment
 4. Node configuration from environment
 5. Global role configuration from environment
@@ -92,6 +106,76 @@ Inheritance order (higher number has higher precedence):
 
 There is a special support when merging list parameter. By default a list value on a deeper lever overwrites a list inherited from a parameter map on a higher level completely. If you insert the keyword `_merge_` as list item on either of the list values, they are merged and the special keyword entry is removed.
 
+
+### Variable references
+
+You can reference variables defined in the environment, or as default values in the roles using this syntax:
+
+```
+${myvariable}
+${mygroup.myvariable}
+```
+
+If no value is defined for this variable, the configuration generation fails. It is recommended to define a default value in the role definition for each variable it uses. An alternative is to define a default value within the variable reference like this:
+
+```
+${myvariable:defaultValue}
+${myvariable:defaultListItem1,item2,item3}
+```
+
+You can reference values from external source via value providers (see [Extensibility model][extensibility]), e.g. from the "System Parameter Value Provider":
+
+```
+${system::my.system.parameter}
+${system::my.system.parameter:defaultValue}
+```
+
+
+### Iterate over variable list values
+
+When reading a variable with list of values from external source via a value provider, it may be required to generate a list of configuration statements within an environment definition. In this case the `_iterate_` keyword can be used.
+
+Example from an environment definition file:
+
+```
+- node: author1
+  roles:
+  - role: aem-cms
+    variant: aem-author
+  config:
+    replication.author.publishTargets:
+      _iterate_: ${system::publishTransportUrls}
+      name: publish{_itemIndex_}
+      host: ${_item_}
+      transportUser: ...
+      transportPassword: ...
+```
+
+In this example a list of hostnames/transport URLs is read from system parameter `publishTransportUrls`. For each item a configuration block is generated. The following implicit variables can be references inside the 'iterate' block:
+
+* `_item_`: The list item value
+* `_itemIndex_` The list item index (starting with 0)
+
+The example above results in an environment configuration like this when the configuration is generated:
+
+```
+- node: author1
+  roles:
+  - role: aem-cms
+    variant: aem-author
+  config:
+    replication.author.publishTargets:
+    - name: publish0
+      host: http://publish1:4503
+      transportUser: ...
+      transportPassword: ...
+    - name: publish1
+      host: http://publish2:4503
+      transportUser: ...
+      transportPassword: ...
+```
+
+
 ### Default context properties
 
 Additionally to the variables defined in the configuration parameter maps a set of default context properties are defined automatically by CONGA and merged with the parameter maps:
@@ -100,7 +184,8 @@ Additionally to the variables defined in the configuration parameter maps a set 
 |----------------------|-------------
 | `version`            | Environment version
 | `nodeRole`           | Current node role name
-| `nodeRoleVariant`    | Current node role variant name
+| `nodeRoleVariant`    | Current node role variant name (only set if the role has exactly one variant)
+| `nodeRoleVariants`   | List of current node role variant names
 | `environment`        | Environment name
 | `node`               | Current node name
 | `nodes`              | List of all nodes. Each node has properties as defined in the [Node model][node-model].
@@ -118,3 +203,4 @@ Additionally to the variables defined in the configuration parameter maps a set 
 [tenant-model]: generator/apidocs/io/wcm/devops/conga/model/environment/Tenant.html
 [yaml]: http://yaml.org/
 [snakeyaml]: http://www.snakeyaml.org/
+[extensibility]: extensibility.html

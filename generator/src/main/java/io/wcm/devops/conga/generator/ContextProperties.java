@@ -41,9 +41,15 @@ public final class ContextProperties {
   public static final String ROLE = "nodeRole";
 
   /**
-   * Current node role variant name
+   * Current node role variant name. This is only set, if the node role has only one variant assigned.
    */
   public static final String ROLE_VARIANT = "nodeRoleVariant";
+
+  /**
+   * List of current node role variant names. Empty if no variant is assigned. Single element if exactly one variant is
+   * assigned. List if multiples are assigned.
+   */
+  public static final String ROLE_VARIANTS = "nodeRoleVariants";
 
   /**
    * Environment name

@@ -115,6 +115,8 @@ public final class RoleFile extends AbstractModel {
   /**
    * Defines the role variant names for which this file should be generated.
    * If no names are defined the file is generated for all role variants.
+   * If the node/role has multiple variants, the file is generated if at least one variant from the file definition
+   * matches with at least one variant from the role/file.
    * @return List of role variant names
    */
   public List<String> getVariants() {
