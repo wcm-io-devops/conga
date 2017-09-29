@@ -27,8 +27,8 @@ Alternatively it is possible to specify an URL instead of a template. In this ca
 - `classpath:` - Classpath resource reference
 - `http://` or `https://` - External URL
 - `mvn:` - Maven Artifact coordinates (only supported when CONGA runs inside Maven)
-    - Maven Coordinates Syntax 1 (Maven-style): `groupId:artifactId[:packaging][:classifier]:version`
-    - Maven Coordinates Syntax 2 (SlingStart-style): `groupId/artifactId/version[/type][/classifier]`
+    - Maven Coordinates Syntax 1 ([Maven-style][artifact-coords-maven]): `groupId:artifactId[:packaging][:classifier]:version`
+    - Maven Coordinates Syntax 2 ([Pax URL-style][artifact-coords-paxurl]): `groupId/artifactId/version[/type][/classifier]`
     - `classifier` and  `type` are optional.
     - If the version is empty in the role file it is resolved from the Maven project.
 
@@ -204,3 +204,5 @@ Additionally to the variables defined in the configuration parameter maps a set 
 [yaml]: http://yaml.org/
 [snakeyaml]: http://www.snakeyaml.org/
 [extensibility]: extensibility.html
+[artifact-coords-maven]: https://maven.apache.org/pom.html#Maven_Coordinates
+[artifact-coords-paxurl]: https://ops4j1.jira.com/wiki/x/CoA6

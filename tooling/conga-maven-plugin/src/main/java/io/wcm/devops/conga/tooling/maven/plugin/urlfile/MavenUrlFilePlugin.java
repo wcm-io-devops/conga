@@ -155,8 +155,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
   }
 
   /**
-   * Parse coordinates in slingstart style following definition from
-   * https://sling.apache.org/documentation/development/slingstart.html
+   * Parse coordinates in slingstart/Pax URL style following definition from https://ops4j1.jira.com/wiki/x/CoA6
    * @param artifact Artifact coordinates
    * @return Artifact object
    * @throws MojoFailureException if coordinates are semantically invalid
