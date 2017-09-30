@@ -31,7 +31,7 @@ The generator can be executed from the command line or via a maven plugin. The d
 See [general concepts][general-concepts] for a more in-depth explanation or jump into the [usage description][usage].
 
 
-## Plugins
+### Plugins
 
 Based on the [extensibility model][extensibility] the wcm.io DevOps project hosts CONGA plugins:
 
@@ -40,7 +40,7 @@ Based on the [extensibility model][extensibility] the wcm.io DevOps project host
 * [CONGA Plugin for Ansible](plugins/ansible)
 
 
-## Definitions
+### Definitions
 
 The wcm.io DevOps project provides some generic templates implementing best practice configurations for certain environments:
 
