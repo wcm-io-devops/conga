@@ -145,39 +145,43 @@ class EnvironmentGenerator {
 
     for (NodeRole nodeRole : node.getRoles()) {
       // get role and resolve all inheritance relations
-      Role role = RoleUtil.resolveRole(nodeRole.getRole(), environmentName + "/" + node.getNode(), roles);
+      Map<String, Role> resolvedRoles = RoleUtil.resolveRole(nodeRole.getRole(), environmentName + "/" + node.getNode(), roles);
+      for (Map.Entry<String, Role> resolvedRole : resolvedRoles.entrySet()) {
+        String roleName = resolvedRole.getKey();
+        Role role = resolvedRole.getValue();
 
-      // merge default values to config
-      List<String> variants = nodeRole.getAggregatedVariants();
-      Map<String, Object> mergedConfig = nodeRole.getConfig();
-      if (variants.isEmpty()) {
-        mergedConfig = MapMerger.merge(mergedConfig, role.getConfig());
-      }
-      else {
-        for (String variant : variants) {
-          RoleVariant roleVariant = getRoleVariant(role, variant, nodeRole.getRole(), node);
-          mergedConfig = MapMerger.merge(mergedConfig, roleVariant.getConfig());
+        // merge default values to config
+        List<String> variants = nodeRole.getAggregatedVariants();
+        Map<String, Object> mergedConfig = nodeRole.getConfig();
+        if (variants.isEmpty()) {
+          mergedConfig = MapMerger.merge(mergedConfig, role.getConfig());
         }
-      }
-
-      // additionally set context variables
-      mergedConfig.putAll(environmentContextProperties);
-      mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
-
-      // collect role and tenant information for export model
-      ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(nodeRole.getRole(), variants, mergedConfig);
-
-      // generate files
-      List<GeneratedFileContext> allFiles = new ArrayList<>();
-      for (RoleFile roleFile : role.getFiles()) {
-        // generate file if no variant is required, or at least one of the given variants is defined for the node/role
-        if (roleFile.getVariants().isEmpty() || CollectionUtils.containsAny(roleFile.getVariants(), variants)) {
-          Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
-          multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
-              nodeRole.getRole(), variants, roleFile.getTemplate(), allFiles);
+        else {
+          for (String variant : variants) {
+            RoleVariant roleVariant = getRoleVariant(role, variant, roleName, node);
+            mergedConfig = MapMerger.merge(mergedConfig, roleVariant.getConfig());
+          }
         }
+
+        // additionally set context variables
+        mergedConfig.putAll(environmentContextProperties);
+        mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
+
+        // collect role and tenant information for export model
+        ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig);
+
+        // generate files
+        List<GeneratedFileContext> allFiles = new ArrayList<>();
+        for (RoleFile roleFile : role.getFiles()) {
+          // generate file if no variant is required, or at least one of the given variants is defined for the node/role
+          if (roleFile.getVariants().isEmpty() || CollectionUtils.containsAny(roleFile.getVariants(), variants)) {
+            Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
+            multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
+                roleName, variants, roleFile.getTemplate(), allFiles);
+          }
+        }
+        exportNodeRoleData.files(allFiles);
       }
-      exportNodeRoleData.files(allFiles);
     }
 
     // save export model
