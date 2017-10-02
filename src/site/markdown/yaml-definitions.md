@@ -43,7 +43,7 @@ inherits:
 - role: superRole
 ```
 
-In this case the current role inherits all configuration and files from the super role(s). Configuration maps are merged, the config of the current role has higher precedence. If the super role defines variants, the current has to define the same variants as well.
+In this case the current role inherits all configuration and files from the super role(s). Configuration maps are merged, the config of the current role has higher precedence. If the super role defines variants, the current has to define the same variants as well. Files in the current role with the same target file name as a file in a super role have higher precedence than the files from the super role.
 
 
 ### Environment definitions
@@ -109,7 +109,7 @@ There is a special support when merging list parameter. By default a list value 
 
 ### Variable references
 
-You can reference variables defined in the environment, or as default values in the roles using this syntax:
+You can reference configuration parameter values defined in the environment, or as default values in the roles using this variable syntax:
 
 ```
 ${myvariable}
