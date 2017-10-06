@@ -172,12 +172,25 @@ public final class RoleUtil {
       Role role = roles.get(i);
       List<RoleFile> filteredFiles = new ArrayList<>();
       for (RoleFile file : role.getFiles()) {
-        if (!fileNames.contains(file.getFile())) {
+        String fileKey = getFileNameKey(file);
+        if (!fileNames.contains(fileKey)) {
           filteredFiles.add(file);
-          fileNames.add(file.getFile());
+          fileNames.add(fileKey);
         }
       }
       role.setFiles(filteredFiles);
+    }
+  }
+
+  private static String getFileNameKey(RoleFile file) {
+    if (StringUtils.isNotBlank(file.getFile())) {
+      return file.getFile();
+    }
+    else if (StringUtils.isNotBlank(file.getUrl())) {
+      return file.getUrl();
+    }
+    else {
+      return file.toString();
     }
   }
 

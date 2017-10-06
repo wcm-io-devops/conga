@@ -70,7 +70,8 @@ public class RoleUtilTest {
         "param3", true));
     role1.setFiles(ImmutableList.of(
         buildFile("role1", "file1.1"),
-        buildFile("role1", "file1.2")));
+        buildFile("role1", "file1.2"),
+        buildUrlFile("role1", "http://file1.3")));
     roleMap.put("role1", role1);
 
     Role role2 = new Role();
@@ -85,7 +86,8 @@ public class RoleUtilTest {
         "param4", "value2.4"));
     role2.setFiles(ImmutableList.of(
         buildFile("role2", "file2.1", "variant1"),
-        buildFile("role2", "file2.2", "variant2")));
+        buildFile("role2", "file2.2", "variant2"),
+        buildUrlFile("role2", "http://file2.3", "variant1")));
     role2.setInherits(ImmutableList.of(
         buildInherit("role1")));
     roleMap.put("role2", role2);
@@ -104,7 +106,9 @@ public class RoleUtilTest {
     role3.setFiles(ImmutableList.of(
         buildFile("role3", "file3.1", "variant1"),
         buildFile("role3", "file3.2", "variant2"),
-        buildFile("role3", "file1.1")));
+        buildUrlFile("role3", "http://file3.3", "variant2"),
+        buildFile("role3", "file1.1"),
+        buildUrlFile("role3", "http://file1.3")));
     role3.setInherits(ImmutableList.of(
         buildInherit("role2")));
     roleMap.put("role3", role3);
@@ -149,6 +153,7 @@ public class RoleUtilTest {
 
     assertFile(role, "role1", "file1.1");
     assertFile(role, "role1", "file1.2");
+    assertUrlFile(role, "role1", "http://file1.3");
   }
 
   @Test
@@ -171,8 +176,10 @@ public class RoleUtilTest {
 
     assertFile(role1, "role1", "file1.1");
     assertFile(role1, "role1", "file1.2");
+    assertUrlFile(role1, "role1", "http://file1.3");
     assertFile(role2, "role2", "file2.1", "variant1");
     assertFile(role2, "role2", "file2.2", "variant2");
+    assertUrlFile(role2, "role2", "http://file2.3", "variant1");
 
     assertVariant(role2, "variant1");
     assertVariant(role2, "variant2", ImmutableMap.<String, Object>of(
@@ -202,11 +209,15 @@ public class RoleUtilTest {
 
     assertNotFile(role1, "role1", "file1.1");
     assertFile(role1, "role1", "file1.2");
+    assertNotUrlFile(role1, "role1", "http://file1.3");
     assertFile(role2, "role2", "file2.1", "variant1");
     assertFile(role2, "role2", "file2.2", "variant2");
+    assertUrlFile(role2, "role2", "http://file2.3", "variant1");
     assertFile(role3, "role3", "file3.1", "variant1");
     assertFile(role3, "role3", "file3.2", "variant2");
+    assertUrlFile(role3, "role3", "http://file3.3", "variant2");
     assertFile(role3, "role3", "file1.1");
+    assertUrlFile(role3, "role3", "http://file1.3");
 
     assertVariant(role2, "variant1");
     assertVariant(role2, "variant2", ImmutableMap.<String, Object>of(
@@ -255,6 +266,15 @@ public class RoleUtilTest {
     return file;
   }
 
+  private RoleFile buildUrlFile(String role, String url, String... variants) {
+    RoleFile file = new RoleFile();
+    file.setUrl(url);
+    if (variants.length > 0) {
+      file.setVariants(ImmutableList.copyOf(variants));
+    }
+    return file;
+  }
+
   private RoleInherit buildInherit(String roleName, String... variants) {
     RoleInherit inherit = new RoleInherit();
     inherit.setRole(roleName);
@@ -284,6 +304,28 @@ public class RoleUtilTest {
       return;
     }
     fail("File '" + file + "' with template '" + template + "' found, but expected to not find it.");
+  }
+
+  private void assertUrlFile(Role role, String roleName, String url, String... variants) {
+    for (RoleFile fileItem : role.getFiles()) {
+      if (StringUtils.equals(url, fileItem.getUrl())
+          && ImmutableList.copyOf(variants).equals(fileItem.getVariants())) {
+        // item found
+        return;
+      }
+    }
+    fail("File with URL '" + url + "' not found.");
+  }
+
+  private void assertNotUrlFile(Role role, String roleName, String url, String... variants) {
+    try {
+      assertUrlFile(role, roleName, url, variants);
+    }
+    catch (AssertionError ex) {
+      // fails - matches expectation
+      return;
+    }
+    fail("File with URL '" + url + "' found, but expected to not find it.");
   }
 
   private void assertVariant(Role role, String variant) {
