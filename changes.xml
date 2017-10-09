@@ -24,7 +24,7 @@
   <body>
 
     <release version="1.4.2" date="not released">
-      <action type="add" dev="sseifert">
+      <action type="add" dev="sseifert" issue="WDCONGA-8">
         Add "ensureProperties" handlebars helper.
       </action>
       <action type="fix" dev="sseifert">
