@@ -30,6 +30,9 @@
       <action type="fix" dev="sseifert">
         Role inheritance: Ensure that super roles are contained in node model export. Ensure files of super roles are generated before file of sub roles.
       </action>
+      <action type="fix" dev="sseifert">
+        Assigning multiple role variants: Combine role file variant assignments with "and" rather than "or".
+      </action>
     </release>
 
     <release version="1.4.0" date="2017-09-12">

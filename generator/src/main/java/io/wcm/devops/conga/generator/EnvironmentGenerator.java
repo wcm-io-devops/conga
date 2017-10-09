@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -174,7 +173,7 @@ class EnvironmentGenerator {
         List<GeneratedFileContext> allFiles = new ArrayList<>();
         for (RoleFile roleFile : role.getFiles()) {
           // generate file if no variant is required, or at least one of the given variants is defined for the node/role
-          if (roleFile.getVariants().isEmpty() || CollectionUtils.containsAny(roleFile.getVariants(), variants)) {
+          if (RoleUtil.matchesRoleFile(roleFile, variants)) {
             Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
             multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
                 roleName, variants, roleFile.getTemplate(), allFiles);

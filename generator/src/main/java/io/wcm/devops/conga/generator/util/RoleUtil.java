@@ -194,4 +194,20 @@ public final class RoleUtil {
     }
   }
 
+  /**
+   * Checks if the given role file should be generated for the given set of variants.
+   * @param roleFile Role file
+   * @param variants Variants select for a node
+   * @return true if file should be rendered
+   */
+  public static boolean matchesRoleFile(RoleFile roleFile, List<String> variants) {
+    Set<String> assignedVariants = new HashSet<>(variants);
+    for (String requiredVariant : roleFile.getVariants()) {
+      if (!assignedVariants.contains(requiredVariant)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 }

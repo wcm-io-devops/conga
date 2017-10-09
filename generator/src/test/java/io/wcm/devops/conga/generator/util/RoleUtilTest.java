@@ -20,10 +20,13 @@
 package io.wcm.devops.conga.generator.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -341,6 +344,27 @@ public class RoleUtilTest {
       }
     }
     fail("Variant '" + variant + "' with config '" + config + "' not found.");
+  }
+
+  @Test
+  public void testMatchesRoleFile() {
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.<String>of()));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.of("v1")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.of("v1", "v2")));
+
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v2")), ImmutableList.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2")), ImmutableList.of("v1", "v2")));
+
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of()));
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of("v2")));
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2")), ImmutableList.of("v2", "v3")));
+  }
+
+  private RoleFile roleFileVariants(List<String> variants) {
+    RoleFile roleFile = new RoleFile();
+    roleFile.setVariants(variants);
+    return roleFile;
   }
 
 }
