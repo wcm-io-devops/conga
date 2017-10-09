@@ -226,6 +226,15 @@ Checks for presence of a given value in a list:
 ```
 
 
+#### ensureProperties
+
+Ensure that all properties with the given names are set. Build fails if this is not the case, the exception message contains the missing properties.
+
+```
+{{ensureProperties "group1.prop1" "group1.prop2"}}
+```
+
+
 
 [handlebars]: http://handlebarsjs.com/
 [handlebars-java]: https://github.com/jknack/handlebars.java

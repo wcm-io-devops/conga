@@ -25,6 +25,8 @@ import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -51,6 +53,8 @@ public final class MockOptions extends Options {
    * Return value for "inverse()" template.
    */
   public static final String INVERSE_RETURN = "";
+
+  private Map<String, Object> properties = new HashMap<String, Object>();
 
   /**
    * Options without any param
@@ -120,6 +124,27 @@ public final class MockOptions extends Options {
       throw new RuntimeException(ex);
     }
     return template;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T get(String name, T defaultValue) {
+    Object value = properties.get(name);
+    if (value == null) {
+      value = defaultValue;
+    }
+    return (T)value;
+  }
+
+  /**
+   * Set property.
+   * @param name Name
+   * @param value Value
+   * @return this
+   */
+  public MockOptions property(String name, Object value) {
+    properties.put(name, value);
+    return this;
   }
 
 }
