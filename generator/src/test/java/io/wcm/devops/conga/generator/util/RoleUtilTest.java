@@ -353,12 +353,16 @@ public class RoleUtilTest {
     assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.of("v1", "v2")));
 
     assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1*")), ImmutableList.of("v1", "v2")));
     assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v2")), ImmutableList.of("v1", "v2")));
     assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2")), ImmutableList.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2")), ImmutableList.of("v2", "v3")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2*")), ImmutableList.of("v2", "v3")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1*", "v2*")), ImmutableList.of("v1", "v2", "v3")));
 
     assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of()));
     assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of("v2")));
-    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2")), ImmutableList.of("v2", "v3")));
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1*", "v2*")), ImmutableList.of("v2", "v3")));
   }
 
   private RoleFile roleFileVariants(List<String> variants) {

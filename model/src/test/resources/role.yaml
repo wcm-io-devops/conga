@@ -17,6 +17,8 @@ files:
   template: systemconfig-importer.txt.hbs
   variants:
   - importer
+  - variant2*
+  - variant3
   condition: "${abc}"
   fileHeader: sling-provisioning
   validators:

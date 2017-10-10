@@ -34,6 +34,7 @@ import com.rits.cloning.Cloner;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.role.RoleFile.RoleFileVariantMetadata;
 import io.wcm.devops.conga.model.role.RoleInherit;
 import io.wcm.devops.conga.model.role.RoleVariant;
 import io.wcm.devops.conga.model.util.MapMerger;
@@ -201,13 +202,21 @@ public final class RoleUtil {
    * @return true if file should be rendered
    */
   public static boolean matchesRoleFile(RoleFile roleFile, List<String> variants) {
+    if (roleFile.getVariants().isEmpty()) {
+      return true;
+    }
     Set<String> assignedVariants = new HashSet<>(variants);
-    for (String requiredVariant : roleFile.getVariants()) {
-      if (!assignedVariants.contains(requiredVariant)) {
+    boolean foundAnyMatch = false;
+    for (RoleFileVariantMetadata fileVariant : roleFile.getVariantsMetadata()) {
+      boolean assignedVariantMatch = assignedVariants.contains(fileVariant.getVariant());
+      if (assignedVariantMatch) {
+        foundAnyMatch = true;
+      }
+      else if (fileVariant.isMandatory()) {
         return false;
       }
     }
-    return true;
+    return foundAnyMatch;
   }
 
 }
