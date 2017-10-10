@@ -20,7 +20,6 @@
 package io.wcm.devops.conga.model.util;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Special ArrayList that marks a list as "mergeable" in downstream.
@@ -28,17 +27,4 @@ import java.util.List;
  */
 final class ArrayListWithMerge<T> extends ArrayList<T> {
   private static final long serialVersionUID = 1L;
-
-  /**
-   * Add all items of given list if item is not already contained in this list.
-   * @param list Given list
-   */
-  public void addAllIfNotContained(List<T> list) {
-    for (T item : list) {
-      if (!this.contains(item)) {
-        this.add(item);
-      }
-    }
-  }
-
 }

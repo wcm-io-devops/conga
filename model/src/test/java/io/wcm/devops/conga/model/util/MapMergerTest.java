@@ -83,23 +83,65 @@ public class MapMergerTest {
   }
 
   @Test
-  public void testMergeList_MergeLeft() {
-    assertEquals(map("k1", list(map("k11", "v11"), "v12", map("k11", "v12", "k21", "v21"), "v13")),
+  public void testMergeList_MergeLeft_PosStart() {
+    assertEquals(map("k1", list(map("k11", "v12", "k21", "v21"), "v13", map("k11", "v11"), "v12")),
         merge(map("k1", list(LIST_MERGE_ENTRY, map("k11", "v11"), "v12")),
             map("k1", list(map("k11", "v12", "k21", "v21"), "v13"))));
   }
 
   @Test
-  public void testMergeList_MergeRight() {
+  public void testMergeList_MergeLeft_PosMiddle() {
+    assertEquals(map("k1", list(map("k11", "v11"), map("k11", "v12", "k21", "v21"), "v13", "v12")),
+        merge(map("k1", list(map("k11", "v11"), LIST_MERGE_ENTRY, "v12")),
+            map("k1", list(map("k11", "v12", "k21", "v21"), "v13"))));
+  }
+
+  @Test
+  public void testMergeList_MergeLeft_PosEnd() {
+    assertEquals(map("k1", list(map("k11", "v11"), "v12", map("k11", "v12", "k21", "v21"), "v13")),
+        merge(map("k1", list(map("k11", "v11"), "v12", LIST_MERGE_ENTRY)),
+            map("k1", list(map("k11", "v12", "k21", "v21"), "v13"))));
+  }
+
+  @Test
+  public void testMergeList_MergeRight_PosStart() {
     assertEquals(map("k1", list(map("k11", "v11"), "v12", map("k11", "v12", "k21", "v21"), "v13")),
         merge(map("k1", list(map("k11", "v11"), "v12")),
             map("k1", list(LIST_MERGE_ENTRY, map("k11", "v12", "k21", "v21"), "v13"))));
   }
 
   @Test
-  public void testMergeList_MergeBoth() {
-    assertEquals(map("k1", list(map("k11", "v11"), "v12", map("k11", "v12", "k21", "v21"), "v13")),
+  public void testMergeList_MergeRight_PosMiddle() {
+    assertEquals(map("k1", list(map("k11", "v12", "k21", "v21"), map("k11", "v11"), "v12", "v13")),
+        merge(map("k1", list(map("k11", "v11"), "v12")),
+            map("k1", list(map("k11", "v12", "k21", "v21"), LIST_MERGE_ENTRY, "v13"))));
+  }
+
+  @Test
+  public void testMergeList_MergeRight_PosEnd() {
+    assertEquals(map("k1", list(map("k11", "v12", "k21", "v21"), "v13", map("k11", "v11"), "v12")),
+        merge(map("k1", list(map("k11", "v11"), "v12")),
+            map("k1", list(map("k11", "v12", "k21", "v21"), "v13", LIST_MERGE_ENTRY))));
+  }
+
+  @Test
+  public void testMergeList_MergeBoth_PosStart() {
+    assertEquals(map("k1", list(map("k11", "v12", "k21", "v21"), "v13", map("k11", "v11"), "v12")),
         merge(map("k1", list(LIST_MERGE_ENTRY, map("k11", "v11"), "v12")),
+            map("k1", list(LIST_MERGE_ENTRY, map("k11", "v12", "k21", "v21"), "v13"))));
+  }
+
+  @Test
+  public void testMergeList_MergeBoth_PosMiddle() {
+    assertEquals(map("k1", list(map("k11", "v11"), map("k11", "v12", "k21", "v21"), "v13", "v12")),
+        merge(map("k1", list(map("k11", "v11"), LIST_MERGE_ENTRY, "v12")),
+            map("k1", list(map("k11", "v12", "k21", "v21"), "v13", LIST_MERGE_ENTRY))));
+  }
+
+  @Test
+  public void testMergeList_MergeBoth_PosEnd() {
+    assertEquals(map("k1", list(map("k11", "v11"), "v12", map("k11", "v12", "k21", "v21"), "v13")),
+        merge(map("k1", list(map("k11", "v11"), "v12", LIST_MERGE_ENTRY)),
             map("k1", list(LIST_MERGE_ENTRY, map("k11", "v12", "k21", "v21"), "v13"))));
   }
 
@@ -136,7 +178,7 @@ public class MapMergerTest {
     Map<String, Object> result = MapMerger.merge(map("k1", l2), map("k1", l1));
     result = MapMerger.merge(map("k1", l3), result);
 
-    assertEquals(map("k1", list("e5", "e6", "e3", "e4", "e1", "e2")), result);
+    assertEquals(map("k1", list("e5", "e6", "e1", "e2", "e3", "e4")), result);
   }
 
   @Test
@@ -148,7 +190,7 @@ public class MapMergerTest {
     Map<String, Object> result = MapMerger.merge(map("k1", l2), map("k1", l1));
     result = MapMerger.merge(map("k1", l3), result);
 
-    assertEquals(map("k1", list("e5", "e6", "e3", "e4")), result);
+    assertEquals(map("k1", list("e3", "e4", "e5", "e6")), result);
   }
 
   @Test
