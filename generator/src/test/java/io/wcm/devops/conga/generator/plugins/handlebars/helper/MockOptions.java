@@ -42,7 +42,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * Subclass of {@link Options} that mocks all dependencies, but allows to set params.
  */
-public final class MockOptions extends Options {
+final class MockOptions extends Options {
 
   /**
    * Return value for "fn()" template.
@@ -59,7 +59,7 @@ public final class MockOptions extends Options {
   /**
    * Options without any param
    */
-  public MockOptions() {
+  MockOptions() {
     this(new Object[0]);
   }
 
@@ -67,7 +67,7 @@ public final class MockOptions extends Options {
    * Options with one or multiple params
    * @param params Params
    */
-  public MockOptions(Object... params) {
+  MockOptions(Object... params) {
     super(mock(Handlebars.class),
         "dummyHelperName",
         TagType.VAR,
