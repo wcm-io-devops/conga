@@ -225,6 +225,27 @@ public class MapMergerTest {
         result);
   }
 
+  @Test
+  public void testMergeList_EliminateDuplicates_String() {
+    assertEquals(map("k1", list("v1", "v2", "v3")),
+        merge(map("k1", list("v1", LIST_MERGE_ENTRY, "v2")),
+            map("k1", list("v2", "v3"))));
+  }
+
+  @Test
+  public void testMergeList_EliminateDuplicates_List() {
+    assertEquals(map("k1", list(list(1, 1), list(2, 2), list(3, 3))),
+        merge(map("k1", list(list(1, 1), LIST_MERGE_ENTRY, list(2, 2))),
+            map("k1", list(list(2, 2), list(3, 3)))));
+  }
+
+  @Test
+  public void testMergeList_EliminateDuplicates_Map() {
+    assertEquals(map("k1", list(map("p1", "v1"), map("p2", "v2"), map("p3", "v3"))),
+        merge(map("k1", list(map("p1", "v1"), LIST_MERGE_ENTRY, map("p2", "v2"))),
+            map("k1", list(map("p2", "v2"), map("p3", "v3")))));
+  }
+
   private static List<Object> list(Object... items) {
     return ImmutableList.copyOf(items);
   }
