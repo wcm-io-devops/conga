@@ -77,12 +77,7 @@ public final class VariableStringResolver {
    */
   public String resolveString(String value, Map<String, Object> variables) {
     Object result = resolve(value, variables);
-    if (result != null) {
-      return result.toString();
-    }
-    else {
-      return null;
-    }
+    return ValueUtil.valueToString(result);
   }
 
   /**
@@ -109,12 +104,7 @@ public final class VariableStringResolver {
    */
   public String resolveString(String value, Map<String, Object> variables, boolean deescapeVariables) {
     Object result = resolve(value, variables, deescapeVariables);
-    if (result != null) {
-      return result.toString();
-    }
-    else {
-      return null;
-    }
+    return ValueUtil.valueToString(result);
   }
 
   /**
