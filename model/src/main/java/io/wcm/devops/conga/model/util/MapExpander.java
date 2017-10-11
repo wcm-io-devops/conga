@@ -111,8 +111,8 @@ public final class MapExpander {
     }
     if (object instanceof List) {
       List<Object> expandedList;
-      if (object instanceof ArrayListWithMerge) {
-        expandedList = new ArrayListWithMerge<>();
+      if (object instanceof MergingList) {
+        expandedList = new MergingList<>((MergingList)object);
       }
       else {
         expandedList = new ArrayList<>();

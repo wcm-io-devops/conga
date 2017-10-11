@@ -103,7 +103,8 @@ public final class MapMerger {
   }
 
   private static boolean isMergeable(List<Object> list) {
-    return (list instanceof ArrayListWithMerge) || list.contains(LIST_MERGE_ENTRY);
+    return (list instanceof MergingList && ((MergingList)list).hasMergePosition())
+        || list.contains(LIST_MERGE_ENTRY);
   }
 
   /**
@@ -112,31 +113,18 @@ public final class MapMerger {
    * @param l2 List 2
    * @return Merged list
    */
+  @SuppressWarnings("unchecked")
   private static List<Object> mergeList(List<Object> l1, List<Object> l2) {
-    List<Object> mergedList = new ArrayListWithMerge<>();
-    boolean hasMergeToken = l1.contains(LIST_MERGE_ENTRY);
-    if (!hasMergeToken) {
-      l2.forEach(item2 -> addIfNotContainedNoToken(mergedList, item2));
+    MergingList<Object> mergedList;
+    if (l1 instanceof MergingList) {
+      mergedList = new MergingList<>((MergingList)l1);
     }
-    for (Object item1 : l1) {
-      if (LIST_MERGE_ENTRY.equals(item1)) {
-        l2.forEach(item2 -> addIfNotContainedNoToken(mergedList, item2));
-      }
-      else {
-        addIfNotContainedNoToken(mergedList, item1);
-      }
+    else {
+      mergedList = new MergingList<>();
+      l1.forEach(item -> mergedList.addCheckMergeToken(item));
     }
+    l2.forEach(item -> mergedList.add(item));
     return mergedList;
-  }
-
-  /**
-   * Add item to given list if item is not already contained in this list.
-   * @param item Item
-   */
-  private static void addIfNotContainedNoToken(List<Object> list, Object item) {
-    if (!LIST_MERGE_ENTRY.equals(item) && !list.contains(item)) {
-      list.add(item);
-    }
   }
 
 }

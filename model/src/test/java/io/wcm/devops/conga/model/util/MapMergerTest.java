@@ -159,43 +159,49 @@ public class MapMergerTest {
 
   @Test
   public void testMergeList_MultiLevel1() {
-    List<Object> l1 = list(LIST_MERGE_ENTRY, "e1", "e2");
+    List<Object> l1 = list("e1", LIST_MERGE_ENTRY, "e2");
     List<Object> l2 = list("e3", "e4");
     List<Object> l3 = list("e5", "e6");
 
     Map<String, Object> result = MapMerger.merge(map("k1", l2), map("k1", l1));
+    assertEquals(map("k1", list("e1", "e3", "e4", "e2")), result);
+
     result = MapMerger.merge(map("k1", l3), result);
 
-    assertEquals(map("k1", list("e5", "e6", "e3", "e4", "e1", "e2")), result);
+    assertEquals(map("k1", list("e1", "e3", "e4", "e5", "e6", "e2")), result);
   }
 
   @Test
   public void testMergeList_MultiLevel2() {
     List<Object> l1 = list("e1", "e2");
-    List<Object> l2 = list(LIST_MERGE_ENTRY, "e3", "e4");
+    List<Object> l2 = list("e3", LIST_MERGE_ENTRY, "e4");
     List<Object> l3 = list("e5", "e6");
 
     Map<String, Object> result = MapMerger.merge(map("k1", l2), map("k1", l1));
+    assertEquals(map("k1", list("e3", "e1", "e2", "e4")), result);
+
     result = MapMerger.merge(map("k1", l3), result);
 
-    assertEquals(map("k1", list("e5", "e6", "e1", "e2", "e3", "e4")), result);
+    assertEquals(map("k1", list("e3", "e1", "e2", "e5", "e6", "e4")), result);
   }
 
   @Test
   public void testMergeList_MultiLevel3() {
     List<Object> l1 = list("e1", "e2");
     List<Object> l2 = list("e3", "e4");
-    List<Object> l3 = list(LIST_MERGE_ENTRY, "e5", "e6");
+    List<Object> l3 = list("e5", LIST_MERGE_ENTRY, "e6");
 
     Map<String, Object> result = MapMerger.merge(map("k1", l2), map("k1", l1));
+    assertEquals(map("k1", list("e3", "e4")), result);
+
     result = MapMerger.merge(map("k1", l3), result);
 
-    assertEquals(map("k1", list("e3", "e4", "e5", "e6")), result);
+    assertEquals(map("k1", list("e5", "e3", "e4", "e6")), result);
   }
 
   @Test
   public void testMergeList_MultiLevel1_MultiMerge() {
-    List<Object> l1 = list(LIST_MERGE_ENTRY, "e1", "e2");
+    List<Object> l1 = list("e1", LIST_MERGE_ENTRY, "e2");
     List<Object> l2 = list("e3", "e4");
     List<Object> l3 = list("e5", "e6");
 
@@ -205,7 +211,7 @@ public class MapMergerTest {
     result = MapMerger.merge(map("k1", l3), result);
     result = MapMerger.merge(map("k1", l3), result);
 
-    assertEquals(map("k1", list("e5", "e6", "e3", "e4", "e1", "e2")), result);
+    assertEquals(map("k1", list("e1", "e3", "e4", "e5", "e6", "e2")), result);
   }
 
   @Test
@@ -221,27 +227,27 @@ public class MapMergerTest {
     result = MapMerger.merge(map("k1", l3), result);
 
     assertEquals(
-        map("k1", list("e5", map("k2", "e6"), "e3", map("k2", "e4"), "e1", map("k2", "e2"))),
+        map("k1", list("e3", map("k2", "e4"), "e5", map("k2", "e6"), "e1", map("k2", "e2"))),
         result);
   }
 
   @Test
   public void testMergeList_EliminateDuplicates_String() {
-    assertEquals(map("k1", list("v1", "v2", "v3")),
+    assertEquals(map("k1", list("v1", "v3", "v2")),
         merge(map("k1", list("v1", LIST_MERGE_ENTRY, "v2")),
             map("k1", list("v2", "v3"))));
   }
 
   @Test
   public void testMergeList_EliminateDuplicates_List() {
-    assertEquals(map("k1", list(list(1, 1), list(2, 2), list(3, 3))),
+    assertEquals(map("k1", list(list(1, 1), list(3, 3), list(2, 2))),
         merge(map("k1", list(list(1, 1), LIST_MERGE_ENTRY, list(2, 2))),
             map("k1", list(list(2, 2), list(3, 3)))));
   }
 
   @Test
   public void testMergeList_EliminateDuplicates_Map() {
-    assertEquals(map("k1", list(map("p1", "v1"), map("p2", "v2"), map("p3", "v3"))),
+    assertEquals(map("k1", list(map("p1", "v1"), map("p3", "v3"), map("p2", "v2"))),
         merge(map("k1", list(map("p1", "v1"), LIST_MERGE_ENTRY, map("p2", "v2"))),
             map("k1", list(map("p2", "v2"), map("p3", "v3")))));
   }

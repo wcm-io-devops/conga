@@ -123,13 +123,13 @@ public class GeneratorTest {
     assertNotFile(node2Dir, "text/test-conditional-tenant3_TenantSuffix.txt");
 
     // check list param merging
-    assertContains(text1, "listParam: e0,e1,e2,e3,e4", CharEncoding.ISO_8859_1);
+    assertContains(text1, "listParam: e1,e2,e3,e4,e0", CharEncoding.ISO_8859_1);
     File node1Tenant1ConditionalText = assertFile(node1Dir, "text/test-conditional-tenant1.txt");
-    assertContains(node1Tenant1ConditionalText, "listParam: e0,e1,e2,e3,e4", CharEncoding.ISO_8859_1);
+    assertContains(node1Tenant1ConditionalText, "listParam: e1,e2,e3,e4,e0", CharEncoding.ISO_8859_1);
     File node2Tenant1ConditionalText = assertFile(node2Dir, "text/test-conditional-tenant1.txt");
-    assertContains(node2Tenant1ConditionalText, "listParam: e0,e1,e2", CharEncoding.ISO_8859_1);
+    assertContains(node2Tenant1ConditionalText, "listParam: e1,e2,e0", CharEncoding.ISO_8859_1);
     File node2Tenant2ConditionalText = assertFile(node2Dir, "text/test-conditional-tenant2.txt");
-    assertContains(node2Tenant2ConditionalText, "listParam: e0,e1,e2,e5,e6", CharEncoding.ISO_8859_1);
+    assertContains(node2Tenant2ConditionalText, "listParam: e5,e6,e1,e2,e0", CharEncoding.ISO_8859_1);
 
     // check variables defined for multiple variants
     File node4Dir = assertDirectory(destDir, "env1/node4");
