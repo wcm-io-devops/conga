@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.collect.ImmutableList;
 import com.rits.cloning.Cloner;
 
@@ -131,7 +129,7 @@ public final class VariableMapResolver {
   @SuppressWarnings("unchecked")
   private Object replaceAny(Object value, Map<String, Object> variables) {
     if (value instanceof String) {
-      return replaceString((String)value, variables);
+      return replaceObject((String)value, variables);
     }
     else if (value instanceof List) {
       return replaceList((List<Object>)value, variables);
@@ -150,9 +148,9 @@ public final class VariableMapResolver {
     }
   }
 
-  private String replaceString(String value, Map<String, Object> variables) {
-    String replacedValue = variableStringResolver.resolve(value, variables, false);
-    if (StringUtils.equals(value, replacedValue)) {
+  private Object replaceObject(String value, Map<String, Object> variables) {
+    Object replacedValue = variableStringResolver.resolve(value, variables, false);
+    if (replacedValue != null && replacedValue.equals(value)) {
       return value;
     }
     else {

@@ -136,7 +136,7 @@ public final class ContextPropertiesBuilder {
 
       // resolve placeholders in tentant name
       Map<String, Object> tenantConfig = MapMerger.merge(clonedEnvironemnt.getConfig(), tenant.getConfig());
-      String tenantName = variableStringResolver.resolve(tenant.getTenant(), tenantConfig);
+      String tenantName = variableStringResolver.resolveString(tenant.getTenant(), tenantConfig);
       tenant.setTenant(tenantName);
 
       for (String tenantRoleName : tenant.getRoles()) {

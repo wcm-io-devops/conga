@@ -259,9 +259,9 @@ class EnvironmentGenerator {
       Map<String, Object> resolvedConfig = variableMapResolver.resolve(muliplyConfig, false);
 
       // replace placeholders with context variables
-      String dir = variableStringResolver.resolve(roleFile.getDir(), resolvedConfig);
-      String file = variableStringResolver.resolve(roleFile.getFile(), resolvedConfig);
-      String url = variableStringResolver.resolve(roleFile.getUrl(), resolvedConfig);
+      String dir = variableStringResolver.resolveString(roleFile.getDir(), resolvedConfig);
+      String file = variableStringResolver.resolveString(roleFile.getFile(), resolvedConfig);
+      String url = variableStringResolver.resolveString(roleFile.getUrl(), resolvedConfig);
 
       generatedFiles.addAll(generateFile(roleFile, dir, file, url,
           resolvedConfig, nodeDir, template, roleName, roleVariantNames, templateName));
@@ -289,7 +289,7 @@ class EnvironmentGenerator {
 
     // skip file if condition does not evaluate to a non-empty string or is "false"
     if (StringUtils.isNotEmpty(roleFile.getCondition())) {
-      String condition = variableStringResolver.resolve(roleFile.getCondition(), config);
+      String condition = variableStringResolver.resolveString(roleFile.getCondition(), config);
       if (StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false")) {
         return ImmutableList.of();
       }

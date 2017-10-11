@@ -30,11 +30,14 @@
       <action type="update" dev="sseifert">
         Assigning multiple role variants: Distinguish between "and" and "or" combination with "*" suffix to mark mandatory required variants in role file definitions.
       </action>
+      <action type="update" dev="sseifert" issue="WDCONGA-9">
+        Control item ordering when merging parameter value lists with "_merge_" keyword.
+      </action>
       <action type="fix" dev="sseifert">
         Role inheritance: Ensure that super roles are contained in node model export. Ensure files of super roles are generated before file of sub roles.
       </action>
-      <action type="update" dev="sseifert" issue="WDCONGA-9">
-        Control item ordering when merging parameter value lists with "_merge_" keyword.
+      <action type="fix" dev="sseifert">
+        Do not convert variable values to strings for single variable references.
       </action>
     </release>
 
