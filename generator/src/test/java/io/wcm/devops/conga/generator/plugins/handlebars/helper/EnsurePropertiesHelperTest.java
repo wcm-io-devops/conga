@@ -45,12 +45,12 @@ public class EnsurePropertiesHelperTest {
   public void testSet() throws Exception {
 
     assertHelper(null, helper, "p1", new MockOptions()
-        .property("p1", "v1"));
+        .withProperty("p1", "v1"));
 
     assertHelper(null, helper, "p1", new MockOptions("p2","p3")
-        .property("p1", "v1")
-        .property("p2", "v2")
-        .property("p3", "v3"));
+        .withProperty("p1", "v1")
+        .withProperty("p2", "v2")
+        .withProperty("p3", "v3"));
 
     assertHelper(null, helper, null, new MockOptions());
   }
@@ -68,14 +68,14 @@ public class EnsurePropertiesHelperTest {
   @Test(expected = IOException.class)
   public void testNotSetCase3() throws Exception {
     assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
-        .property("p1", "v1")
-        .property("p2", "v2"));
+        .withProperty("p1", "v1")
+        .withProperty("p2", "v2"));
   }
 
   @Test(expected = IOException.class)
   public void testNotSetCase4() throws Exception {
     assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
-        .property("p2", "v1"));
+        .withProperty("p2", "v1"));
   }
 
 }
