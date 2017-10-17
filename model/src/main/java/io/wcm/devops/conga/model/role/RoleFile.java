@@ -26,8 +26,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.CharEncoding;
+import org.apache.commons.lang3.StringUtils;
 
 import io.wcm.devops.conga.model.shared.AbstractModel;
 import io.wcm.devops.conga.model.shared.LineEndings;
@@ -37,6 +39,8 @@ import io.wcm.devops.conga.model.util.MapExpander;
  * Defines a file to be generated or downloaded for a role.
  */
 public final class RoleFile extends AbstractModel {
+
+  private static final String VARIANT_MANDATORY_SUFFIX = "*";
 
   private String file;
   private String dir;
@@ -116,7 +120,9 @@ public final class RoleFile extends AbstractModel {
    * Defines the role variant names for which this file should be generated.
    * If no names are defined the file is generated for all role variants.
    * If the node/role has multiple variants, the file is generated if at least one variant from the file definition
-   * matches with at least one variant from the role/file.
+   * matches with at least one variant from the role/file ("or").
+   * If the variant name is suffixed with a "*" this variant has to be matched ("and"). The "*" is not part of the
+   * variant name.
    * @return List of role variant names
    */
   public List<String> getVariants() {
@@ -125,6 +131,15 @@ public final class RoleFile extends AbstractModel {
 
   public void setVariants(List<String> variants) {
     this.variants = defaultEmptyList(variants);
+  }
+
+  /**
+   * @return List of variants with metadata ("*" suffix is parsed)
+   */
+  public List<RoleFileVariantMetadata> getVariantsMetadata() {
+    return this.variants.stream()
+        .map(variant -> new RoleFileVariantMetadata(variant))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -288,5 +303,40 @@ public final class RoleFile extends AbstractModel {
     this.modelOptions = modelOptions;
   }
 
+
+  /**
+   * Role file variant with metadata.
+   */
+  public static class RoleFileVariantMetadata {
+
+    private final String variant;
+    private final boolean mandatory;
+
+    RoleFileVariantMetadata(String variant) {
+      if (StringUtils.endsWith(variant, VARIANT_MANDATORY_SUFFIX)) {
+        this.variant = StringUtils.substringBeforeLast(variant, VARIANT_MANDATORY_SUFFIX);
+        mandatory = true;
+      }
+      else {
+        this.variant = variant;
+        mandatory = false;
+      }
+    }
+
+    /**
+     * @return Variant name (without "*" suffix)
+     */
+    public String getVariant() {
+      return this.variant;
+    }
+
+    /**
+     * @return true if variant is mandatory (was suffixed with "*")
+     */
+    public boolean isMandatory() {
+      return this.mandatory;
+    }
+
+  }
 
 }

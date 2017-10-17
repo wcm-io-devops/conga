@@ -75,11 +75,16 @@ public final class MapMerger {
       else if (v1 instanceof List && v2 instanceof List) {
         List<Object> l1 = (List<Object>)v1;
         List<Object> l2 = (List<Object>)v2;
-        if (isMergeable(l1) || isMergeable(l2)) {
-          ArrayListWithMerge<Object> mergedList = new ArrayListWithMerge<>();
-          mergedList.addAllIfNotContained(l1);
-          mergedList.addAllIfNotContained(l2);
-          mergedList.removeIf(item -> LIST_MERGE_ENTRY.equals(item));
+        boolean l1Mergeable = isMergeable(l1);
+        boolean l2Mergeable = isMergeable(l2);
+        if (l1Mergeable || l2Mergeable) {
+          List<Object> mergedList;
+          if (l2Mergeable && !l1Mergeable) {
+            mergedList = mergeList(l2, l1);
+          }
+          else {
+            mergedList = mergeList(l1, l2);
+          }
           merged.put(key, mergedList);
         }
         else {
@@ -98,7 +103,28 @@ public final class MapMerger {
   }
 
   private static boolean isMergeable(List<Object> list) {
-    return (list instanceof ArrayListWithMerge) || list.contains(LIST_MERGE_ENTRY);
+    return (list instanceof MergingList && ((MergingList)list).hasMergePosition())
+        || list.contains(LIST_MERGE_ENTRY);
+  }
+
+  /**
+   * Merges l2 into l1 at the position where the _merge_ keyword is located in l1.
+   * @param l1 List 1
+   * @param l2 List 2
+   * @return Merged list
+   */
+  @SuppressWarnings("unchecked")
+  private static List<Object> mergeList(List<Object> l1, List<Object> l2) {
+    MergingList<Object> mergedList;
+    if (l1 instanceof MergingList) {
+      mergedList = new MergingList<>((MergingList)l1);
+    }
+    else {
+      mergedList = new MergingList<>();
+      l1.forEach(item -> mergedList.addCheckMergeToken(item));
+    }
+    l2.forEach(item -> mergedList.add(item));
+    return mergedList;
   }
 
 }

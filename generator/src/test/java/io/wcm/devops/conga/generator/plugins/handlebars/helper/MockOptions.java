@@ -25,6 +25,8 @@ import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -35,12 +37,11 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Subclass of {@link Options} that mocks all dependencies, but allows to set params.
  */
-public final class MockOptions extends Options {
+final class MockOptions extends Options {
 
   /**
    * Return value for "fn()" template.
@@ -52,10 +53,12 @@ public final class MockOptions extends Options {
    */
   public static final String INVERSE_RETURN = "";
 
+  private final Map<String, Object> properties = new HashMap<String, Object>();
+
   /**
    * Options without any param
    */
-  public MockOptions() {
+  MockOptions() {
     this(new Object[0]);
   }
 
@@ -63,7 +66,7 @@ public final class MockOptions extends Options {
    * Options with one or multiple params
    * @param params Params
    */
-  public MockOptions(Object... params) {
+  MockOptions(Object... params) {
     super(mock(Handlebars.class),
         "dummyHelperName",
         TagType.VAR,
@@ -71,7 +74,7 @@ public final class MockOptions extends Options {
         getFnTemplate(),
         getInverseTemplate(),
         params,
-        ImmutableMap.of(),
+        new HashMap<>(),
         ImmutableList.of());
   }
 
@@ -120,6 +123,38 @@ public final class MockOptions extends Options {
       throw new RuntimeException(ex);
     }
     return template;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T> T get(String name, T defaultValue) {
+    Object value = properties.get(name);
+    if (value == null) {
+      value = defaultValue;
+    }
+    return (T)value;
+  }
+
+  /**
+   * Set property.
+   * @param name Name
+   * @param value Value
+   * @return this
+   */
+  public MockOptions withProperty(String name, Object value) {
+    properties.put(name, value);
+    return this;
+  }
+
+  /**
+   * Set hash.
+   * @param name Name
+   * @param value Value
+   * @return this
+   */
+  public MockOptions withHash(String name, Object value) {
+    hash.put(name, value);
+    return this;
   }
 
 }

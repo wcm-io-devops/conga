@@ -20,13 +20,15 @@
 package io.wcm.devops.conga.generator.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,11 +44,26 @@ import io.wcm.devops.conga.model.role.RoleVariant;
 
 public class RoleUtilTest {
 
-  private Map<String, Role> roles;
+  private Map<String, Role> roleMap;
 
   @Before
   public void setUp() throws Exception {
-    roles = new HashMap<>();
+    roleMap = new HashMap<>();
+
+    /*
+     * Inheritance example:
+     *
+     * role1 - file1.1, file1.2
+     *   |
+     *   +- role2 (variant1, variant2) - file2.1, file2.2
+     *        |
+     *        +- role3 (variant1, variant2, variant3) - file3.1, file3.2, file1.1
+     *        |
+     *        +- role4 (no variants - illegal) - file 4.1
+     *
+     * role5 (inherits from itself - illegal) - file 5.1
+     *
+     */
 
     Role role1 = new Role();
     role1.setTemplateDir("role1Dir");
@@ -55,9 +72,10 @@ public class RoleUtilTest {
         "param2", 123,
         "param3", true));
     role1.setFiles(ImmutableList.of(
-        buildFile("file1.1"),
-        buildFile("file1.2")));
-    roles.put("role1", role1);
+        buildFile("role1", "file1.1"),
+        buildFile("role1", "file1.2"),
+        buildUrlFile("role1", "http://file1.3")));
+    roleMap.put("role1", role1);
 
     Role role2 = new Role();
     role2.setVariants(ImmutableList.of(
@@ -70,11 +88,12 @@ public class RoleUtilTest {
         "param1", "value2.1",
         "param4", "value2.4"));
     role2.setFiles(ImmutableList.of(
-        buildFile("file2.1", "variant1"),
-        buildFile("file2.2", "variant2")));
+        buildFile("role2", "file2.1", "variant1"),
+        buildFile("role2", "file2.2", "variant2"),
+        buildUrlFile("role2", "http://file2.3", "variant1")));
     role2.setInherits(ImmutableList.of(
         buildInherit("role1")));
-    roles.put("role2", role2);
+    roleMap.put("role2", role2);
 
     Role role3 = new Role();
     role3.setVariants(ImmutableList.of(
@@ -88,103 +107,142 @@ public class RoleUtilTest {
         "param1", "value3.1",
         "param5", "value3.5"));
     role3.setFiles(ImmutableList.of(
-        buildFile("file3.1", "variant1"),
-        buildFile("file3.2", "variant2")));
+        buildFile("role3", "file3.1", "variant1"),
+        buildFile("role3", "file3.2", "variant2"),
+        buildUrlFile("role3", "http://file3.3", "variant2"),
+        buildFile("role3", "file1.1"),
+        buildUrlFile("role3", "http://file1.3")));
     role3.setInherits(ImmutableList.of(
         buildInherit("role2")));
-    roles.put("role3", role3);
+    roleMap.put("role3", role3);
 
     Role role4 = new Role();
     role4.setTemplateDir("role4Dir");
     role4.setConfig(ImmutableMap.<String, Object>of(
         "param1", "value4.1"));
     role4.setFiles(ImmutableList.of(
-        buildFile("file4.1")));
+        buildFile("role4", "file4.1")));
     role4.setInherits(ImmutableList.of(
         buildInherit("role2")));
-    roles.put("role4", role4);
+    roleMap.put("role4", role4);
 
     Role role5 = new Role();
     role5.setTemplateDir("role5Dir");
     role5.setConfig(ImmutableMap.<String, Object>of(
         "param1", "value5.1"));
     role5.setFiles(ImmutableList.of(
-        buildFile("file5.1")));
+        buildFile("role5", "file5.1")));
     role5.setInherits(ImmutableList.of(
         buildInherit("role5")));
-    roles.put("role5", role5);
+    roleMap.put("role5", role5);
   }
 
   @Test(expected = GeneratorException.class)
   public void testUnknownRole() {
-    RoleUtil.resolveRole("roleX", "context", roles);
+    RoleUtil.resolveRole("roleX", "context", roleMap);
   }
 
   @Test
   public void testRole1() {
-    Role role = RoleUtil.resolveRole("role1", "context", roles);
+    Map<String, Role> resolvedRoles = RoleUtil.resolveRole("role1", "context", roleMap);
+    assertEquals(1, resolvedRoles.size());
+    Iterator<Role> resolvedRoleIterator = resolvedRoles.values().iterator();
+    Role role = resolvedRoleIterator.next();
 
-    assertNull(role.getTemplateDir());
+    assertEquals("role1Dir", role.getTemplateDir());
     assertEquals("value1.1", role.getConfig().get("param1"));
     assertEquals(123, role.getConfig().get("param2"));
     assertEquals(true, role.getConfig().get("param3"));
 
-    assertFile(role, "file1.1", "role1Dir");
-    assertFile(role, "file1.2", "role1Dir");
+    assertFile(role, "role1", "file1.1");
+    assertFile(role, "role1", "file1.2");
+    assertUrlFile(role, "role1", "http://file1.3");
   }
 
   @Test
   public void testRole2() {
-    Role role = RoleUtil.resolveRole("role2", "context", roles);
+    Map<String, Role> resolvedRoles = RoleUtil.resolveRole("role2", "context", roleMap);
+    assertEquals(2, resolvedRoles.size());
+    Iterator<Role> resolvedRoleIterator = resolvedRoles.values().iterator();
+    Role role1 = resolvedRoleIterator.next();
+    Role role2 = resolvedRoleIterator.next();
 
-    assertNull(role.getTemplateDir());
-    assertEquals("value2.1", role.getConfig().get("param1"));
-    assertEquals(123, role.getConfig().get("param2"));
-    assertEquals(true, role.getConfig().get("param3"));
+    // common for all roles
+    for (Role role : resolvedRoles.values()) {
+      assertEquals("value2.1", role.getConfig().get("param1"));
+      assertEquals(123, role.getConfig().get("param2"));
+      assertEquals(true, role.getConfig().get("param3"));
+    }
 
-    assertFile(role, "file1.1", "role1Dir");
-    assertFile(role, "file1.2", "role1Dir");
-    assertFile(role, "file2.1", "role2Dir", "variant1");
-    assertFile(role, "file2.2", "role2Dir", "variant2");
+    assertEquals("role1Dir", role1.getTemplateDir());
+    assertEquals("role2Dir", role2.getTemplateDir());
 
-    assertVariant(role, "variant1");
-    assertVariant(role, "variant2", ImmutableMap.<String, Object>of(
+    assertFile(role1, "role1", "file1.1");
+    assertFile(role1, "role1", "file1.2");
+    assertUrlFile(role1, "role1", "http://file1.3");
+    assertFile(role2, "role2", "file2.1", "variant1");
+    assertFile(role2, "role2", "file2.2", "variant2");
+    assertUrlFile(role2, "role2", "http://file2.3", "variant1");
+
+    assertVariant(role2, "variant1");
+    assertVariant(role2, "variant2", ImmutableMap.<String, Object>of(
         "varparam1", "varvalue2.1",
         "varparam2", 888));
   }
 
   @Test
   public void testRole3() {
-    Role role = RoleUtil.resolveRole("role3", "context", roles);
+    Map<String, Role> resolvedRoles = RoleUtil.resolveRole("role3", "context", roleMap);
+    assertEquals(3, resolvedRoles.size());
+    Iterator<Role> resolvedRoleIterator = resolvedRoles.values().iterator();
+    Role role1 = resolvedRoleIterator.next();
+    Role role2 = resolvedRoleIterator.next();
+    Role role3 = resolvedRoleIterator.next();
 
-    assertNull(role.getTemplateDir());
-    assertEquals("value3.1", role.getConfig().get("param1"));
-    assertEquals(123, role.getConfig().get("param2"));
-    assertEquals(true, role.getConfig().get("param3"));
+    // common for all roles
+    for (Role role : resolvedRoles.values()) {
+      assertEquals("value3.1", role.getConfig().get("param1"));
+      assertEquals(123, role.getConfig().get("param2"));
+      assertEquals(true, role.getConfig().get("param3"));
+    }
 
-    assertFile(role, "file1.1", "role1Dir");
-    assertFile(role, "file1.2", "role1Dir");
-    assertFile(role, "file2.1", "role2Dir", "variant1");
-    assertFile(role, "file2.2", "role2Dir", "variant2");
-    assertFile(role, "file3.1", "role3Dir", "variant1");
-    assertFile(role, "file3.2", "role3Dir", "variant2");
+    assertEquals("role1Dir", role1.getTemplateDir());
+    assertEquals("role2Dir", role2.getTemplateDir());
+    assertEquals("role3Dir", role3.getTemplateDir());
 
-    assertVariant(role, "variant1");
-    assertVariant(role, "variant2", ImmutableMap.<String, Object>of(
+    assertNotFile(role1, "role1", "file1.1");
+    assertFile(role1, "role1", "file1.2");
+    assertNotUrlFile(role1, "role1", "http://file1.3");
+    assertFile(role2, "role2", "file2.1", "variant1");
+    assertFile(role2, "role2", "file2.2", "variant2");
+    assertUrlFile(role2, "role2", "http://file2.3", "variant1");
+    assertFile(role3, "role3", "file3.1", "variant1");
+    assertFile(role3, "role3", "file3.2", "variant2");
+    assertUrlFile(role3, "role3", "http://file3.3", "variant2");
+    assertFile(role3, "role3", "file1.1");
+    assertUrlFile(role3, "role3", "http://file1.3");
+
+    assertVariant(role2, "variant1");
+    assertVariant(role2, "variant2", ImmutableMap.<String, Object>of(
         "varparam1", "varvalue3.1",
         "varparam2", 888));
-    assertVariant(role, "variant3", ImmutableMap.<String, Object>of(
+
+    assertVariant(role3, "variant1");
+    assertVariant(role3, "variant2", ImmutableMap.<String, Object>of(
+        "varparam1", "varvalue3.1",
+        "varparam2", 888));
+    assertVariant(role3, "variant3", ImmutableMap.<String, Object>of(
         "varparam1", "varvalue3.2"));
   }
 
   @Test(expected = GeneratorException.class)
   public void testRole4_InheritWithMissingVariants() {
-    RoleUtil.resolveRole("role4", "context", roles);
+    RoleUtil.resolveRole("role4", "context", roleMap);
   }
 
   @Test(expected = GeneratorException.class)
   public void testRole5_CyclicInheritance() {
-    RoleUtil.resolveRole("role5", "context", roles);
+    RoleUtil.resolveRole("role5", "context", roleMap);
   }
 
 
@@ -201,10 +259,19 @@ public class RoleUtilTest {
     return variant;
   }
 
-  private RoleFile buildFile(String name, String... variants) {
+  private RoleFile buildFile(String role, String name, String... variants) {
     RoleFile file = new RoleFile();
     file.setFile(name);
-    file.setTemplate(name + ".hbs");
+    file.setTemplate(role + "-" + name + ".hbs");
+    if (variants.length > 0) {
+      file.setVariants(ImmutableList.copyOf(variants));
+    }
+    return file;
+  }
+
+  private RoleFile buildUrlFile(String role, String url, String... variants) {
+    RoleFile file = new RoleFile();
+    file.setUrl(url);
     if (variants.length > 0) {
       file.setVariants(ImmutableList.copyOf(variants));
     }
@@ -217,8 +284,8 @@ public class RoleUtilTest {
     return inherit;
   }
 
-  private void assertFile(Role role, String file, String templateDir, String... variants) {
-    String template = FilenameUtils.concat(templateDir, file + ".hbs");
+  private void assertFile(Role role, String roleName, String file, String... variants) {
+    String template = roleName + "-" + file + ".hbs";
     for (RoleFile fileItem : role.getFiles()) {
       if (StringUtils.equals(file, fileItem.getFile())
           && StringUtils.equals(template, fileItem.getTemplate())
@@ -228,6 +295,40 @@ public class RoleUtilTest {
       }
     }
     fail("File '" + file + "' with template '" + template + "' not found.");
+  }
+
+  private void assertNotFile(Role role, String roleName, String file, String... variants) {
+    String template = roleName + "-" + file + ".hbs";
+    try {
+      assertFile(role, roleName, file, variants);
+    }
+    catch (AssertionError ex) {
+      // fails - matches expectation
+      return;
+    }
+    fail("File '" + file + "' with template '" + template + "' found, but expected to not find it.");
+  }
+
+  private void assertUrlFile(Role role, String roleName, String url, String... variants) {
+    for (RoleFile fileItem : role.getFiles()) {
+      if (StringUtils.equals(url, fileItem.getUrl())
+          && ImmutableList.copyOf(variants).equals(fileItem.getVariants())) {
+        // item found
+        return;
+      }
+    }
+    fail("File with URL '" + url + "' not found.");
+  }
+
+  private void assertNotUrlFile(Role role, String roleName, String url, String... variants) {
+    try {
+      assertUrlFile(role, roleName, url, variants);
+    }
+    catch (AssertionError ex) {
+      // fails - matches expectation
+      return;
+    }
+    fail("File with URL '" + url + "' found, but expected to not find it.");
   }
 
   private void assertVariant(Role role, String variant) {
@@ -243,6 +344,31 @@ public class RoleUtilTest {
       }
     }
     fail("Variant '" + variant + "' with config '" + config + "' not found.");
+  }
+
+  @Test
+  public void testMatchesRoleFile() {
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.<String>of()));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.of("v1")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.of("v1", "v2")));
+
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1*")), ImmutableList.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v2")), ImmutableList.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2")), ImmutableList.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2")), ImmutableList.of("v2", "v3")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2*")), ImmutableList.of("v2", "v3")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1*", "v2*")), ImmutableList.of("v1", "v2", "v3")));
+
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of()));
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of("v2")));
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1*", "v2*")), ImmutableList.of("v2", "v3")));
+  }
+
+  private RoleFile roleFileVariants(List<String> variants) {
+    RoleFile roleFile = new RoleFile();
+    roleFile.setVariants(variants);
+    return roleFile;
   }
 
 }

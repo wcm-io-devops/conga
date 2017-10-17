@@ -20,7 +20,9 @@
 package io.wcm.devops.conga.model.reader;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +37,7 @@ import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.role.RoleFile.RoleFileVariantMetadata;
 import io.wcm.devops.conga.model.role.RoleInherit;
 import io.wcm.devops.conga.model.role.RoleVariant;
 import io.wcm.devops.conga.model.shared.LineEndings;
@@ -96,7 +99,7 @@ public class RoleReaderTest {
     assertEquals("systemconfig-importer.txt", file.getFile());
     assertEquals("data/deploy", file.getDir());
     assertEquals("systemconfig-importer.txt.hbs", file.getTemplate());
-    assertEquals(ImmutableList.of("importer"), file.getVariants());
+    assertEquals(ImmutableList.of("importer", "variant2*", "variant3"), file.getVariants());
     assertEquals("${abc}", file.getCondition());
     assertEquals(ImmutableList.of("sling-provisioning-model"), file.getValidators());
     assertEquals(ImmutableMap.of("option1", "value1"), file.getValidatorOptions());
@@ -112,6 +115,14 @@ public class RoleReaderTest {
     assertEquals("tenant", vhostFile.getMultiply());
     assertEquals(ImmutableMap.of("roles", ImmutableList.of("website")), vhostFile.getMultiplyOptions());
     assertEquals(LineEndings.unix, vhostFile.getLineEndings());
+
+    List<RoleFileVariantMetadata> variantsMetadata = file.getVariantsMetadata();
+    assertEquals("importer", variantsMetadata.get(0).getVariant());
+    assertFalse(variantsMetadata.get(0).isMandatory());
+    assertEquals("variant2", variantsMetadata.get(1).getVariant());
+    assertTrue(variantsMetadata.get(1).isMandatory());
+    assertEquals("variant3", variantsMetadata.get(2).getVariant());
+    assertFalse(variantsMetadata.get(2).isMandatory());
   }
 
   @Test

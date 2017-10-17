@@ -50,6 +50,14 @@ public class VariableStringResolverTest {
   }
 
   @Test
+  public void testSingleVariableWithObject() {
+
+    Map<String, Object> variables = ImmutableMap.of("var1", ImmutableList.of("v1", "v2"));
+
+    assertEquals(ImmutableList.of("v1", "v2"), underTest.resolve("${var1}", variables));
+  }
+
+  @Test
   public void testDefaultValue() {
 
     Map<String, Object> variables = ImmutableMap.of("var1", "v1");
@@ -87,7 +95,7 @@ public class VariableStringResolverTest {
 
     assertEquals("${var1},${var1}v1,${var1}v1v1", underTest.resolve("\\${var1},${var2},${var3}", variables));
     assertEquals("\\${var1},\\${var1}v1,\\${var1}v1v1", underTest.resolve("\\${var1},${var2},${var3}", variables, false));
-    assertEquals("${var1},${var1}v1,${var1}v1v1", underTest.deescape(underTest.resolve("\\${var1},${var2},${var3}", variables, false)));
+    assertEquals("${var1},${var1}v1,${var1}v1v1", underTest.deescape(underTest.resolveString("\\${var1},${var2},${var3}", variables, false)));
   }
 
   @Test
