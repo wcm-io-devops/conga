@@ -115,7 +115,7 @@ public final class NodeModelExport {
       tenantData.add(new ExportNodeRoleTenantData()
           .tenant(tenant.getTenant())
           .roles(tenant.getRoles())
-          .config(tenantConfig));
+          .config(variableMapResolver.resolve(tenantConfig, false)));
     }
 
     ExportNodeRoleData item = new ExportNodeRoleData()
