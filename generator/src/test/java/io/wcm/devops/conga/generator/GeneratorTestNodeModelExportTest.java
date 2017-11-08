@@ -89,6 +89,8 @@ public class GeneratorTestNodeModelExportTest {
     assertEquals("defaultFromTenant2", getTenantConfig(role1, "tenant2", "defaultString"));
     assertEquals(ImmutableList.of(), getTenantRoles(role1, "tenant3_TenantSuffix"));
     assertEquals("\"value1\" äöüß€", getTenantConfig(role1, "tenant3_TenantSuffix", "defaultString"));
+    assertEquals("tenant1 testVersion1ForFileHeader node1 role1", getTenantConfig(role1, "tenant1", "varWithContext"));
+    assertEquals("tenant2 testVersion1ForFileHeader node1 role1", getTenantConfig(role1, "tenant2", "varWithContext"));
 
     Map<String, Object> role2 = getRole(model1, "role2");
     assertFiles(role2,
@@ -101,6 +103,8 @@ public class GeneratorTestNodeModelExportTest {
     assertEquals("defaultFromTenant2", getTenantConfig(role2, "tenant2", "defaultString"));
     assertEquals(ImmutableList.of(), getTenantRoles(role2, "tenant3_TenantSuffix"));
     assertEquals("value2", getTenantConfig(role2, "tenant3_TenantSuffix", "defaultString"));
+    assertEquals("tenant1 testVersion1ForFileHeader node1 role2", getTenantConfig(role2, "tenant1", "varWithContext"));
+    assertEquals("tenant2 testVersion1ForFileHeader node1 role2", getTenantConfig(role2, "tenant2", "varWithContext"));
 
     // superrole1 should be present by inheritance
     Map<String, Object> superrole1 = getRole(model1, "superrole1");
