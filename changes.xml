@@ -27,6 +27,9 @@
       <action type="fix" dev="trichter">
         Node Model Export: Add variable resolving for tenant configuration.
       </action>
+      <action type="fix" dev="sseifert">
+        Parameter list value merging: Remove _merge_ token if merged with null value.
+      </action>
     </release>
 
     <release version="1.4.2" date="2017-10-17">

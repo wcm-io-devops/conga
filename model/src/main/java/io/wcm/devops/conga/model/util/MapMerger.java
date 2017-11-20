@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.model.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -92,10 +93,10 @@ public final class MapMerger {
         }
       }
       else if (v1 != null) {
-        merged.put(key, v1);
+        merged.put(key, cleanupIfList(v1));
       }
       else {
-        merged.put(key, v2);
+        merged.put(key, cleanupIfList(v2));
       }
     }
 
@@ -105,6 +106,21 @@ public final class MapMerger {
   private static boolean isMergeable(List<Object> list) {
     return (list instanceof MergingList && ((MergingList)list).hasMergePosition())
         || list.contains(LIST_MERGE_ENTRY);
+  }
+
+  /**
+   * If value is list remove merge list items and convert to merging list.
+   * @param value Value
+   * @return Value - if list converted list
+   */
+  @SuppressWarnings("unchecked")
+  private static Object cleanupIfList(Object value) {
+    if (value instanceof List) {
+      return mergeList(((List)value), Collections.emptyList());
+    }
+    else {
+      return value;
+    }
   }
 
   /**
