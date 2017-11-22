@@ -101,7 +101,7 @@ public final class NodeModelExport {
     Map<String, Object> clonedConfig = Cloner.standard().deepClone(config);
 
     // resolve variables in configuration, and remove context properties
-    Map<String, Object> resolvedConfig = variableMapResolver.resolve(clonedConfig, false);
+    Map<String, Object> resolvedNodeConfig = variableMapResolver.resolve(clonedConfig, false);
 
     // generate tenants and tenant config
     List<ExportNodeRoleTenantData> tenantData = new ArrayList<>();
@@ -112,16 +112,20 @@ public final class NodeModelExport {
       tenantConfig.put(ContextProperties.TENANT, variableStringResolver.resolve(tenant.getTenant(), tenantConfig));
       tenantConfig.put(ContextProperties.TENANT_ROLES, tenant.getRoles());
 
+      // resolve variables in configuration
+      Map<String, Object> resolvedTenantConfig = variableMapResolver.resolve(tenantConfig, false);
+
       tenantData.add(new ExportNodeRoleTenantData()
           .tenant(tenant.getTenant())
           .roles(tenant.getRoles())
-          .config(tenantConfig));
+          .config(resolvedTenantConfig));
     }
+
 
     ExportNodeRoleData item = new ExportNodeRoleData()
         .role(role)
         .roleVariant(roleVariants)
-        .config(resolvedConfig)
+        .config(resolvedNodeConfig)
         .tenantData(tenantData);
     roleData.add(item);
     return item;

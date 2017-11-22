@@ -23,6 +23,7 @@ import static io.wcm.devops.conga.model.util.MapMerger.LIST_MERGE_ENTRY;
 import static io.wcm.devops.conga.model.util.MapMerger.merge;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,6 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 public class MapMergerTest {
 
@@ -143,6 +143,20 @@ public class MapMergerTest {
     assertEquals(map("k1", list(map("k11", "v11"), "v12", map("k11", "v12", "k21", "v21"), "v13")),
         merge(map("k1", list(map("k11", "v11"), "v12", LIST_MERGE_ENTRY)),
             map("k1", list(LIST_MERGE_ENTRY, map("k11", "v12", "k21", "v21"), "v13"))));
+  }
+
+  @Test
+  public void testMergeList_LeftEmpty() {
+    assertEquals(map("k1", list(map("k11", "v11"), "v12")),
+        merge(map("k1", list(map("k11", "v11"), "v12", LIST_MERGE_ENTRY)),
+            map("k1", null)));
+  }
+
+  @Test
+  public void testMergeList_RightEmpty() {
+    assertEquals(map("k1", list(map("k11", "v11"), "v12")),
+        merge(map("k1", null),
+            map("k1", list(map("k11", "v11"), LIST_MERGE_ENTRY, "v12"))));
   }
 
   @Test
@@ -264,7 +278,7 @@ public class MapMergerTest {
     for (int i = 0; i < items.length - 1; i = i + 2) {
       map.put(items[i].toString(), items[i + 1]);
     }
-    return ImmutableMap.copyOf(map);
+    return Collections.unmodifiableMap(map);
   }
 
 }
