@@ -40,6 +40,10 @@
     <site.url.module.prefix>conga/tooling/conga-maven-plugin</site.url.module.prefix>
   </properties>
 
+  <prerequisites>
+    <maven>${maven.version}</maven>
+  </prerequisites>
+
   <dependencies>
 
     <dependency>
