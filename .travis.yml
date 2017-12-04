@@ -37,7 +37,7 @@ script:
 # exlude release tags like 1.0.0
 branches:
   except:
-  - /^.*\-\d+(\.\d+\.\d+)?(\..*|\-.*)?$/
+  - /^\d+(\.\d+\.\d+)?(\..*|\-.*)?$/
 
 # Cache Maven Repository
 cache:
