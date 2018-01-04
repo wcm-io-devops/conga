@@ -11,6 +11,7 @@ Configuration generator for DevOps Teams.
 * [General concepts][general-concepts]
 * [YAML definitions][yaml-definitions]
 * [Handlebars quickstart][handlebars-quickstart]
+* [CONGA-specific handlebar expressions][handlebars-helpers]
 * [Extensibility model][extensibility]
 * [API documentation][apidocs]
 * [CONGA Maven Plugin Documentation][plugindocs]
@@ -56,6 +57,7 @@ Definitions for CONGA:
 * [adaptTo() 2017 Talk: Automate AEM Deployment with Ansible and wcm.io CONGA](https://adapt.to/2017/en/schedule/automate-aem-deployment-with-ansible-and-wcm-io-conga.html)
 
 
+
 [apidocs]: generator/apidocs/
 [plugindocs]: tooling/conga-maven-plugin/plugin-info.html
 [changelog]: changes-report.html
@@ -65,3 +67,4 @@ Definitions for CONGA:
 [examples]: examples.html
 [yaml-definitions]: yaml-definitions.html
 [handlebars-quickstart]: handlebars-quickstart.html
+[handlebars-helpers]: handlebars-helpers.html

@@ -34,12 +34,17 @@ final class TestUtils {
   }
 
   public static void assertHelper(String expected, Helper<Object> helper, Object context, Options options) throws IOException {
+    Object result = executeHelper(helper, context, options);
+    assertEquals(expected, result);
+  }
+
+  public static Object executeHelper(Helper<Object> helper, Object context, Options options) throws IOException {
     Object result = helper.apply(context, options);
     if (result instanceof Buffer) {
       Buffer buffer = (Buffer)result;
       result = buffer.subSequence(0, buffer.length());
     }
-    assertEquals(expected, result);
+    return result;
   }
 
 }
