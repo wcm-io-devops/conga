@@ -51,6 +51,7 @@ public final class VariableResolver {
    * @param variables Variable map
    * @return Variable value or null if none was found
    */
+  @SuppressWarnings("unchecked")
   public Object resolve(String valueProviderName, String variable, String defaultValueString, Map<String, Object> variables) {
     Object result;
 
@@ -60,7 +61,21 @@ public final class VariableResolver {
           .valueProviderGlobalContext(valueProviderGlobalContext)
           .valueProviderName(valueProviderName);
       ValueProviderPlugin valueProvider = getValueProvider(valueProviderContext);
+
       result = valueProvider.resolve(variable, valueProviderContext);
+
+      // if value provider was not able to resolve variable and variable contains dot try to resolve map
+      if (result == null && StringUtils.contains(variable, ".")) {
+        String variableWithoutNesting = StringUtils.substringBefore(variable, ".");
+        String nestingVariables = StringUtils.substringAfter(variable, ".");
+
+        result = valueProvider.resolve(variableWithoutNesting, valueProviderContext);
+
+        if (StringUtils.isNotBlank(nestingVariables) && result instanceof Map) {
+          result = MapExpander.getDeep((Map)result, nestingVariables);
+        }
+      }
+
     }
 
     // resolve value from variable map

@@ -163,4 +163,12 @@ public class VariableStringResolverTest {
     System.clearProperty(propertyName2);
   }
 
+  @Test
+  public void testDummyMapValueProvider() {
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1");
+
+    assertEquals("The v1 and value1 and 5", underTest.resolve("The ${var1} and ${dummy-map::map.param1} and ${dummy-map::map.param2}", variables));
+    assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${dummy-map::map.paramNotDefined:theDefValue}", variables));
+  }
+
 }
