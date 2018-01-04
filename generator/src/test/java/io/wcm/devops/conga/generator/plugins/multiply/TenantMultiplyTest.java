@@ -34,7 +34,7 @@ import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
@@ -67,7 +67,7 @@ public class TenantMultiplyTest {
 
     environment = new Environment();
 
-    ValueProviderContext valueProviderContext = new ValueProviderContext()
+    ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
         .pluginManager(pluginManager);
     context = new MultiplyContext()
         .role(role)
@@ -75,8 +75,8 @@ public class TenantMultiplyTest {
         .environment(environment)
         .config(config)
         .pluginManager(pluginManager)
-        .variableStringResolver(new VariableStringResolver(valueProviderContext))
-        .variableMapResolver(new VariableMapResolver(valueProviderContext));
+        .variableStringResolver(new VariableStringResolver(valueProviderGlobalContext))
+        .variableMapResolver(new VariableMapResolver(valueProviderGlobalContext));
   }
 
   @Test

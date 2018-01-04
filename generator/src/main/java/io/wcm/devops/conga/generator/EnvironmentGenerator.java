@@ -45,7 +45,7 @@ import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
@@ -100,14 +100,14 @@ class EnvironmentGenerator {
     this.handlebarsManager = handlebarsManager;
     this.urlFileManager = urlFileManager;
 
-    ValueProviderContext valueProviderContext = new ValueProviderContext()
+    ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
         .pluginManager(pluginManager)
         .logger(log)
         .urlFileManager(urlFileManager)
         .valueProviderConfig(valueProviderConfig);
-    this.variableStringResolver = new VariableStringResolver(valueProviderContext);
-    this.variableMapResolver = new VariableMapResolver(valueProviderContext);
-    this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderContext);
+    this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
+    this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
+    this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
 
     this.defaultMultiplyPlugin = pluginManager.get(NoneMultiply.NAME, MultiplyPlugin.class);
     this.version = version;

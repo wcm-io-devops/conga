@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
 /**
  * Resolve variables in a string referencing entries from a map.
@@ -60,10 +60,10 @@ public final class VariableStringResolver {
   private final VariableResolver variableResolver;
 
   /**
-   * @param context Value provider context
+   * @param valueProviderGlobalContext Value provider global context
    */
-  public VariableStringResolver(ValueProviderContext context) {
-    this.variableResolver = new VariableResolver(context);
+  public VariableStringResolver(ValueProviderGlobalContext valueProviderGlobalContext) {
+    this.variableResolver = new VariableResolver(valueProviderGlobalContext);
   }
 
   /**

@@ -53,7 +53,7 @@ import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
@@ -101,7 +101,7 @@ public class FileGeneratorFileHeaderTest {
         destDir, file, null, roleFile, ImmutableMap.<String, Object>of(),
         template, pluginManager, urlFileManager,
         "1.0", ImmutableList.<String>of(), logger,
-        new VariableMapResolver(new ValueProviderContext().pluginManager(pluginManager)));
+        new VariableMapResolver(new ValueProviderGlobalContext().pluginManager(pluginManager)));
   }
 
   @Test

@@ -33,6 +33,7 @@ import org.apache.sling.commons.osgi.ManifestHeader.NameValuePair;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
+import io.wcm.devops.conga.generator.util.ValueUtil;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
 
@@ -75,8 +76,23 @@ abstract class AbstractCongaMojo extends AbstractMojo {
 
   /**
    * Configuration for value providers.
+   * <p>
    * This uses the same syntax as OSGi manifest headers - example:
-   * <code>valueProviderPluginName1;param1=value1;param2=value2,valueProviderPluginName2;param3=value3</code>
+   * </p>
+   * 
+   * <pre>
+   * valueProviderPluginName1;param1=value1;param2=value2,
+   * valueProviderPluginName2;param3=value3
+   * </pre>
+   * <p>
+   * If you want to define multiple value providers of the same type, you can use an arbitrary value provider name, and
+   * specify the plugin name with the optional <code>_plugin_</code> parameter - example:
+   * </p>
+   * 
+   * <pre>
+   * valueProvider1;_plugin_=valueProviderPluginName1,param1=value1;param2=value2,
+   * valueProvider2;_plugin_=valueProviderPluginName1,param3=value3
+   * </pre>
    */
   @Parameter
   private String valueProvider;
@@ -117,7 +133,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     for (ManifestHeader.Entry entry : header.getEntries()) {
       Map<String, Object> config = new HashMap<>();
       for (NameValuePair nameValue : entry.getAttributes()) {
-        config.put(nameValue.getName(), nameValue.getValue());
+        config.put(nameValue.getName(), ValueUtil.stringToValue(nameValue.getValue()));
       }
       valueProviderConfig.put(entry.getValue(), Collections.unmodifiableMap(config));
     }
