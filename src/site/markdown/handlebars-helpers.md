@@ -2,7 +2,7 @@
 
 By using CONGA handlebars helper plugins it is possible to extend handlebars by registering custom expressions. Out of the box CONGA ships with a set of built-in custom expressions documented in this chapter. See [Extensibility model][extensibility] how to register you own helpers.
 
-The basic handlebars expressions are documented in the [Handlebars quickstart][handlebars-quickstart].
+The basic handlebars expressions are documented in the [Handlebars quickstart][handlebars-quickstart]. The CONGA AEM plugin also provides a set of [Custom Handlebars expressions for AEM][aem-handlebars-helpers].
 
 
 ### regexQuote
@@ -88,3 +88,4 @@ Ensure that all properties with the given names are set. Build fails if this is 
 
 [handlebars-quickstart]: handlebars-quickstart.html
 [extensibility]: extensibility.html
+[aem-handlebars-helpers]: plugins/aem/handlebars-helpers.html
