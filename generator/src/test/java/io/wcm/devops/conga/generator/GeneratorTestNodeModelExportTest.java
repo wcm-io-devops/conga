@@ -34,11 +34,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
@@ -114,7 +114,7 @@ public class GeneratorTestNodeModelExportTest {
 
   private Map<String, Object> readYaml(File file) throws IOException {
     try (InputStream is = new BufferedInputStream(new FileInputStream(file));
-        Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
+        Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
       return (Map<String, Object>)new Yaml().load(reader);
     }
   }

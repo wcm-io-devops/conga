@@ -25,8 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import org.apache.commons.lang3.CharEncoding;
+import java.nio.charset.StandardCharsets;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonParser;
@@ -72,7 +71,7 @@ public final class JsonValidator implements ValidatorPlugin {
   @Override
   public Void apply(FileContext file, ValidatorContext context) throws ValidationException {
     try (InputStream is = new BufferedInputStream(new FileInputStream(file.getFile()));
-        Reader reader = new InputStreamReader(is, CharEncoding.UTF_8)) {
+        Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
       jsonParser.parse(reader);
     }
     catch (IOException | JsonIOException | JsonSyntaxException ex) {

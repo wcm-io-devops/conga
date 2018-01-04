@@ -19,10 +19,12 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.escaping;
 
-import org.apache.commons.lang3.text.translate.AggregateTranslator;
-import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
-import org.apache.commons.lang3.text.translate.EntityArrays;
-import org.apache.commons.lang3.text.translate.LookupTranslator;
+import org.apache.commons.text.translate.AggregateTranslator;
+import org.apache.commons.text.translate.CharSequenceTranslator;
+import org.apache.commons.text.translate.EntityArrays;
+import org.apache.commons.text.translate.LookupTranslator;
+
+import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.FileUtil;
@@ -40,22 +42,18 @@ public class JsonEscapingStrategy implements EscapingStrategyPlugin {
   private static final String FILE_EXTENSION = "json";
 
   /**
-   * Copy from {@link org.apache.commons.lang3.StringEscapeUtils#escapeJson(String)},
+   * Copy from {@link org.apache.commons.text.StringEscapeUtils#escapeJson(String)},
    * but without explicitly escaping unicode chars. The escaping of forward slashes is removed as well also part of the
    * JSON specifiction. Both for better readability.
    */
   private static final CharSequenceTranslator ESCAPE_JSON =
       new AggregateTranslator(
           new LookupTranslator(
-              new String[][] {
-                  {
-                    "\"", "\\\""
-                  },
-                  {
-                    "\\", "\\\\"
-                  }
-              }),
-              new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
+              ImmutableMap.of(
+                  "\"", "\\\"",
+                  "\\", "\\\\"
+              )),
+            new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE)
           );
 
   @Override

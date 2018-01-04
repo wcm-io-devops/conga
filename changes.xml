@@ -23,7 +23,7 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
-    <release version="1.4.6" date="not released">
+    <release version="1.5.0" date="not released">
       <action type="update" dev="sseifert">
         Allow multiple value provider configurations with the same implementation by optionally specifying a "_plugin_" parameter.
       </action>

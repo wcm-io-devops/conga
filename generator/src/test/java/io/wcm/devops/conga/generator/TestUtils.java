@@ -24,9 +24,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
@@ -85,10 +86,10 @@ public final class TestUtils {
   }
 
   public static void assertContains(File file, String contains) {
-    assertContains(file, contains, CharEncoding.UTF_8);
+    assertContains(file, contains, StandardCharsets.UTF_8);
   }
 
-  public static void assertContains(File file, String contains, String charset) {
+  public static void assertContains(File file, String contains, Charset charset) {
     try {
       String fileContent = FileUtils.readFileToString(file, charset);
       assertTrue("File " + FileUtil.getCanonicalPath(file) + " does not contain: " + contains, StringUtils.contains(fileContent, contains));

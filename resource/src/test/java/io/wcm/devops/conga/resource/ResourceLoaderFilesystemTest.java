@@ -25,10 +25,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class ResourceLoaderFilesystemTest {
     assertTrue(resource.getLastModified() > 0);
 
     try (InputStream is = resource.getInputStream()) {
-      assertEquals("File 1", IOUtils.toString(is, CharEncoding.UTF_8));
+      assertEquals("File 1", IOUtils.toString(is, StandardCharsets.UTF_8));
     }
   }
 

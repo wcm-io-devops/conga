@@ -31,13 +31,13 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -286,7 +286,7 @@ public class FileGeneratorPostProcessorTest {
 
   private FileContext newFile(String fileName) throws IOException {
     File newFile = new File(destDir, fileName);
-    FileUtils.write(newFile, fileName, CharEncoding.UTF_8);
+    FileUtils.write(newFile, fileName, StandardCharsets.UTF_8);
     return new FileContext().file(newFile);
   }
 

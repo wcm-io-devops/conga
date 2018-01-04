@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.spi.context;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,6 +73,15 @@ public final class FileContext {
    */
   public FileContext charset(String value) {
     charset = value;
+    return this;
+  }
+
+  /**
+   * @param value Charset
+   * @return this
+   */
+  public FileContext charset(Charset value) {
+    charset = value.name();
     return this;
   }
 
