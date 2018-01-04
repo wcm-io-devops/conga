@@ -2,7 +2,7 @@
 
 For a full documentation of handlebars syntax see [Handlebars][handlebars] and [Handlebars Java][handlebars-java] websites. This page lists a collection of handlebars expressions that are most useful when writing CONGA templates.
 
-See also [CONGA-specific handlebar expressions][handlebars-helpers].
+See also [Custom Handlebars expressions][handlebars-helpers].
 
 ### Variable references
 

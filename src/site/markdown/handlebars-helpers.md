@@ -1,4 +1,4 @@
-## CONGA - CONGA-specific handlebar expressions
+## CONGA - Custom Handlebars expressions
 
 By using CONGA handlebars helper plugins it is possible to extend handlebars by registering custom expressions. Out of the box CONGA ships with a set of built-in custom expressions documented in this chapter. See [Extensibility model][extensibility] how to register you own helpers.
 

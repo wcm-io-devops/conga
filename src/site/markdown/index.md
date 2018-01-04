@@ -11,7 +11,7 @@ Configuration generator for DevOps Teams.
 * [General concepts][general-concepts]
 * [YAML definitions][yaml-definitions]
 * [Handlebars quickstart][handlebars-quickstart]
-* [CONGA-specific handlebar expressions][handlebars-helpers]
+* [Custom Handlebars expressions][handlebars-helpers]
 * [Extensibility model][extensibility]
 * [API documentation][apidocs]
 * [CONGA Maven Plugin Documentation][plugindocs]
