@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public final class PluginContextOptions {
 
   private PluginManager pluginManager;
   private UrlFileManager urlFileManager;
-  private Map<String, Map<String, Object>> genericPluginConfig;
+  private Map<String, Map<String, Object>> genericPluginConfig = new HashMap<>();
   private Logger logger;
 
   /**

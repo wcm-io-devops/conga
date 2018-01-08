@@ -86,7 +86,7 @@ class FileGenerator {
   FileGenerator(EnvironmentGeneratorOptions options,
       String roleName, List<String> roleVariantNames, String templateName,
       File nodeDir, File file, String url, RoleFile roleFile, Map<String, Object> config, Template template,
-      PluginContextOptions pluginContextOptions, VariableMapResolver variableMapResolver) {
+      VariableMapResolver variableMapResolver) {
     this.environmentName = options.getEnvironmentName();
     this.roleName = roleName;
     this.roleVariantNames = roleVariantNames;
@@ -107,7 +107,7 @@ class FileGenerator {
     // overlay logger in options with plugin-specific logger
     Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");
     PluginContextOptions pluginContextOptionsForPlugin = new PluginContextOptions()
-        .pluginContextOptions(pluginContextOptions)
+        .pluginContextOptions(options.getPluginContextOptions())
         .logger(pluginLogger);
 
 

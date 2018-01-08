@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.plugins.handlebars.escaping;
 
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.EscapingStrategyContext;
 
 /**
  * Does no escaping.
@@ -37,12 +38,12 @@ public class NoneEscapingStrategy implements EscapingStrategyPlugin {
   }
 
   @Override
-  public boolean accepts(String fileExtension) {
+  public boolean accepts(String fileExtension, EscapingStrategyContext pluginContext) {
     return true;
   }
 
   @Override
-  public String escape(CharSequence value) {
+  public String escape(CharSequence value, EscapingStrategyContext pluginContext) {
     return value == null ? null : value.toString();
   }
 

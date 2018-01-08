@@ -25,6 +25,7 @@ import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.helper.StringHelpers;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
 
 /**
  * Handlebars helper thats inserts a value with fallback to another if it's not set.
@@ -43,7 +44,7 @@ public final class DefaultIfEmptyHelper implements HelperPlugin<Object> {
   }
 
   @Override
-  public Object apply(Object context, Options options) throws IOException {
+  public Object apply(Object context, Options options, HelperContext pluginContext) throws IOException {
     return StringHelpers.defaultIfEmpty.apply(context, options);
   }
 

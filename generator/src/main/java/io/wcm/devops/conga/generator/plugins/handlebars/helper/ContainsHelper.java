@@ -27,6 +27,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.github.jknack.handlebars.Options;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
 
 /**
  * Handlebars helper that checks the existence of a value in an array or list.
@@ -44,7 +45,7 @@ public final class ContainsHelper implements HelperPlugin<Object> {
   }
 
   @Override
-  public Object apply(Object context, Options options) throws IOException {
+  public Object apply(Object context, Options options, HelperContext pluginContext) throws IOException {
     if (!options.isFalsy(context)
         && options.params.length > 0
         && contains(context, options.param(0))) {

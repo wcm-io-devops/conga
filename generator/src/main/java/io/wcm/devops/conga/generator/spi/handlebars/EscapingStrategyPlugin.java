@@ -22,19 +22,29 @@ package io.wcm.devops.conga.generator.spi.handlebars;
 import com.github.jknack.handlebars.EscapingStrategy;
 
 import io.wcm.devops.conga.generator.spi.Plugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.EscapingStrategyContext;
 
 /**
  * Plugin that provides an {@link EscapingStrategy} to be used by Handlebars when replacing variables in a template.
  * Please keep in mind that this strategy is applied to every variable and does not regard the context where
  * the variable takes place in within the template.
  */
-public interface EscapingStrategyPlugin extends Plugin, EscapingStrategy {
+public interface EscapingStrategyPlugin extends Plugin {
 
   /**
    * Checks if the plugin can be applied to files with the given file extension.
    * @param fileExtension File extension
+   * @param pluginContext Plugin context
    * @return true when the plugin can be applied to the given file.
    */
-  boolean accepts(String fileExtension);
+  boolean accepts(String fileExtension, EscapingStrategyContext pluginContext);
+
+  /**
+   * Escape the {@link java.lang.CharSequence}.
+   * @param value the character sequence to be escaped.
+   * @param pluginContext Plugin context
+   * @return the escaped character sequence.
+   */
+  CharSequence escape(CharSequence value, EscapingStrategyContext pluginContext);
 
 }

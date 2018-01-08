@@ -25,14 +25,12 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Helper;
-
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class RegexQuoteHelperTest {
 
-  private Helper<Object> helper;
+  private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
   @Before
@@ -48,7 +46,7 @@ public class RegexQuoteHelperTest {
 
   @Test
   public void testApplyFalsy() throws Exception {
-    assertNull(helper.apply(null, new MockOptions()));
+    assertNull(helper.apply(null, new MockOptions(), null));
   }
 
 }

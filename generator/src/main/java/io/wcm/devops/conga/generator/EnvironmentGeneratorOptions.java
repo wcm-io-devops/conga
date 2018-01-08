@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2017 wcm.io
+ * Copyright (C) 2018 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.role.Role;
 
@@ -46,6 +47,7 @@ class EnvironmentGeneratorOptions {
   private ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
   private Map<String, Map<String, Object>> genericPluginConfig;
+  private PluginContextOptions pluginContextOptions;
   private Logger logger;
 
   public Map<String, Role> getRoles() {
@@ -144,6 +146,15 @@ class EnvironmentGeneratorOptions {
 
   public EnvironmentGeneratorOptions genericPluginConfig(Map<String, Map<String, Object>> value) {
     this.genericPluginConfig = value;
+    return this;
+  }
+
+  public PluginContextOptions getPluginContextOptions() {
+    return this.pluginContextOptions;
+  }
+
+  public EnvironmentGeneratorOptions pluginContextOptions(PluginContextOptions value) {
+    this.pluginContextOptions = value;
     return this;
   }
 

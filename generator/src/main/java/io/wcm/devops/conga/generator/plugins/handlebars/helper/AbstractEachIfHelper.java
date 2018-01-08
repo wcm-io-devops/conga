@@ -36,6 +36,7 @@ import com.github.jknack.handlebars.helper.EachHelper;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
 import io.wcm.devops.conga.model.util.MapExpander;
 
 /**
@@ -52,7 +53,7 @@ abstract class AbstractEachIfHelper implements HelperPlugin {
 
   @SuppressWarnings("unchecked")
   @Override
-  public final Object apply(Object context, Options options) throws IOException {
+  public final Object apply(Object context, Options options, HelperContext pluginContext) throws IOException {
     if (context != null && !options.isFalsy(context)) {
       if (context instanceof Iterable) {
         String propertyName = options.param(0, null);
@@ -65,7 +66,7 @@ abstract class AbstractEachIfHelper implements HelperPlugin {
         }
       }
       else {
-        return apply(ImmutableList.of(context), options);
+        return apply(ImmutableList.of(context), options, pluginContext);
       }
     }
     return delegate.apply(context, options);

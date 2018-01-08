@@ -43,12 +43,12 @@ import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStr
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
-import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.EscapingStrategyContext;
 import io.wcm.devops.conga.generator.util.EnvironmentExpander;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.RoleUtil;
@@ -77,7 +77,6 @@ class EnvironmentGenerator {
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
   private final VariableObjectTreeResolver variableObjectTreeResolver;
-  private final PluginContextOptions pluginContextOptions;
 
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
@@ -89,14 +88,8 @@ class EnvironmentGenerator {
     this.handlebarsManager = options.getHandlebarsManager();
     this.log = options.getLogger();
 
-    pluginContextOptions = new PluginContextOptions()
-        .logger(options.getLogger())
-        .pluginManager(options.getPluginManager())
-        .urlFileManager(options.getUrlFileManager())
-        .genericPluginConfig(options.getGenericPluginConfig());
-
     ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
-        .pluginContextOptions(pluginContextOptions)
+        .pluginContextOptions(options.getPluginContextOptions())
         .valueProviderConfig(options.getValueProviderConfig());
     this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
     this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
@@ -216,9 +209,11 @@ class EnvironmentGenerator {
       return roleFile.getEscapingStrategy();
     }
     String fileExtension = FilenameUtils.getExtension(roleFile.getFile());
+    EscapingStrategyContext context = new EscapingStrategyContext()
+        .pluginContextOptions(options.getPluginContextOptions());
     return options.getPluginManager().getAll(EscapingStrategyPlugin.class).stream()
         .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneEscapingStrategy.NAME))
-        .filter(plugin -> plugin.accepts(fileExtension))
+        .filter(plugin -> plugin.accepts(fileExtension, context))
         .findFirst().orElse(options.getPluginManager().get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class))
         .getName();
   }
@@ -231,7 +226,7 @@ class EnvironmentGenerator {
     }
 
     MultiplyContext multiplyContext = new MultiplyContext()
-        .pluginContextOptions(pluginContextOptions)
+        .pluginContextOptions(options.getPluginContextOptions())
         .role(role)
         .roleFile(roleFile)
         .environment(environment)
@@ -283,8 +278,7 @@ class EnvironmentGenerator {
     }
 
     FileGenerator fileGenerator = new FileGenerator(options, roleName, roleVariantNames, templateName,
-        nodeDir, file, url, roleFile, config, template,
-        pluginContextOptions, variableMapResolver);
+        nodeDir, file, url, roleFile, config, template, variableMapResolver);
     try {
       Collection<GeneratedFileContext> generatedFiles = fileGenerator.generate();
 

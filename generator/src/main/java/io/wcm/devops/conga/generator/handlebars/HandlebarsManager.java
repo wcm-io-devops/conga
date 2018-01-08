@@ -19,18 +19,25 @@
  */
 package io.wcm.devops.conga.generator.handlebars;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.EscapingStrategyContext;
+import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.resource.ResourceCollection;
 
@@ -41,6 +48,8 @@ public class HandlebarsManager {
 
   private final List<ResourceCollection> templateDirs;
   private final PluginManager pluginManager;
+  private final EscapingStrategyContext escapingStrategyContext;
+  private final HelperContext helperContext;
 
   private final LoadingCache<HandlebarsKey, Handlebars> handlebarsCache =
       CacheBuilder.newBuilder().build(new CacheLoader<HandlebarsKey, Handlebars>() {
@@ -51,11 +60,21 @@ public class HandlebarsManager {
           // setup handlebars
           TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
           EscapingStrategyPlugin escapingStrategy = pluginManager.get(options.getEscapingStrategy(), EscapingStrategyPlugin.class);
-          Handlebars handlebars = new Handlebars(templateLoader).with(escapingStrategy);
+          Handlebars handlebars = new Handlebars(templateLoader).with(new EscapingStrategy() {
+            @Override
+            public CharSequence escape(CharSequence value) {
+              return escapingStrategy.escape(value, escapingStrategyContext);
+            }
+          });
 
           // register helper plugins
           pluginManager.getAll(HelperPlugin.class)
-          .forEach(plugin -> handlebars.registerHelper(plugin.getName(), plugin));
+              .forEach(plugin -> handlebars.registerHelper(plugin.getName(), new Helper<Object>() {
+                @Override
+                public Object apply(Object context, Options helperOptions) throws IOException {
+                  return plugin.apply(context, helperOptions, helperContext);
+                }
+              }));
 
           return handlebars;
         }
@@ -63,11 +82,13 @@ public class HandlebarsManager {
 
   /**
    * @param templateDirs Template base directories
-   * @param pluginManager Plugin manager
+   * @param pluginContextOptions Plugin context options
    */
-  public HandlebarsManager(List<ResourceCollection> templateDirs, PluginManager pluginManager) {
+  public HandlebarsManager(List<ResourceCollection> templateDirs, PluginContextOptions pluginContextOptions) {
     this.templateDirs = templateDirs;
-    this.pluginManager = pluginManager;
+    this.pluginManager = pluginContextOptions.getPluginManager();
+    this.escapingStrategyContext = new EscapingStrategyContext().pluginContextOptions(pluginContextOptions);
+    this.helperContext = new HelperContext().pluginContextOptions(pluginContextOptions);
   }
 
   /**
