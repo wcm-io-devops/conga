@@ -56,6 +56,7 @@ import com.google.common.collect.ImmutableSet;
 import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
@@ -102,11 +103,22 @@ public class FileGeneratorPostProcessorTest {
       }
     });
 
-    underTest = new FileGenerator("env1", "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(),
-        template, pluginManager, urlFileManager,
-        "1.0", ImmutableList.<String>of(), logger,
-        new VariableMapResolver(new ValueProviderGlobalContext().pluginManager(pluginManager)));
+    EnvironmentGeneratorOptions options = new EnvironmentGeneratorOptions()
+        .environmentName("env1")
+        .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
+        .version("1.0")
+        .dependencyVersions(ImmutableList.<String>of())
+        .logger(logger);
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
+        .logger(logger);
+    VariableMapResolver variableMapResolver = new VariableMapResolver(
+        new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
+    underTest = new FileGenerator(options, "role1", ImmutableList.of("variant1"), "template1",
+        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template,
+        pluginContextOptions, variableMapResolver);
   }
 
   @Test

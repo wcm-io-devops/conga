@@ -42,6 +42,7 @@ public class GeneratorOptions {
   private List<String> dependencyVersions;
   private ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
+  private Map<String, Map<String, Object>> genericPluginConfig;
 
   /**
    * Directories with role definitions. Filename without extension = role name.
@@ -164,6 +165,18 @@ public class GeneratorOptions {
 
   public void setValueProviderConfig(Map<String, Map<String, Object>> valueProviderConfig) {
     this.valueProviderConfig = valueProviderConfig;
+  }
+
+  /**
+   * @return Generic plugin configuration.
+   */
+  public Map<String, Map<String, Object>> getGenericPluginConfig() {
+    return this.genericPluginConfig;
+  }
+
+
+  public void setGenericPluginConfig(Map<String, Map<String, Object>> genericPluginConfig) {
+    this.genericPluginConfig = genericPluginConfig;
   }
 
 }

@@ -49,6 +49,7 @@ import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
@@ -82,14 +83,11 @@ class FileGenerator {
   private final ValidatorContext validatorContext;
   private final PostProcessorContext postProcessorContext;
 
-  //CHECKSTYLE:OFF
-  FileGenerator(String environmentName, String roleName, List<String> roleVariantNames, String templateName,
-      File nodeDir, File file, String url, RoleFile roleFile, Map<String, Object> config,
-      Template template, PluginManager pluginManager, UrlFileManager urlFileManager,
-      String version, List<String> dependencyVersions, Logger log,
-      VariableMapResolver variableMapResolver) {
-    //CHECKSTYLE:ON
-    this.environmentName = environmentName;
+  FileGenerator(EnvironmentGeneratorOptions options,
+      String roleName, List<String> roleVariantNames, String templateName,
+      File nodeDir, File file, String url, RoleFile roleFile, Map<String, Object> config, Template template,
+      PluginContextOptions pluginContextOptions, VariableMapResolver variableMapResolver) {
+    this.environmentName = options.getEnvironmentName();
     this.roleName = roleName;
     this.roleVariantNames = roleVariantNames;
     this.templateName = templateName;
@@ -98,33 +96,32 @@ class FileGenerator {
     this.url = url;
     this.roleFile = roleFile;
     this.template = template;
-    this.pluginManager = pluginManager;
-    this.urlFileManager = urlFileManager;
-    this.log = log;
+    this.pluginManager = options.getPluginManager();
+    this.urlFileManager = options.getUrlFileManager();
+    this.log = options.getLogger();
     this.fileContext = new FileContext()
         .file(file)
         .charset(roleFile.getCharset())
         .modelOptions(roleFile.getModelOptions());
 
+    // overlay logger in options with plugin-specific logger
     Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");
+    PluginContextOptions pluginContextOptionsForPlugin = new PluginContextOptions()
+        .pluginContextOptions(pluginContextOptions)
+        .logger(pluginLogger);
+
 
     this.fileHeaderContext = new FileHeaderContext()
-        .commentLines(buildFileHeaderCommentLines(version, dependencyVersions))
-        .pluginManager(pluginManager)
-        .urlFileManager(urlFileManager)
-        .logger(pluginLogger);
+        .pluginContextOptions(pluginContextOptionsForPlugin)
+        .commentLines(buildFileHeaderCommentLines(options.getVersion(), options.getDependencyVersions()));
 
     this.validatorContext = new ValidatorContext()
-        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)))
-        .pluginManager(pluginManager)
-        .urlFileManager(urlFileManager)
-        .logger(pluginLogger);
+        .pluginContextOptions(pluginContextOptionsForPlugin)
+        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)));
 
     this.postProcessorContext = new PostProcessorContext()
-        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)))
-        .pluginManager(pluginManager)
-        .urlFileManager(urlFileManager)
-        .logger(pluginLogger);
+        .pluginContextOptions(pluginContextOptionsForPlugin)
+        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)));
 
     this.config = variableMapResolver.deescape(config);
   }

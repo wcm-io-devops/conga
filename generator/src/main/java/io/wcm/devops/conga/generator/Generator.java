@@ -62,6 +62,7 @@ public final class Generator {
   private final List<String> dependencyVersions;
   private final ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
+  private Map<String, Map<String, Object>> genericPluginConfig;
   private Logger log = LoggerFactory.getLogger(getClass());
 
   /**
@@ -79,6 +80,7 @@ public final class Generator {
     this.dependencyVersions = options.getDependencyVersions();
     this.modelExport = options.getModelExport();
     this.valueProviderConfig = options.getValueProviderConfig();
+    this.genericPluginConfig = options.getGenericPluginConfig();
   }
 
   /**
@@ -139,9 +141,21 @@ public final class Generator {
       if (!environmentDestDir.exists()) {
         environmentDestDir.mkdir();
       }
-      EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDestDir, pluginManager, handlebarsManager, urlFileManager, version, dependencyVersions,
-          modelExport, valueProviderConfig, log);
+
+      EnvironmentGeneratorOptions options = new EnvironmentGeneratorOptions()
+          .roles(roles)
+          .environmentName(entry.getKey())
+          .destDir(environmentDestDir)
+          .pluginManager(pluginManager)
+          .handlebarsManager(handlebarsManager)
+          .urlFileManager(urlFileManager)
+          .version(version)
+          .dependencyVersions(dependencyVersions)
+          .modelExport(modelExport)
+          .valueProviderConfig(valueProviderConfig)
+          .genericPluginConfig(genericPluginConfig)
+          .logger(log);
+      EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(options, entry.getValue());
       environmentGenerator.generate();
     }
   }

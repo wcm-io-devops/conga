@@ -33,6 +33,7 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -67,14 +68,16 @@ public class TenantMultiplyTest {
 
     environment = new Environment();
 
-    ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(pluginManager);
+    ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
+        .pluginContextOptions(pluginContextOptions);
     context = new MultiplyContext()
+        .pluginContextOptions(pluginContextOptions)
         .role(role)
         .roleFile(roleFile)
         .environment(environment)
         .config(config)
-        .pluginManager(pluginManager)
         .variableStringResolver(new VariableStringResolver(valueProviderGlobalContext))
         .variableMapResolver(new VariableMapResolver(valueProviderGlobalContext));
   }

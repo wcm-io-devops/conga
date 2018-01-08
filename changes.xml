@@ -24,6 +24,9 @@
   <body>
 
     <release version="1.5.0" date="not released">
+      <action type="add" dev="sseifert">
+        conga-maven-plugin: Add generic plugin configuration parameter.
+      </action>
       <action type="update" dev="sseifert">
         Allow multiple value provider configurations with the same implementation by optionally specifying a "_plugin_" parameter.
       </action>

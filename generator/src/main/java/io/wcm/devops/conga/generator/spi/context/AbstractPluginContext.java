@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 
 import io.wcm.devops.conga.generator.UrlFileManager;
@@ -29,59 +31,51 @@ import io.wcm.devops.conga.generator.util.PluginManager;
  */
 public abstract class AbstractPluginContext<T> {
 
-  private Logger logger;
-  private PluginManager pluginManager;
-  private UrlFileManager urlFileManager;
+  private PluginContextOptions pluginContextOptions = new PluginContextOptions();
+
+  /**
+   * @return Generic plugin context options
+   */
+  public final PluginContextOptions getPluginContextOptions() {
+    return this.pluginContextOptions;
+  }
+
+  /**
+   * @param value Generic plugin context options
+   * @return this
+   */
+  @SuppressWarnings("unchecked")
+  public final T pluginContextOptions(PluginContextOptions value) {
+    this.pluginContextOptions = value;
+    return (T)this;
+  }
 
   /**
    * @return Logger
    */
-  public Logger getLogger() {
-    return logger;
-  }
-
-  /**
-   * @param value Logger
-   * @return this
-   */
-  @SuppressWarnings("unchecked")
-  public T logger(Logger value) {
-    logger = value;
-    return (T)this;
+  public final Logger getLogger() {
+    return pluginContextOptions.getLogger();
   }
 
   /**
    * @return Plugin manager
    */
-  public PluginManager getPluginManager() {
-    return this.pluginManager;
-  }
-
-  /**
-   * @param value Plugin manager
-   * @return this
-   */
-  @SuppressWarnings("unchecked")
-  public T pluginManager(PluginManager value) {
-    this.pluginManager = value;
-    return (T)this;
+  public final PluginManager getPluginManager() {
+    return pluginContextOptions.getPluginManager();
   }
 
   /**
    * @return URL file manager
    */
-  public UrlFileManager getUrlFileManager() {
-    return this.urlFileManager;
+  public final UrlFileManager getUrlFileManager() {
+    return pluginContextOptions.getUrlFileManager();
   }
 
   /**
-   * @param value URL file manager
-   * @return this
+   * @return Generic plugin configuration
    */
-  @SuppressWarnings("unchecked")
-  public T urlFileManager(UrlFileManager value) {
-    this.urlFileManager = value;
-    return (T)this;
+  public final Map<String, Map<String, Object>> getGenericPluginConfig() {
+    return pluginContextOptions.getGenericPluginConfig();
   }
 
 }

@@ -20,22 +20,18 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.sling.commons.osgi.ManifestHeader;
-import org.apache.sling.commons.osgi.ManifestHeader.NameValuePair;
 
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
-import io.wcm.devops.conga.generator.util.ValueUtil;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.tooling.maven.plugin.util.PluginConfigUtil;
 
 /**
  * Common features for all Mojos.
@@ -79,7 +75,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
    * <p>
    * This uses the same syntax as OSGi manifest headers - example:
    * </p>
-   * 
+   *
    * <pre>
    * valueProviderPluginName1;param1=value1;param2=value2,
    * valueProviderPluginName2;param3=value3
@@ -88,7 +84,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
    * If you want to define multiple value providers of the same type, you can use an arbitrary value provider name, and
    * specify the plugin name with the optional <code>_plugin_</code> parameter - example:
    * </p>
-   * 
+   *
    * <pre>
    * valueProvider1;_plugin_=valueProviderPluginName1,param1=value1;param2=value2,
    * valueProvider2;_plugin_=valueProviderPluginName1,param3=value3
@@ -96,6 +92,21 @@ abstract class AbstractCongaMojo extends AbstractMojo {
    */
   @Parameter
   private String valueProvider;
+
+  /**
+   * Plugin-specific configuration. This holds configuration for CONGA plugins that are not part of the built-in set of
+   * CONGA plugins (e.g. configuration for the CONGA AEM Plugin).
+   * <p>
+   * This uses the same syntax as OSGi manifest headers - example:
+   * </p>
+   *
+   * <pre>
+   * pluginName1;param1=value1;param2=value2,
+   * pluginName2;param3=value3
+   * </pre>
+   */
+  @Parameter
+  private String pluginConfig;
 
   protected ResourceCollection getTemplateDir() {
     return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + templateDir);
@@ -125,19 +136,11 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   }
 
   protected Map<String, Map<String, Object>> getValueProviderConfig() {
-    if (StringUtils.isEmpty(this.valueProvider)) {
-      return Collections.emptyMap();
-    }
-    Map<String, Map<String, Object>> valueProviderConfig = new HashMap<>();
-    ManifestHeader header = ManifestHeader.parse(this.valueProvider);
-    for (ManifestHeader.Entry entry : header.getEntries()) {
-      Map<String, Object> config = new HashMap<>();
-      for (NameValuePair nameValue : entry.getAttributes()) {
-        config.put(nameValue.getName(), ValueUtil.stringToValue(nameValue.getValue()));
-      }
-      valueProviderConfig.put(entry.getValue(), Collections.unmodifiableMap(config));
-    }
-    return Collections.unmodifiableMap(valueProviderConfig);
+    return PluginConfigUtil.getConfigMap(this.valueProvider);
+  }
+
+  protected Map<String, Map<String, Object>> getPluginConfig() {
+    return PluginConfigUtil.getConfigMap(this.pluginConfig);
   }
 
   protected abstract ResourceLoader getResourceLoader();
