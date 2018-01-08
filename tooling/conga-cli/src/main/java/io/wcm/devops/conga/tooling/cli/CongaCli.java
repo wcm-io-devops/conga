@@ -71,8 +71,7 @@ public final class CongaCli {
     if (commandLine.hasOption("?")) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.setWidth(150);
-      formatter.printHelp("java -cp io.wcm.devops.conga.tooling.cli-<version>.jar "
-          + "io.wcm.devops.conga.tooling.cli.CongaCli <arguments>", CLI_OPTIONS);
+      formatter.printHelp("java -jar io.wcm.devops.conga.tooling.cli-<version>.jar <arguments>", CLI_OPTIONS);
       return;
     }
 

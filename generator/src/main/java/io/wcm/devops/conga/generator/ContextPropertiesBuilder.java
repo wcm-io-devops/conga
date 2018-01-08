@@ -88,7 +88,9 @@ public final class ContextPropertiesBuilder {
       VariableObjectTreeResolver variableObjectTreeResolver, VariableStringResolver variableStringResolver) {
     Map<String, Object> map = new HashMap<>(EMPTY_CONTEXT_VARIABLES);
 
-    map.put(VERSION, version);
+    if (version != null) {
+      map.put(VERSION, version);
+    }
     map.put(ENVIRONMENT, environmentName);
 
     // clone environment before resolving variables to make sure they are resolved only for this context, not for file generation
