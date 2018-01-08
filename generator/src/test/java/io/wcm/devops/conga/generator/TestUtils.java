@@ -52,18 +52,18 @@ public final class TestUtils {
     ResourceCollection baseDir = resourceLoader.getResourceCollection("src/test/definitions");
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext();
 
-    GeneratorOptions options = new GeneratorOptions();
-    options.setRoleDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")));
-    options.setTemplateDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")));
-    options.setEnvironmentDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")));
-    options.setDestDir(destDir);
-    options.setUrlFilePluginContext(urlFilePluginContext);
-    options.setVersion(TEST_VERSION);
-    options.setDependencyVersions(ImmutableList.of(TEST_DEPENDENCY_VERSION));
+    GeneratorOptions options = new GeneratorOptions()
+        .roleDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")))
+        .templateDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")))
+        .environmentDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")))
+        .destDir(destDir)
+        .urlFilePluginContext(urlFilePluginContext)
+        .version(TEST_VERSION)
+        .dependencyVersions(ImmutableList.of(TEST_DEPENDENCY_VERSION));
 
     ModelExport modelExport = new ModelExport();
     modelExport.setNode(ImmutableList.of("yaml"));
-    options.setModelExport(modelExport);
+    options.modelExport(modelExport);
 
     return new Generator(options);
   }

@@ -88,13 +88,13 @@ public final class CongaCli {
     List<ResourceCollection> environmentDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + environmentDir));
     File targetDirecotry = new File(targetDir);
 
-    GeneratorOptions options = new GeneratorOptions();
-    options.setRoleDirs(roleDirs);
-    options.setTemplateDirs(templateDirs);
-    options.setEnvironmentDirs(environmentDirs);
-    options.setDestDir(targetDirecotry);
-    options.setUrlFilePluginContext(new UrlFilePluginContext());
-    options.setDeleteBeforeGenerate(true);
+    GeneratorOptions options = new GeneratorOptions()
+        .roleDirs(roleDirs)
+        .templateDirs(templateDirs)
+        .environmentDirs(environmentDirs)
+        .destDir(targetDirecotry)
+        .urlFilePluginContext(new UrlFilePluginContext())
+        .deleteBeforeGenerate(true);
 
     Generator generator = new Generator(options);
     generator.generate(environments);
