@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.export.NodeModelExport;
@@ -240,13 +239,22 @@ class EnvironmentGenerator {
       // resolve variables
       Map<String, Object> resolvedConfig = variableMapResolver.resolve(muliplyConfig, false);
 
-      // replace placeholders with context variables
-      String dir = variableStringResolver.resolveString(roleFile.getDir(), resolvedConfig);
-      String file = variableStringResolver.resolveString(roleFile.getFile(), resolvedConfig);
-      String url = variableStringResolver.resolveString(roleFile.getUrl(), resolvedConfig);
+      // skip file if condition does not evaluate to a non-empty string or is "false"
+      boolean skip = false;
+      if (StringUtils.isNotEmpty(roleFile.getCondition())) {
+        String condition = variableStringResolver.resolveString(roleFile.getCondition(), resolvedConfig);
+        skip = StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false");
+      }
 
-      generatedFiles.addAll(generateFile(roleFile, dir, file, url,
-          resolvedConfig, nodeDir, template, roleName, roleVariantNames, templateName));
+      if (!skip) {
+        // replace placeholders with context variables
+        String dir = variableStringResolver.resolveString(roleFile.getDir(), resolvedConfig);
+        String file = variableStringResolver.resolveString(roleFile.getFile(), resolvedConfig);
+        String url = variableStringResolver.resolveString(roleFile.getUrl(), resolvedConfig);
+
+        generatedFiles.addAll(generateFile(roleFile, dir, file, url,
+            resolvedConfig, nodeDir, template, roleName, roleVariantNames, templateName));
+      }
     }
   }
 
@@ -267,14 +275,6 @@ class EnvironmentGenerator {
     File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, generatedFileName) : generatedFileName);
     if (file.exists()) {
       file.delete();
-    }
-
-    // skip file if condition does not evaluate to a non-empty string or is "false"
-    if (StringUtils.isNotEmpty(roleFile.getCondition())) {
-      String condition = variableStringResolver.resolveString(roleFile.getCondition(), config);
-      if (StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false")) {
-        return ImmutableList.of();
-      }
     }
 
     FileGenerator fileGenerator = new FileGenerator(options, roleName, roleVariantNames, templateName,
