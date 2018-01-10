@@ -71,6 +71,12 @@ public class VariableStringResolverTest {
   }
 
   @Test
+  public void testDefaultEmptyValue() {
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1");
+    assertEquals("The empty value: ''", underTest.resolve("The empty value: '${var2:}'", variables));
+  }
+
+  @Test
   public void testNestedVariables() {
 
     Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "${var1}${var1}", "var3", "${var2}${var1}");

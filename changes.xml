@@ -36,6 +36,9 @@
       <action type="fix" dev="sseifert">
         Fix file name extraction for 'classpath:' url prefix.
       </action>
+      <action type="fix" dev="sseifert">
+        Allow empty strings as default values.
+      </action>
       <action type="update" dev="sseifert">
         SPI changes: This CONGA version includes some SPI changes that are not backward compatbile. CONGA plugins may need to be updated.
       </action>
