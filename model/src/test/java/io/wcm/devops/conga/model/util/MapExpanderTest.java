@@ -21,10 +21,10 @@ package io.wcm.devops.conga.model.util;
 
 import static io.wcm.devops.conga.model.util.MapExpander.expand;
 import static io.wcm.devops.conga.model.util.MapExpander.getDeep;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
