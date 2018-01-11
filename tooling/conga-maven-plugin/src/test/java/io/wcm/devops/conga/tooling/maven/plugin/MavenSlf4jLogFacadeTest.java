@@ -20,9 +20,9 @@
 package io.wcm.devops.conga.tooling.maven.plugin;
 
 import static io.wcm.devops.conga.tooling.maven.plugin.MavenSlf4jLogFacade.formatMessage;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class MavenSlf4jLogFacadeTest {
