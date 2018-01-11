@@ -22,8 +22,8 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.MockOptions.FN_RETURN;
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -36,7 +36,7 @@ public class ContainsHelperTest {
   private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
-  @Before
+  @BeforeEach
   public void setUp() {
     helper = new PluginManagerImpl().get(ContainsHelper.NAME, HelperPlugin.class);
   }

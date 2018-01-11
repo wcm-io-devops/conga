@@ -20,11 +20,12 @@
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -34,7 +35,7 @@ public class EnsurePropertiesHelperTest {
   private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
-  @Before
+  @BeforeEach
   public void setUp() {
     helper = new PluginManagerImpl().get(EnsurePropertiesHelper.NAME, HelperPlugin.class);
   }
@@ -53,27 +54,35 @@ public class EnsurePropertiesHelperTest {
     assertHelper(null, helper, null, new MockOptions());
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testNotSetCase1() throws Exception {
-    assertHelper(null, helper, "p1", new MockOptions());
+    assertThrows(IOException.class, () -> {
+      assertHelper(null, helper, "p1", new MockOptions());
+    });
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testNotSetCase2() throws Exception {
-    assertHelper(null, helper, "p1", new MockOptions("p2", "p3"));
+    assertThrows(IOException.class, () -> {
+      assertHelper(null, helper, "p1", new MockOptions("p2", "p3"));
+    });
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testNotSetCase3() throws Exception {
-    assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
-        .withProperty("p1", "v1")
-        .withProperty("p2", "v2"));
+    assertThrows(IOException.class, () -> {
+      assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
+          .withProperty("p1", "v1")
+          .withProperty("p2", "v2"));
+    });
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testNotSetCase4() throws Exception {
-    assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
-        .withProperty("p2", "v1"));
+    assertThrows(IOException.class, () -> {
+      assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
+          .withProperty("p2", "v1"));
+    });
   }
 
 }

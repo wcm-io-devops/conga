@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -35,12 +35,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 
@@ -77,7 +75,7 @@ public class FileGeneratorFileHeaderTest {
   @Mock
   private Logger logger;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     destDir = new File("target/generation-test/" + getClass().getSimpleName());
     file = new File(destDir, "test.txt");

@@ -19,10 +19,11 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -46,7 +47,7 @@ public class RoleUtilTest {
 
   private Map<String, Role> roleMap;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     roleMap = new HashMap<>();
 
@@ -137,9 +138,11 @@ public class RoleUtilTest {
     roleMap.put("role5", role5);
   }
 
-  @Test(expected = GeneratorException.class)
+  @Test
   public void testUnknownRole() {
-    RoleUtil.resolveRole("roleX", "context", roleMap);
+    assertThrows(GeneratorException.class, () -> {
+      RoleUtil.resolveRole("roleX", "context", roleMap);
+    });
   }
 
   @Test
@@ -235,14 +238,18 @@ public class RoleUtilTest {
         "varparam1", "varvalue3.2"));
   }
 
-  @Test(expected = GeneratorException.class)
+  @Test
   public void testRole4_InheritWithMissingVariants() {
-    RoleUtil.resolveRole("role4", "context", roleMap);
+    assertThrows(GeneratorException.class, () -> {
+      RoleUtil.resolveRole("role4", "context", roleMap);
+    });
   }
 
-  @Test(expected = GeneratorException.class)
+  @Test
   public void testRole5_CyclicInheritance() {
-    RoleUtil.resolveRole("role5", "context", roleMap);
+    assertThrows(GeneratorException.class, () -> {
+      RoleUtil.resolveRole("role5", "context", roleMap);
+    });
   }
 
 

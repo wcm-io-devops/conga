@@ -19,13 +19,13 @@
  */
 package io.wcm.devops.conga.generator.plugins.multiply;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -45,7 +45,7 @@ public class NoneMultiplyTest {
   private Map<String, Object> config;
   private Environment environment;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     underTest = new PluginManagerImpl().get(NoneMultiply.NAME, MultiplyPlugin.class);
 

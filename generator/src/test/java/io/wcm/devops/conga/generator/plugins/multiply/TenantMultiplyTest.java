@@ -19,13 +19,14 @@
  */
 package io.wcm.devops.conga.generator.plugins.multiply;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -33,8 +34,8 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
-import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -56,7 +57,7 @@ public class TenantMultiplyTest {
   private Environment environment;
   private MultiplyContext context;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     PluginManager pluginManager = new PluginManagerImpl();
     underTest = pluginManager.get(TenantMultiply.NAME, MultiplyPlugin.class);
@@ -88,11 +89,13 @@ public class TenantMultiplyTest {
     assertEquals(0, configs.size());
   }
 
-  @Test(expected = GeneratorException.class)
+  @Test
   public void testTenantWithoutName() {
     environment.getTenants().add(new Tenant());
 
-    underTest.multiply(context);
+    assertThrows(GeneratorException.class, () -> {
+      underTest.multiply(context);
+    });
   }
 
   @Test

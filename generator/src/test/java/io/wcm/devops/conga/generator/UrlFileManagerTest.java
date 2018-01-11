@@ -19,16 +19,17 @@
  */
 package io.wcm.devops.conga.generator;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -37,7 +38,7 @@ public class UrlFileManagerTest {
 
   private UrlFileManager underTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     UrlFilePluginContext context = new UrlFilePluginContext();
     underTest = new UrlFileManager(new PluginManagerImpl(), context);
@@ -68,9 +69,11 @@ public class UrlFileManagerTest {
     }
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testGetFile_Invalid() throws Exception {
-    underTest.getFile("other:/x/y/z");
+    assertThrows(IOException.class, () -> {
+      underTest.getFile("other:/x/y/z");
+    });
   }
 
 }

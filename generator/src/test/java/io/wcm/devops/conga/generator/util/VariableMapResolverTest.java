@@ -21,12 +21,13 @@ package io.wcm.devops.conga.generator.util;
 
 import static io.wcm.devops.conga.generator.util.VariableMapResolver.ITEM_VARIABLE;
 import static io.wcm.devops.conga.generator.util.VariableMapResolver.LIST_VARIABLE_ITERATE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -38,7 +39,7 @@ public class VariableMapResolverTest {
 
   private VariableMapResolver underTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(new PluginManagerImpl());
@@ -65,18 +66,22 @@ public class VariableMapResolverTest {
         "key1", "The v1 and v1v2 and v1v1v2v3"), underTest.resolve(map));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNestedCyclicReference() {
     Map<String, Object> map = ImmutableMap.of("var1", "${var2}", "var2", "${var1}");
 
-    underTest.resolve(map);
+    assertThrows(IllegalArgumentException.class, () -> {
+      underTest.resolve(map);
+    });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUnknownVariables() {
     Map<String, Object> map = ImmutableMap.of("key1", "The ${var1} and ${var2}");
 
-    underTest.resolve(map);
+    assertThrows(IllegalArgumentException.class, () -> {
+      underTest.resolve(map);
+    });
   }
 
   @Test

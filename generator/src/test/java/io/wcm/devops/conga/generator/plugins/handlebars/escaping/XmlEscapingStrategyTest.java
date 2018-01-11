@@ -19,12 +19,12 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.escaping;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -33,7 +33,7 @@ public class XmlEscapingStrategyTest {
 
   private EscapingStrategyPlugin underTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     underTest = new PluginManagerImpl().get(XmlEscapingStrategy.NAME, EscapingStrategyPlugin.class);
   }

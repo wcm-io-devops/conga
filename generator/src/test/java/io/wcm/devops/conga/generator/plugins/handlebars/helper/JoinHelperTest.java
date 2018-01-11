@@ -21,8 +21,8 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
@@ -34,7 +34,7 @@ public class JoinHelperTest {
   private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
-  @Before
+  @BeforeEach
   public void setUp() {
     helper = new PluginManagerImpl().get(JoinHelper.NAME, HelperPlugin.class);
   }

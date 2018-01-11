@@ -22,10 +22,10 @@ package io.wcm.devops.conga.generator;
 import static io.wcm.devops.conga.generator.TestUtils.assertDirectory;
 import static io.wcm.devops.conga.generator.TestUtils.assertFile;
 import static io.wcm.devops.conga.generator.TestUtils.setupGenerator;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -42,8 +42,8 @@ import java.util.Map;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.collect.ImmutableList;
@@ -57,7 +57,7 @@ public class GeneratorTestNodeModelExportTest {
   private Generator underTest;
   private File destDir;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     destDir = new File("target/generation-test/" + getClass().getSimpleName());
     underTest = setupGenerator(destDir);

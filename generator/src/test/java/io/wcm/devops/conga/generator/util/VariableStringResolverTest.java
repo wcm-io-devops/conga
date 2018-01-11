@@ -19,12 +19,13 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -37,7 +38,7 @@ public class VariableStringResolverTest {
   private ValueProviderGlobalContext globalContext;
   private VariableStringResolver underTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(new PluginManagerImpl());
@@ -48,7 +49,6 @@ public class VariableStringResolverTest {
 
   @Test
   public void testSimple() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "v2");
 
     assertEquals("The v1 and v2", underTest.resolve("The ${var1} and ${var2}", variables));
@@ -56,7 +56,6 @@ public class VariableStringResolverTest {
 
   @Test
   public void testSingleVariableWithObject() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", ImmutableList.of("v1", "v2"));
 
     assertEquals(ImmutableList.of("v1", "v2"), underTest.resolve("${var1}", variables));
@@ -64,7 +63,6 @@ public class VariableStringResolverTest {
 
   @Test
   public void testDefaultValue() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", "v1");
 
     assertEquals("The v1 and theDefValue2", underTest.resolve("The ${var1:theDefValue1} and ${var2:theDefValue2}", variables));
@@ -78,26 +76,27 @@ public class VariableStringResolverTest {
 
   @Test
   public void testNestedVariables() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "${var1}${var1}", "var3", "${var2}${var1}");
 
     assertEquals("v1,v1v1,v1v1v1", underTest.resolve("${var1},${var2},${var3}", variables));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNestedVariables_IllegalRecursion() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", "${var2}", "var2", "${var1}");
 
-    underTest.resolve("${var1}", variables);
+    assertThrows(IllegalArgumentException.class, () -> {
+      underTest.resolve("${var1}", variables);
+    });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUnknownVariable() {
-
     Map<String, Object> variables = ImmutableMap.of();
 
-    underTest.resolve("${var1}", variables);
+    assertThrows(IllegalArgumentException.class, () -> {
+      underTest.resolve("${var1}", variables);
+    });
   }
 
   @Test
