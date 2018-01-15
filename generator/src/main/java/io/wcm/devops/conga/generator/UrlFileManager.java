@@ -99,16 +99,6 @@ public final class UrlFileManager {
     return handleFile(url, plugin -> plugin.getFileUrl(url, context));
   }
 
-  /**
-   * Get version information from given file URL.
-   * @param url URL string
-   * @return Version or null if no version can be detected
-   * @throws IOException I/O exception
-   */
-  public String getFileVersion(String url) throws IOException {
-    return handleFile(url, plugin -> plugin.getFileVersion(url, context));
-  }
-
   private <T> T handleFile(String url, FileHandler<T> fileHandler) throws IOException {
     if (StringUtils.isBlank(url)) {
       throw new IllegalArgumentException("No URL given.");

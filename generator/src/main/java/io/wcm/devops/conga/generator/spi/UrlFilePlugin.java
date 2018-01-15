@@ -65,13 +65,4 @@ public interface UrlFilePlugin extends Plugin {
    */
   URL getFileUrl(String url, UrlFilePluginContext context) throws IOException;
 
-  /**
-   * Get version information from given file URL.
-   * @param url URL string (including prefix)
-   * @param context Context objects
-   * @return Version or null if no version can be detected
-   * @throws IOException If the access to the file failed
-   */
-  String getFileVersion(String url, UrlFilePluginContext context) throws IOException;
-
 }

@@ -145,14 +145,14 @@ class EnvironmentGenerator {
 
     this.dependencyVersions = combindedDependencyUrls.stream()
         .map(url -> {
-          try {
-            return urlFileManager.getFileVersion(url);
+          // strip off prefix for dependency urls
+          if (StringUtils.contains(url, ":")) {
+            return StringUtils.substringAfter(url, ":");
           }
-          catch (IOException ex) {
-            throw new GeneratorException("Unable to get version from " + url, ex);
+          else {
+            return url;
           }
         })
-        .filter(StringUtils::isNotEmpty)
         .collect(Collectors.toList());
   }
 
