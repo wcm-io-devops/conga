@@ -29,7 +29,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
-import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
 import io.wcm.devops.conga.tooling.maven.plugin.util.PluginConfigUtil;
 
@@ -42,25 +41,25 @@ abstract class AbstractCongaMojo extends AbstractMojo {
    * Source path with templates.
    */
   @Parameter(defaultValue = "${basedir}/src/main/templates")
-  private String templateDir;
+  private File templateDir;
 
   /**
    * Source path with role definitions.
    */
   @Parameter(defaultValue = "${basedir}/src/main/roles")
-  private String roleDir;
+  private File roleDir;
 
   /**
    * Target path for the generated configuration files.
    */
   @Parameter(defaultValue = "${project.build.directory}/configuration")
-  private String target;
+  private File target;
 
   /**
    * Source path with environment definitions.
    */
   @Parameter(defaultValue = "${basedir}/src/main/environments")
-  private String environmentDir;
+  private File environmentDir;
 
   /**
    * List for plugins for exporting model data for nodes.
@@ -108,20 +107,20 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter
   private String pluginConfig;
 
-  protected ResourceCollection getTemplateDir() {
-    return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + templateDir);
+  protected File getTemplateDir() {
+    return templateDir;
   }
 
-  protected ResourceCollection getRoleDir() {
-    return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + roleDir);
+  protected File getRoleDir() {
+    return roleDir;
   }
 
-  protected ResourceCollection getEnvironmentDir() {
-    return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + environmentDir);
+  protected File getEnvironmentDir() {
+    return environmentDir;
   }
 
   protected File getTargetDir() {
-    return new File(target);
+    return target;
   }
 
   protected ModelExport getModelExport() {

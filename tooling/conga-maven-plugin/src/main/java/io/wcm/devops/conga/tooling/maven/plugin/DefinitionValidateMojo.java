@@ -86,9 +86,9 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     resourceLoader = new ResourceLoader();
     ClassLoader resourceClassLoader = ClassLoaderUtil.buildDependencyClassLoader(project);
 
-    ResourceCollection roleDir = getRoleDir();
-    ResourceCollection templateDir = getTemplateDir();
-    ResourceCollection environmentDir = getEnvironmentDir();
+    ResourceCollection roleDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getRoleDir());
+    ResourceCollection templateDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getTemplateDir());
+    ResourceCollection environmentDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getEnvironmentDir());
 
     // validate role definition syntax
     validateFiles(roleDir, roleDir, new ModelValidator("Role", new RoleReader()));

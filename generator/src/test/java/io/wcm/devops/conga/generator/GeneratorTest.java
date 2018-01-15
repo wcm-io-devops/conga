@@ -19,7 +19,6 @@
  */
 package io.wcm.devops.conga.generator;
 
-import static io.wcm.devops.conga.generator.TestUtils.TEST_DEPENDENCY_VERSION;
 import static io.wcm.devops.conga.generator.TestUtils.TEST_VERSION;
 import static io.wcm.devops.conga.generator.TestUtils.assertContains;
 import static io.wcm.devops.conga.generator.TestUtils.assertDirectory;
@@ -74,7 +73,6 @@ public class GeneratorTest {
     assertContains(json1, "\"defaultString\": \"value2\"");
     assertContains(json1, "\"globalString\": \"globalValue äöüß€\"");
     assertContains(json1, TEST_VERSION);
-    assertContains(json1, TEST_DEPENDENCY_VERSION);
     assertContains(json1, "\"partialDefaultString\": \"value2\"");
 
     File xml1tenant1 = assertFile(node1Dir, "xml/test.tenant1.tenantRole1,tenantRole2.env1.xml");
@@ -83,7 +81,6 @@ public class GeneratorTest {
     assertContains(xml1tenant1, "<globalString>globalValue äöüß€</globalString>");
     assertContains(xml1tenant1, "<variableString>The v1-role1-variant11${novar}</variableString>");
     assertContains(json1, TEST_VERSION);
-    assertContains(xml1tenant1, TEST_DEPENDENCY_VERSION);
 
     File xml1tenant2 = assertFile(node1Dir, "xml/test.tenant2.tenantRole1.env1.xml");
     assertContains(xml1tenant2, "XML file äöüß€ with UTF-8 encoding for tenant2");

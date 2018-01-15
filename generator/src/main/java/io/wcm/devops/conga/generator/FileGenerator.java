@@ -83,11 +83,14 @@ class FileGenerator {
   private final ValidatorContext validatorContext;
   private final PostProcessorContext postProcessorContext;
 
-  FileGenerator(EnvironmentGeneratorOptions options,
+  //CHECKSTYLE:OFF
+  FileGenerator(GeneratorOptions options, String environmentName,
       String roleName, List<String> roleVariantNames, String templateName,
       File nodeDir, File file, String url, RoleFile roleFile, Map<String, Object> config, Template template,
-      VariableMapResolver variableMapResolver) {
-    this.environmentName = options.getEnvironmentName();
+      VariableMapResolver variableMapResolver, UrlFileManager urlFileManager, PluginContextOptions pluginContextOptions,
+      List<String> dependencyVersions) {
+    //CHECKSTYLE:ON
+    this.environmentName = environmentName;
     this.roleName = roleName;
     this.roleVariantNames = roleVariantNames;
     this.templateName = templateName;
@@ -97,7 +100,7 @@ class FileGenerator {
     this.roleFile = roleFile;
     this.template = template;
     this.pluginManager = options.getPluginManager();
-    this.urlFileManager = options.getUrlFileManager();
+    this.urlFileManager = urlFileManager;
     this.log = options.getLogger();
     this.fileContext = new FileContext()
         .file(file)
@@ -107,13 +110,13 @@ class FileGenerator {
     // overlay logger in options with plugin-specific logger
     Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");
     PluginContextOptions pluginContextOptionsForPlugin = new PluginContextOptions()
-        .pluginContextOptions(options.getPluginContextOptions())
+        .pluginContextOptions(pluginContextOptions)
         .logger(pluginLogger);
 
 
     this.fileHeaderContext = new FileHeaderContext()
         .pluginContextOptions(pluginContextOptionsForPlugin)
-        .commentLines(buildFileHeaderCommentLines(options.getVersion(), options.getDependencyVersions()));
+        .commentLines(buildFileHeaderCommentLines(options.getVersion(), dependencyVersions));
 
     this.validatorContext = new ValidatorContext()
         .pluginContextOptions(pluginContextOptionsForPlugin)

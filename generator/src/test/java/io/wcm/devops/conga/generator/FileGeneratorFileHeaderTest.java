@@ -42,7 +42,6 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
@@ -74,8 +73,6 @@ public class FileGeneratorFileHeaderTest {
   private Template template;
   @Mock
   private PluginManager pluginManager;
-  @Mock
-  private Logger logger;
 
   @Before
   public void setUp() {
@@ -98,22 +95,19 @@ public class FileGeneratorFileHeaderTest {
       }
     });
 
+    GeneratorOptions options = new GeneratorOptions()
+        .pluginManager(pluginManager)
+        .version("1.0");
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
-        .logger(logger);
-    EnvironmentGeneratorOptions options = new EnvironmentGeneratorOptions()
-        .environmentName("env1")
-        .pluginManager(pluginManager)
-        .urlFileManager(urlFileManager)
-        .version("1.0")
-        .dependencyVersions(ImmutableList.<String>of())
-        .pluginContextOptions(pluginContextOptions)
-        .logger(logger);
+        .logger(options.getLogger());
     VariableMapResolver variableMapResolver = new VariableMapResolver(
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
-    underTest = new FileGenerator(options, "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template, variableMapResolver);
+    underTest = new FileGenerator(options, "env1",
+        "role1", ImmutableList.of("variant1"), "template1",
+        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template,
+        variableMapResolver, urlFileManager, pluginContextOptions, options.getContainerDependencyUrls());
   }
 
   @Test

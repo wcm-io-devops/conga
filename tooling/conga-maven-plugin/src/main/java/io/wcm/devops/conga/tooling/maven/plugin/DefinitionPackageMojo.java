@@ -19,10 +19,10 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import static io.wcm.devops.conga.generator.GeneratorOptions.CLASSPATH_ENVIRONMENTS_DIR;
+import static io.wcm.devops.conga.generator.GeneratorOptions.CLASSPATH_ROLES_DIR;
+import static io.wcm.devops.conga.generator.GeneratorOptions.CLASSPATH_TEMPLATES_DIR;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSIFIER_DEFINITION;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ENVIRONMENTS_DIR;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ROLES_DIR;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_TEMPLATES_DIR;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.FILE_EXTENSION_DEFINITION;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_DEFINITION;
 
@@ -171,9 +171,9 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
       outputDir.mkdirs();
     }
 
-    ResourceCollection roleDir = getRoleDir();
-    ResourceCollection templateDir = getTemplateDir();
-    ResourceCollection environmentDir = getEnvironmentDir();
+    ResourceCollection roleDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getRoleDir());
+    ResourceCollection templateDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getTemplateDir());
+    ResourceCollection environmentDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getEnvironmentDir());
 
     // copy definitions
     try {

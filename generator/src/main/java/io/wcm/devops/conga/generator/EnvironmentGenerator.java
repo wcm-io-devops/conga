@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,7 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.export.NodeModelExport;
@@ -59,19 +61,23 @@ import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
+import io.wcm.devops.conga.model.reader.RoleReader;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.model.role.RoleVariant;
 import io.wcm.devops.conga.model.util.MapMerger;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 /**
  * Generates file for one environment.
  */
 class EnvironmentGenerator {
 
-  private final EnvironmentGeneratorOptions options;
+  private final GeneratorOptions options;
   private final String environmentName;
   private final Environment environment;
+  private final File destDir;
   private final PluginContextOptions pluginContextOptions;
   private final HandlebarsManager handlebarsManager;
   private final UrlFileManager urlFileManager;
@@ -80,21 +86,41 @@ class EnvironmentGenerator {
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
   private final VariableObjectTreeResolver variableObjectTreeResolver;
+  private final List<String> dependencyVersions;
 
+  private final Map<String, Role> roles;
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
 
-  EnvironmentGenerator(EnvironmentGeneratorOptions options, Environment environment) {
+  EnvironmentGenerator(String environmentName, Environment environment, File destDir,
+      GeneratorOptions options) {
     this.options = options;
-    this.environmentName = options.getEnvironmentName();
-    this.environment = EnvironmentExpander.expandNodes(environment, options.getEnvironmentName());
+    this.environmentName = environmentName;
+    this.environment = EnvironmentExpander.expandNodes(environment, environmentName);
+    this.destDir = destDir;
     this.log = options.getLogger();
 
+    // build resource loaded based on combined dependency lists of environment and container
+    List<String> combindedDependencyUrls = new ArrayList<>();
+    combindedDependencyUrls.addAll(environment.getDependencies());
+    combindedDependencyUrls.addAll(options.getContainerDependencyUrls());
+    ClassLoader resourceClassLoader = ResourceLoaderUtil.buildDependencyClassLoader(combindedDependencyUrls, options);
+    ResourceLoader resourceLoader = new ResourceLoader(resourceClassLoader);
+
+    // prepare template and role directories
+    List<ResourceCollection> templateDirs = ImmutableList.of(
+        resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + options.getTemplateDir()),
+        resourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + GeneratorOptions.CLASSPATH_TEMPLATES_DIR));
+    List<ResourceCollection> roleDirs = ImmutableList.of(
+        resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + options.getRoleDir()),
+        resourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + GeneratorOptions.CLASSPATH_ROLES_DIR));
+
+    this.roles = ResourceLoaderUtil.readModels(roleDirs, new RoleReader());
+
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
-        .baseDir(project.getBasedir())
+        .baseDir(options.getBaseDir())
         .resourceClassLoader(resourceClassLoader)
         .containerContext(options.getUrlFilePluginContainerContext());
-
     this.urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
 
     this.pluginContextOptions = new PluginContextOptions()
@@ -103,7 +129,7 @@ class EnvironmentGenerator {
         .urlFileManager(this.urlFileManager)
         .genericPluginConfig(options.getGenericPluginConfig());
 
-    this.handlebarsManager = new HandlebarsManager(options.getTemplateDirs(), this.pluginContextOptions);
+    this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginContextOptions);
 
     ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
         .pluginContextOptions(this.pluginContextOptions)
@@ -116,6 +142,18 @@ class EnvironmentGenerator {
     this.environmentContextProperties = ImmutableMap.copyOf(
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, options.getVersion(),
             variableObjectTreeResolver, variableStringResolver));
+
+    this.dependencyVersions = combindedDependencyUrls.stream()
+        .map(url -> {
+          try {
+            return urlFileManager.getFileVersion(url);
+          }
+          catch (IOException ex) {
+            throw new GeneratorException("Unable to get version from " + url, ex);
+          }
+        })
+        .filter(StringUtils::isNotEmpty)
+        .collect(Collectors.toList());
   }
 
   public void generate() {
@@ -137,13 +175,13 @@ class EnvironmentGenerator {
     log.info("");
     log.info("----- Node '{}' -----", node.getNode());
 
-    File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(options.getDestDir(), node.getNode()));
+    File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
     NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, options.getModelExport(), options.getPluginManager(),
         variableStringResolver, variableMapResolver);
 
     for (NodeRole nodeRole : node.getRoles()) {
       // get role and resolve all inheritance relations
-      Map<String, Role> resolvedRoles = RoleUtil.resolveRole(nodeRole.getRole(), environmentName + "/" + node.getNode(), options.getRoles());
+      Map<String, Role> resolvedRoles = RoleUtil.resolveRole(nodeRole.getRole(), environmentName + "/" + node.getNode(), roles);
       for (Map.Entry<String, Role> resolvedRole : resolvedRoles.entrySet()) {
         String roleName = resolvedRole.getKey();
         Role role = resolvedRole.getValue();
@@ -283,7 +321,7 @@ class EnvironmentGenerator {
     String generatedFileName = fileName;
     if (StringUtils.isBlank(generatedFileName) && StringUtils.isNotBlank(url)) {
       try {
-        generatedFileName = options.getUrlFileManager().getFileName(url);
+        generatedFileName = urlFileManager.getFileName(url);
       }
       catch (IOException ex) {
         throw new GeneratorException("Unable to get file name from URL: " + url, ex);
@@ -295,8 +333,10 @@ class EnvironmentGenerator {
       file.delete();
     }
 
-    FileGenerator fileGenerator = new FileGenerator(options, roleName, roleVariantNames, templateName,
-        nodeDir, file, url, roleFile, config, template, variableMapResolver);
+    FileGenerator fileGenerator = new FileGenerator(options, environmentName,
+        roleName, roleVariantNames, templateName,
+        nodeDir, file, url, roleFile, config, template,
+        variableMapResolver, urlFileManager, pluginContextOptions, dependencyVersions);
     try {
       Collection<GeneratedFileContext> generatedFiles = fileGenerator.generate();
 

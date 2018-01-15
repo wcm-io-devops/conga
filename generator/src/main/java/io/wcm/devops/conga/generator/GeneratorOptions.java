@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,16 +28,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
+import io.wcm.devops.conga.generator.util.PluginManager;
 
 /**
  * Options for generator.
  */
-public class GeneratorOptions {
+public final class GeneratorOptions {
+
+  /**
+   * Prefix for all CONGA resources in classpath.
+   */
+  public static final String CLASSPATH_PREFIX = "CONGA-INF/";
+
+  /**
+   * Classpath directory in JAR file for roles
+   */
+  public static final String CLASSPATH_ROLES_DIR = CLASSPATH_PREFIX + "roles";
+
+  /**
+   * Classpath directory in JAR file for roles
+   */
+  public static final String CLASSPATH_TEMPLATES_DIR = CLASSPATH_PREFIX + "templates";
+
+  /**
+   * Classpath directory in JAR file for roles
+   */
+  public static final String CLASSPATH_ENVIRONMENTS_DIR = CLASSPATH_PREFIX + "environments";
+
 
   private File baseDir;
-  private String roleDir;
-  private String templateDir;
-  private String environmentDir;
+  private File roleDir;
+  private File templateDir;
+  private File environmentDir;
   private File destDir;
   private boolean deleteBeforeGenerate;
   private String version;
@@ -44,7 +67,8 @@ public class GeneratorOptions {
   private Map<String, Map<String, Object>> valueProviderConfig;
   private Map<String, Map<String, Object>> genericPluginConfig;
   private Object urlFilePluginContainerContext;
-  private List<String> containerDependencyUrls;
+  private List<String> containerDependencyUrls = new ArrayList<>();
+  private PluginManager pluginManager;
   private Logger logger = LoggerFactory.getLogger(Generator.class);
 
   /**
@@ -65,9 +89,9 @@ public class GeneratorOptions {
 
   /**
    * Directory with role definitions. Filename without extension = role name.
-   * @return Directory path
+   * @return Directory
    */
-  public String getRoleDir() {
+  public File getRoleDir() {
     return this.roleDir;
   }
 
@@ -75,16 +99,16 @@ public class GeneratorOptions {
    * @param value Directory with role definitions. Filename without extension = role name.
    * @return this
    */
-  public GeneratorOptions roleDirs(String value) {
+  public GeneratorOptions roleDir(File value) {
     this.roleDir = value;
     return this;
   }
 
   /**
    * Template base directory
-   * @return Directory path
+   * @return Directory
    */
-  public String getTemplateDir() {
+  public File getTemplateDir() {
     return this.templateDir;
   }
 
@@ -92,16 +116,16 @@ public class GeneratorOptions {
    * @param value Template base directory
    * @return this
    */
-  public GeneratorOptions templateDirs(String value) {
+  public GeneratorOptions templateDir(File value) {
     this.templateDir = value;
     return this;
   }
 
   /**
    * Directory with environment definitions. Filename without extension = environment name.
-   * @return Directory path
+   * @return Directory
    */
-  public String getEnvironmentDir() {
+  public File getEnvironmentDir() {
     return this.environmentDir;
   }
 
@@ -109,7 +133,7 @@ public class GeneratorOptions {
    * @param value Directory with environment definitions. Filename without extension = environment name.
    * @return this
    */
-  public GeneratorOptions environmentDirs(String value) {
+  public GeneratorOptions environmentDir(File value) {
     this.environmentDir = value;
     return this;
   }
@@ -245,6 +269,22 @@ public class GeneratorOptions {
    */
   public GeneratorOptions containerDependencyUrls(List<String> value) {
     this.containerDependencyUrls = value;
+    return this;
+  }
+
+  /**
+   * @return Plugin manager
+   */
+  public PluginManager getPluginManager() {
+    return this.pluginManager;
+  }
+
+  /**
+   * @param value Plugin manager
+   * @return this
+   */
+  public GeneratorOptions pluginManager(PluginManager value) {
+    this.pluginManager = value;
     return this;
   }
 

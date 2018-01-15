@@ -39,6 +39,7 @@ import org.apache.maven.project.MavenProject;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+import io.wcm.devops.conga.generator.GeneratorOptions;
 import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 
@@ -86,7 +87,7 @@ public class ValidateVersionInfoMojo extends AbstractMojo {
     PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(classLoader);
     try {
       Resource[] resources = resolver.getResources(
-          "classpath*:" + BuildConstants.CLASSPATH_PREFIX + BuildConstants.FILE_VERSION_INFO);
+          "classpath*:" + GeneratorOptions.CLASSPATH_PREFIX + BuildConstants.FILE_VERSION_INFO);
       return Arrays.stream(resources)
           .map(resource -> toProperties(resource))
           .collect(Collectors.toList());

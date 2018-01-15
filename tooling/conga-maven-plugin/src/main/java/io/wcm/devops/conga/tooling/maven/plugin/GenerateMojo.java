@@ -19,10 +19,6 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ENVIRONMENTS_DIR;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ROLES_DIR;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_TEMPLATES_DIR;
-
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
@@ -51,17 +47,14 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.RepositorySystem;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.Generator;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.GeneratorOptions;
-import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePlugin;
 import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePluginContext;
-import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 
 /**
  * Generates configuration using CONGA generator.
@@ -103,40 +96,30 @@ public class GenerateMojo extends AbstractCongaMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    ClassLoader resourceClassLoader = ClassLoaderUtil.buildDependencyClassLoader(project);
-    resourceLoader = new ResourceLoader(resourceClassLoader);
 
-    List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_ROLES_DIR));
-    List<ResourceCollection> templateDirs = ImmutableList.of(getTemplateDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_TEMPLATES_DIR));
-    List<ResourceCollection> environmentDirs = ImmutableList.of(getEnvironmentDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_ENVIRONMENTS_DIR));
-
-    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
-        .baseDir(project.getBasedir())
-        .resourceClassLoader(resourceClassLoader)
-        .containerContext(new MavenUrlFilePluginContext()
-            .project(project)
-            .repository(repository)
-            .localRepository(localRepository)
-            .remoteRepositories(remoteRepositories));
+    MavenUrlFilePluginContext urlFilePluginContainerContext = new MavenUrlFilePluginContext()
+        .project(project)
+        .repository(repository)
+        .localRepository(localRepository)
+        .remoteRepositories(remoteRepositories);
 
     GeneratorOptions options = new GeneratorOptions()
-        .roleDirs(roleDirs)
-        .templateDirs(templateDirs)
-        .environmentDirs(environmentDirs)
+        .baseDir(project.getBasedir())
+        .roleDir(getRoleDir())
+        .templateDir(getTemplateDir())
+        .environmentDir(getEnvironmentDir())
         .destDir(getTargetDir())
-        .urlFilePluginContext(urlFilePluginContext)
         .deleteBeforeGenerate(deleteBeforeGenerate)
         .version(project.getVersion())
-        .dependencyVersions(buildDependencyVersionList())
         .modelExport(getModelExport())
         .valueProviderConfig(getValueProviderConfig())
-        .genericPluginConfig(getPluginConfig());
+        .genericPluginConfig(getPluginConfig())
+        .urlFilePluginContainerContext(urlFilePluginContainerContext)
+        .containerDependencyUrls(buildDependencyUrlList())
+        .pluginManager(new PluginManagerImpl())
+        .logger(new MavenSlf4jLogFacade(getLog()));
 
     Generator generator = new Generator(options);
-    generator.setLogger(new MavenSlf4jLogFacade(getLog()));
     generator.generate(environments);
   }
 
@@ -145,13 +128,14 @@ public class GenerateMojo extends AbstractCongaMojo {
    * @return Version list
    */
   @SuppressWarnings("deprecation")
-  private List<String> buildDependencyVersionList() {
+  private List<String> buildDependencyUrlList() {
     getLog().info("Scanning dependencies for CONGA definitions...");
     return project.getCompileDependencies().stream()
         // include only dependencies with a CONGA-INF/ directory
         .filter(this::hasCongaDefinitions)
         // transform to string
-        .map(dependency -> dependency.getGroupId() + "/" + dependency.getArtifactId() + "/" + dependency.getVersion()
+        .map(dependency -> MavenUrlFilePlugin.PREFIX + dependency.getGroupId() + "/" + dependency.getArtifactId()
+            + "/" + dependency.getVersion() + "/jar"
         + (dependency.getClassifier() != null ? "/" + dependency.getClassifier() : ""))
         .collect(Collectors.toList());
   }
@@ -173,7 +157,7 @@ public class GenerateMojo extends AbstractCongaMojo {
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
           ZipEntry entry = entries.nextElement();
-          if (StringUtils.startsWith(entry.getName(), BuildConstants.CLASSPATH_PREFIX)) {
+          if (StringUtils.startsWith(entry.getName(), GeneratorOptions.CLASSPATH_PREFIX)) {
             return true;
           }
         }

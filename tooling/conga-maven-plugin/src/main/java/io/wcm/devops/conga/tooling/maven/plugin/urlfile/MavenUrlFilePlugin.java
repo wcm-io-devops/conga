@@ -47,7 +47,10 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
    */
   public static final String NAME = "maven";
 
-  private static final String PREFIX = "mvn:";
+  /**
+   * Url prefix
+   */
+  public static final String PREFIX = "mvn:";
 
   @Override
   public String getName() {

@@ -61,7 +61,7 @@ public interface UrlFilePlugin extends Plugin {
    * @param url URL string (including prefix)
    * @param context Context objects
    * @return URL to file
-   * @throws IOException
+   * @throws IOException If the access to the file failed
    */
   URL getFileUrl(String url, UrlFilePluginContext context) throws IOException;
 

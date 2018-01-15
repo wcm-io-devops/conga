@@ -26,75 +26,37 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 
-import io.wcm.devops.conga.generator.export.ModelExport;
-import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.generator.util.PluginManager;
-import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
-import io.wcm.devops.conga.model.reader.ModelReader;
-import io.wcm.devops.conga.model.reader.RoleReader;
-import io.wcm.devops.conga.model.role.Role;
-import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 
 /**
  * Main entry point for CONGA generator.
  */
 public final class Generator {
 
-  private final Map<String, Role> roles;
-  private final Map<String, Environment> environments;
+  private final GeneratorOptions options;
   private final File destDir;
-  private final PluginManager pluginManager;
-  private final boolean deleteBeforeGenerate;
-  private final String version;
-  private final ModelExport modelExport;
-  private Map<String, Map<String, Object>> valueProviderConfig;
-  private final Object urlFilePluginContainerContext;
-  private final List<String> containerDependencyUrls;
-  private final Logger log;
+  private final Map<String, Environment> environments;
 
   /**
    * @param options Generator options
    */
   public Generator(GeneratorOptions options) {
-    this.pluginManager = new PluginManagerImpl();
-    this.roles = readModels(options.getRoleDirs(), new RoleReader());
-    this.environments = readModels(options.getEnvironmentDirs(), new EnvironmentReader());
+    this.options = options;
     this.destDir = FileUtil.ensureDirExistsAutocreate(options.getDestDir());
-    this.deleteBeforeGenerate = options.isDeleteBeforeGenerate();
-    this.version = options.getVersion();
-    this.modelExport = options.getModelExport();
-    this.valueProviderConfig = options.getValueProviderConfig();
-    this.urlFilePluginContainerContext = options.getUrlFilePluginContainerContext();
-    this.containerDependencyUrls = options.getContainerDependencyUrls();
-    this.log = options.getLogger();
-  }
 
-  private static <T> Map<String, T> readModels(List<ResourceCollection> dirs, ModelReader<T> reader) {
-    Map<String, T> models = new HashMap<>();
-    for (ResourceCollection dir : dirs) {
-      for (Resource file : dir.getResources()) {
-        if (reader.accepts(file)) {
-          try {
-            T model = reader.read(file);
-            ConfigInheritanceResolver.resolve(model);
-            models.put(FilenameUtils.getBaseName(file.getName()), model);
-          }
-          /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
-            throw new GeneratorException("Unable to read definition: " + file.getCanonicalPath(), ex);
-          }
-        }
-      }
-    }
-    return ImmutableMap.copyOf(models);
+    ClassLoader resourceClassLoader = ResourceLoaderUtil.buildDependencyClassLoader(options.getContainerDependencyUrls(), options);
+    ResourceLoader resourceLoader = new ResourceLoader(resourceClassLoader);
+    List<ResourceCollection> environmentDirs = ImmutableList.of(
+        resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + options.getEnvironmentDir()),
+        resourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + GeneratorOptions.CLASSPATH_ENVIRONMENTS_DIR));
+    this.environments = ResourceLoaderUtil.readModels(environmentDirs, new EnvironmentReader());
   }
 
   /**
@@ -118,7 +80,7 @@ public final class Generator {
     for (Map.Entry<String, Environment> entry : selectedEnvironments.entrySet()) {
       File environmentDestDir = new File(destDir, entry.getKey());
       // remove existing directory and it's content if it exists alreday
-      if (deleteBeforeGenerate && environmentDestDir.exists()) {
+      if (options.isDeleteBeforeGenerate() && environmentDestDir.exists()) {
         try {
           FileUtils.deleteDirectory(environmentDestDir);
         }
@@ -130,18 +92,7 @@ public final class Generator {
         environmentDestDir.mkdir();
       }
 
-      EnvironmentGeneratorOptions options = new EnvironmentGeneratorOptions()
-          .roles(roles)
-          .environmentName(entry.getKey())
-          .destDir(environmentDestDir)
-          .pluginManager(pluginManager)
-          .version(version)
-          .modelExport(modelExport)
-          .valueProviderConfig(valueProviderConfig)
-          .urlFilePluginContainerContext(urlFilePluginContainerContext)
-          .containerDependencyUrls(containerDependencyUrls)
-          .logger(log);
-      EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(options, entry.getValue());
+      EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(entry.getKey(), entry.getValue(), environmentDestDir, options);
       environmentGenerator.generate();
     }
   }
