@@ -35,6 +35,7 @@ public final class Environment extends AbstractConfigurable {
   private List<Node> nodes = new ArrayList<>();
   private List<RoleConfig> roleConfig = new ArrayList<>();
   private List<Tenant> tenants = new ArrayList<>();
+  private List<String> dependencies = new ArrayList<>();
 
   /**
    * Defines nodes for the environment.
@@ -64,7 +65,7 @@ public final class Environment extends AbstractConfigurable {
   /**
    * Defines a list of tenants for configuration files that have tenant-specific system configurations.
    * E.g. vhosts files for Apache Webserver.
-   * @return List of tenans
+   * @return List of tenants
    */
   public List<Tenant> getTenants() {
     return this.tenants;
@@ -72,6 +73,19 @@ public final class Environment extends AbstractConfigurable {
 
   public void setTenants(List<Tenant> tenants) {
     this.tenants = defaultEmptyList(tenants);
+  }
+
+  /**
+   * Defines a list of file URLs pointing to JAR files with CONGA definitions that contain dependencies (e.g. roles) to
+   * be used in this environment.
+   * @return List of dependencies
+   */
+  public List<String> getDependencies() {
+    return this.dependencies;
+  }
+
+  public void setDependencies(List<String> dependencies) {
+    this.dependencies = defaultEmptyList(dependencies);
   }
 
 }
