@@ -21,10 +21,10 @@ package io.wcm.devops.conga.generator.plugins.postprocessor;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.CharEncoding;
 
 import com.google.common.collect.ImmutableList;
 
@@ -50,12 +50,12 @@ class DummyPostProcessor extends AbstractPostProcessor {
 
     File newFile = new File("target/generation-test/postProcessorResult.conf");
     try {
-      FileUtils.writeStringToFile(newFile, "Test Config Content", CharEncoding.UTF_8);
+      FileUtils.writeStringToFile(newFile, "Test Config Content", StandardCharsets.UTF_8);
     }
     catch (IOException ex) {
       throw new RuntimeException(ex);
     }
-    FileContext newFileContext = new FileContext().file(newFile).charset(CharEncoding.UTF_8);
+    FileContext newFileContext = new FileContext().file(newFile).charset(StandardCharsets.UTF_8);
 
     applyFileHeader(newFileContext, fileHeader, context);
 

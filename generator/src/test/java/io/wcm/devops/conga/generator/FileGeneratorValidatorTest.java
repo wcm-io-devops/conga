@@ -51,9 +51,10 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
@@ -97,11 +98,22 @@ public class FileGeneratorValidatorTest {
       }
     });
 
-    underTest = new FileGenerator("env1", "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(),
-        template, pluginManager, urlFileManager,
-        "1.0", ImmutableList.<String>of(), logger,
-        new VariableMapResolver(new ValueProviderContext().pluginManager(pluginManager)));
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
+        .logger(logger);
+    EnvironmentGeneratorOptions options = new EnvironmentGeneratorOptions()
+        .environmentName("env1")
+        .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
+        .version("1.0")
+        .dependencyVersions(ImmutableList.<String>of())
+        .pluginContextOptions(pluginContextOptions)
+        .logger(logger);
+    VariableMapResolver variableMapResolver = new VariableMapResolver(
+        new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
+    underTest = new FileGenerator(options, "role1", ImmutableList.of("variant1"), "template1",
+        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template, variableMapResolver);
   }
 
   @Test

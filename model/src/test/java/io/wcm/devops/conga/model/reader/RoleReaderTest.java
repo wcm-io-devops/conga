@@ -26,9 +26,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -107,7 +107,7 @@ public class RoleReaderTest {
     assertEquals(ImmutableMap.of("option2", "value2"), file.getPostProcessorOptions());
     assertEquals("sling-provisioning", file.getFileHeader());
     assertEquals("none", file.getMultiply());
-    assertEquals(CharEncoding.UTF_8, file.getCharset());
+    assertEquals(StandardCharsets.UTF_8.name(), file.getCharset());
     assertEquals(LineEndings.windows, file.getLineEndings());
     assertEquals("none", file.getEscapingStrategy());
 

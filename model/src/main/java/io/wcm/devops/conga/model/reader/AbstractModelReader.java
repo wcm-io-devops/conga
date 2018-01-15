@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.collect.ImmutableSet;
@@ -63,7 +63,7 @@ public abstract class AbstractModelReader<T> implements ModelReader<T> {
 
   @Override
   public final T read(InputStream is) throws IOException {
-    return read(new InputStreamReader(is, CharEncoding.UTF_8));
+    return read(new InputStreamReader(is, StandardCharsets.UTF_8));
   }
 
   @Override

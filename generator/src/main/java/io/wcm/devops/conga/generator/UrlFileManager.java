@@ -50,6 +50,7 @@ public final class UrlFileManager {
     this.urlFilePlugins = pluginManager.getAll(UrlFilePlugin.class);
     this.defaultUrlFilePlugins = pluginManager.get(FilesystemUrlFilePlugin.NAME, UrlFilePlugin.class);
     this.context = context;
+    this.context.getPluginContextOptions().urlFileManager(this);
   }
 
   /**

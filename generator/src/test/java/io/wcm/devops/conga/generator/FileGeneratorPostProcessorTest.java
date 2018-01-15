@@ -31,13 +31,13 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,9 +56,10 @@ import com.google.common.collect.ImmutableSet;
 import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
@@ -102,11 +103,22 @@ public class FileGeneratorPostProcessorTest {
       }
     });
 
-    underTest = new FileGenerator("env1", "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(),
-        template, pluginManager, urlFileManager,
-        "1.0", ImmutableList.<String>of(), logger,
-        new VariableMapResolver(new ValueProviderContext().pluginManager(pluginManager)));
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
+        .logger(logger);
+    EnvironmentGeneratorOptions options = new EnvironmentGeneratorOptions()
+        .environmentName("env1")
+        .pluginManager(pluginManager)
+        .urlFileManager(urlFileManager)
+        .version("1.0")
+        .dependencyVersions(ImmutableList.<String>of())
+        .pluginContextOptions(pluginContextOptions)
+        .logger(logger);
+    VariableMapResolver variableMapResolver = new VariableMapResolver(
+        new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
+    underTest = new FileGenerator(options, "role1", ImmutableList.of("variant1"), "template1",
+        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template, variableMapResolver);
   }
 
   @Test
@@ -286,7 +298,7 @@ public class FileGeneratorPostProcessorTest {
 
   private FileContext newFile(String fileName) throws IOException {
     File newFile = new File(destDir, fileName);
-    FileUtils.write(newFile, fileName, CharEncoding.UTF_8);
+    FileUtils.write(newFile, fileName, StandardCharsets.UTF_8);
     return new FileContext().file(newFile);
   }
 

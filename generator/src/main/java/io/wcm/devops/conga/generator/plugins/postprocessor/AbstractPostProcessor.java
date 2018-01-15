@@ -46,9 +46,7 @@ public abstract class AbstractPostProcessor implements PostProcessorPlugin {
     FileHeaderPlugin fileHeaderPlugin = detectFileHeaderPlugin(file, postProcessorContext);
     if (fileHeaderPlugin != null) {
       return fileHeaderPlugin.extract(file)
-          .pluginManager(postProcessorContext.getPluginManager())
-          .urlFileManager(postProcessorContext.getUrlFileManager())
-          .logger(postProcessorContext.getLogger());
+          .pluginContextOptions(postProcessorContext.getPluginContextOptions());
     }
     else {
       return null;

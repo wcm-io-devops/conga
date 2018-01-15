@@ -60,7 +60,7 @@ See API documentation for the detailed plugin interfaces:
 |-------------|-------------
 | `yaml`      | Dumps all "model data" (expanded configuration, list of generated files and tenants) from CONGA to "model.yaml" files for each node. This file can be picked up by infrastructure automation tools e.g. Ansible to execute the further deployment steps.
 
-#### URL File Plugins plugins
+#### URL File plugins
 
 | Plugin name  | URL Prefix            | Description
 |--------------|-----------------------|-------------

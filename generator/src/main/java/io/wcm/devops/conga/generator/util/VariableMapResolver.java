@@ -34,7 +34,7 @@ import java.util.regex.Matcher;
 import com.google.common.collect.ImmutableList;
 import com.rits.cloning.Cloner;
 
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
 /**
  * Resolve variables in a map referencing other entries from the same map.
@@ -64,11 +64,11 @@ public final class VariableMapResolver {
   private final VariableStringResolver variableStringResolver;
 
   /**
-   * @param context Value provider context
+   * @param valueProviderGlobalContext Value provider global context
    */
-  public VariableMapResolver(ValueProviderContext context) {
-    this.variableResolver = new VariableResolver(context);
-    this.variableStringResolver = new VariableStringResolver(context);
+  public VariableMapResolver(ValueProviderGlobalContext valueProviderGlobalContext) {
+    this.variableResolver = new VariableResolver(valueProviderGlobalContext);
+    this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
   }
 
   /**

@@ -2,10 +2,9 @@
 
 For a full documentation of handlebars syntax see [Handlebars][handlebars] and [Handlebars Java][handlebars-java] websites. This page lists a collection of handlebars expressions that are most useful when writing CONGA templates.
 
+See also [Custom Handlebars expressions][handlebars-helpers].
 
-### Handlebars basic expressions
-
-#### Variable references
+### Variable references
 
 To insert a variable from configuration parameter maps with escaping (escaping strategy depending on file type):
 
@@ -24,7 +23,7 @@ To insert a variable without escaping (you have to take care of generating a val
 See [YAML definition][yaml-definitions] for more information about configuration parameter maps.
 
 
-#### Conditions
+### Conditions
 
 To conditionally generate a block:
 
@@ -45,7 +44,7 @@ Optionally you can define an else block:
 ```
 
 
-#### For each loop
+### For each loop
 
 To loop about a list of values:
 
@@ -72,7 +71,7 @@ To insert the list index from the for each loop:
 ```
 
 
-#### Whitespace handling
+### Whitespace handling
 
 You can control whitespace handling around handlebar expressions by inserting `~` at the beginning or end of the handlebars expression. On the side of this expression all whitespaces are removed up to the next handlebars expression or non-white space content.
 
@@ -93,7 +92,7 @@ Example: Remove all whitespaces around the expression:
 ```
 
 
-#### Partials and blocks
+### Partials and blocks
 
 If you want to modularize your templates and reused a shared set of content or expressions in multiple templates you can use partials and blocks.
 
@@ -141,7 +140,7 @@ You can overwrite parts from the shared file by overwriting single blocks with a
 ```
 
 
-#### Comments
+### Comments
 
 To include a comment that is stripped from the generated file:
 
@@ -150,93 +149,8 @@ To include a comment that is stripped from the generated file:
 ```
 
 
-### CONGA-specific handlebar expressions
-
-By using CONGA handlebars helper plugins it is possible to extend handlebars by registering custom expressions. Out of the box CONGA ships with a set of built-in custom expressions documented in this chapter. See [Extensibility model][extensibility] how to register you own helpers.
-
-
-#### regexQuote
-
-To insert a variable expression and applying regex quoting on it:
-
-```
-{{regexQuote group1.param1}}
-```
-
-
-#### join
-
-To join a list of values with a separator character:
-
-```
-{{join group1.list ","}}
-```
-
-
-#### ifEquals
-
-Conditional if statement - block is rendered if expression equals to an argument:
-
-```
-{{#ifEquals group1.param1 "myValue"}}
-  condition met block...
-{{/ifEquals}}
-```
-
-
-#### defaultIfEmpty
-
-To insert a default value if the given variable expression is not set:
-
-```
-{{defaultIfEmpty group1.param1 "defaultValue"}}
-```
-
-
-#### eachIf
-
-Conditional for each loop - loop is generated if condition is true:
-
-```
-{{#eachIf group1.list "group1.flag1"}},
-  conditional loop block
-{{/eachIf}}
-```
-
-
-#### eachIfEquals
-
-Conditional for each loop - loop is generated if expression equals to an argument:
-
-```
-{{#eachIfEquals group1.list "group1.param1" "myValue"}},
-  conditional loop block
-{{/eachIfEquals}}
-```
-
-
-#### contains
-
-Checks for presence of a given value in a list:
-
-```
-{{#contains group1.list1 "myValue"}}
-  condition met block...
-{{/contains}}
-```
-
-
-#### ensureProperties
-
-Ensure that all properties with the given names are set. Build fails if this is not the case, the exception message contains the missing properties.
-
-```
-{{ensureProperties "group1.prop1" "group1.prop2"}}
-```
-
-
 
 [handlebars]: http://handlebarsjs.com/
 [handlebars-java]: https://github.com/jknack/handlebars.java
+[handlebars-helpers]: handlebars-helpers.html
 [yaml-definitions]: yaml-definitions.html
-[extensibility]: extensibility.html

@@ -19,7 +19,8 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.validation;
 
-import org.apache.commons.lang3.CharEncoding;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -55,7 +56,7 @@ public final class TemplateValidator implements DefinitionValidator {
     if (StringUtils.equalsIgnoreCase(resource.getFileExtension(), FILE_EXTENSION)) {
       String templatePath = StringUtils.substringAfter(PathUtil.unifySlashes(resource.getCanonicalPath()),
           PathUtil.unifySlashes(templateDir.getCanonicalPath()) + "/");
-      Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, CharEncoding.UTF_8);
+      Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, StandardCharsets.UTF_8.name());
       try {
         handlebars.compile(templatePath);
       }

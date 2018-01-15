@@ -19,71 +19,70 @@
  */
 package io.wcm.devops.conga.generator.spi.context;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
+
 /**
- * Context for {@link io.wcm.devops.conga.generator.spi.ValueProviderPlugin}.
+ * Context for a slinge {@link io.wcm.devops.conga.generator.spi.ValueProviderPlugin} instance.
  */
 public final class ValueProviderContext extends AbstractPluginContext<ValueProviderContext> {
 
-  private Map<String, Map<String, Object>> valueProviderConfig;
-  private Map<String, Object> valueProviderCache = new HashMap<>();
+  private ValueProviderGlobalContext valueProviderGlobalContext;
+  private String valueProviderName;
 
   /**
-   * @return Configuration for value providers.
-   *         The outer map uses the value provider plugin name as key, the inner map contain the config properties.
-   *         Never null.
-   */
-  public Map<String, Map<String, Object>> getValueProviderConfig() {
-    if (this.valueProviderConfig == null) {
-      return Collections.emptyMap();
-    }
-    return this.valueProviderConfig;
-  }
-
-  /**
-   * @param valueProviderPluginName Value provider plugin name
-   * @return Configuration for the given value provider. Never null.
-   */
-  public Map<String, Object> getValueProviderConfig(String valueProviderPluginName) {
-    Map<String, Object> config = getValueProviderConfig().get(valueProviderPluginName);
-    if (config == null) {
-      return Collections.emptyMap();
-    }
-    return config;
-  }
-
-  /**
-   * @param value Configuration for value providers.
-   *          The outer map uses the value provider plugin name as key, the inner map contain the config properties.
+   * @param context Global value provider context
    * @return this
    */
-  public ValueProviderContext valueProviderConfig(Map<String, Map<String, Object>> value) {
-    this.valueProviderConfig = value;
+  public ValueProviderContext valueProviderGlobalContext(ValueProviderGlobalContext context) {
+    this.valueProviderGlobalContext = context;
+    return this
+        .pluginContextOptions(context.getPluginContextOptions());
+  }
+
+  /**
+   * @param value Value provider name
+   * @return this
+   */
+  public ValueProviderContext valueProviderName(String value) {
+    this.valueProviderName = value;
     return this;
   }
 
   /**
-   * Get cache object put by value provider plugin implementation.
-   * @param valueProviderPluginName Value provider plugin name
-   * @return Cache object or null if none was set yet
-   * @param <T> Cache object type
+   * @return Value provider name
    */
-  @SuppressWarnings("unchecked")
-  public <T> T getValueProviderCache(String valueProviderPluginName) {
-    return (T)valueProviderCache.get(valueProviderPluginName);
+  public String getValueProviderName() {
+    return this.valueProviderName;
   }
 
   /**
-   * Put cache object from value provider plugin implementation.
-   * @param valueProviderPluginName Value provider plugin name
-   * @param object Cache object
-   * @param <T> Cache object type
+   * @param key Configuration parameter name
+   * @return Configuration for the current value provider. Never null.
    */
-  public <T> void setValueProviderCache(String valueProviderPluginName, T object) {
-    valueProviderCache.put(valueProviderPluginName, object);
+  public Object getValueProviderConfig(String key) {
+    Map<String, Object> config = valueProviderGlobalContext.getValueProviderConfig(valueProviderName);
+    if (config == null) {
+      config = ImmutableMap.of();
+    }
+    return config.get(key);
+  }
+
+  /**
+   * Get cache object for the current value provider.
+   * @return Cache object or null if none was set yet
+   */
+  public Object getValueProviderCache() {
+    return valueProviderGlobalContext.getGlobalValueProviderCache().get(valueProviderName);
+  }
+
+  /**
+   * Set cache object for the current value provider.
+   * @param object Cache object
+   */
+  public void setValueProviderCache(Object object) {
+    valueProviderGlobalContext.getGlobalValueProviderCache().put(valueProviderName, object);
   }
 
 }

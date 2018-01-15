@@ -40,14 +40,14 @@ public class JsonEscapingStrategyTest {
 
   @Test
   public void testValid() {
-    assertTrue(underTest.accepts("json"));
-    assertEquals("\\\"", underTest.escape("\""));
-    assertEquals("äöüß€/", underTest.escape("äöüß€/"));
+    assertTrue(underTest.accepts("json", null));
+    assertEquals("\\\"", underTest.escape("\"", null));
+    assertEquals("äöüß€/", underTest.escape("äöüß€/", null));
   }
 
   @Test
   public void testInvalid() {
-    assertFalse(underTest.accepts("txt"));
+    assertFalse(underTest.accepts("txt", null));
   }
 
 }

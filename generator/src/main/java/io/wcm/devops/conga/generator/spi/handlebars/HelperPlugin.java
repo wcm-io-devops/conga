@@ -19,17 +19,29 @@
  */
 package io.wcm.devops.conga.generator.spi.handlebars;
 
+import java.io.IOException;
+
 import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 
 import io.wcm.devops.conga.generator.spi.Plugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
 
 /**
  * Plugin that allows to register custom Handlebars {@link Helper} extensions that can be used in all templates.
  * The name of the plugin is used as helper name for registering in Handlebars.
  * @param <T> Context type for helper
  */
-public interface HelperPlugin<T> extends Plugin, Helper<T> {
+public interface HelperPlugin<T> extends Plugin {
 
-  // delegates all calls to the Helper interface
+  /**
+   * Apply the helper to the context.
+   * @param context The context object.
+   * @param options The options object.
+   * @param pluginContext Plugin context
+   * @return A string result.
+   * @throws IOException If a template cannot be loaded.
+   */
+  Object apply(T context, Options options, HelperContext pluginContext) throws IOException;
 
 }

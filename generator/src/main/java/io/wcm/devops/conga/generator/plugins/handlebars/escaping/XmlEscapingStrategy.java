@@ -19,9 +19,10 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.escaping;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.EscapingStrategyContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
@@ -42,12 +43,12 @@ public class XmlEscapingStrategy implements EscapingStrategyPlugin {
   }
 
   @Override
-  public boolean accepts(String fileExtension) {
+  public boolean accepts(String fileExtension, EscapingStrategyContext pluginContext) {
     return FileUtil.matchesExtension(fileExtension, FILE_EXTENSION);
   }
 
   @Override
-  public String escape(CharSequence value) {
+  public String escape(CharSequence value, EscapingStrategyContext pluginContext) {
     return value == null ? null : StringEscapeUtils.escapeXml10(value.toString());
   }
 

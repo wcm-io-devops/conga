@@ -23,9 +23,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.Options.Buffer;
+
+import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
 
 final class TestUtils {
 
@@ -33,13 +35,28 @@ final class TestUtils {
     // static methods only
   }
 
-  public static void assertHelper(String expected, Helper<Object> helper, Object context, Options options) throws IOException {
-    Object result = helper.apply(context, options);
+  public static void assertHelper(String expected, HelperPlugin<Object> helper, Object context, Options options) throws IOException {
+    assertHelper(expected, helper, context, options, null);
+  }
+
+  public static void assertHelper(String expected, HelperPlugin<Object> helper, Object context, Options options,
+      HelperContext pluginContext) throws IOException {
+    Object result = executeHelper(helper, context, options, pluginContext);
+    assertEquals(expected, result);
+  }
+
+  public static Object executeHelper(HelperPlugin<Object> helper, Object context, Options options) throws IOException {
+    return executeHelper(helper, context, options, null);
+  }
+
+  public static Object executeHelper(HelperPlugin<Object> helper, Object context, Options options,
+      HelperContext pluginContext) throws IOException {
+    Object result = helper.apply(context, options, pluginContext);
     if (result instanceof Buffer) {
       Buffer buffer = (Buffer)result;
       result = buffer.subSequence(0, buffer.length());
     }
-    assertEquals(expected, result);
+    return result;
   }
 
 }

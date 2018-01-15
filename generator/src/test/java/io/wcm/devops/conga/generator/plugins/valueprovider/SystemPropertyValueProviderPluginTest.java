@@ -28,6 +28,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -42,7 +43,10 @@ public class SystemPropertyValueProviderPluginTest {
   public void setUp() {
     PluginManager pluginManager = new PluginManagerImpl();
     underTest = pluginManager.get(SystemPropertyValueProviderPlugin.NAME, ValueProviderPlugin.class);
-    context = new ValueProviderContext().pluginManager(pluginManager);
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(pluginManager);
+    context = new ValueProviderContext()
+        .pluginContextOptions(pluginContextOptions);
   }
 
   @Test

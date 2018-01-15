@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
 /**
  * Resolve variables in a string referencing entries from a map.
@@ -40,11 +40,13 @@ public final class VariableStringResolver {
    * ${provider::var1}
    * ${provider::Var1:defaultValue}
    */
-  private static final String NAME_PATTERN_STRING = "[^\\}\\{\\$\\:]+";
+  private static final String NAME_PATTERN_STRING = "[^\\}\\{\\$\\:]";
+  private static final String NAME_PATTERN_STRING_NOT_EMPTY = NAME_PATTERN_STRING + "+";
+  private static final String NAME_PATTERN_STRING_OR_EMPTY = NAME_PATTERN_STRING + "*";
   private static final String VARIABLE_PATTERN_STRING = "(\\\\?\\$)"
-      + "\\{((" + NAME_PATTERN_STRING + ")\\:\\:)?"
-      + "(" + NAME_PATTERN_STRING + ")"
-      + "(\\:(" + NAME_PATTERN_STRING + "))?\\}";
+      + "\\{((" + NAME_PATTERN_STRING_NOT_EMPTY + ")\\:\\:)?"
+      + "(" + NAME_PATTERN_STRING_NOT_EMPTY + ")"
+      + "(\\:(" + NAME_PATTERN_STRING_OR_EMPTY + "))?\\}";
 
   static final int PATTERN_POS_DOLLAR_SIGN = 1;
   static final int PATTERN_POS_VALUE_PROVIDER_NAME_WITH_COLON = 2;
@@ -60,10 +62,10 @@ public final class VariableStringResolver {
   private final VariableResolver variableResolver;
 
   /**
-   * @param context Value provider context
+   * @param valueProviderGlobalContext Value provider global context
    */
-  public VariableStringResolver(ValueProviderContext context) {
-    this.variableResolver = new VariableResolver(context);
+  public VariableStringResolver(ValueProviderGlobalContext valueProviderGlobalContext) {
+    this.variableResolver = new VariableResolver(valueProviderGlobalContext);
   }
 
   /**

@@ -25,7 +25,6 @@ import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.jknack.handlebars.Helper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -34,7 +33,7 @@ import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public class ContainsHelperTest {
 
-  private Helper<Object> helper;
+  private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
   @Before

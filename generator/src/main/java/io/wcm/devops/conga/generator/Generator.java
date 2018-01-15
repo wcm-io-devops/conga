@@ -34,6 +34,7 @@ import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -62,6 +63,7 @@ public final class Generator {
   private final List<String> dependencyVersions;
   private final ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
+  private final PluginContextOptions pluginContextOptions;
   private Logger log = LoggerFactory.getLogger(getClass());
 
   /**
@@ -72,13 +74,20 @@ public final class Generator {
     this.roles = readModels(options.getRoleDirs(), new RoleReader());
     this.environments = readModels(options.getEnvironmentDirs(), new EnvironmentReader());
     this.destDir = FileUtil.ensureDirExistsAutocreate(options.getDestDir());
-    this.handlebarsManager = new HandlebarsManager(options.getTemplateDirs(), this.pluginManager);
     this.urlFileManager = new UrlFileManager(this.pluginManager, options.getUrlFilePluginContext());
     this.deleteBeforeGenerate = options.isDeleteBeforeGenerate();
     this.version = options.getVersion();
     this.dependencyVersions = options.getDependencyVersions();
     this.modelExport = options.getModelExport();
     this.valueProviderConfig = options.getValueProviderConfig();
+
+    this.pluginContextOptions = new PluginContextOptions()
+        .logger(this.log)
+        .pluginManager(this.pluginManager)
+        .urlFileManager(this.urlFileManager)
+        .genericPluginConfig(options.getGenericPluginConfig());
+
+    this.handlebarsManager = new HandlebarsManager(options.getTemplateDirs(), this.pluginContextOptions);
   }
 
   /**
@@ -139,9 +148,21 @@ public final class Generator {
       if (!environmentDestDir.exists()) {
         environmentDestDir.mkdir();
       }
-      EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(roles, entry.getKey(), entry.getValue(),
-          environmentDestDir, pluginManager, handlebarsManager, urlFileManager, version, dependencyVersions,
-          modelExport, valueProviderConfig, log);
+
+      EnvironmentGeneratorOptions options = new EnvironmentGeneratorOptions()
+          .roles(roles)
+          .environmentName(entry.getKey())
+          .destDir(environmentDestDir)
+          .pluginManager(pluginManager)
+          .handlebarsManager(handlebarsManager)
+          .urlFileManager(urlFileManager)
+          .version(version)
+          .dependencyVersions(dependencyVersions)
+          .modelExport(modelExport)
+          .valueProviderConfig(valueProviderConfig)
+          .pluginContextOptions(pluginContextOptions)
+          .logger(log);
+      EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(options, entry.getValue());
       environmentGenerator.generate();
     }
   }

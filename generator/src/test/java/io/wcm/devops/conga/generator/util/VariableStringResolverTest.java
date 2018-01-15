@@ -29,16 +29,21 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
 public class VariableStringResolverTest {
 
+  private ValueProviderGlobalContext globalContext;
   private VariableStringResolver underTest;
 
   @Before
   public void setUp() {
-    ValueProviderContext context = new ValueProviderContext().pluginManager(new PluginManagerImpl());
-    underTest = new VariableStringResolver(context);
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(new PluginManagerImpl());
+    globalContext = new ValueProviderGlobalContext()
+        .pluginContextOptions(pluginContextOptions);
+    underTest = new VariableStringResolver(globalContext);
   }
 
   @Test
@@ -63,6 +68,12 @@ public class VariableStringResolverTest {
     Map<String, Object> variables = ImmutableMap.of("var1", "v1");
 
     assertEquals("The v1 and theDefValue2", underTest.resolve("The ${var1:theDefValue1} and ${var2:theDefValue2}", variables));
+  }
+
+  @Test
+  public void testDefaultEmptyValue() {
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1");
+    assertEquals("The empty value: ''", underTest.resolve("The empty value: '${var2:}'", variables));
   }
 
   @Test
@@ -140,7 +151,34 @@ public class VariableStringResolverTest {
     assertEquals("The v1 and value1", underTest.resolve("The ${var1} and ${system::" + propertyName1 + "}", variables));
     assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${system::" + propertyName2 + ":theDefValue}", variables));
 
-    System.clearProperty(propertyName1 + "-test.prop1");
+    System.clearProperty(propertyName1);
+    System.clearProperty(propertyName2);
+  }
+
+  @Test
+  public void testCustomValueProvider() {
+    // define value provider name 'customProvider' of type 'system'
+    globalContext.valueProviderConfig(ImmutableMap.of("customProvider", ImmutableMap.of(ValueProviderGlobalContext.PARAM_PLUGIN_NAME, "system")));
+
+    String propertyName1 = getClass().getName() + "-test.propCustom1";
+    String propertyName2 = getClass().getName() + "-test.propCustom2";
+    System.setProperty(propertyName1, "value1");
+
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1");
+
+    assertEquals("The v1 and value1", underTest.resolve("The ${var1} and ${customProvider::" + propertyName1 + "}", variables));
+    assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${customProvider::" + propertyName2 + ":theDefValue}", variables));
+
+    System.clearProperty(propertyName1);
+    System.clearProperty(propertyName2);
+  }
+
+  @Test
+  public void testDummyMapValueProvider() {
+    Map<String, Object> variables = ImmutableMap.of("var1", "v1");
+
+    assertEquals("The v1 and value1 and 5", underTest.resolve("The ${var1} and ${dummy-map::map.param1} and ${dummy-map::map.param2}", variables));
+    assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${dummy-map::map.paramNotDefined:theDefValue}", variables));
   }
 
 }

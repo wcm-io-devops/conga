@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.jknack.handlebars.Options;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
 
 /**
  * Handlebars helper that checks if all given property names have a value set.
@@ -46,7 +47,7 @@ public final class EnsurePropertiesHelper implements HelperPlugin<Object> {
   }
 
   @Override
-  public Object apply(Object context, Options options) throws IOException {
+  public Object apply(Object context, Options options, HelperContext pluginContext) throws IOException {
     Set<String> missingPropertyNames = new TreeSet<>();
     checkProperty(context, options, missingPropertyNames);
     for (Object propertyNameExpression : options.params) {

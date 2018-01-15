@@ -54,7 +54,7 @@ public class ClasspathUrlFilePlugin implements UrlFilePlugin {
   @Override
   public String getFileName(String url, UrlFilePluginContext context) {
     String classpathRef = StringUtils.substringAfter(url, PREFIX);
-    if (StringUtils.contains(classpathRef, "/")) {
+    if (!StringUtils.contains(classpathRef, "/")) {
       return classpathRef;
     }
     else {

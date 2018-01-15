@@ -22,13 +22,13 @@ package io.wcm.devops.conga.model.role;
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 
 import io.wcm.devops.conga.model.shared.AbstractModel;
@@ -55,7 +55,7 @@ public final class RoleFile extends AbstractModel {
   private String fileHeader;
   private String multiply;
   private Map<String, Object> multiplyOptions = new HashMap<>();
-  private String charset = CharEncoding.UTF_8;
+  private String charset = StandardCharsets.UTF_8.name();
   private LineEndings lineEndings = LineEndings.unix;
   private String escapingStrategy;
   private Map<String, Object> modelOptions = new HashMap<>();

@@ -71,8 +71,7 @@ public final class CongaCli {
     if (commandLine.hasOption("?")) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.setWidth(150);
-      formatter.printHelp("java -cp io.wcm.devops.conga.tooling.cli-<version>.jar "
-          + "io.wcm.devops.conga.tooling.cli.CongaCli <arguments>", CLI_OPTIONS);
+      formatter.printHelp("java -jar io.wcm.devops.conga.tooling.cli-<version>.jar <arguments>", CLI_OPTIONS);
       return;
     }
 
@@ -88,13 +87,13 @@ public final class CongaCli {
     List<ResourceCollection> environmentDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + environmentDir));
     File targetDirecotry = new File(targetDir);
 
-    GeneratorOptions options = new GeneratorOptions();
-    options.setRoleDirs(roleDirs);
-    options.setTemplateDirs(templateDirs);
-    options.setEnvironmentDirs(environmentDirs);
-    options.setDestDir(targetDirecotry);
-    options.setUrlFilePluginContext(new UrlFilePluginContext());
-    options.setDeleteBeforeGenerate(true);
+    GeneratorOptions options = new GeneratorOptions()
+        .roleDirs(roleDirs)
+        .templateDirs(templateDirs)
+        .environmentDirs(environmentDirs)
+        .destDir(targetDirecotry)
+        .urlFilePluginContext(new UrlFilePluginContext())
+        .deleteBeforeGenerate(true);
 
     Generator generator = new Generator(options);
     generator.generate(environments);

@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.model.util.MapExpander;
 
 /**
@@ -33,13 +34,13 @@ import io.wcm.devops.conga.model.util.MapExpander;
  */
 public final class VariableResolver {
 
-  private final ValueProviderContext context;
+  private final ValueProviderGlobalContext valueProviderGlobalContext;
 
   /**
-   * @param context Value provider context
+   * @param context Value provider global context
    */
-  public VariableResolver(ValueProviderContext context) {
-    this.context = context;
+  public VariableResolver(ValueProviderGlobalContext context) {
+    this.valueProviderGlobalContext = context;
   }
 
   /**
@@ -50,19 +51,31 @@ public final class VariableResolver {
    * @param variables Variable map
    * @return Variable value or null if none was found
    */
+  @SuppressWarnings("unchecked")
   public Object resolve(String valueProviderName, String variable, String defaultValueString, Map<String, Object> variables) {
     Object result;
 
     // resolve value from value provider
     if (StringUtils.isNotEmpty(valueProviderName)) {
-      ValueProviderPlugin valueProvider;
-      try {
-        valueProvider = context.getPluginManager().get(valueProviderName, ValueProviderPlugin.class);
+      ValueProviderContext valueProviderContext = new ValueProviderContext()
+          .valueProviderGlobalContext(valueProviderGlobalContext)
+          .valueProviderName(valueProviderName);
+      ValueProviderPlugin valueProvider = getValueProvider(valueProviderContext);
+
+      result = valueProvider.resolve(variable, valueProviderContext);
+
+      // if value provider was not able to resolve variable and variable contains dot try to resolve map
+      if (result == null && StringUtils.contains(variable, ".")) {
+        String variableWithoutNesting = StringUtils.substringBefore(variable, ".");
+        String nestingVariables = StringUtils.substringAfter(variable, ".");
+
+        result = valueProvider.resolve(variableWithoutNesting, valueProviderContext);
+
+        if (StringUtils.isNotBlank(nestingVariables) && result instanceof Map) {
+          result = MapExpander.getDeep((Map)result, nestingVariables);
+        }
       }
-      catch (GeneratorException ex) {
-        throw new IllegalArgumentException("Unable to resolve variable from value provider: " + valueProviderName + ":" + variable, ex);
-      }
-      result = valueProvider.resolve(variable, context);
+
     }
 
     // resolve value from variable map
@@ -76,6 +89,19 @@ public final class VariableResolver {
     }
 
     return result;
+  }
+
+  private ValueProviderPlugin getValueProvider(ValueProviderContext valueProviderContext) {
+    String valueProviderPluginName = (String)valueProviderContext.getValueProviderConfig(ValueProviderGlobalContext.PARAM_PLUGIN_NAME);
+    if (StringUtils.isBlank(valueProviderPluginName)) {
+      valueProviderPluginName = valueProviderContext.getValueProviderName();
+    }
+    try {
+      return valueProviderGlobalContext.getPluginManager().get(valueProviderPluginName, ValueProviderPlugin.class);
+    }
+    catch (GeneratorException ex) {
+      throw new IllegalArgumentException("Unable to get value provider: " + valueProviderContext.getValueProviderName(), ex);
+    }
   }
 
 }

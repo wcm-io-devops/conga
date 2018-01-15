@@ -31,7 +31,8 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
 public class VariableMapResolverTest {
 
@@ -39,7 +40,10 @@ public class VariableMapResolverTest {
 
   @Before
   public void setUp() {
-    ValueProviderContext context = new ValueProviderContext().pluginManager(new PluginManagerImpl());
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(new PluginManagerImpl());
+    ValueProviderGlobalContext context = new ValueProviderGlobalContext()
+        .pluginContextOptions(pluginContextOptions);
     underTest = new VariableMapResolver(context);
   }
 

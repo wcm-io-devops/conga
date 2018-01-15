@@ -42,6 +42,7 @@ public class GeneratorOptions {
   private List<String> dependencyVersions;
   private ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
+  private Map<String, Map<String, Object>> genericPluginConfig;
 
   /**
    * Directories with role definitions. Filename without extension = role name.
@@ -51,8 +52,13 @@ public class GeneratorOptions {
     return this.roleDirs;
   }
 
-  public void setRoleDirs(List<ResourceCollection> roleDirs) {
-    this.roleDirs = roleDirs;
+  /**
+   * @param value Directories with role definitions. Filename without extension = role name.
+   * @return this
+   */
+  public GeneratorOptions roleDirs(List<ResourceCollection> value) {
+    this.roleDirs = value;
+    return this;
   }
 
   /**
@@ -63,8 +69,13 @@ public class GeneratorOptions {
     return this.templateDirs;
   }
 
-  public void setTemplateDirs(List<ResourceCollection> templateDirs) {
-    this.templateDirs = templateDirs;
+  /**
+   * @param value Template base directories
+   * @return this
+   */
+  public GeneratorOptions templateDirs(List<ResourceCollection> value) {
+    this.templateDirs = value;
+    return this;
   }
 
   /**
@@ -75,8 +86,13 @@ public class GeneratorOptions {
     return this.environmentDirs;
   }
 
-  public void setEnvironmentDirs(List<ResourceCollection> environmentDirs) {
-    this.environmentDirs = environmentDirs;
+  /**
+   * @param value Directories with environment definitions. Filename without extension = environment name.
+   * @return this
+   */
+  public GeneratorOptions environmentDirs(List<ResourceCollection> value) {
+    this.environmentDirs = value;
+    return this;
   }
 
   /**
@@ -87,8 +103,13 @@ public class GeneratorOptions {
     return this.destDir;
   }
 
-  public void setDestDir(File destDir) {
-    this.destDir = destDir;
+  /**
+   * @param value Destination directory for generated file.
+   * @return this
+   */
+  public GeneratorOptions destDir(File value) {
+    this.destDir = value;
+    return this;
   }
 
   /**
@@ -99,21 +120,30 @@ public class GeneratorOptions {
     return this.urlFilePluginContext;
   }
 
-  public void setUrlFilePluginContext(UrlFilePluginContext urlFilePluginContext) {
-    this.urlFilePluginContext = urlFilePluginContext;
+  /**
+   * @param value URL file plugin context
+   * @return this
+   */
+  public GeneratorOptions urlFilePluginContext(UrlFilePluginContext value) {
+    this.urlFilePluginContext = value;
+    return this;
   }
 
   /**
-   * deleteBeforeGenerate Set to true when the generate should delete the environment folders before generating new
-   * (default: false).
+   * Set to true when the generate should delete the environment folders before generating new (default: false).
    * @return Delete before generate
    */
   public boolean isDeleteBeforeGenerate() {
     return this.deleteBeforeGenerate;
   }
 
-  public void setDeleteBeforeGenerate(boolean deleteBeforeGenerate) {
-    this.deleteBeforeGenerate = deleteBeforeGenerate;
+  /**
+   * @param value Delete before generate
+   * @return this
+   */
+  public GeneratorOptions deleteBeforeGenerate(boolean value) {
+    this.deleteBeforeGenerate = value;
+    return this;
   }
 
   /**
@@ -124,8 +154,13 @@ public class GeneratorOptions {
     return this.version;
   }
 
-  public void setVersion(String version) {
-    this.version = version;
+  /**
+   * @param value Version
+   * @return this
+   */
+  public GeneratorOptions version(String value) {
+    this.version = value;
+    return this;
   }
 
   /**
@@ -137,8 +172,13 @@ public class GeneratorOptions {
     return this.dependencyVersions;
   }
 
-  public void setDependencyVersions(List<String> dependencyVersions) {
-    this.dependencyVersions = dependencyVersions;
+  /**
+   * @param value Dependency versions
+   * @return this
+   */
+  public GeneratorOptions dependencyVersions(List<String> value) {
+    this.dependencyVersions = value;
+    return this;
   }
 
   /**
@@ -149,8 +189,13 @@ public class GeneratorOptions {
     return this.modelExport;
   }
 
-  public void setModelExport(ModelExport modelExport) {
-    this.modelExport = modelExport;
+  /**
+   * @param value Model export
+   * @return this
+   */
+  public GeneratorOptions modelExport(ModelExport value) {
+    this.modelExport = value;
+    return this;
   }
 
   /**
@@ -161,9 +206,29 @@ public class GeneratorOptions {
     return this.valueProviderConfig;
   }
 
+  /**
+   * @param value Configuration for value providers.
+   * @return this
+   */
+  public GeneratorOptions valueProviderConfig(Map<String, Map<String, Object>> value) {
+    this.valueProviderConfig = value;
+    return this;
+  }
 
-  public void setValueProviderConfig(Map<String, Map<String, Object>> valueProviderConfig) {
-    this.valueProviderConfig = valueProviderConfig;
+  /**
+   * @return Generic plugin configuration.
+   */
+  public Map<String, Map<String, Object>> getGenericPluginConfig() {
+    return this.genericPluginConfig;
+  }
+
+  /**
+   * @param value Generic plugin configuration.
+   * @return this
+   */
+  public GeneratorOptions genericPluginConfig(Map<String, Map<String, Object>> value) {
+    this.genericPluginConfig = value;
+    return this;
   }
 
 }

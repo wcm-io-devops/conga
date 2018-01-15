@@ -122,17 +122,18 @@ public class GenerateMojo extends AbstractCongaMojo {
             .localRepository(localRepository)
             .remoteRepositories(remoteRepositories));
 
-    GeneratorOptions options = new GeneratorOptions();
-    options.setRoleDirs(roleDirs);
-    options.setTemplateDirs(templateDirs);
-    options.setEnvironmentDirs(environmentDirs);
-    options.setDestDir(getTargetDir());
-    options.setUrlFilePluginContext(urlFilePluginContext);
-    options.setDeleteBeforeGenerate(deleteBeforeGenerate);
-    options.setVersion(project.getVersion());
-    options.setDependencyVersions(buildDependencyVersionList());
-    options.setModelExport(getModelExport());
-    options.setValueProviderConfig(getValueProviderConfig());
+    GeneratorOptions options = new GeneratorOptions()
+        .roleDirs(roleDirs)
+        .templateDirs(templateDirs)
+        .environmentDirs(environmentDirs)
+        .destDir(getTargetDir())
+        .urlFilePluginContext(urlFilePluginContext)
+        .deleteBeforeGenerate(deleteBeforeGenerate)
+        .version(project.getVersion())
+        .dependencyVersions(buildDependencyVersionList())
+        .modelExport(getModelExport())
+        .valueProviderConfig(getValueProviderConfig())
+        .genericPluginConfig(getPluginConfig());
 
     Generator generator = new Generator(options);
     generator.setLogger(new MavenSlf4jLogFacade(getLog()));

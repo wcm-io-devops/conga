@@ -22,20 +22,34 @@ package io.wcm.devops.conga.tooling.maven.plugin;
 import java.util.SortedSet;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.RepositorySystem;
 
 import com.google.common.collect.ImmutableList;
 
+import io.wcm.devops.conga.generator.UrlFileManager;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.RoleReader;
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePluginContext;
+import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.util.PathUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.DefinitionValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.ModelValidator;
@@ -48,15 +62,30 @@ import io.wcm.devops.conga.tooling.maven.plugin.validation.TemplateValidator;
 @Mojo(name = "definition-validate", defaultPhase = LifecyclePhase.VALIDATE, requiresProject = true, threadSafe = true)
 public class DefinitionValidateMojo extends AbstractCongaMojo {
 
+  @Parameter(property = "project", required = true, readonly = true)
+  private MavenProject project;
+
+  @Component
+  private ArtifactResolver resolver;
+  @Component
+  private ArtifactHandlerManager artifactHandlerManager;
+  @Parameter(property = "session", readonly = true, required = true)
+  private MavenSession mavenSession;
+
+  @Component
+  private RepositorySystem repository;
+  @Parameter(property = "localRepository", required = true, readonly = true)
+  private ArtifactRepository localRepository;
+  @Parameter(property = "project.remoteArtifactRepositories", required = true, readonly = true)
+  private java.util.List<ArtifactRepository> remoteRepositories;
+
   private ResourceLoader resourceLoader;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     resourceLoader = new ResourceLoader();
-    validateDefinitions();
-  }
+    ClassLoader resourceClassLoader = ClassLoaderUtil.buildDependencyClassLoader(project);
 
-  private void validateDefinitions() throws MojoFailureException {
     ResourceCollection roleDir = getRoleDir();
     ResourceCollection templateDir = getTemplateDir();
     ResourceCollection environmentDir = getEnvironmentDir();
@@ -64,8 +93,24 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     // validate role definition syntax
     validateFiles(roleDir, roleDir, new ModelValidator("Role", new RoleReader()));
 
-    // validate that all template can be compiled
-    HandlebarsManager handlebarsManager = new HandlebarsManager(ImmutableList.of(templateDir), new PluginManagerImpl());
+    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
+        .baseDir(project.getBasedir())
+        .resourceClassLoader(resourceClassLoader)
+        .containerContext(new MavenUrlFilePluginContext()
+            .project(project)
+            .repository(repository)
+            .localRepository(localRepository)
+            .remoteRepositories(remoteRepositories));
+
+    PluginManager pluginManager = new PluginManagerImpl();
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(pluginManager)
+        .urlFileManager(new UrlFileManager(pluginManager, urlFilePluginContext))
+        .genericPluginConfig(getPluginConfig())
+        .logger(new MavenSlf4jLogFacade(getLog()));
+
+    // validate that all templates can be compiled
+    HandlebarsManager handlebarsManager = new HandlebarsManager(ImmutableList.of(templateDir), pluginContextOptions);
     validateFiles(templateDir, templateDir, new TemplateValidator(templateDir, handlebarsManager));
 
     // validate that roles reference existing templates

@@ -25,17 +25,18 @@
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.4.4</version>
+    <version>1.5.0</version>
     <relativePath>parent/pom.xml</relativePath>
   </parent>
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.root</artifactId>
-  <version>1.4.4</version>
+  <version>1.5.0</version>
   <packaging>pom</packaging>
 
   <name>CONGA</name>
   <description>Root POM for wcm.io CONGA Maven hierarchy.</description>
+  <url>${site.url}/${site.url.module.prefix}/</url>
 
   <scm>
     <connection>scm:git:https://github.com/wcm-io-devops/conga.git</connection>

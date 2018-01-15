@@ -25,6 +25,7 @@ import java.util.Objects;
 import com.github.jknack.handlebars.Options;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
+import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
 
 /**
  * Handlebars helper that evaluates two objects for equality and shows/hides the contained block accordingly.
@@ -42,7 +43,7 @@ public final class IfEqualsHelper implements HelperPlugin<Object> {
   }
 
   @Override
-  public Object apply(Object context, Options options) throws IOException {
+  public Object apply(Object context, Options options, HelperContext pluginContext) throws IOException {
     if (!options.isFalsy(context)
         && options.params.length > 0
         && Objects.equals(context, options.param(0))) {

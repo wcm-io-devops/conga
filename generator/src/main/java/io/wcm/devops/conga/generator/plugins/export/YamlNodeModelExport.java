@@ -22,13 +22,13 @@ package io.wcm.devops.conga.generator.plugins.export;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
@@ -145,7 +145,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
   private void save(Map<String, Object> modelMap, NodeModelExportContext context) {
     File file = new File(context.getNodeDir(), MODEL_FILE);
     try (FileOutputStream os = new FileOutputStream(file);
-        OutputStreamWriter writer = new OutputStreamWriter(os, CharEncoding.UTF_8)) {
+        OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
       new Yaml().dump(modelMap, writer);
     }
     /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
