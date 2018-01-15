@@ -79,6 +79,12 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
     return file.toURI().toURL();
   }
 
+  @Override
+  public String getFileVersion(String url, UrlFilePluginContext context) throws IOException {
+    // version not supported for filesystem resources
+    return null;
+  }
+
   private static File getFileInternal(String url, UrlFilePluginContext context) {
     if (StringUtils.startsWith(url, PREFIX)) {
       String absoultePath = StringUtils.substringAfter(url, PREFIX);

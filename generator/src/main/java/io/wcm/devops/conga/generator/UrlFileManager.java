@@ -38,7 +38,7 @@ import io.wcm.devops.conga.generator.util.PluginManager;
 public final class UrlFileManager {
 
   private final List<UrlFilePlugin> urlFilePlugins;
-  private final UrlFilePlugin defaultUrlFilePlugins;
+  private final UrlFilePlugin defaultUrlFilePlugin;
   private final UrlFilePluginContext context;
 
   private static final Pattern URL_WITH_PREFIX = Pattern.compile("^[a-zA-Z]+:.*$");
@@ -49,7 +49,7 @@ public final class UrlFileManager {
    */
   public UrlFileManager(PluginManager pluginManager, UrlFilePluginContext context) {
     this.urlFilePlugins = pluginManager.getAll(UrlFilePlugin.class);
-    this.defaultUrlFilePlugins = pluginManager.get(FilesystemUrlFilePlugin.NAME, UrlFilePlugin.class);
+    this.defaultUrlFilePlugin = pluginManager.get(FilesystemUrlFilePlugin.NAME, UrlFilePlugin.class);
     this.context = context;
     this.context.getPluginContextOptions().urlFileManager(this);
   }
@@ -73,7 +73,7 @@ public final class UrlFileManager {
 
     // if path does not contain any prefix try to resolve relative path from filesystem
     if (!URL_WITH_PREFIX.matcher(url).matches()) {
-      return defaultUrlFilePlugins.getFileName(url, context);
+      return defaultUrlFilePlugin.getFileName(url, context);
     }
 
     throw new IOException("No file URL plugin exists that supports the URL: " + url);
@@ -86,22 +86,7 @@ public final class UrlFileManager {
    * @throws IOException I/O exception
    */
   public InputStream getFile(String url) throws IOException {
-    if (StringUtils.isBlank(url)) {
-      throw new IllegalArgumentException("No URL given.");
-    }
-
-    for (UrlFilePlugin plugin : urlFilePlugins) {
-      if (plugin.accepts(url, context)) {
-        return plugin.getFile(url, context);
-      }
-    }
-
-    // if path does not contain any prefix try to resolve relative path from filesystem
-    if (!URL_WITH_PREFIX.matcher(url).matches()) {
-      return defaultUrlFilePlugins.getFile(url, context);
-    }
-
-    throw new IOException("No file URL plugin exists that supports the URL: " + url);
+    return handleFile(url, plugin -> plugin.getFile(url, context));
   }
 
   /**
@@ -111,22 +96,40 @@ public final class UrlFileManager {
    * @throws IOException I/O exception
    */
   public URL getFileUrl(String url) throws IOException {
+    return handleFile(url, plugin -> plugin.getFileUrl(url, context));
+  }
+
+  /**
+   * Get version information from given file URL.
+   * @param url URL string
+   * @return Version or null if no version can be detected
+   * @throws IOException I/O exception
+   */
+  public String getFileVersion(String url) throws IOException {
+    return handleFile(url, plugin -> plugin.getFileVersion(url, context));
+  }
+
+  private <T> T handleFile(String url, FileHandler<T> fileHandler) throws IOException {
     if (StringUtils.isBlank(url)) {
       throw new IllegalArgumentException("No URL given.");
     }
 
     for (UrlFilePlugin plugin : urlFilePlugins) {
       if (plugin.accepts(url, context)) {
-        return plugin.getFileUrl(url, context);
+        return fileHandler.apply(plugin);
       }
     }
 
     // if path does not contain any prefix try to resolve relative path from filesystem
     if (!URL_WITH_PREFIX.matcher(url).matches()) {
-      return defaultUrlFilePlugins.getFileUrl(url, context);
+      return fileHandler.apply(defaultUrlFilePlugin);
     }
 
     throw new IOException("No file URL plugin exists that supports the URL: " + url);
+  }
+
+  private interface FileHandler<T> {
+    T apply(UrlFilePlugin plugin) throws IOException;
   }
 
 }

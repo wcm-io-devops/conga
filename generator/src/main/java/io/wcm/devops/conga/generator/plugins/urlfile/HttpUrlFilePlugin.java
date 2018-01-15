@@ -66,4 +66,10 @@ public class HttpUrlFilePlugin implements UrlFilePlugin {
     return new URL(url);
   }
 
+  @Override
+  public String getFileVersion(String url, UrlFilePluginContext context) throws IOException {
+    // version not supported for HTTP resources
+    return null;
+  }
+
 }

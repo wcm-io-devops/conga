@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -107,5 +108,10 @@ public class UrlFileManagerTest {
     underTest.getFileUrl("other:/x/y/z");
   }
 
+  @Test
+  public void testGetFileVersion_Classpath() throws Exception {
+    String version = underTest.getFileVersion("classpath:/validators/json/noJson.txt");
+    assertNull(version);
+  }
 
 }

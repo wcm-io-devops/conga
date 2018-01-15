@@ -83,6 +83,12 @@ public class ClasspathUrlFilePlugin implements UrlFilePlugin {
     return result;
   }
 
+  @Override
+  public String getFileVersion(String url, UrlFilePluginContext context) throws IOException {
+    // version not supported for classpath resources
+    return null;
+  }
+
   private static String getClasspathRef(String url) {
     String classpathRef = StringUtils.substringAfter(url, PREFIX);
     if (StringUtils.startsWith(classpathRef, "/")) {
