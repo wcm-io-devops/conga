@@ -43,6 +43,8 @@ import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.ValidationException;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
@@ -70,7 +72,9 @@ class EnvironmentGenerator {
   private final EnvironmentGeneratorOptions options;
   private final String environmentName;
   private final Environment environment;
+  private final PluginContextOptions pluginContextOptions;
   private final HandlebarsManager handlebarsManager;
+  private final UrlFileManager urlFileManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
   private final Logger log;
   private final VariableStringResolver variableStringResolver;
@@ -84,11 +88,25 @@ class EnvironmentGenerator {
     this.options = options;
     this.environmentName = options.getEnvironmentName();
     this.environment = EnvironmentExpander.expandNodes(environment, options.getEnvironmentName());
-    this.handlebarsManager = options.getHandlebarsManager();
     this.log = options.getLogger();
 
+    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
+        .baseDir(project.getBasedir())
+        .resourceClassLoader(resourceClassLoader)
+        .containerContext(options.getUrlFilePluginContainerContext());
+
+    this.urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
+
+    this.pluginContextOptions = new PluginContextOptions()
+        .logger(this.log)
+        .pluginManager(options.getPluginManager())
+        .urlFileManager(this.urlFileManager)
+        .genericPluginConfig(options.getGenericPluginConfig());
+
+    this.handlebarsManager = new HandlebarsManager(options.getTemplateDirs(), this.pluginContextOptions);
+
     ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
-        .pluginContextOptions(options.getPluginContextOptions())
+        .pluginContextOptions(this.pluginContextOptions)
         .valueProviderConfig(options.getValueProviderConfig());
     this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
     this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
@@ -209,7 +227,7 @@ class EnvironmentGenerator {
     }
     String fileExtension = FilenameUtils.getExtension(roleFile.getFile());
     EscapingStrategyContext context = new EscapingStrategyContext()
-        .pluginContextOptions(options.getPluginContextOptions());
+        .pluginContextOptions(this.pluginContextOptions);
     return options.getPluginManager().getAll(EscapingStrategyPlugin.class).stream()
         .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneEscapingStrategy.NAME))
         .filter(plugin -> plugin.accepts(fileExtension, context))
@@ -225,7 +243,7 @@ class EnvironmentGenerator {
     }
 
     MultiplyContext multiplyContext = new MultiplyContext()
-        .pluginContextOptions(options.getPluginContextOptions())
+        .pluginContextOptions(this.pluginContextOptions)
         .role(role)
         .roleFile(roleFile)
         .environment(environment)

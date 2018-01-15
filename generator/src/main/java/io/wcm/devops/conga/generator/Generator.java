@@ -28,13 +28,10 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
-import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
-import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -56,15 +53,13 @@ public final class Generator {
   private final Map<String, Environment> environments;
   private final File destDir;
   private final PluginManager pluginManager;
-  private final HandlebarsManager handlebarsManager;
-  private final UrlFileManager urlFileManager;
   private final boolean deleteBeforeGenerate;
   private final String version;
-  private final List<String> dependencyVersions;
   private final ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
-  private final PluginContextOptions pluginContextOptions;
-  private Logger log = LoggerFactory.getLogger(getClass());
+  private final Object urlFilePluginContainerContext;
+  private final List<String> containerDependencyUrls;
+  private final Logger log;
 
   /**
    * @param options Generator options
@@ -74,27 +69,13 @@ public final class Generator {
     this.roles = readModels(options.getRoleDirs(), new RoleReader());
     this.environments = readModels(options.getEnvironmentDirs(), new EnvironmentReader());
     this.destDir = FileUtil.ensureDirExistsAutocreate(options.getDestDir());
-    this.urlFileManager = new UrlFileManager(this.pluginManager, options.getUrlFilePluginContext());
     this.deleteBeforeGenerate = options.isDeleteBeforeGenerate();
     this.version = options.getVersion();
-    this.dependencyVersions = options.getDependencyVersions();
     this.modelExport = options.getModelExport();
     this.valueProviderConfig = options.getValueProviderConfig();
-
-    this.pluginContextOptions = new PluginContextOptions()
-        .logger(this.log)
-        .pluginManager(this.pluginManager)
-        .urlFileManager(this.urlFileManager)
-        .genericPluginConfig(options.getGenericPluginConfig());
-
-    this.handlebarsManager = new HandlebarsManager(options.getTemplateDirs(), this.pluginContextOptions);
-  }
-
-  /**
-   * @param logger Logger to use for generation process logging.
-   */
-  public void setLogger(Logger logger) {
-    log = logger;
+    this.urlFilePluginContainerContext = options.getUrlFilePluginContainerContext();
+    this.containerDependencyUrls = options.getContainerDependencyUrls();
+    this.log = options.getLogger();
   }
 
   private static <T> Map<String, T> readModels(List<ResourceCollection> dirs, ModelReader<T> reader) {
@@ -154,13 +135,11 @@ public final class Generator {
           .environmentName(entry.getKey())
           .destDir(environmentDestDir)
           .pluginManager(pluginManager)
-          .handlebarsManager(handlebarsManager)
-          .urlFileManager(urlFileManager)
           .version(version)
-          .dependencyVersions(dependencyVersions)
           .modelExport(modelExport)
           .valueProviderConfig(valueProviderConfig)
-          .pluginContextOptions(pluginContextOptions)
+          .urlFilePluginContainerContext(urlFilePluginContainerContext)
+          .containerDependencyUrls(containerDependencyUrls)
           .logger(log);
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(options, entry.getValue());
       environmentGenerator.generate();

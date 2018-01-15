@@ -26,8 +26,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
-import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
-import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.model.role.Role;
 
@@ -40,14 +38,12 @@ class EnvironmentGeneratorOptions {
   private String environmentName;
   private File destDir;
   private PluginManager pluginManager;
-  private HandlebarsManager handlebarsManager;
-  private UrlFileManager urlFileManager;
   private String version;
-  private List<String> dependencyVersions;
   private ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
   private Map<String, Map<String, Object>> genericPluginConfig;
-  private PluginContextOptions pluginContextOptions;
+  private Object urlFilePluginContainerContext;
+  private List<String> containerDependencyUrls;
   private Logger logger;
 
   public Map<String, Role> getRoles() {
@@ -86,39 +82,12 @@ class EnvironmentGeneratorOptions {
     return this;
   }
 
-  public HandlebarsManager getHandlebarsManager() {
-    return this.handlebarsManager;
-  }
-
-  public EnvironmentGeneratorOptions handlebarsManager(HandlebarsManager value) {
-    this.handlebarsManager = value;
-    return this;
-  }
-
-  public UrlFileManager getUrlFileManager() {
-    return this.urlFileManager;
-  }
-
-  public EnvironmentGeneratorOptions urlFileManager(UrlFileManager value) {
-    this.urlFileManager = value;
-    return this;
-  }
-
   public String getVersion() {
     return this.version;
   }
 
   public EnvironmentGeneratorOptions version(String value) {
     this.version = value;
-    return this;
-  }
-
-  public List<String> getDependencyVersions() {
-    return this.dependencyVersions;
-  }
-
-  public EnvironmentGeneratorOptions dependencyVersions(List<String> value) {
-    this.dependencyVersions = value;
     return this;
   }
 
@@ -149,12 +118,21 @@ class EnvironmentGeneratorOptions {
     return this;
   }
 
-  public PluginContextOptions getPluginContextOptions() {
-    return this.pluginContextOptions;
+  public Object getUrlFilePluginContainerContext() {
+    return this.urlFilePluginContainerContext;
   }
 
-  public EnvironmentGeneratorOptions pluginContextOptions(PluginContextOptions value) {
-    this.pluginContextOptions = value;
+  public EnvironmentGeneratorOptions urlFilePluginContainerContext(Object value) {
+    this.urlFilePluginContainerContext = value;
+    return this;
+  }
+
+  public List<String> getContainerDependencyUrls() {
+    return this.containerDependencyUrls;
+  }
+
+  public EnvironmentGeneratorOptions containerDependencyUrls(List<String> value) {
+    this.containerDependencyUrls = value;
     return this;
   }
 
