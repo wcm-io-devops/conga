@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 
@@ -31,7 +32,7 @@ public interface UrlFilePlugin extends Plugin {
 
   /**
    * Checks if the plugin can be applied to the given URL.
-   * @param url URL (including prefix)
+   * @param url URL string (including prefix)
    * @param context Context objects
    * @return true when the plugin can be applied to the given URL.
    */
@@ -39,7 +40,7 @@ public interface UrlFilePlugin extends Plugin {
 
   /**
    * Get filename for external file.
-   * @param url URL (including prefix)
+   * @param url URL string (including prefix)
    * @param context Context objects
    * @return Filename
    * @throws IOException I/O exception
@@ -48,11 +49,20 @@ public interface UrlFilePlugin extends Plugin {
 
   /**
    * Get binary data of external file.
-   * @param url URL (including prefix)
+   * @param url URL string (including prefix)
    * @param context Context objects
    * @return Binary data
    * @throws IOException If the access to the file failed
    */
   InputStream getFile(String url, UrlFilePluginContext context) throws IOException;
+
+  /**
+   * Get URL to external file.
+   * @param url URL string (including prefix)
+   * @param context Context objects
+   * @return URL to file
+   * @throws IOException
+   */
+  URL getFileUrl(String url, UrlFilePluginContext context) throws IOException;
 
 }

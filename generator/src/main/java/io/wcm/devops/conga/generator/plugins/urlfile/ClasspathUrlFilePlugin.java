@@ -23,6 +23,7 @@ import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,7 +54,7 @@ public class ClasspathUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public String getFileName(String url, UrlFilePluginContext context) {
-    String classpathRef = StringUtils.substringAfter(url, PREFIX);
+    String classpathRef = getClasspathRef(url);
     if (!StringUtils.contains(classpathRef, "/")) {
       return classpathRef;
     }
@@ -64,15 +65,30 @@ public class ClasspathUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
-    String classpathRef = StringUtils.substringAfter(url, PREFIX);
-    if (StringUtils.startsWith(classpathRef, "/")) {
-      classpathRef = StringUtils.substringAfter(classpathRef, "/");
-    }
+    String classpathRef = getClasspathRef(url);
     InputStream is = context.getResourceClassLoader().getResourceAsStream(classpathRef);
     if (is == null) {
       throw new FileNotFoundException("Classpath reference not found: " + classpathRef);
     }
     return new BufferedInputStream(is);
+  }
+
+  @Override
+  public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
+    String classpathRef = getClasspathRef(url);
+    URL result = context.getResourceClassLoader().getResource(classpathRef);
+    if (result == null) {
+      throw new FileNotFoundException("Classpath reference not found: " + classpathRef);
+    }
+    return result;
+  }
+
+  private static String getClasspathRef(String url) {
+    String classpathRef = StringUtils.substringAfter(url, PREFIX);
+    if (StringUtils.startsWith(classpathRef, "/")) {
+      classpathRef = StringUtils.substringAfter(classpathRef, "/");
+    }
+    return classpathRef;
   }
 
 }

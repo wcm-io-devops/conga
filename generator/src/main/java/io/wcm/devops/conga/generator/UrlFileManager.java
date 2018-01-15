@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -55,7 +56,7 @@ public final class UrlFileManager {
 
   /**
    * Get file name from URL.
-   * @param url URL
+   * @param url URL string
    * @return File name
    * @throws IOException I/O exception
    */
@@ -80,7 +81,7 @@ public final class UrlFileManager {
 
   /**
    * Get file binary data from URL.
-   * @param url URL
+   * @param url URL string
    * @return Input stream
    * @throws IOException I/O exception
    */
@@ -98,6 +99,31 @@ public final class UrlFileManager {
     // if path does not contain any prefix try to resolve relative path from filesystem
     if (!URL_WITH_PREFIX.matcher(url).matches()) {
       return defaultUrlFilePlugins.getFile(url, context);
+    }
+
+    throw new IOException("No file URL plugin exists that supports the URL: " + url);
+  }
+
+  /**
+   * Get URL to to binary file.
+   * @param url URL string
+   * @return URL
+   * @throws IOException I/O exception
+   */
+  public URL getFileUrl(String url) throws IOException {
+    if (StringUtils.isBlank(url)) {
+      throw new IllegalArgumentException("No URL given.");
+    }
+
+    for (UrlFilePlugin plugin : urlFilePlugins) {
+      if (plugin.accepts(url, context)) {
+        return plugin.getFileUrl(url, context);
+      }
+    }
+
+    // if path does not contain any prefix try to resolve relative path from filesystem
+    if (!URL_WITH_PREFIX.matcher(url).matches()) {
+      return defaultUrlFilePlugins.getFileUrl(url, context);
     }
 
     throw new IOException("No file URL plugin exists that supports the URL: " + url);

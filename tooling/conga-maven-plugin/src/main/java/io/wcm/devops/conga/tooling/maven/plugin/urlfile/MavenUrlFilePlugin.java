@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -78,6 +79,19 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     try {
       File file = getArtifactFile(mavenCoords, mavenContext);
       return new BufferedInputStream(new FileInputStream(file));
+    }
+    catch (MojoFailureException | MojoExecutionException ex) {
+      throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
+    }
+  }
+
+  @Override
+  public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
+    String mavenCoords = StringUtils.substringAfter(url, PREFIX);
+    MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
+    try {
+      File file = getArtifactFile(mavenCoords, mavenContext);
+      return file.toURI().toURL();
     }
     catch (MojoFailureException | MojoExecutionException ex) {
       throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
