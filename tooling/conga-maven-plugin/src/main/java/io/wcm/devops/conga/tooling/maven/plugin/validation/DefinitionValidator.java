@@ -25,8 +25,9 @@ import io.wcm.devops.conga.resource.Resource;
 
 /**
  * Resource definition validator
+ * @param <T> Return value
  */
-public interface DefinitionValidator {
+public interface DefinitionValidator<T> {
 
   /**
    * Validates the given resource
@@ -34,6 +35,6 @@ public interface DefinitionValidator {
    * @param pathForLog Path for log message
    * @throws MojoFailureException Mojo failure exception
    */
-  void validate(Resource resource, String pathForLog) throws MojoFailureException;
+  T validate(Resource resource, String pathForLog) throws MojoFailureException;
 
 }

@@ -26,25 +26,26 @@ import io.wcm.devops.conga.resource.Resource;
 
 /**
  * Validates YAML model file against it's reader.
+ * @param <T> Model class
  */
-public final class ModelValidator implements DefinitionValidator {
+public final class ModelValidator<T> implements DefinitionValidator<T> {
 
   private final String modelName;
-  private final ModelReader<?> modelReader;
+  private final ModelReader<T> modelReader;
 
   /**
    * @param modelName Model name (for log message)
    * @param modelReader Model reader implementation
    */
-  public ModelValidator(String modelName, ModelReader<?> modelReader) {
+  public ModelValidator(String modelName, ModelReader<T> modelReader) {
     this.modelName = modelName;
     this.modelReader = modelReader;
   }
 
   @Override
-  public void validate(Resource resource, String pathForLog) throws MojoFailureException {
+  public T validate(Resource resource, String pathForLog) throws MojoFailureException {
     try {
-      modelReader.read(resource);
+      return modelReader.read(resource);
     }
     /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
       throw new MojoFailureException(modelName + " definition " + pathForLog + " is invalid:\n" + ex.getMessage());

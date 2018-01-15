@@ -19,6 +19,8 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,8 +45,10 @@ import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
+import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
 import io.wcm.devops.conga.model.reader.RoleReader;
+import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
@@ -91,7 +95,7 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     ResourceCollection environmentDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getEnvironmentDir());
 
     // validate role definition syntax
-    validateFiles(roleDir, roleDir, new ModelValidator("Role", new RoleReader()));
+    validateFiles(roleDir, roleDir, new ModelValidator<Role>("Role", new RoleReader()));
 
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .baseDir(project.getBasedir())
@@ -117,26 +121,28 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     validateFiles(roleDir, roleDir, new RoleTemplateFileValidator(handlebarsManager));
 
     // validate environment definition syntax
-    validateFiles(environmentDir, environmentDir, new ModelValidator("Environment", new EnvironmentReader()));
+    validateFiles(environmentDir, environmentDir, new ModelValidator<Environment>("Environment", new EnvironmentReader()));
   }
 
-  private void validateFiles(ResourceCollection sourceDir, ResourceCollection rootSourceDir, DefinitionValidator validator)
+  private <T> List<T> validateFiles(ResourceCollection sourceDir, ResourceCollection rootSourceDir, DefinitionValidator<T> validator)
       throws MojoFailureException {
     if (!sourceDir.exists()) {
-      return;
+      return ImmutableList.of();
     }
     SortedSet<Resource> files = sourceDir.getResources();
     SortedSet<ResourceCollection> dirs = sourceDir.getResourceCollections();
     if (files.isEmpty() && dirs.isEmpty()) {
-      return;
+      return ImmutableList.of();
     }
 
+    List<T> result = new ArrayList<>();
     for (Resource file : files) {
-      validator.validate(file, getPathForLog(rootSourceDir, file));
+      result.add(validator.validate(file, getPathForLog(rootSourceDir, file)));
     }
     for (ResourceCollection dir : dirs) {
-      validateFiles(dir, rootSourceDir, validator);
+      result.addAll(validateFiles(dir, rootSourceDir, validator));
     }
+    return result;
   }
 
   private static String getPathForLog(ResourceCollection rootSourceDir, Resource file) {

@@ -34,6 +34,7 @@ import org.apache.maven.project.MavenProject;
 /**
  * Utility methods for building class loaders.
  */
+@Deprecated
 public final class ClassLoaderUtil {
 
   private ClassLoaderUtil() {

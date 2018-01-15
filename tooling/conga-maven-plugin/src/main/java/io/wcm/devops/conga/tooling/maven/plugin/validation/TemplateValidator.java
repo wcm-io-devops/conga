@@ -35,7 +35,7 @@ import io.wcm.devops.conga.tooling.maven.plugin.util.PathUtil;
 /**
  * Validates Handlebars templates by compiling it.
  */
-public final class TemplateValidator implements DefinitionValidator {
+public final class TemplateValidator implements DefinitionValidator<Void> {
 
   private static final String FILE_EXTENSION = "hbs";
 
@@ -52,7 +52,7 @@ public final class TemplateValidator implements DefinitionValidator {
   }
 
   @Override
-  public void validate(Resource resource, String pathForLog) throws MojoFailureException {
+  public Void validate(Resource resource, String pathForLog) throws MojoFailureException {
     if (StringUtils.equalsIgnoreCase(resource.getFileExtension(), FILE_EXTENSION)) {
       String templatePath = StringUtils.substringAfter(PathUtil.unifySlashes(resource.getCanonicalPath()),
           PathUtil.unifySlashes(templateDir.getCanonicalPath()) + "/");
@@ -64,6 +64,7 @@ public final class TemplateValidator implements DefinitionValidator {
         throw new MojoFailureException("Template " + pathForLog + " is invalid:\n" + ex.getMessage());
       }
     }
+    return null;
   }
 
 }
