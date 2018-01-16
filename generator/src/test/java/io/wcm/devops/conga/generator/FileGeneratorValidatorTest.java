@@ -98,22 +98,19 @@ public class FileGeneratorValidatorTest {
       }
     });
 
+    GeneratorOptions options = new GeneratorOptions()
+        .pluginManager(pluginManager)
+        .version("1.0");
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
-        .logger(logger);
-    EnvironmentGeneratorOptions options = new EnvironmentGeneratorOptions()
-        .environmentName("env1")
-        .pluginManager(pluginManager)
-        .urlFileManager(urlFileManager)
-        .version("1.0")
-        .dependencyVersions(ImmutableList.<String>of())
-        .pluginContextOptions(pluginContextOptions)
-        .logger(logger);
+        .logger(options.getLogger());
     VariableMapResolver variableMapResolver = new VariableMapResolver(
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
-    underTest = new FileGenerator(options, "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template, variableMapResolver);
+    underTest = new FileGenerator(options, "env1",
+        "role1", ImmutableList.of("variant1"), "template1",
+        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template,
+        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of());
   }
 
   @Test

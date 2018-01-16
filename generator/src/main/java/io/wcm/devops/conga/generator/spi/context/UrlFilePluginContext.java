@@ -21,6 +21,8 @@ package io.wcm.devops.conga.generator.spi.context;
 
 import java.io.File;
 
+import io.wcm.devops.conga.model.environment.Environment;
+
 /**
  * Context for {@link io.wcm.devops.conga.generator.spi.UrlFilePlugin}.
  */
@@ -29,6 +31,7 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
   private File baseDir = new File(".");
   private ClassLoader resourceClassLoader = getClass().getClassLoader();
   private Object containerContext;
+  private Environment environment;
 
   /**
    * @return Base directory for resolving relative files in filesystem
@@ -75,6 +78,22 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
    */
   public UrlFilePluginContext containerContext(Object value) {
     containerContext = value;
+    return this;
+  }
+
+  /**
+   * @return Environment
+   */
+  public Environment getEnvironment() {
+    return this.environment;
+  }
+
+  /**
+   * @param value Environment
+   * @return this
+   */
+  public UrlFilePluginContext environment(Environment value) {
+    this.environment = value;
     return this;
   }
 

@@ -32,7 +32,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 /**
- * Utility methods for building class loaders.
+ * Utility methods for managing classpath and class loaders.
  */
 public final class ClassLoaderUtil {
 
@@ -41,21 +41,30 @@ public final class ClassLoaderUtil {
   }
 
   /**
+   * Build {@link ClassLoader} based on given list of dependency URLs.
+   * @param classpathUrls Classpath urls
+   * @return Resource loader
+   */
+  public static ClassLoader buildClassLoader(List<URL> classpathUrls) {
+    return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]));
+  }
+
+  /**
    * Build class loader from dependency of a maven project.
    * @param project Maven project
    * @return Class loader
    * @throws MojoExecutionException Mojo execution exception
    */
-  public static ClassLoader buildDependencyClassLoader(MavenProject project) throws MojoExecutionException {
+  public static List<URL> getMavenProjectClasspathUrls(MavenProject project) throws MojoExecutionException {
     try {
-      List<URL> classLoaderUrls = new ArrayList<>();
+      List<URL> classpathUrls = new ArrayList<>();
       for (String path : project.getCompileClasspathElements()) {
-        classLoaderUrls.add(new File(path).toURI().toURL());
+        classpathUrls.add(new File(path).toURI().toURL());
       }
       for (Resource resource : project.getResources()) {
-        classLoaderUrls.add(new File(resource.getDirectory()).toURI().toURL());
+        classpathUrls.add(new File(resource.getDirectory()).toURI().toURL());
       }
-      return new URLClassLoader(classLoaderUrls.toArray(new URL[classLoaderUrls.size()]));
+      return classpathUrls;
     }
     catch (MalformedURLException | DependencyResolutionRequiredException ex) {
       throw new MojoExecutionException("Unable to get classpath elements for class loader.", ex);

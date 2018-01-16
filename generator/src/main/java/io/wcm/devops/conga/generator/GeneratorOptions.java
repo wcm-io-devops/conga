@@ -20,78 +20,123 @@
 package io.wcm.devops.conga.generator;
 
 import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.wcm.devops.conga.generator.export.ModelExport;
-import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
-import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.generator.util.PluginManager;
 
 /**
  * Options for generator.
  */
-public class GeneratorOptions {
+public final class GeneratorOptions {
 
-  private List<ResourceCollection> roleDirs;
-  private List<ResourceCollection> templateDirs;
-  private List<ResourceCollection> environmentDirs;
+  /**
+   * Prefix for all CONGA resources in classpath.
+   */
+  public static final String CLASSPATH_PREFIX = "CONGA-INF/";
+
+  /**
+   * Classpath directory in JAR file for roles
+   */
+  public static final String CLASSPATH_ROLES_DIR = CLASSPATH_PREFIX + "roles";
+
+  /**
+   * Classpath directory in JAR file for roles
+   */
+  public static final String CLASSPATH_TEMPLATES_DIR = CLASSPATH_PREFIX + "templates";
+
+  /**
+   * Classpath directory in JAR file for roles
+   */
+  public static final String CLASSPATH_ENVIRONMENTS_DIR = CLASSPATH_PREFIX + "environments";
+
+
+  private File baseDir;
+  private File roleDir;
+  private File templateDir;
+  private File environmentDir;
   private File destDir;
-  private UrlFilePluginContext urlFilePluginContext;
   private boolean deleteBeforeGenerate;
   private String version;
-  private List<String> dependencyVersions;
   private ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
   private Map<String, Map<String, Object>> genericPluginConfig;
+  private Object urlFilePluginContainerContext;
+  private List<URL> containerClasspathUrls = new ArrayList<>();
+  private List<String> containerDependencyVersions = new ArrayList<>();
+  private PluginManager pluginManager;
+  private Logger logger = LoggerFactory.getLogger(Generator.class);
 
   /**
-   * Directories with role definitions. Filename without extension = role name.
-   * @return Resource collections
+   * @return Base directory for resolving relative file references
    */
-  public List<ResourceCollection> getRoleDirs() {
-    return this.roleDirs;
+  public File getBaseDir() {
+    return this.baseDir;
   }
 
   /**
-   * @param value Directories with role definitions. Filename without extension = role name.
+   * @param value Base directory for resolving relative file references
    * @return this
    */
-  public GeneratorOptions roleDirs(List<ResourceCollection> value) {
-    this.roleDirs = value;
+  public GeneratorOptions baseDir(File value) {
+    this.baseDir = value;
     return this;
   }
 
   /**
-   * Template base directories
-   * @return Resource collections
+   * Directory with role definitions. Filename without extension = role name.
+   * @return Directory
    */
-  public List<ResourceCollection> getTemplateDirs() {
-    return this.templateDirs;
+  public File getRoleDir() {
+    return this.roleDir;
   }
 
   /**
-   * @param value Template base directories
+   * @param value Directory with role definitions. Filename without extension = role name.
    * @return this
    */
-  public GeneratorOptions templateDirs(List<ResourceCollection> value) {
-    this.templateDirs = value;
+  public GeneratorOptions roleDir(File value) {
+    this.roleDir = value;
     return this;
   }
 
   /**
-   * Directories with environment definitions. Filename without extension = environment name.
-   * @return Resource collections
+   * Template base directory
+   * @return Directory
    */
-  public List<ResourceCollection> getEnvironmentDirs() {
-    return this.environmentDirs;
+  public File getTemplateDir() {
+    return this.templateDir;
   }
 
   /**
-   * @param value Directories with environment definitions. Filename without extension = environment name.
+   * @param value Template base directory
    * @return this
    */
-  public GeneratorOptions environmentDirs(List<ResourceCollection> value) {
-    this.environmentDirs = value;
+  public GeneratorOptions templateDir(File value) {
+    this.templateDir = value;
+    return this;
+  }
+
+  /**
+   * Directory with environment definitions. Filename without extension = environment name.
+   * @return Directory
+   */
+  public File getEnvironmentDir() {
+    return this.environmentDir;
+  }
+
+  /**
+   * @param value Directory with environment definitions. Filename without extension = environment name.
+   * @return this
+   */
+  public GeneratorOptions environmentDir(File value) {
+    this.environmentDir = value;
     return this;
   }
 
@@ -109,23 +154,6 @@ public class GeneratorOptions {
    */
   public GeneratorOptions destDir(File value) {
     this.destDir = value;
-    return this;
-  }
-
-  /**
-   * URL file plugin context
-   * @return Context
-   */
-  public UrlFilePluginContext getUrlFilePluginContext() {
-    return this.urlFilePluginContext;
-  }
-
-  /**
-   * @param value URL file plugin context
-   * @return this
-   */
-  public GeneratorOptions urlFilePluginContext(UrlFilePluginContext value) {
-    this.urlFilePluginContext = value;
     return this;
   }
 
@@ -160,24 +188,6 @@ public class GeneratorOptions {
    */
   public GeneratorOptions version(String value) {
     this.version = value;
-    return this;
-  }
-
-  /**
-   * List of versions to include as dependency information in generated file headers,
-   * e.g. the versions of the references role/template definition artifacts.
-   * @return Dependency versions
-   */
-  public List<String> getDependencyVersions() {
-    return this.dependencyVersions;
-  }
-
-  /**
-   * @param value Dependency versions
-   * @return this
-   */
-  public GeneratorOptions dependencyVersions(List<String> value) {
-    this.dependencyVersions = value;
     return this;
   }
 
@@ -228,6 +238,87 @@ public class GeneratorOptions {
    */
   public GeneratorOptions genericPluginConfig(Map<String, Map<String, Object>> value) {
     this.genericPluginConfig = value;
+    return this;
+  }
+
+  /**
+   * Container-specific context object for URL file plugin context
+   * @return Context
+   */
+  public Object getUrlFilePluginContainerContext() {
+    return this.urlFilePluginContainerContext;
+  }
+
+  /**
+   * @param value Container-specific context object for URL file plugin context
+   * @return this
+   */
+  public GeneratorOptions urlFilePluginContainerContext(Object value) {
+    this.urlFilePluginContainerContext = value;
+    return this;
+  }
+
+  /**
+   * @return List of classpath URLs to CONGA artifact dependencies and container classpath elements.
+   */
+  public List<URL> getContainerClasspathUrls() {
+    return this.containerClasspathUrls;
+  }
+
+  /**
+   * @param value List of URLs to CONGA artifact dependencies defined in the container.
+   * @return this
+   */
+  public GeneratorOptions containerClasspathUrls(List<URL> value) {
+    this.containerClasspathUrls = value;
+    return this;
+  }
+
+  /**
+   * @return List of CONGA artifact dependency version to be included in file header.
+   */
+  public List<String> getContainerDependencyVersions() {
+    return this.containerDependencyVersions;
+  }
+
+  /**
+   * @param value List of CONGA artifact dependency version to be included in file header.
+   * @return this
+   */
+  public GeneratorOptions containerDependencyVersions(List<String> value) {
+    this.containerDependencyVersions = value;
+    return this;
+  }
+
+  /**
+   * @return Plugin manager
+   */
+  public PluginManager getPluginManager() {
+    return this.pluginManager;
+  }
+
+  /**
+   * @param value Plugin manager
+   * @return this
+   */
+  public GeneratorOptions pluginManager(PluginManager value) {
+    this.pluginManager = value;
+    return this;
+  }
+
+  /**
+   * @return Logger
+   */
+  public Logger getLogger() {
+    return this.logger;
+  }
+
+  /**
+   * @param value Logger
+   * @return this
+   */
+  public GeneratorOptions logger(Logger value) {
+    this.logger = value;
     return this;
   }
 
