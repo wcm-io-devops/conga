@@ -49,7 +49,10 @@ public final class VersionInfoUtil {
       props.put(congaPlugin.getKey(), congaPlugin.getVersion());
 
       congaPlugin.getDependencies().stream()
-      .forEach(dependency -> props.put(Plugin.constructKey(dependency.getGroupId(), dependency.getArtifactId()), dependency.getVersion()));
+          .forEach(dependency -> {
+            String artifactKey = Plugin.constructKey(dependency.getGroupId(), dependency.getArtifactId());
+            props.put(artifactKey, dependency.getVersion());
+          });
     }
 
     return props;

@@ -54,11 +54,14 @@ public final class RoleTemplateFileValidator implements DefinitionValidator<Void
     try {
       Role role = modelReader.read(resource);
       for (RoleFile roleFile : role.getFiles()) {
-        Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, roleFile.getCharset());
+
+        // validate template file
         String templateFile = FileUtil.getTemplatePath(role, roleFile);
         if (StringUtils.isNotEmpty(templateFile)) {
+          Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, roleFile.getCharset());
           handlebars.compile(templateFile);
         }
+
       }
     }
     /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
