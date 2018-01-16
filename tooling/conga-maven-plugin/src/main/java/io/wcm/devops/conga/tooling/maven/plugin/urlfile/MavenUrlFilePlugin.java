@@ -25,6 +25,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -67,7 +69,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     String mavenCoords = StringUtils.substringAfter(url, PREFIX);
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
     try {
-      File file = getArtifactFile(mavenCoords, mavenContext);
+      File file = getArtifact(mavenCoords, mavenContext).getFile();
       return file.getName();
     }
     catch (MojoFailureException | MojoExecutionException ex) {
@@ -80,7 +82,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     String mavenCoords = StringUtils.substringAfter(url, PREFIX);
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
     try {
-      File file = getArtifactFile(mavenCoords, mavenContext);
+      File file = getArtifact(mavenCoords, mavenContext).getFile();
       return new BufferedInputStream(new FileInputStream(file));
     }
     catch (MojoFailureException | MojoExecutionException ex) {
@@ -93,7 +95,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     String mavenCoords = StringUtils.substringAfter(url, PREFIX);
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
     try {
-      File file = getArtifactFile(mavenCoords, mavenContext);
+      File file = getArtifact(mavenCoords, mavenContext).getFile();
       return file.toURI().toURL();
     }
     catch (MojoFailureException | MojoExecutionException ex) {
@@ -101,7 +103,25 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     }
   }
 
-  private File getArtifactFile(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException, MojoExecutionException {
+  @Override
+  public List<URL> getFileUrlsWithDependencies(String url, UrlFilePluginContext context) throws IOException {
+    String mavenCoords = StringUtils.substringAfter(url, PREFIX);
+    MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
+    try {
+      List<URL> urls = new ArrayList<>();
+      Artifact artifact = getArtifact(mavenCoords, mavenContext);
+      urls.add(artifact.getFile().toURI().toURL());
+
+      // TODO: resolve transitive artifact dependencies
+
+      return urls;
+    }
+    catch (MojoFailureException | MojoExecutionException ex) {
+      throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
+    }
+  }
+
+  private Artifact getArtifact(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException, MojoExecutionException {
 
     Artifact artifactObject;
     if (StringUtils.contains(artifact, "/")) {
@@ -118,7 +138,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     request.setRemoteRepositories(context.getRemoteRepositories());
     ArtifactResolutionResult result = context.getRepository().resolve(request);
     if (result.isSuccess()) {
-      return artifactObject.getFile();
+      return artifactObject;
     }
     else {
       throw new MojoExecutionException("Unable to download artifact: " + artifactObject.toString());

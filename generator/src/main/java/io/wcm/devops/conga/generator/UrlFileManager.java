@@ -99,6 +99,17 @@ public final class UrlFileManager {
     return handleFile(url, plugin -> plugin.getFileUrl(url, context));
   }
 
+  /**
+   * Get URLs of transitive dependencies of external file. This usually applies only to Maven artifacts.
+   * The returned list includes the URL of the artifact itself, and all it's transitive dependencies.
+   * @param url URL string (including prefix)
+   * @return URLs to files
+   * @throws IOException If the access to the file failed
+   */
+  public List<URL> getFileUrlsWithDependencies(String url) throws IOException {
+    return handleFile(url, plugin -> plugin.getFileUrlsWithDependencies(url, context));
+  }
+
   private <T> T handleFile(String url, FileHandler<T> fileHandler) throws IOException {
     if (StringUtils.isBlank(url)) {
       throw new IllegalArgumentException("No URL given.");

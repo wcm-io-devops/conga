@@ -69,7 +69,7 @@ final class ResourceLoaderUtil {
     List<URL> classpathUrls = new ArrayList<>();
     for (String dependencyUrl : dependencyUrls) {
       try {
-        classpathUrls.add(urlFileManager.getFileUrl(dependencyUrl));
+        classpathUrls.addAll(urlFileManager.getFileUrlsWithDependencies(dependencyUrl));
       }
       catch (IOException ex) {
         throw new GeneratorException("Unable to resolve: " + dependencyUrl, ex);

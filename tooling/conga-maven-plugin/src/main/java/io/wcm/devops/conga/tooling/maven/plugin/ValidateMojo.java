@@ -199,12 +199,13 @@ public class ValidateMojo extends AbstractCongaMojo {
     return dependencyUrls.stream()
         .map(dependencyUrl -> {
           try {
-            return urlFileManager.getFileUrl(dependencyUrl);
+            return urlFileManager.getFileUrlsWithDependencies(dependencyUrl);
           }
           catch (IOException ex) {
             throw new GeneratorException("Unable to resolve: " + dependencyUrl, ex);
           }
         })
+        .flatMap(list -> list.stream())
         .collect(Collectors.toList());
   }
 

@@ -22,6 +22,9 @@ package io.wcm.devops.conga.generator.spi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 
@@ -63,6 +66,20 @@ public interface UrlFilePlugin extends Plugin {
    * @return URL to file
    * @throws IOException If the access to the file failed
    */
-  URL getFileUrl(String url, UrlFilePluginContext context) throws IOException;
+  default URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
+    throw new IOException("File URLs not supported for " + getClass().getName());
+  }
+
+  /**
+   * Get URLs of transitive dependencies of external file. This usually applies only to Maven artifacts.
+   * The returned list includes the URL of the artifact itself, and all it's transitive dependencies.
+   * @param url URL string (including prefix)
+   * @param context Context objects
+   * @return URLs to files
+   * @throws IOException If the access to the file failed
+   */
+  default List<URL> getFileUrlsWithDependencies(String url, UrlFilePluginContext context) throws IOException {
+    return ImmutableList.of(getFileUrl(url, context));
+  }
 
 }
