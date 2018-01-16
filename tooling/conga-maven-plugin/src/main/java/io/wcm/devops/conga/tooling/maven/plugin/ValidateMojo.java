@@ -30,9 +30,7 @@ import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -41,7 +39,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.RepositorySystem;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.collect.ImmutableList;
@@ -82,15 +82,12 @@ public class ValidateMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
-  @Parameter(property = "session", readonly = true, required = true)
-  private MavenSession mavenSession;
-
   @Component
-  private RepositorySystem repository;
-  @Parameter(property = "localRepository", required = true, readonly = true)
-  private ArtifactRepository localRepository;
-  @Parameter(property = "project.remoteArtifactRepositories", required = true, readonly = true)
-  private java.util.List<ArtifactRepository> remoteRepositories;
+  private RepositorySystem repoSystem;
+  @Parameter(property = "repositorySystemSession", readonly = true)
+  private RepositorySystemSession repoSession;
+  @Parameter(property = "project.remotePluginRepositories", readonly = true)
+  private List<RemoteRepository> remoteRepos;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -110,9 +107,9 @@ public class ValidateMojo extends AbstractCongaMojo {
         .resourceClassLoader(mavenProjectClassLoader)
         .containerContext(new MavenUrlFilePluginContext()
             .project(project)
-            .repository(repository)
-            .localRepository(localRepository)
-            .remoteRepositories(remoteRepositories));
+            .repoSystem(repoSystem)
+            .repoSession(repoSession)
+            .remoteRepos(remoteRepos));
 
     PluginManager pluginManager = new PluginManagerImpl();
     UrlFileManager urlFileManager = new UrlFileManager(pluginManager, urlFilePluginContext);

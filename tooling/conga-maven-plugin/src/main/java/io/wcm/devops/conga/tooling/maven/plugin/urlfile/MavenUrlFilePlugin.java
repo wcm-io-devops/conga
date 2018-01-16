@@ -30,11 +30,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
@@ -132,16 +134,15 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     }
 
     // resolve artifact
-    ArtifactResolutionRequest request = new ArtifactResolutionRequest();
-    request.setArtifact(artifactObject);
-    request.setLocalRepository(context.getLocalRepository());
-    request.setRemoteRepositories(context.getRemoteRepositories());
-    ArtifactResolutionResult result = context.getRepository().resolve(request);
-    if (result.isSuccess()) {
-      return artifactObject;
+    ArtifactRequest artifactRequest = new ArtifactRequest();
+    artifactRequest.setArtifact(artifactObject);
+    artifactRequest.setRepositories(context.getRemoteRepos());
+    try {
+      ArtifactResult result = context.getRepoSystem().resolveArtifact(context.getRepoSession(), artifactRequest);
+      return result.getArtifact();
     }
-    else {
-      throw new MojoExecutionException("Unable to download artifact: " + artifactObject.toString());
+    catch (final ArtifactResolutionException ex) {
+      throw new MojoExecutionException("Unable to get artifact for " + artifact, ex);
     }
   }
 
@@ -258,10 +259,8 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
           + "classifier=" + classifier);
     }
 
-    if (StringUtils.isEmpty(classifier)) {
-      return context.getRepository().createArtifact(groupId, artifactId, artifactVersion, artifactPackaging);
-    }
-    return context.getRepository().createArtifactWithClassifier(groupId, artifactId, artifactVersion, artifactPackaging, classifier);
+    return new DefaultArtifact(groupId, artifactId, classifier, artifactPackaging, artifactVersion,
+        context.getRepoSession().getArtifactTypeRegistry().get(artifactPackaging));
   }
 
   private String resolveArtifactVersion(String artifactId, String groupId, String packaging, String classifier,
@@ -273,9 +272,9 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     return null;
   }
 
-  private String findVersion(Set<Artifact> dependencies, String artifactId, String groupId, String packaging, String classifier) {
+  private String findVersion(Set<org.apache.maven.artifact.Artifact> dependencies, String artifactId, String groupId, String packaging, String classifier) {
     if (dependencies != null) {
-      for (Artifact dependency : dependencies) {
+      for (org.apache.maven.artifact.Artifact dependency : dependencies) {
         if (artifactEquals(dependency, artifactId, groupId, packaging, classifier)) {
           return dependency.getVersion();
         }
@@ -284,7 +283,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     return null;
   }
 
-  private boolean artifactEquals(Artifact dependency, String artifactId, String groupId, String packaging, String classifier) {
+  private boolean artifactEquals(org.apache.maven.artifact.Artifact dependency, String artifactId, String groupId, String packaging, String classifier) {
     return StringUtils.equals(dependency.getGroupId(), groupId)
         && StringUtils.equals(dependency.getArtifactId(), artifactId)
         && StringUtils.equals(dependency.getClassifier(), classifier)

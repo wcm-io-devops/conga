@@ -27,15 +27,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.versioning.VersionRange;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -45,7 +36,14 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.RepositorySystem;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 
 import io.wcm.devops.conga.generator.Generator;
 import io.wcm.devops.conga.generator.GeneratorException;
@@ -78,27 +76,20 @@ public class GenerateMojo extends AbstractCongaMojo {
   private MavenProject project;
 
   @Component
-  private ArtifactResolver resolver;
-  @Component
-  private ArtifactHandlerManager artifactHandlerManager;
-  @Parameter(property = "session", readonly = true, required = true)
-  private MavenSession mavenSession;
-
-  @Component
-  private RepositorySystem repository;
-  @Parameter(property = "localRepository", required = true, readonly = true)
-  private ArtifactRepository localRepository;
-  @Parameter(property = "project.remoteArtifactRepositories", required = true, readonly = true)
-  private java.util.List<ArtifactRepository> remoteRepositories;
+  private RepositorySystem repoSystem;
+  @Parameter(property = "repositorySystemSession", readonly = true)
+  private RepositorySystemSession repoSession;
+  @Parameter(property = "project.remotePluginRepositories", readonly = true)
+  private List<RemoteRepository> remoteRepos;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
 
     MavenUrlFilePluginContext urlFilePluginContainerContext = new MavenUrlFilePluginContext()
         .project(project)
-        .repository(repository)
-        .localRepository(localRepository)
-        .remoteRepositories(remoteRepositories);
+        .repoSystem(repoSystem)
+        .repoSession(repoSession)
+        .remoteRepos(remoteRepos);
 
     GeneratorOptions options = new GeneratorOptions()
         .baseDir(project.getBasedir())
@@ -171,25 +162,23 @@ public class GenerateMojo extends AbstractCongaMojo {
    * Get a resolved Artifact from the coordinates provided
    * @return the artifact, which has been resolved.
    */
-  @SuppressWarnings("deprecation")
   private Artifact getArtifact(Dependency dependency) throws IOException {
     Artifact artifact = new DefaultArtifact(dependency.getGroupId(),
         dependency.getArtifactId(),
-        VersionRange.createFromVersion(dependency.getVersion()),
-        dependency.getScope(),
-        dependency.getType(),
         dependency.getClassifier(),
-        artifactHandlerManager.getArtifactHandler(dependency.getType()));
+        dependency.getType(),
+        dependency.getVersion(),
+        repoSession.getArtifactTypeRegistry().get(dependency.getType()));
+    ArtifactRequest artifactRequest = new ArtifactRequest();
+    artifactRequest.setArtifact(artifact);
+    artifactRequest.setRepositories(remoteRepos);
     try {
-      resolver.resolve(artifact, project.getRemoteArtifactRepositories(), mavenSession.getLocalRepository());
+      ArtifactResult result = repoSystem.resolveArtifact(repoSession, artifactRequest);
+      return result.getArtifact();
     }
     catch (final ArtifactResolutionException ex) {
       throw new IOException("Unable to get artifact for " + dependency, ex);
     }
-    catch (ArtifactNotFoundException ex) {
-      throw new IOException("Unable to get artifact for " + dependency, ex);
-    }
-    return artifact;
   }
 
 }
