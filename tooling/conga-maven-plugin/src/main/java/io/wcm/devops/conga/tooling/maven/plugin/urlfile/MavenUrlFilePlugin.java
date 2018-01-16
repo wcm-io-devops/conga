@@ -19,6 +19,9 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.urlfile;
 
+import static org.apache.maven.artifact.Artifact.SCOPE_COMPILE;
+import static org.apache.maven.artifact.Artifact.SCOPE_RUNTIME;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,6 +37,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.resolution.ArtifactDescriptorException;
+import org.eclipse.aether.resolution.ArtifactDescriptorRequest;
+import org.eclipse.aether.resolution.ArtifactDescriptorResult;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
@@ -114,11 +121,21 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
       Artifact artifact = getArtifact(mavenCoords, mavenContext);
       urls.add(artifact.getFile().toURI().toURL());
 
-      // TODO: resolve transitive artifact dependencies
+      // get transitive dependencies of artifact
+      ArtifactDescriptorRequest descriptorRequest = new ArtifactDescriptorRequest();
+      descriptorRequest.setArtifact(artifact);
+      descriptorRequest.setRepositories(mavenContext.getRemoteRepos());
+      ArtifactDescriptorResult result = mavenContext.getRepoSystem().readArtifactDescriptor(mavenContext.getRepoSession(), descriptorRequest);
+      for (Dependency dependency : result.getDependencies()) {
+        if (StringUtils.equalsAny(dependency.getScope(), SCOPE_COMPILE, SCOPE_RUNTIME)) {
+          Artifact resolvedArtifact = resolveArtifact(dependency.getArtifact(), mavenContext);
+          urls.add(resolvedArtifact.getFile().toURI().toURL());
+        }
+      }
 
       return urls;
     }
-    catch (MojoFailureException | MojoExecutionException ex) {
+    catch (MojoFailureException | MojoExecutionException | ArtifactDescriptorException ex) {
       throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
     }
   }
@@ -133,9 +150,12 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
       artifactObject = getArtifactFromMavenCoordinates(artifact, context);
     }
 
-    // resolve artifact
+    return resolveArtifact(artifactObject, context);
+  }
+
+  private Artifact resolveArtifact(Artifact artifact, MavenUrlFilePluginContext context) throws MojoExecutionException {
     ArtifactRequest artifactRequest = new ArtifactRequest();
-    artifactRequest.setArtifact(artifactObject);
+    artifactRequest.setArtifact(artifact);
     artifactRequest.setRepositories(context.getRemoteRepos());
     try {
       ArtifactResult result = context.getRepoSystem().resolveArtifact(context.getRepoSession(), artifactRequest);
