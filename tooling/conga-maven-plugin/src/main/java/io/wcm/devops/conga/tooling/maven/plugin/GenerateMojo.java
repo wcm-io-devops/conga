@@ -59,7 +59,7 @@ import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
  * Generates configuration using CONGA generator.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresProject = true, threadSafe = true,
-requiresDependencyResolution = ResolutionScope.COMPILE)
+    requiresDependencyResolution = ResolutionScope.COMPILE)
 public class GenerateMojo extends AbstractCongaMojo {
 
   /**
