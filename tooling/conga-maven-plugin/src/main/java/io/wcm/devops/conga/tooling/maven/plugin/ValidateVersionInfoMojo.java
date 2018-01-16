@@ -21,6 +21,7 @@ package io.wcm.devops.conga.tooling.maven.plugin;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -31,10 +32,7 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -47,8 +45,7 @@ import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
  * Validates that the CONGA maven plugin version and CONGA plugin versions match or are newer than those versions
  * used when generating the dependency artifacts.
  */
-@Mojo(name = "validate-version-info", defaultPhase = LifecyclePhase.VALIDATE, requiresProject = true, threadSafe = true,
-requiresDependencyResolution = ResolutionScope.COMPILE)
+@Deprecated // TODO: integrate in {@link ValidateMojo}.
 public class ValidateVersionInfoMojo extends AbstractMojo {
 
   @Parameter(property = "project", required = true, readonly = true)
@@ -83,8 +80,9 @@ public class ValidateVersionInfoMojo extends AbstractMojo {
   }
 
   private List<Properties> getDependencyVersionInfos() throws MojoExecutionException {
-    ClassLoader classLoader = ClassLoaderUtil.buildDependencyClassLoader(project);
-    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(classLoader);
+    List<URL> mavenProjectClasspathUrls = ClassLoaderUtil.getMavenProjectClasspathUrls(project);
+    ClassLoader mavenProjectClassLoader = ClassLoaderUtil.buildClassLoader(mavenProjectClasspathUrls);
+    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(mavenProjectClassLoader);
     try {
       Resource[] resources = resolver.getResources(
           "classpath*:" + GeneratorOptions.CLASSPATH_PREFIX + BuildConstants.FILE_VERSION_INFO);

@@ -46,8 +46,6 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 import com.google.common.collect.ImmutableSet;
 
-import io.wcm.devops.conga.resource.ResourceLoader;
-
 /**
  * Packages the generated configurations in a ZIP file.
  */
@@ -70,8 +68,8 @@ public class PackageMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
-  @Parameter(defaultValue = "${session}", required = true, readonly = true)
-  private MavenSession session;
+  @Parameter(property = "session", readonly = true, required = true)
+  private MavenSession mavenSession;
 
   @Component
   protected MavenProjectHelper projectHelper;
@@ -79,12 +77,8 @@ public class PackageMojo extends AbstractCongaMojo {
   @Component(role = Archiver.class, hint = "zip")
   private ZipArchiver zipArchiver;
 
-  private ResourceLoader resourceLoader;
-
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    resourceLoader = new ResourceLoader();
-
     Set<String> selectedEnvironments;
     if (environments != null && environments.length > 0) {
       selectedEnvironments = ImmutableSet.copyOf(environments);
@@ -176,11 +170,6 @@ public class PackageMojo extends AbstractCongaMojo {
     if (StringUtils.contains(classifier, ".")) {
       throw new MojoExecutionException("Classifier must not contain dots: " + classifier);
     }
-  }
-
-  @Override
-  protected ResourceLoader getResourceLoader() {
-    return resourceLoader;
   }
 
 }

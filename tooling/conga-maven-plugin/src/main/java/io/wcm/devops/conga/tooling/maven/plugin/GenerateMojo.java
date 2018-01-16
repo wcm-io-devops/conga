@@ -52,9 +52,8 @@ import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.GeneratorOptions;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
-import io.wcm.devops.conga.resource.ResourceLoader;
-import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePlugin;
 import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePluginContext;
+import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 
 /**
  * Generates configuration using CONGA generator.
@@ -92,8 +91,6 @@ public class GenerateMojo extends AbstractCongaMojo {
   @Parameter(property = "project.remoteArtifactRepositories", required = true, readonly = true)
   private java.util.List<ArtifactRepository> remoteRepositories;
 
-  private ResourceLoader resourceLoader;
-
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -115,7 +112,8 @@ public class GenerateMojo extends AbstractCongaMojo {
         .valueProviderConfig(getValueProviderConfig())
         .genericPluginConfig(getPluginConfig())
         .urlFilePluginContainerContext(urlFilePluginContainerContext)
-        .containerDependencyUrls(buildDependencyUrlList())
+        .containerClasspathUrls(ClassLoaderUtil.getMavenProjectClasspathUrls(project))
+        .containerDependencyVersions(buildDependencyVersionList())
         .pluginManager(new PluginManagerImpl())
         .logger(new MavenSlf4jLogFacade(getLog()));
 
@@ -128,15 +126,14 @@ public class GenerateMojo extends AbstractCongaMojo {
    * @return Version list
    */
   @SuppressWarnings("deprecation")
-  private List<String> buildDependencyUrlList() {
-    getLog().info("Scanning dependencies for CONGA definitions...");
+  public List<String> buildDependencyVersionList() {
     return project.getCompileDependencies().stream()
         // include only dependencies with a CONGA-INF/ directory
         .filter(this::hasCongaDefinitions)
         // transform to string
-        .map(dependency -> MavenUrlFilePlugin.PREFIX + dependency.getGroupId() + "/" + dependency.getArtifactId()
-            + "/" + dependency.getVersion() + "/jar"
-        + (dependency.getClassifier() != null ? "/" + dependency.getClassifier() : ""))
+        .map(dependency -> dependency.getGroupId() + "/" + dependency.getArtifactId()
+            + "/" + dependency.getVersion()
+            + (dependency.getClassifier() != null ? "/" + dependency.getType() + "/" + dependency.getClassifier() : ""))
         .collect(Collectors.toList());
   }
 
@@ -183,7 +180,7 @@ public class GenerateMojo extends AbstractCongaMojo {
         dependency.getClassifier(),
         artifactHandlerManager.getArtifactHandler(dependency.getType()));
     try {
-      this.resolver.resolve(artifact, this.project.getRemoteArtifactRepositories(), this.mavenSession.getLocalRepository());
+      resolver.resolve(artifact, project.getRemoteArtifactRepositories(), mavenSession.getLocalRepository());
     }
     catch (final ArtifactResolutionException ex) {
       throw new IOException("Unable to get artifact for " + dependency, ex);
@@ -192,11 +189,6 @@ public class GenerateMojo extends AbstractCongaMojo {
       throw new IOException("Unable to get artifact for " + dependency, ex);
     }
     return artifact;
-  }
-
-  @Override
-  protected ResourceLoader getResourceLoader() {
-    return resourceLoader;
   }
 
 }

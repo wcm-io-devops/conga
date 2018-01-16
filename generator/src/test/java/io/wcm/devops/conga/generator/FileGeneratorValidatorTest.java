@@ -110,7 +110,7 @@ public class FileGeneratorValidatorTest {
     underTest = new FileGenerator(options, "env1",
         "role1", ImmutableList.of("variant1"), "template1",
         destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template,
-        variableMapResolver, urlFileManager, pluginContextOptions, options.getContainerDependencyUrls());
+        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of());
   }
 
   @Test

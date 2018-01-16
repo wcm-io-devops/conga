@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,8 @@ public final class GeneratorOptions {
   private Map<String, Map<String, Object>> valueProviderConfig;
   private Map<String, Map<String, Object>> genericPluginConfig;
   private Object urlFilePluginContainerContext;
-  private List<String> containerDependencyUrls = new ArrayList<>();
+  private List<URL> containerClasspathUrls = new ArrayList<>();
+  private List<String> containerDependencyVersions = new ArrayList<>();
   private PluginManager pluginManager;
   private Logger logger = LoggerFactory.getLogger(Generator.class);
 
@@ -257,18 +259,34 @@ public final class GeneratorOptions {
   }
 
   /**
-   * @return List of URLs to CONGA artifact dependencies defined in the container.
+   * @return List of classpath URLs to CONGA artifact dependencies and container classpath elements.
    */
-  public List<String> getContainerDependencyUrls() {
-    return this.containerDependencyUrls;
+  public List<URL> getContainerClasspathUrls() {
+    return this.containerClasspathUrls;
   }
 
   /**
    * @param value List of URLs to CONGA artifact dependencies defined in the container.
    * @return this
    */
-  public GeneratorOptions containerDependencyUrls(List<String> value) {
-    this.containerDependencyUrls = value;
+  public GeneratorOptions containerClasspathUrls(List<URL> value) {
+    this.containerClasspathUrls = value;
+    return this;
+  }
+
+  /**
+   * @return List of CONGA artifact dependency version to be included in file header.
+   */
+  public List<String> getContainerDependencyVersions() {
+    return this.containerDependencyVersions;
+  }
+
+  /**
+   * @param value List of CONGA artifact dependency version to be included in file header.
+   * @return this
+   */
+  public GeneratorOptions containerDependencyVersions(List<String> value) {
+    this.containerDependencyVersions = value;
     return this;
   }
 

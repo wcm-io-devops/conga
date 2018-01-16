@@ -29,7 +29,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
-import io.wcm.devops.conga.resource.ResourceLoader;
 import io.wcm.devops.conga.tooling.maven.plugin.util.PluginConfigUtil;
 
 /**
@@ -141,7 +140,5 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   protected Map<String, Map<String, Object>> getPluginConfig() {
     return PluginConfigUtil.getConfigMap(this.pluginConfig);
   }
-
-  protected abstract ResourceLoader getResourceLoader();
 
 }

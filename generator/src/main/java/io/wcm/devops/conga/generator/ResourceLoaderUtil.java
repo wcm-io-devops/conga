@@ -19,10 +19,8 @@
  */
 package io.wcm.devops.conga.generator;
 
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +29,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.collect.ImmutableMap;
 
-import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
-import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.resource.Resource;
@@ -46,35 +42,11 @@ final class ResourceLoaderUtil {
 
   /**
    * Build {@link ClassLoader} based on given list of dependency URLs.
-   * @param dependencyUrls Dependency urls
-   * @param options Generator options
+   * @param classpathUrls Classpath urls
    * @return Resource loader
    */
-  public static ClassLoader buildDependencyClassLoader(List<String> dependencyUrls, GeneratorOptions options) {
-
-    // build url file manager to resolver dependency file urls
-    PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .genericPluginConfig(options.getGenericPluginConfig())
-        .pluginManager(options.getPluginManager())
-        .logger(options.getLogger());
-    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
-        .baseDir(options.getBaseDir())
-        .pluginContextOptions(pluginContextOptions)
-        .resourceClassLoader(ResourceLoaderUtil.class.getClassLoader())
-        .containerContext(options.getUrlFilePluginContainerContext());
-    UrlFileManager urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
-
-    // build classloader based on dependency urls
-    List<URL> classLoaderUrls = new ArrayList<>();
-    for (String url : dependencyUrls) {
-      try {
-        classLoaderUrls.add(urlFileManager.getFileUrl(url));
-      }
-      catch (IOException ex) {
-        throw new GeneratorException("Unable to resolver dependency URL: " + url, ex);
-      }
-    }
-    return new URLClassLoader(classLoaderUrls.toArray(new URL[classLoaderUrls.size()]));
+  public static ClassLoader buildClassLoader(List<URL> classpathUrls) {
+    return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]));
   }
 
   /**

@@ -51,7 +51,7 @@ public final class Generator {
     this.options = options;
     this.destDir = FileUtil.ensureDirExistsAutocreate(options.getDestDir());
 
-    ClassLoader resourceClassLoader = ResourceLoaderUtil.buildDependencyClassLoader(options.getContainerDependencyUrls(), options);
+    ClassLoader resourceClassLoader = ResourceLoaderUtil.buildClassLoader(options.getContainerClasspathUrls());
     ResourceLoader resourceLoader = new ResourceLoader(resourceClassLoader);
     List<ResourceCollection> environmentDirs = ImmutableList.of(
         resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + options.getEnvironmentDir()),

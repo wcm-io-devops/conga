@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -101,10 +102,10 @@ class EnvironmentGenerator {
     this.log = options.getLogger();
 
     // build resource loaded based on combined dependency lists of environment and container
-    List<String> combindedDependencyUrls = new ArrayList<>();
-    combindedDependencyUrls.addAll(environment.getDependencies());
-    combindedDependencyUrls.addAll(options.getContainerDependencyUrls());
-    ClassLoader resourceClassLoader = ResourceLoaderUtil.buildDependencyClassLoader(combindedDependencyUrls, options);
+    List<URL> combindedDependencyUrls = new ArrayList<>();
+    combindedDependencyUrls.addAll(getEnvironmentClasspathUrls(environment.getDependencies()));
+    combindedDependencyUrls.addAll(options.getContainerClasspathUrls());
+    ClassLoader resourceClassLoader = ResourceLoaderUtil.buildClassLoader(combindedDependencyUrls);
     ResourceLoader resourceLoader = new ResourceLoader(resourceClassLoader);
 
     // prepare template and role directories
@@ -143,14 +144,31 @@ class EnvironmentGenerator {
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, options.getVersion(),
             variableObjectTreeResolver, variableStringResolver));
 
-    this.dependencyVersions = combindedDependencyUrls.stream()
-        .map(url -> {
-          // strip off prefix for dependency urls
-          if (StringUtils.contains(url, ":")) {
-            return StringUtils.substringAfter(url, ":");
+    this.dependencyVersions = new ArrayList<>();
+    environment.getDependencies().stream()
+        .map(this::stripPrefix)
+        .forEach(this.dependencyVersions::add);
+    this.dependencyVersions.addAll(options.getContainerDependencyVersions());
+  }
+
+  private String stripPrefix(String url) {
+    // strip off prefix for dependency urls
+    if (StringUtils.contains(url, ":")) {
+      return StringUtils.substringAfter(url, ":");
+    }
+    else {
+      return url;
+    }
+  }
+
+  private List<URL> getEnvironmentClasspathUrls(List<String> dependencyUrls) {
+    return dependencyUrls.stream()
+        .map(dependencyUrl -> {
+          try {
+            return urlFileManager.getFileUrl(dependencyUrl);
           }
-          else {
-            return url;
+          catch (IOException ex) {
+            throw new GeneratorException("Unable to resolve: " + dependencyUrl, ex);
           }
         })
         .collect(Collectors.toList());

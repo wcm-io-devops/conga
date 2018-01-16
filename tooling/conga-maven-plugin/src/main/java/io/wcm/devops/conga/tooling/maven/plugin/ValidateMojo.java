@@ -19,14 +19,13 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -62,17 +61,15 @@ import io.wcm.devops.conga.tooling.maven.plugin.validation.TemplateValidator;
 
 /**
  * Validates definitions by trying to parse them with model reader or compile them via handlebars.
+ * Validates that the CONGA maven plugin version and CONGA plugin versions match or are newer than those versions
+ * used when generating the dependency artifacts.
  */
-@Mojo(name = "definition-validate", defaultPhase = LifecyclePhase.VALIDATE, requiresProject = true, threadSafe = true)
-public class DefinitionValidateMojo extends AbstractCongaMojo {
+@Mojo(name = "validate", defaultPhase = LifecyclePhase.VALIDATE, requiresProject = true, threadSafe = true)
+public class ValidateMojo extends AbstractCongaMojo {
 
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
-  @Component
-  private ArtifactResolver resolver;
-  @Component
-  private ArtifactHandlerManager artifactHandlerManager;
   @Parameter(property = "session", readonly = true, required = true)
   private MavenSession mavenSession;
 
@@ -83,23 +80,22 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
   @Parameter(property = "project.remoteArtifactRepositories", required = true, readonly = true)
   private java.util.List<ArtifactRepository> remoteRepositories;
 
-  private ResourceLoader resourceLoader;
-
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    resourceLoader = new ResourceLoader();
-    ClassLoader resourceClassLoader = ClassLoaderUtil.buildDependencyClassLoader(project);
+    List<URL> mavenProjectClasspathUrls = ClassLoaderUtil.getMavenProjectClasspathUrls(project);
+    ClassLoader mavenProjectClassLoader = ClassLoaderUtil.buildClassLoader(mavenProjectClasspathUrls);
+    ResourceLoader mavenProjectResourceLoader = new ResourceLoader(mavenProjectClassLoader);
 
-    ResourceCollection roleDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getRoleDir());
-    ResourceCollection templateDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getTemplateDir());
-    ResourceCollection environmentDir = getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + getEnvironmentDir());
+    ResourceCollection roleDir = mavenProjectResourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + getRoleDir());
+    ResourceCollection templateDir = mavenProjectResourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + getTemplateDir());
+    ResourceCollection environmentDir = mavenProjectResourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + getEnvironmentDir());
 
     // validate role definition syntax
     validateFiles(roleDir, roleDir, new ModelValidator<Role>("Role", new RoleReader()));
 
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .baseDir(project.getBasedir())
-        .resourceClassLoader(resourceClassLoader)
+        .resourceClassLoader(mavenProjectClassLoader)
         .containerContext(new MavenUrlFilePluginContext()
             .project(project)
             .repository(repository)
@@ -149,12 +145,6 @@ public class DefinitionValidateMojo extends AbstractCongaMojo {
     String path = PathUtil.unifySlashes(file.getCanonicalPath());
     String rootPath = PathUtil.unifySlashes(rootSourceDir.getCanonicalPath()) + "/";
     return StringUtils.substringAfter(path, rootPath);
-  }
-
-
-  @Override
-  protected ResourceLoader getResourceLoader() {
-    return resourceLoader;
   }
 
 }
