@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -102,10 +101,8 @@ class EnvironmentGenerator {
     this.log = options.getLogger();
 
     // build resource loaded based on combined dependency lists of environment and container
-    List<URL> combindedDependencyUrls = new ArrayList<>();
-    combindedDependencyUrls.addAll(getEnvironmentClasspathUrls(environment.getDependencies()));
-    combindedDependencyUrls.addAll(options.getContainerClasspathUrls());
-    ClassLoader resourceClassLoader = ResourceLoaderUtil.buildClassLoader(combindedDependencyUrls);
+    List<URL> combindedClasspathUrls = ResourceLoaderUtil.getEnvironmentClasspathUrls(environment.getDependencies(), options);
+    ClassLoader resourceClassLoader = ResourceLoaderUtil.buildClassLoader(combindedClasspathUrls);
     ResourceLoader resourceLoader = new ResourceLoader(resourceClassLoader);
 
     // prepare template and role directories
@@ -159,19 +156,6 @@ class EnvironmentGenerator {
     else {
       return url;
     }
-  }
-
-  private List<URL> getEnvironmentClasspathUrls(List<String> dependencyUrls) {
-    return dependencyUrls.stream()
-        .map(dependencyUrl -> {
-          try {
-            return urlFileManager.getFileUrl(dependencyUrl);
-          }
-          catch (IOException ex) {
-            throw new GeneratorException("Unable to resolve: " + dependencyUrl, ex);
-          }
-        })
-        .collect(Collectors.toList());
   }
 
   public void generate() {

@@ -134,6 +134,7 @@ public class GenerateMojo extends AbstractCongaMojo {
         .map(dependency -> dependency.getGroupId() + "/" + dependency.getArtifactId()
             + "/" + dependency.getVersion()
             + (dependency.getClassifier() != null ? "/" + dependency.getType() + "/" + dependency.getClassifier() : ""))
+        .sorted()
         .collect(Collectors.toList());
   }
 
@@ -143,7 +144,7 @@ public class GenerateMojo extends AbstractCongaMojo {
    * @return true if configuration definitions found
    */
   private boolean hasCongaDefinitions(Dependency dependency) {
-    if (!StringUtils.equals(dependency.getType(), "jar")) {
+    if (!StringUtils.equalsAny(dependency.getType(), "jar", "config-definition")) {
       return false;
     }
     String fileInfo = dependency.toString();

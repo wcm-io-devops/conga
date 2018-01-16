@@ -19,8 +19,10 @@
  */
 package io.wcm.devops.conga.generator;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.resource.Resource;
@@ -47,6 +50,33 @@ final class ResourceLoaderUtil {
    */
   public static ClassLoader buildClassLoader(List<URL> classpathUrls) {
     return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]));
+  }
+
+  /**
+   * Get classpath URLs from dependency urls defined in environment.
+   * @param dependencyUrls Dependency URLs from environment
+   * @param options Generator options
+   * @return Classpath URLs from environment plus container classpath URLs
+   */
+  public static List<URL> getEnvironmentClasspathUrls(List<String> dependencyUrls, GeneratorOptions options) {
+
+    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
+        .baseDir(options.getBaseDir())
+        .resourceClassLoader(ResourceLoaderUtil.class.getClassLoader())
+        .containerContext(options.getUrlFilePluginContainerContext());
+    UrlFileManager urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
+
+    List<URL> classpathUrls = new ArrayList<>();
+    for (String dependencyUrl : dependencyUrls) {
+      try {
+        classpathUrls.add(urlFileManager.getFileUrl(dependencyUrl));
+      }
+      catch (IOException ex) {
+        throw new GeneratorException("Unable to resolve: " + dependencyUrl, ex);
+      }
+    }
+    classpathUrls.addAll(options.getContainerClasspathUrls());
+    return classpathUrls;
   }
 
   /**

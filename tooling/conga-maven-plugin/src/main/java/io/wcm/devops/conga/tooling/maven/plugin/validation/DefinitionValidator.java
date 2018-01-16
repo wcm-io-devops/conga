@@ -33,6 +33,7 @@ public interface DefinitionValidator<T> {
    * Validates the given resource
    * @param resource Resource
    * @param pathForLog Path for log message
+   * @return Result
    * @throws MojoFailureException Mojo failure exception
    */
   T validate(Resource resource, String pathForLog) throws MojoFailureException;

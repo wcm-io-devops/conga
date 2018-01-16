@@ -224,20 +224,24 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     if (artifactVersion == null) {
       artifactVersion = resolveArtifactVersion(artifactId, groupId, packaging, classifier, context);
     }
+    String artifactPackaging = packaging;
+    if (artifactPackaging == null) {
+      artifactPackaging = "jar";
+    }
 
     if (StringUtils.isBlank(groupId) || StringUtils.isBlank(artifactId) || StringUtils.isBlank(artifactVersion)) {
       throw new MojoFailureException("Invalid Maven artifact reference: "
           + "artifactId=" + artifactId + ", "
           + "groupId=" + groupId + ", "
           + "version=" + artifactVersion + ", "
-          + "packaging=" + packaging + ", "
+          + "packaging=" + artifactPackaging + ", "
           + "classifier=" + classifier);
     }
 
     if (StringUtils.isEmpty(classifier)) {
-      return context.getRepository().createArtifact(groupId, artifactId, artifactVersion, packaging);
+      return context.getRepository().createArtifact(groupId, artifactId, artifactVersion, artifactPackaging);
     }
-    return context.getRepository().createArtifactWithClassifier(groupId, artifactId, artifactVersion, packaging, classifier);
+    return context.getRepository().createArtifactWithClassifier(groupId, artifactId, artifactVersion, artifactPackaging, classifier);
   }
 
   private String resolveArtifactVersion(String artifactId, String groupId, String packaging, String classifier,
