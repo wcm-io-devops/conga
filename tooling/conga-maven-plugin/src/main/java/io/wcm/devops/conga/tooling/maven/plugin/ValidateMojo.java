@@ -102,17 +102,20 @@ public class ValidateMojo extends AbstractCongaMojo {
     // validate role definition syntax
     validateFiles(roleDir, roleDir, new ModelValidator<Role>("Role", new RoleReader()));
 
+    PluginManager pluginManager = new PluginManagerImpl();
+
+    MavenUrlFilePluginContext mavenUrlFilePluginContext = new MavenUrlFilePluginContext()
+        .project(project)
+        .repoSystem(repoSystem)
+        .repoSession(repoSession)
+        .remoteRepos(remoteRepos);
+
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .baseDir(project.getBasedir())
         .resourceClassLoader(mavenProjectClassLoader)
-        .containerContext(new MavenUrlFilePluginContext()
-            .project(project)
-            .repoSystem(repoSystem)
-            .repoSession(repoSession)
-            .remoteRepos(remoteRepos));
-
-    PluginManager pluginManager = new PluginManagerImpl();
+        .containerContext(mavenUrlFilePluginContext);
     UrlFileManager urlFileManager = new UrlFileManager(pluginManager, urlFilePluginContext);
+
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
@@ -131,7 +134,14 @@ public class ValidateMojo extends AbstractCongaMojo {
 
     // validate version information - for each environment separately
     for (Environment environment : environments) {
-      validateVersionInfo(environment, mavenProjectClasspathUrls, urlFileManager);
+      UrlFilePluginContext environmentUrlFilePluginContext = new UrlFilePluginContext()
+          .baseDir(project.getBasedir())
+          .resourceClassLoader(mavenProjectClassLoader)
+          .containerContext(mavenUrlFilePluginContext)
+          .environment(environment);
+      UrlFileManager environmentUrlFileManager = new UrlFileManager(pluginManager, environmentUrlFilePluginContext);
+
+      validateVersionInfo(environment, mavenProjectClasspathUrls, environmentUrlFileManager);
     }
   }
 

@@ -118,7 +118,8 @@ class EnvironmentGenerator {
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .baseDir(options.getBaseDir())
         .resourceClassLoader(resourceClassLoader)
-        .containerContext(options.getUrlFilePluginContainerContext());
+        .containerContext(options.getUrlFilePluginContainerContext())
+        .environment(environment);
     this.urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
 
     this.pluginContextOptions = new PluginContextOptions()

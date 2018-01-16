@@ -33,8 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
@@ -77,92 +76,87 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
   public String getFileName(String url, UrlFilePluginContext context) throws IOException {
     String mavenCoords = StringUtils.substringAfter(url, PREFIX);
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
-    try {
-      File file = getArtifact(mavenCoords, mavenContext).getFile();
-      return file.getName();
-    }
-    catch (MojoFailureException | MojoExecutionException ex) {
-      throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
-    }
+    File file = getArtifact(mavenCoords, context, mavenContext).getFile();
+    return file.getName();
   }
 
   @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
     String mavenCoords = StringUtils.substringAfter(url, PREFIX);
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
-    try {
-      File file = getArtifact(mavenCoords, mavenContext).getFile();
-      return new BufferedInputStream(new FileInputStream(file));
-    }
-    catch (MojoFailureException | MojoExecutionException ex) {
-      throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
-    }
+    File file = getArtifact(mavenCoords, context, mavenContext).getFile();
+    return new BufferedInputStream(new FileInputStream(file));
   }
 
   @Override
   public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
     String mavenCoords = StringUtils.substringAfter(url, PREFIX);
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
-    try {
-      File file = getArtifact(mavenCoords, mavenContext).getFile();
-      return file.toURI().toURL();
-    }
-    catch (MojoFailureException | MojoExecutionException ex) {
-      throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
-    }
+    File file = getArtifact(mavenCoords, context, mavenContext).getFile();
+    return file.toURI().toURL();
   }
 
   @Override
   public List<URL> getFileUrlsWithDependencies(String url, UrlFilePluginContext context) throws IOException {
     String mavenCoords = StringUtils.substringAfter(url, PREFIX);
     MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
-    try {
-      List<URL> urls = new ArrayList<>();
-      Artifact artifact = getArtifact(mavenCoords, mavenContext);
-      urls.add(artifact.getFile().toURI().toURL());
+    List<URL> urls = new ArrayList<>();
+    Artifact artifact = getArtifact(mavenCoords, context, mavenContext);
+    urls.add(artifact.getFile().toURI().toURL());
 
-      // get transitive dependencies of artifact
-      ArtifactDescriptorRequest descriptorRequest = new ArtifactDescriptorRequest();
-      descriptorRequest.setArtifact(artifact);
-      descriptorRequest.setRepositories(mavenContext.getRemoteRepos());
+    // get transitive dependencies of artifact
+    for (Artifact dependencyArtifact : getTransitiveDependencies(artifact, context, mavenContext)) {
+      urls.add(dependencyArtifact.getFile().toURI().toURL());
+    }
+
+    return urls;
+  }
+
+  private List<Artifact> getTransitiveDependencies(Artifact artifact,
+      UrlFilePluginContext context, MavenUrlFilePluginContext mavenContext) throws IOException {
+    List<Artifact> dependencies = new ArrayList<>();
+    ArtifactDescriptorRequest descriptorRequest = new ArtifactDescriptorRequest();
+    descriptorRequest.setArtifact(artifact);
+    descriptorRequest.setRepositories(mavenContext.getRemoteRepos());
+    try {
       ArtifactDescriptorResult result = mavenContext.getRepoSystem().readArtifactDescriptor(mavenContext.getRepoSession(), descriptorRequest);
       for (Dependency dependency : result.getDependencies()) {
         if (StringUtils.equalsAny(dependency.getScope(), SCOPE_COMPILE, SCOPE_RUNTIME)) {
-          Artifact resolvedArtifact = resolveArtifact(dependency.getArtifact(), mavenContext);
-          urls.add(resolvedArtifact.getFile().toURI().toURL());
+          Artifact resolvedArtifact = resolveArtifact(dependency.getArtifact(), context, mavenContext);
+          dependencies.add(resolvedArtifact);
         }
       }
-
-      return urls;
     }
-    catch (MojoFailureException | MojoExecutionException | ArtifactDescriptorException ex) {
-      throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
+    catch (ArtifactDescriptorException ex) {
+      throw new IOException("Unable to get Maven artifact descriptor for '" + artifact + "': " + ex.getMessage(), ex);
     }
+    return dependencies;
   }
 
-  private Artifact getArtifact(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException, MojoExecutionException {
+  private Artifact getArtifact(String artifact, UrlFilePluginContext context, MavenUrlFilePluginContext mavenContext) throws IOException {
 
     Artifact artifactObject;
     if (StringUtils.contains(artifact, "/")) {
-      artifactObject = getArtifactFromMavenCoordinatesSlingStartStyle(artifact, context);
+      artifactObject = getArtifactFromMavenCoordinatesSlingStartStyle(artifact, context, mavenContext);
     }
     else {
-      artifactObject = getArtifactFromMavenCoordinates(artifact, context);
+      artifactObject = getArtifactFromMavenCoordinates(artifact, context, mavenContext);
     }
 
-    return resolveArtifact(artifactObject, context);
+    return resolveArtifact(artifactObject, context, mavenContext);
   }
 
-  private Artifact resolveArtifact(Artifact artifact, MavenUrlFilePluginContext context) throws MojoExecutionException {
+  private Artifact resolveArtifact(Artifact artifact, UrlFilePluginContext context, MavenUrlFilePluginContext mavenContext)
+      throws IOException {
     ArtifactRequest artifactRequest = new ArtifactRequest();
     artifactRequest.setArtifact(artifact);
-    artifactRequest.setRepositories(context.getRemoteRepos());
+    artifactRequest.setRepositories(mavenContext.getRemoteRepos());
     try {
-      ArtifactResult result = context.getRepoSystem().resolveArtifact(context.getRepoSession(), artifactRequest);
+      ArtifactResult result = mavenContext.getRepoSystem().resolveArtifact(mavenContext.getRepoSession(), artifactRequest);
       return result.getArtifact();
     }
     catch (final ArtifactResolutionException ex) {
-      throw new MojoExecutionException("Unable to get artifact for " + artifact, ex);
+      throw new IOException("Unable to get artifact for " + artifact, ex);
     }
   }
 
@@ -170,9 +164,9 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
    * Parse coordinates following definition from https://maven.apache.org/pom.html#Maven_Coordinates
    * @param artifact Artifact coordinates
    * @return Artifact object
-   * @throws MojoFailureException if coordinates are semantically invalid
    */
-  private Artifact getArtifactFromMavenCoordinates(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
+  private Artifact getArtifactFromMavenCoordinates(String artifact,
+      UrlFilePluginContext context, MavenUrlFilePluginContext mavenContext) throws IOException {
     String[] parts = StringUtils.splitPreserveAllTokens(artifact, ":");
 
     String version = null;
@@ -203,22 +197,22 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
         break;
 
       default:
-        throw new MojoFailureException("Invalid artifact: " + artifact);
+        throw new IOException("Invalid artifact: " + artifact);
     }
 
     String groupId = StringUtils.defaultIfBlank(parts[0], null);
     String artifactId = StringUtils.defaultIfBlank(parts[1], null);
 
-    return createArtifact(artifactId, groupId, packaging, classifier, version, context);
+    return createArtifact(artifactId, groupId, packaging, classifier, version, context, mavenContext);
   }
 
   /**
    * Parse coordinates in slingstart/Pax URL style following definition from https://ops4j1.jira.com/wiki/x/CoA6
    * @param artifact Artifact coordinates
    * @return Artifact object
-   * @throws MojoFailureException if coordinates are semantically invalid
    */
-  private Artifact getArtifactFromMavenCoordinatesSlingStartStyle(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
+  private Artifact getArtifactFromMavenCoordinatesSlingStartStyle(String artifact,
+      UrlFilePluginContext context, MavenUrlFilePluginContext mavenContext) throws IOException {
     String[] parts = StringUtils.splitPreserveAllTokens(artifact, "/");
 
     String version = null;
@@ -249,21 +243,21 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
         break;
 
       default:
-        throw new MojoFailureException("Invalid artifact: " + artifact);
+        throw new IOException("Invalid artifact: " + artifact);
     }
 
     String groupId = StringUtils.defaultIfBlank(parts[0], null);
     String artifactId = StringUtils.defaultIfBlank(parts[1], null);
 
-    return createArtifact(artifactId, groupId, packaging, classifier, version, context);
+    return createArtifact(artifactId, groupId, packaging, classifier, version, context, mavenContext);
   }
 
   private Artifact createArtifact(String artifactId, String groupId, String packaging, String classifier, String version,
-      MavenUrlFilePluginContext context) throws MojoFailureException {
+      UrlFilePluginContext context, MavenUrlFilePluginContext mavenContext) throws IOException {
 
     String artifactVersion = version;
     if (artifactVersion == null) {
-      artifactVersion = resolveArtifactVersion(artifactId, groupId, packaging, classifier, context);
+      artifactVersion = resolveArtifactVersion(artifactId, groupId, packaging, classifier, context, mavenContext);
     }
     String artifactPackaging = packaging;
     if (artifactPackaging == null) {
@@ -271,7 +265,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     }
 
     if (StringUtils.isBlank(groupId) || StringUtils.isBlank(artifactId) || StringUtils.isBlank(artifactVersion)) {
-      throw new MojoFailureException("Invalid Maven artifact reference: "
+      throw new IOException("Invalid Maven artifact reference: "
           + "artifactId=" + artifactId + ", "
           + "groupId=" + groupId + ", "
           + "version=" + artifactVersion + ", "
@@ -280,19 +274,20 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     }
 
     return new DefaultArtifact(groupId, artifactId, classifier, artifactPackaging, artifactVersion,
-        context.getRepoSession().getArtifactTypeRegistry().get(artifactPackaging));
+        mavenContext.getRepoSession().getArtifactTypeRegistry().get(artifactPackaging));
   }
 
   private String resolveArtifactVersion(String artifactId, String groupId, String packaging, String classifier,
-      MavenUrlFilePluginContext context) {
-    String version = findVersion(context.getProject().getArtifacts(), artifactId, groupId, packaging, classifier);
-    if (version != null) {
-      return version;
+      UrlFilePluginContext context, MavenUrlFilePluginContext mavenContext) throws IOException {
+    String version = findVersionInMavenProject(artifactId, groupId, packaging, classifier, mavenContext.getProject());
+    if (version == null) {
+      version = findVersionInEnvironmentDependencies(artifactId, groupId, packaging, classifier, context, mavenContext);
     }
-    return null;
+    return version;
   }
 
-  private String findVersion(Set<org.apache.maven.artifact.Artifact> dependencies, String artifactId, String groupId, String packaging, String classifier) {
+  private String findVersionInMavenProject(String artifactId, String groupId, String packaging, String classifier, MavenProject mavenProject) {
+    Set<org.apache.maven.artifact.Artifact> dependencies = mavenProject.getArtifacts();
     if (dependencies != null) {
       for (org.apache.maven.artifact.Artifact dependency : dependencies) {
         if (artifactEquals(dependency, artifactId, groupId, packaging, classifier)) {
@@ -308,6 +303,41 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
         && StringUtils.equals(dependency.getArtifactId(), artifactId)
         && StringUtils.equals(dependency.getClassifier(), classifier)
         && StringUtils.equals(dependency.getType(), packaging);
+  }
+
+  private String findVersionInEnvironmentDependencies(String artifactId, String groupId, String packaging, String classifier,
+      UrlFilePluginContext context, MavenUrlFilePluginContext mavenContext) throws IOException {
+
+    if (context.getEnvironment() == null) {
+      return null;
+    }
+
+    List<Artifact> dependencies = new ArrayList<>();
+    for (String dependencyUrl : context.getEnvironment().getDependencies()) {
+      if (!StringUtils.startsWith(dependencyUrl, PREFIX)) {
+        continue;
+      }
+
+      String mavenCoords = StringUtils.substringAfter(dependencyUrl, PREFIX);
+      Artifact artifact = getArtifact(mavenCoords, context, mavenContext);
+      dependencies.add(artifact);
+      dependencies.addAll(getTransitiveDependencies(artifact, context, mavenContext));
+    }
+
+    for (Artifact dependency : dependencies) {
+      if (artifactEquals(dependency, artifactId, groupId, packaging, classifier)) {
+        return dependency.getVersion();
+      }
+    }
+
+    return null;
+  }
+
+  private boolean artifactEquals(Artifact dependency, String artifactId, String groupId, String packaging, String classifier) {
+    return StringUtils.equals(dependency.getGroupId(), groupId)
+        && StringUtils.equals(dependency.getArtifactId(), artifactId)
+        && StringUtils.equals(StringUtils.defaultString(dependency.getClassifier()), StringUtils.defaultString(classifier))
+        && StringUtils.equals(dependency.getExtension(), packaging);
   }
 
 }
