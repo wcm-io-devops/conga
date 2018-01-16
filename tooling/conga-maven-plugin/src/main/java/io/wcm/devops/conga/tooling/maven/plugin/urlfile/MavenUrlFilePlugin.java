@@ -35,6 +35,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactType;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
@@ -273,8 +274,12 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
           + "classifier=" + classifier);
     }
 
-    return new DefaultArtifact(groupId, artifactId, classifier, artifactPackaging, artifactVersion,
-        mavenContext.getRepoSession().getArtifactTypeRegistry().get(artifactPackaging));
+    String extension = packaging;
+    ArtifactType artifactType = mavenContext.getRepoSession().getArtifactTypeRegistry().get(artifactPackaging);
+    if (artifactType != null) {
+      extension = artifactType.getExtension();
+    }
+    return new DefaultArtifact(groupId, artifactId, classifier, extension, artifactVersion, artifactType);
   }
 
   private String resolveArtifactVersion(String artifactId, String groupId, String packaging, String classifier,

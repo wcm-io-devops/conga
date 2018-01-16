@@ -39,6 +39,7 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactType;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
@@ -163,12 +164,18 @@ public class GenerateMojo extends AbstractCongaMojo {
    * @return the artifact, which has been resolved.
    */
   private Artifact getArtifact(Dependency dependency) throws IOException {
+    String extension = dependency.getType();
+    ArtifactType artifactType = repoSession.getArtifactTypeRegistry().get(dependency.getType());
+    if (artifactType != null) {
+      extension = artifactType.getExtension();
+    }
+
     Artifact artifact = new DefaultArtifact(dependency.getGroupId(),
         dependency.getArtifactId(),
         dependency.getClassifier(),
-        dependency.getType(),
+        extension,
         dependency.getVersion(),
-        repoSession.getArtifactTypeRegistry().get(dependency.getType()));
+        artifactType);
     ArtifactRequest artifactRequest = new ArtifactRequest();
     artifactRequest.setArtifact(artifact);
     artifactRequest.setRepositories(remoteRepos);
