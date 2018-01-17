@@ -37,6 +37,9 @@ import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
 
+/**
+ * Helper methods for loading resources/model files.
+ */
 final class ResourceLoaderUtil {
 
   private ResourceLoaderUtil() {
@@ -84,6 +87,7 @@ final class ResourceLoaderUtil {
    * @param dirs Directories
    * @param reader Model reader
    * @return Parsed models
+   * @param <T> Model type
    */
   public static <T> Map<String, T> readModels(List<ResourceCollection> dirs, ModelReader<T> reader) {
     Map<String, T> models = new HashMap<>();

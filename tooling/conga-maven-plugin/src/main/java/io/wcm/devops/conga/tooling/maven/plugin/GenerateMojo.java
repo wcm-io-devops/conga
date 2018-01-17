@@ -19,15 +19,8 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
-import java.io.IOException;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -38,21 +31,13 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.ArtifactType;
-import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
 
 import io.wcm.devops.conga.generator.Generator;
-import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.GeneratorOptions;
-import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
-import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePluginContext;
 import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
+import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
 
 /**
  * Generates configuration using CONGA generator.
@@ -86,7 +71,7 @@ public class GenerateMojo extends AbstractCongaMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
 
-    MavenUrlFilePluginContext urlFilePluginContainerContext = new MavenUrlFilePluginContext()
+    MavenContext mavenContext = new MavenContext()
         .project(project)
         .repoSystem(repoSystem)
         .repoSession(repoSession)
@@ -103,89 +88,14 @@ public class GenerateMojo extends AbstractCongaMojo {
         .modelExport(getModelExport())
         .valueProviderConfig(getValueProviderConfig())
         .genericPluginConfig(getPluginConfig())
-        .urlFilePluginContainerContext(urlFilePluginContainerContext)
+        .urlFilePluginContainerContext(mavenContext)
         .containerClasspathUrls(ClassLoaderUtil.getMavenProjectClasspathUrls(project))
-        .containerDependencyVersions(buildDependencyVersionList())
         .pluginManager(new PluginManagerImpl())
+        .dependencyVersionBuilder(new DependencyVersionBuilder(mavenContext))
         .logger(new MavenSlf4jLogFacade(getLog()));
 
     Generator generator = new Generator(options);
     generator.generate(environments);
-  }
-
-  /**
-   * Build list of referenced dependencies to be included in file header of generated files.
-   * @return Version list
-   */
-  @SuppressWarnings("deprecation")
-  public List<String> buildDependencyVersionList() {
-    return project.getCompileDependencies().stream()
-        // include only dependencies with a CONGA-INF/ directory
-        .filter(this::hasCongaDefinitions)
-        // transform to string
-        .map(dependency -> dependency.getGroupId() + "/" + dependency.getArtifactId()
-            + "/" + dependency.getVersion()
-            + (dependency.getClassifier() != null ? "/" + dependency.getType() + "/" + dependency.getClassifier() : ""))
-        .sorted()
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * Checks if the JAR file of the given dependency has a CONGA-INF/ directory.
-   * @param dependency Dependency
-   * @return true if configuration definitions found
-   */
-  private boolean hasCongaDefinitions(Dependency dependency) {
-    if (!StringUtils.equalsAny(dependency.getType(), "jar", "config-definition")) {
-      return false;
-    }
-    String fileInfo = dependency.toString();
-    try {
-      Artifact artifact = getArtifact(dependency);
-      fileInfo = FileUtil.getCanonicalPath(artifact.getFile());
-      try (ZipFile zipFile = new ZipFile(artifact.getFile())) {
-        Enumeration<? extends ZipEntry> entries = zipFile.entries();
-        while (entries.hasMoreElements()) {
-          ZipEntry entry = entries.nextElement();
-          if (StringUtils.startsWith(entry.getName(), GeneratorOptions.CLASSPATH_PREFIX)) {
-            return true;
-          }
-        }
-      }
-    }
-    catch (IOException ex) {
-      throw new GeneratorException("Unable to read from JAR file: " + fileInfo, ex);
-    }
-    return false;
-  }
-
-  /**
-   * Get a resolved Artifact from the coordinates provided
-   * @return the artifact, which has been resolved.
-   */
-  private Artifact getArtifact(Dependency dependency) throws IOException {
-    String extension = dependency.getType();
-    ArtifactType artifactType = repoSession.getArtifactTypeRegistry().get(dependency.getType());
-    if (artifactType != null) {
-      extension = artifactType.getExtension();
-    }
-
-    Artifact artifact = new DefaultArtifact(dependency.getGroupId(),
-        dependency.getArtifactId(),
-        dependency.getClassifier(),
-        extension,
-        dependency.getVersion(),
-        artifactType);
-    ArtifactRequest artifactRequest = new ArtifactRequest();
-    artifactRequest.setArtifact(artifact);
-    artifactRequest.setRepositories(remoteRepos);
-    try {
-      ArtifactResult result = repoSystem.resolveArtifact(repoSession, artifactRequest);
-      return result.getArtifact();
-    }
-    catch (final ArtifactResolutionException ex) {
-      throw new IOException("Unable to get artifact for " + dependency, ex);
-    }
   }
 
 }

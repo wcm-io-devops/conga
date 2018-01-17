@@ -61,8 +61,8 @@ import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
-import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePluginContext;
 import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
+import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
 import io.wcm.devops.conga.tooling.maven.plugin.util.PathUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.DefinitionValidator;
@@ -104,7 +104,7 @@ public class ValidateMojo extends AbstractCongaMojo {
 
     PluginManager pluginManager = new PluginManagerImpl();
 
-    MavenUrlFilePluginContext mavenUrlFilePluginContext = new MavenUrlFilePluginContext()
+    MavenContext mavenContext = new MavenContext()
         .project(project)
         .repoSystem(repoSystem)
         .repoSession(repoSession)
@@ -113,7 +113,7 @@ public class ValidateMojo extends AbstractCongaMojo {
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .baseDir(project.getBasedir())
         .resourceClassLoader(mavenProjectClassLoader)
-        .containerContext(mavenUrlFilePluginContext);
+        .containerContext(mavenContext);
     UrlFileManager urlFileManager = new UrlFileManager(pluginManager, urlFilePluginContext);
 
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
@@ -137,7 +137,7 @@ public class ValidateMojo extends AbstractCongaMojo {
       UrlFilePluginContext environmentUrlFilePluginContext = new UrlFilePluginContext()
           .baseDir(project.getBasedir())
           .resourceClassLoader(mavenProjectClassLoader)
-          .containerContext(mavenUrlFilePluginContext)
+          .containerContext(mavenContext)
           .environment(environment);
       UrlFileManager environmentUrlFileManager = new UrlFileManager(pluginManager, environmentUrlFilePluginContext);
 

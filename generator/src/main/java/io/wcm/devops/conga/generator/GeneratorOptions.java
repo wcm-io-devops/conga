@@ -22,14 +22,17 @@ package io.wcm.devops.conga.generator;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.model.environment.Environment;
 
 /**
  * Options for generator.
@@ -69,8 +72,8 @@ public final class GeneratorOptions {
   private Map<String, Map<String, Object>> genericPluginConfig;
   private Object urlFilePluginContainerContext;
   private List<URL> containerClasspathUrls = new ArrayList<>();
-  private List<String> containerDependencyVersions = new ArrayList<>();
   private PluginManager pluginManager;
+  private Function<Environment, Collection<String>> dependencyVersionBuilder;
   private Logger logger = LoggerFactory.getLogger(Generator.class);
 
   /**
@@ -275,22 +278,6 @@ public final class GeneratorOptions {
   }
 
   /**
-   * @return List of CONGA artifact dependency version to be included in file header.
-   */
-  public List<String> getContainerDependencyVersions() {
-    return this.containerDependencyVersions;
-  }
-
-  /**
-   * @param value List of CONGA artifact dependency version to be included in file header.
-   * @return this
-   */
-  public GeneratorOptions containerDependencyVersions(List<String> value) {
-    this.containerDependencyVersions = value;
-    return this;
-  }
-
-  /**
    * @return Plugin manager
    */
   public PluginManager getPluginManager() {
@@ -303,6 +290,22 @@ public final class GeneratorOptions {
    */
   public GeneratorOptions pluginManager(PluginManager value) {
     this.pluginManager = value;
+    return this;
+  }
+
+  /**
+   * @return Function to build a list of dependency versions for a given environment
+   */
+  public Function<Environment, Collection<String>> getDependencyVersionBuilder() {
+    return this.dependencyVersionBuilder;
+  }
+
+  /**
+   * @param value Function to build a list of dependency versions for a given environment
+   * @return this
+   */
+  public GeneratorOptions dependencyVersionBuilder(Function<Environment, Collection<String>> value) {
+    this.dependencyVersionBuilder = value;
     return this;
   }
 

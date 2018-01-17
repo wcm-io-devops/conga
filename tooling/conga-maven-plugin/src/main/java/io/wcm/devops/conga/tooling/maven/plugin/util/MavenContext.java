@@ -17,7 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.tooling.maven.plugin.urlfile;
+package io.wcm.devops.conga.tooling.maven.plugin.util;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ import org.eclipse.aether.repository.RemoteRepository;
 /**
  * Contains maven-specific context objects.
  */
-public final class MavenUrlFilePluginContext {
+public final class MavenContext {
 
   private MavenProject project;
   private RepositorySystem repoSystem;
@@ -47,7 +47,7 @@ public final class MavenUrlFilePluginContext {
    * @param value Maven project
    * @return this
    */
-  public MavenUrlFilePluginContext project(MavenProject value) {
+  public MavenContext project(MavenProject value) {
     this.project = value;
     return this;
   }
@@ -63,7 +63,7 @@ public final class MavenUrlFilePluginContext {
    * @param value Repository system
    * @return this
    */
-  public MavenUrlFilePluginContext repoSystem(RepositorySystem value) {
+  public MavenContext repoSystem(RepositorySystem value) {
     this.repoSystem = value;
     return this;
   }
@@ -79,7 +79,7 @@ public final class MavenUrlFilePluginContext {
    * @param value Repository session
    * @return this
    */
-  public MavenUrlFilePluginContext repoSession(RepositorySystemSession value) {
+  public MavenContext repoSession(RepositorySystemSession value) {
     this.repoSession = value;
     return this;
   }
@@ -95,7 +95,7 @@ public final class MavenUrlFilePluginContext {
    * @param value Remote repositories
    * @return this
    */
-  public MavenUrlFilePluginContext remoteRepos(List<RemoteRepository> value) {
+  public MavenContext remoteRepos(List<RemoteRepository> value) {
     this.remoteRepos = value;
     return this;
   }

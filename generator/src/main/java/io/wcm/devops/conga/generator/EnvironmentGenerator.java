@@ -86,7 +86,7 @@ class EnvironmentGenerator {
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
   private final VariableObjectTreeResolver variableObjectTreeResolver;
-  private final List<String> dependencyVersions;
+  private final Collection<String> dependencyVersions;
 
   private final Map<String, Role> roles;
   private final Map<String, Object> environmentContextProperties;
@@ -142,21 +142,7 @@ class EnvironmentGenerator {
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, options.getVersion(),
             variableObjectTreeResolver, variableStringResolver));
 
-    this.dependencyVersions = new ArrayList<>();
-    environment.getDependencies().stream()
-        .map(this::stripPrefix)
-        .forEach(this.dependencyVersions::add);
-    this.dependencyVersions.addAll(options.getContainerDependencyVersions());
-  }
-
-  private String stripPrefix(String url) {
-    // strip off prefix for dependency urls
-    if (StringUtils.contains(url, ":")) {
-      return StringUtils.substringAfter(url, ":");
-    }
-    else {
-      return url;
-    }
+    this.dependencyVersions = options.getDependencyVersionBuilder() != null ? options.getDependencyVersionBuilder().apply(environment) : ImmutableList.of();
   }
 
   public void generate() {
