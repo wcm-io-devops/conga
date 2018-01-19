@@ -35,6 +35,8 @@ import org.eclipse.aether.repository.RemoteRepository;
 
 import io.wcm.devops.conga.generator.Generator;
 import io.wcm.devops.conga.generator.GeneratorOptions;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
@@ -77,6 +79,15 @@ public class GenerateMojo extends AbstractCongaMojo {
         .repoSession(repoSession)
         .remoteRepos(remoteRepos);
 
+    PluginManager pluginManager = new PluginManagerImpl();
+
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(pluginManager)
+        .valueProviderConfig(getValueProviderConfig())
+        .genericPluginConfig(getPluginConfig())
+        .containerContext(mavenContext)
+        .logger(new MavenSlf4jLogFacade(getLog()));
+
     GeneratorOptions options = new GeneratorOptions()
         .baseDir(project.getBasedir())
         .roleDir(getRoleDir())
@@ -90,8 +101,8 @@ public class GenerateMojo extends AbstractCongaMojo {
         .genericPluginConfig(getPluginConfig())
         .containerContext(mavenContext)
         .containerClasspathUrls(ClassLoaderUtil.getMavenProjectClasspathUrls(project))
-        .pluginManager(new PluginManagerImpl())
-        .dependencyVersionBuilder(new DependencyVersionBuilder(mavenContext))
+        .pluginManager(pluginManager)
+        .dependencyVersionBuilder(new DependencyVersionBuilder(pluginContextOptions))
         .logger(new MavenSlf4jLogFacade(getLog()));
 
     Generator generator = new Generator(options);

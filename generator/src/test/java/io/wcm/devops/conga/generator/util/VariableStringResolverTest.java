@@ -158,7 +158,8 @@ public class VariableStringResolverTest {
   @Test
   public void testCustomValueProvider() {
     // define value provider name 'customProvider' of type 'system'
-    globalContext.valueProviderConfig(ImmutableMap.of("customProvider", ImmutableMap.of(ValueProviderGlobalContext.PARAM_PLUGIN_NAME, "system")));
+    globalContext.getPluginContextOptions()
+        .valueProviderConfig(ImmutableMap.of("customProvider", ImmutableMap.of(ValueProviderGlobalContext.PARAM_PLUGIN_NAME, "system")));
 
     String propertyName1 = getClass().getName() + "-test.propCustom1";
     String propertyName2 = getClass().getName() + "-test.propCustom2";

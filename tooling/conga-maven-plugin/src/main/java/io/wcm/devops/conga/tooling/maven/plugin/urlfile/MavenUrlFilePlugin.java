@@ -34,7 +34,6 @@ import org.eclipse.aether.artifact.Artifact;
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.tooling.maven.plugin.util.MavenArtifactHelper;
-import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
 
 /**
  * Download files from Maven artifact repository.
@@ -63,28 +62,28 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public String getFileName(String url, UrlFilePluginContext context) throws IOException {
-    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper((MavenContext)context.getContainerContext(), context.getEnvironment());
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
     File file = mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
     return file.getName();
   }
 
   @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
-    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper((MavenContext)context.getContainerContext(), context.getEnvironment());
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
     File file = mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
     return new BufferedInputStream(new FileInputStream(file));
   }
 
   @Override
   public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
-    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper((MavenContext)context.getContainerContext(), context.getEnvironment());
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
     File file = mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
     return file.toURI().toURL();
   }
 
   @Override
   public List<URL> getFileUrlsWithDependencies(String url, UrlFilePluginContext context) throws IOException {
-    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper((MavenContext)context.getContainerContext(), context.getEnvironment());
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
     List<URL> urls = new ArrayList<>();
 
     // add artifact itself

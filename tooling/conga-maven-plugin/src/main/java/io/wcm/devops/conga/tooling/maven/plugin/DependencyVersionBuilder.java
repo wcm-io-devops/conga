@@ -36,6 +36,7 @@ import org.eclipse.aether.artifact.Artifact;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.GeneratorOptions;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.tooling.maven.plugin.util.MavenArtifactHelper;
@@ -44,14 +45,16 @@ import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
 class DependencyVersionBuilder implements Function<Environment, Collection<String>> {
 
   private final MavenContext mavenContext;
+  private final PluginContextOptions pluginContextOptions;
 
-  DependencyVersionBuilder(MavenContext mavenContext) {
-    this.mavenContext = mavenContext;
+  DependencyVersionBuilder(PluginContextOptions pluginContextOptions) {
+    this.mavenContext = (MavenContext)pluginContextOptions.getContainerContext();
+    this.pluginContextOptions = pluginContextOptions;
   }
 
   @Override
   public Collection<String> apply(Environment environment) {
-    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(mavenContext, environment);
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(environment, pluginContextOptions);
 
     try {
       List<Artifact> dependencyArtifacts = new ArrayList<>();

@@ -31,6 +31,12 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
+import com.google.common.collect.ImmutableMap;
+
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
+
 /**
  * Utility methods for managing classpath and class loaders.
  */
@@ -69,6 +75,22 @@ public final class ClassLoaderUtil {
     catch (MalformedURLException | DependencyResolutionRequiredException ex) {
       throw new MojoExecutionException("Unable to get classpath elements for class loader.", ex);
     }
+  }
+
+  /**
+   * Resolves an environment dependency URL.
+   * @param dependencyUrl Dependeny URL
+   * @param pluginContextOptions Plugin context options
+   * @return Resolved dependency URL.
+   */
+  public static String resolveDependencyUrl(String dependencyUrl, PluginContextOptions pluginContextOptions) {
+
+    ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
+        .pluginContextOptions(pluginContextOptions);
+    VariableStringResolver variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
+
+    // resolver variables without config map - thus supporting only value providers with external values
+    return variableStringResolver.resolveString(dependencyUrl, ImmutableMap.of());
   }
 
 }

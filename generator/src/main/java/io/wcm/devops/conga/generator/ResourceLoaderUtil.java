@@ -34,6 +34,7 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.reader.ModelReader;
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
@@ -59,10 +60,12 @@ final class ResourceLoaderUtil {
   /**
    * Get classpath URLs from dependency urls defined in environment.
    * @param dependencyUrls Dependency URLs from environment
+   * @param variableStringResolver Variable string resolver
    * @param options Generator options
    * @return Classpath URLs from environment plus container classpath URLs
    */
-  public static List<URL> getEnvironmentClasspathUrls(List<String> dependencyUrls, GeneratorOptions options) {
+  public static List<URL> getEnvironmentClasspathUrls(List<String> dependencyUrls,
+      VariableStringResolver variableStringResolver, GeneratorOptions options) {
 
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .baseDir(options.getBaseDir())
@@ -73,11 +76,13 @@ final class ResourceLoaderUtil {
 
     List<URL> classpathUrls = new ArrayList<>();
     for (String dependencyUrl : dependencyUrls) {
+      // resolver variables without config map - thus supporting only value providers with external values
+      String resolvedDependencyUrl = variableStringResolver.resolveString(dependencyUrl, ImmutableMap.of());
       try {
-        classpathUrls.addAll(urlFileManager.getFileUrlsWithDependencies(dependencyUrl));
+        classpathUrls.addAll(urlFileManager.getFileUrlsWithDependencies(resolvedDependencyUrl));
       }
       catch (IOException ex) {
-        throw new GeneratorException("Unable to resolve: " + dependencyUrl, ex);
+        throw new GeneratorException("Unable to resolve: " + resolvedDependencyUrl, ex);
       }
     }
     classpathUrls.addAll(options.getContainerClasspathUrls());

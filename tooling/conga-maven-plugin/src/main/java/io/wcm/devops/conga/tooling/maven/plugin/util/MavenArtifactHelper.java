@@ -45,6 +45,7 @@ import org.eclipse.aether.resolution.ArtifactResult;
 
 import com.google.common.collect.ImmutableList;
 
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePlugin;
 
@@ -58,17 +59,20 @@ public class MavenArtifactHelper {
   private final RepositorySystemSession repoSession;
   private final List<RemoteRepository> remoteRepos;
   private final List<String> environmentDependencyUrls;
+  private final PluginContextOptions pluginContextOptions;
 
   /**
-   * @param mavenContext Maven context
    * @param environment CONGA environment
+   * @param pluginContextOptions Plugin context options
    */
-  public MavenArtifactHelper(MavenContext mavenContext, Environment environment) {
+  public MavenArtifactHelper(Environment environment, PluginContextOptions pluginContextOptions) {
+    MavenContext mavenContext = (MavenContext)pluginContextOptions.getContainerContext();
     this.project = mavenContext.getProject();
     this.repoSystem = mavenContext.getRepoSystem();
     this.repoSession = mavenContext.getRepoSession();
     this.remoteRepos = mavenContext.getRemoteRepos();
     this.environmentDependencyUrls = environment != null ? environment.getDependencies() : ImmutableList.of();
+    this.pluginContextOptions = pluginContextOptions;
   }
 
   /**
@@ -139,11 +143,12 @@ public class MavenArtifactHelper {
   public List<Artifact> dependencyUrlsToArtifactsWithTransitiveDependencies(Collection<String> dependencyUrls) throws IOException {
     List<Artifact> artifacts = new ArrayList<>();
     for (String dependencyUrl : environmentDependencyUrls) {
-      if (!StringUtils.startsWith(dependencyUrl, MavenUrlFilePlugin.PREFIX)) {
+      String resolvedDependencyUrl = ClassLoaderUtil.resolveDependencyUrl(dependencyUrl, pluginContextOptions);
+      if (!StringUtils.startsWith(resolvedDependencyUrl, MavenUrlFilePlugin.PREFIX)) {
         continue;
       }
 
-      String mavenCoords = MavenUrlFilePlugin.getMavenCoords(dependencyUrl);
+      String mavenCoords = MavenUrlFilePlugin.getMavenCoords(resolvedDependencyUrl);
       Artifact artifact = resolveArtifact(mavenCoords);
       artifacts.add(artifact);
       artifacts.addAll(getTransitiveDependencies(artifact));

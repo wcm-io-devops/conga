@@ -120,7 +120,9 @@ public class ValidateMojo extends AbstractCongaMojo {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
+        .valueProviderConfig(getValueProviderConfig())
         .genericPluginConfig(getPluginConfig())
+        .containerContext(mavenContext)
         .logger(new MavenSlf4jLogFacade(getLog()));
 
     // validate that all templates can be compiled
@@ -143,7 +145,10 @@ public class ValidateMojo extends AbstractCongaMojo {
               .containerContext(mavenContext));
       UrlFileManager environmentUrlFileManager = new UrlFileManager(pluginManager, environmentUrlFilePluginContext);
 
-      validateVersionInfo(environment, mavenProjectClasspathUrls, environmentUrlFileManager);
+      PluginContextOptions environmentPluginContextOptions = new PluginContextOptions()
+          .pluginContextOptions(pluginContextOptions)
+          .urlFileManager(environmentUrlFileManager);
+      validateVersionInfo(environment, mavenProjectClasspathUrls, environmentPluginContextOptions);
     }
   }
 
@@ -183,14 +188,15 @@ public class ValidateMojo extends AbstractCongaMojo {
    * when generating the dependency artifacts.
    * @param environment Environment
    * @param mavenProjectClasspathUrls Classpath URLs of maven project
+   * @param pluginContextOptions Plugin context options
    * @throws MojoExecutionException
    */
-  private void validateVersionInfo(Environment environment, List<URL> mavenProjectClasspathUrls, UrlFileManager urlFileManager)
+  private void validateVersionInfo(Environment environment, List<URL> mavenProjectClasspathUrls, PluginContextOptions pluginContextOptions)
       throws MojoExecutionException {
 
     // build combined classpath for dependencies defined in environment and maven project
     List<URL> classpathUrls = new ArrayList<>();
-    classpathUrls.addAll(getEnvironmentClasspathUrls(environment.getDependencies(), urlFileManager));
+    classpathUrls.addAll(getEnvironmentClasspathUrls(environment.getDependencies(), pluginContextOptions));
     classpathUrls.addAll(mavenProjectClasspathUrls);
     ClassLoader environmentDependenciesClassLoader = ClassLoaderUtil.buildClassLoader(classpathUrls);
 
@@ -204,14 +210,15 @@ public class ValidateMojo extends AbstractCongaMojo {
 
   }
 
-  private List<URL> getEnvironmentClasspathUrls(List<String> dependencyUrls, UrlFileManager urlFileManager) {
+  private List<URL> getEnvironmentClasspathUrls(List<String> dependencyUrls, PluginContextOptions pluginContextOptions) {
     return dependencyUrls.stream()
         .map(dependencyUrl -> {
+          String resolvedDependencyUrl = ClassLoaderUtil.resolveDependencyUrl(dependencyUrl, pluginContextOptions);
           try {
-            return urlFileManager.getFileUrlsWithDependencies(dependencyUrl);
+            return pluginContextOptions.getUrlFileManager().getFileUrlsWithDependencies(resolvedDependencyUrl);
           }
           catch (IOException ex) {
-            throw new GeneratorException("Unable to resolve: " + dependencyUrl, ex);
+            throw new GeneratorException("Unable to resolve: " + resolvedDependencyUrl, ex);
           }
         })
         .flatMap(list -> list.stream())

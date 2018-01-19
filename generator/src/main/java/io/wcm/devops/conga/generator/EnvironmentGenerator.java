@@ -100,8 +100,22 @@ class EnvironmentGenerator {
     this.destDir = destDir;
     this.log = options.getLogger();
 
+    this.pluginContextOptions = new PluginContextOptions()
+        .pluginManager(options.getPluginManager())
+        .valueProviderConfig(options.getValueProviderConfig())
+        .genericPluginConfig(options.getGenericPluginConfig())
+        .containerContext(options.getContainerContext())
+        .logger(this.log);
+
+    // prepare variable resolvers
+    ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
+        .pluginContextOptions(this.pluginContextOptions);
+    this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
+    this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
+    this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
+
     // build resource loaded based on combined dependency lists of environment and container
-    List<URL> combindedClasspathUrls = ResourceLoaderUtil.getEnvironmentClasspathUrls(environment.getDependencies(), options);
+    List<URL> combindedClasspathUrls = ResourceLoaderUtil.getEnvironmentClasspathUrls(environment.getDependencies(), this.variableStringResolver, options);
     ClassLoader resourceClassLoader = ResourceLoaderUtil.buildClassLoader(combindedClasspathUrls);
     ResourceLoader resourceLoader = new ResourceLoader(resourceClassLoader);
 
@@ -115,12 +129,6 @@ class EnvironmentGenerator {
 
     this.roles = ResourceLoaderUtil.readModels(roleDirs, new RoleReader());
 
-    this.pluginContextOptions = new PluginContextOptions()
-        .pluginManager(options.getPluginManager())
-        .genericPluginConfig(options.getGenericPluginConfig())
-        .containerContext(options.getContainerContext())
-        .logger(this.log);
-
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .pluginContextOptions(pluginContextOptions)
         .baseDir(options.getBaseDir())
@@ -129,13 +137,6 @@ class EnvironmentGenerator {
     this.urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
 
     this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginContextOptions);
-
-    ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
-        .pluginContextOptions(this.pluginContextOptions)
-        .valueProviderConfig(options.getValueProviderConfig());
-    this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
-    this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
-    this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
 
     this.defaultMultiplyPlugin = options.getPluginManager().get(NoneMultiply.NAME, MultiplyPlugin.class);
     this.environmentContextProperties = ImmutableMap.copyOf(

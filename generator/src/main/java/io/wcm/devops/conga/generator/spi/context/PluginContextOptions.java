@@ -34,6 +34,7 @@ public final class PluginContextOptions {
 
   private PluginManager pluginManager;
   private UrlFileManager urlFileManager;
+  private Map<String, Map<String, Object>> valueProviderConfig;
   private Map<String, Map<String, Object>> genericPluginConfig = new HashMap<>();
   private Object containerContext;
   private Logger logger;
@@ -67,6 +68,22 @@ public final class PluginContextOptions {
    */
   public PluginContextOptions urlFileManager(UrlFileManager value) {
     this.urlFileManager = value;
+    return this;
+  }
+
+  /**
+   * @return Value provider configuration
+   */
+  public Map<String, Map<String, Object>> getValueProviderConfig() {
+    return this.valueProviderConfig;
+  }
+
+  /**
+   * @param value Value provider configuration
+   * @return this
+   */
+  public PluginContextOptions valueProviderConfig(Map<String, Map<String, Object>> value) {
+    this.valueProviderConfig = value;
     return this;
   }
 
@@ -126,6 +143,7 @@ public final class PluginContextOptions {
   public PluginContextOptions pluginContextOptions(PluginContextOptions value) {
     this.pluginManager = value.getPluginManager();
     this.urlFileManager = value.getUrlFileManager();
+    this.valueProviderConfig = value.getValueProviderConfig();
     this.genericPluginConfig = value.getGenericPluginConfig();
     this.containerContext = value.containerContext;
     this.logger = value.getLogger();
