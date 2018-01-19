@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2017 wcm.io
+ * Copyright (C) 2018 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,12 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.plugins.valueprovider;
+package io.wcm.devops.conga.tooling.maven.plugin.valueprovider;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,19 +33,27 @@ import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
+import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
 
 
-public class SystemPropertyValueProviderPluginTest {
+public class MavenPropertyValueProviderPluginTest {
 
   private ValueProviderPlugin underTest;
   private ValueProviderContext context;
 
+  private MavenProject mavenProject;
+
   @Before
   public void setUp() {
+    mavenProject = new MavenProject();
+
     PluginManager pluginManager = new PluginManagerImpl();
-    underTest = pluginManager.get(SystemPropertyValueProviderPlugin.NAME, ValueProviderPlugin.class);
+    underTest = pluginManager.get(MavenPropertyValueProviderPlugin.NAME, ValueProviderPlugin.class);
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(pluginManager);
+        .pluginManager(pluginManager)
+        .pluginContextOptions(new PluginContextOptions()
+            .containerContext(new MavenContext()
+                .project(mavenProject)));
     context = new ValueProviderContext()
         .pluginContextOptions(pluginContextOptions);
   }
@@ -55,15 +64,12 @@ public class SystemPropertyValueProviderPluginTest {
     String propertyName2 = getClass().getName() + "-test.prop2";
     String propertyName3 = getClass().getName() + "-test.prop3";
 
-    System.setProperty(propertyName1, "value1");
-    System.setProperty(propertyName2, "value1,value2,value3");
+    mavenProject.getProperties().setProperty(propertyName1, "value1");
+    mavenProject.getProperties().setProperty(propertyName2, "value1,value2,value3");
 
     assertEquals("value1", underTest.resolve(propertyName1, context));
     assertEquals(ImmutableList.of("value1", "value2", "value3"), underTest.resolve(propertyName2, context));
     assertNull(underTest.resolve(propertyName3, context));
-
-    System.clearProperty(propertyName1);
-    System.clearProperty(propertyName2);
   }
 
 }

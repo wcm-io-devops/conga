@@ -88,7 +88,7 @@ public class GenerateMojo extends AbstractCongaMojo {
         .modelExport(getModelExport())
         .valueProviderConfig(getValueProviderConfig())
         .genericPluginConfig(getPluginConfig())
-        .urlFilePluginContainerContext(mavenContext)
+        .containerContext(mavenContext)
         .containerClasspathUrls(ClassLoaderUtil.getMavenProjectClasspathUrls(project))
         .pluginManager(new PluginManagerImpl())
         .dependencyVersionBuilder(new DependencyVersionBuilder(mavenContext))

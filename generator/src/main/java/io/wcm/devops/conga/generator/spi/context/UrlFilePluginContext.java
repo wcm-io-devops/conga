@@ -30,7 +30,6 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
 
   private File baseDir = new File(".");
   private ClassLoader resourceClassLoader = getClass().getClassLoader();
-  private Object containerContext;
   private Environment environment;
 
   /**
@@ -62,22 +61,6 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
    */
   public UrlFilePluginContext baseDir(File value) {
     baseDir = value;
-    return this;
-  }
-
-  /**
-   * @return Container-specific context object
-   */
-  public Object getContainerContext() {
-    return containerContext;
-  }
-
-  /**
-   * @param value Container-specific context object
-   * @return this
-   */
-  public UrlFilePluginContext containerContext(Object value) {
-    containerContext = value;
     return this;
   }
 

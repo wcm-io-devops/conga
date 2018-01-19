@@ -70,7 +70,7 @@ public final class GeneratorOptions {
   private ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
   private Map<String, Map<String, Object>> genericPluginConfig;
-  private Object urlFilePluginContainerContext;
+  private Object containerContext;
   private List<URL> containerClasspathUrls = new ArrayList<>();
   private PluginManager pluginManager;
   private Function<Environment, Collection<String>> dependencyVersionBuilder;
@@ -245,19 +245,19 @@ public final class GeneratorOptions {
   }
 
   /**
-   * Container-specific context object for URL file plugin context
+   * Container-specific context object
    * @return Context
    */
-  public Object getUrlFilePluginContainerContext() {
-    return this.urlFilePluginContainerContext;
+  public Object getContainerContext() {
+    return this.containerContext;
   }
 
   /**
-   * @param value Container-specific context object for URL file plugin context
+   * @param value Container-specific context object
    * @return this
    */
-  public GeneratorOptions urlFilePluginContainerContext(Object value) {
-    this.urlFilePluginContainerContext = value;
+  public GeneratorOptions containerContext(Object value) {
+    this.containerContext = value;
     return this;
   }
 

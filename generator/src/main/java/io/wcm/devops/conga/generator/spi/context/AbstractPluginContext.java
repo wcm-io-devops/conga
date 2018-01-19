@@ -51,13 +51,6 @@ public abstract class AbstractPluginContext<T> {
   }
 
   /**
-   * @return Logger
-   */
-  public final Logger getLogger() {
-    return pluginContextOptions.getLogger();
-  }
-
-  /**
    * @return Plugin manager
    */
   public final PluginManager getPluginManager() {
@@ -76,6 +69,20 @@ public abstract class AbstractPluginContext<T> {
    */
   public final Map<String, Map<String, Object>> getGenericPluginConfig() {
     return pluginContextOptions.getGenericPluginConfig();
+  }
+
+  /**
+   * @return Container-specific context object
+   */
+  public Object getContainerContext() {
+    return pluginContextOptions.getContainerContext();
+  }
+
+  /**
+   * @return Logger
+   */
+  public final Logger getLogger() {
+    return pluginContextOptions.getLogger();
   }
 
 }

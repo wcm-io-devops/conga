@@ -113,7 +113,8 @@ public class ValidateMojo extends AbstractCongaMojo {
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .baseDir(project.getBasedir())
         .resourceClassLoader(mavenProjectClassLoader)
-        .containerContext(mavenContext);
+        .pluginContextOptions(new PluginContextOptions()
+          .containerContext(mavenContext));
     UrlFileManager urlFileManager = new UrlFileManager(pluginManager, urlFilePluginContext);
 
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
@@ -137,8 +138,9 @@ public class ValidateMojo extends AbstractCongaMojo {
       UrlFilePluginContext environmentUrlFilePluginContext = new UrlFilePluginContext()
           .baseDir(project.getBasedir())
           .resourceClassLoader(mavenProjectClassLoader)
-          .containerContext(mavenContext)
-          .environment(environment);
+          .environment(environment)
+          .pluginContextOptions(new PluginContextOptions()
+              .containerContext(mavenContext));
       UrlFileManager environmentUrlFileManager = new UrlFileManager(pluginManager, environmentUrlFilePluginContext);
 
       validateVersionInfo(environment, mavenProjectClasspathUrls, environmentUrlFileManager);

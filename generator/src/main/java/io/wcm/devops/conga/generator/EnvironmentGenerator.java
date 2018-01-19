@@ -115,18 +115,18 @@ class EnvironmentGenerator {
 
     this.roles = ResourceLoaderUtil.readModels(roleDirs, new RoleReader());
 
+    this.pluginContextOptions = new PluginContextOptions()
+        .pluginManager(options.getPluginManager())
+        .genericPluginConfig(options.getGenericPluginConfig())
+        .containerContext(options.getContainerContext())
+        .logger(this.log);
+
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
+        .pluginContextOptions(pluginContextOptions)
         .baseDir(options.getBaseDir())
         .resourceClassLoader(resourceClassLoader)
-        .containerContext(options.getUrlFilePluginContainerContext())
         .environment(environment);
     this.urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
-
-    this.pluginContextOptions = new PluginContextOptions()
-        .logger(this.log)
-        .pluginManager(options.getPluginManager())
-        .urlFileManager(this.urlFileManager)
-        .genericPluginConfig(options.getGenericPluginConfig());
 
     this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginContextOptions);
 

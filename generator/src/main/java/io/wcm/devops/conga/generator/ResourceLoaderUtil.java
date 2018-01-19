@@ -31,6 +31,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.collect.ImmutableMap;
 
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
 import io.wcm.devops.conga.model.reader.ModelReader;
@@ -66,7 +67,8 @@ final class ResourceLoaderUtil {
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .baseDir(options.getBaseDir())
         .resourceClassLoader(ResourceLoaderUtil.class.getClassLoader())
-        .containerContext(options.getUrlFilePluginContainerContext());
+        .pluginContextOptions(new PluginContextOptions()
+            .containerContext(options.getContainerContext()));
     UrlFileManager urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
 
     List<URL> classpathUrls = new ArrayList<>();

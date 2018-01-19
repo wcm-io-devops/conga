@@ -52,7 +52,8 @@ See API documentation for the detailed plugin interfaces:
 
 | Plugin name | Description
 |-------------|-------------
-| `system`    | Allows to reference Java System Parameters in variable definitions, e.g. `${system::mysystemparam}`
+| `system`    | Allows to reference Java system properties in variable definitions, e.g. `${system::mysystemparam}`
+| `maven`     | Allows to reference Maven properties in variable definitions, e.g. `${maven::my.maven.param}`
 
 #### Export plugins
 
