@@ -227,4 +227,20 @@ public final class VariableStringResolver {
     }
   }
 
+  /**
+   * Checks if the given string contains any reference to a variable from a value provider.
+   * @param value Value string
+   * @return true if a value provider reference was found.
+   */
+  public static boolean hasValueProviderReference(String value) {
+    Matcher matcher = MULTI_VARIABLE_PATTERN.matcher(value);
+    while (matcher.find()) {
+      String valueProviderName = matcher.group(PATTERN_POS_VALUE_PROVIDER_NAME);
+      if (StringUtils.isNotEmpty(valueProviderName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

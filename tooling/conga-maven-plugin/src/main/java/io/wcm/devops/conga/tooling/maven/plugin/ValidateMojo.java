@@ -67,6 +67,7 @@ import io.wcm.devops.conga.tooling.maven.plugin.util.PathUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.DefinitionValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.ModelValidator;
+import io.wcm.devops.conga.tooling.maven.plugin.validation.NoValueProviderInRoleValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.RoleTemplateFileValidator;
 import io.wcm.devops.conga.tooling.maven.plugin.validation.TemplateValidator;
 
@@ -131,6 +132,9 @@ public class ValidateMojo extends AbstractCongaMojo {
 
     // validate that roles reference existing templates
     validateFiles(roleDir, roleDir, new RoleTemplateFileValidator(handlebarsManager));
+
+    // validate that no value providers are used in role files - they should be only used in environment
+    validateFiles(roleDir, roleDir, new NoValueProviderInRoleValidator());
 
     // validate environment definition syntax
     List<Environment> environments = validateFiles(environmentDir, environmentDir, new ModelValidator<Environment>("Environment", new EnvironmentReader()));

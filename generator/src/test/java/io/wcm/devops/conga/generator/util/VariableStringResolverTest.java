@@ -20,6 +20,8 @@
 package io.wcm.devops.conga.generator.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
@@ -180,6 +182,17 @@ public class VariableStringResolverTest {
 
     assertEquals("The v1 and value1 and 5", underTest.resolve("The ${var1} and ${dummy-map::map.param1} and ${dummy-map::map.param2}", variables));
     assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${dummy-map::map.paramNotDefined:theDefValue}", variables));
+  }
+
+  @Test
+  public void testHasValueProviderReference() {
+    assertFalse(VariableStringResolver.hasValueProviderReference(""));
+    assertFalse(VariableStringResolver.hasValueProviderReference("abc"));
+    assertFalse(VariableStringResolver.hasValueProviderReference("${var1}"));
+    assertFalse(VariableStringResolver.hasValueProviderReference("${var1} ${var2:default}"));
+
+    assertTrue(VariableStringResolver.hasValueProviderReference("${provider::var1}"));
+    assertTrue(VariableStringResolver.hasValueProviderReference("${var1} ${provider::var2:default}"));
   }
 
 }
