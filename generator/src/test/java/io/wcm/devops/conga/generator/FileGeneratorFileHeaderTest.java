@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,6 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -107,7 +109,12 @@ public class FileGeneratorFileHeaderTest {
     underTest = new FileGenerator(options, "env1",
         "role1", ImmutableList.of("variant1"), "template1",
         destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template,
-        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of());
+        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of(
+            "version1/1.0.0",
+            "version2/2.0.0-SNAPSHOT",
+            "version3/1.2.0-20180116.233128-5",
+            "version4/2.1.2-20180125.094723-16/suffix"
+            ));
   }
 
   @Test
@@ -171,6 +178,27 @@ public class FileGeneratorFileHeaderTest {
 
     verify(one, times(1)).apply(any(FileContext.class), any(FileHeaderContext.class));
     verify(two, times(1)).apply(any(FileContext.class), any(FileHeaderContext.class));
+  }
+
+  @Test
+  public void testVersions() throws Exception {
+    FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.NEVER);
+    roleFile.setFileHeader("one");
+
+    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+
+    assertEquals(1, result.size());
+    assertItem(result.get(0), "test.txt");
+
+    ArgumentCaptor<FileHeaderContext> contextCaptor = ArgumentCaptor.forClass(FileHeaderContext.class);
+    verify(one, times(1)).apply(any(FileContext.class), contextCaptor.capture());
+    FileHeaderContext context = contextCaptor.getValue();
+
+    String fileHeader = StringUtils.join(context.getCommentLines(), "\n");
+    assertTrue(StringUtils.contains(fileHeader, "version1/1.0.0\n"));
+    assertTrue(StringUtils.contains(fileHeader, "version2/2.0.0-SNAPSHOT\n"));
+    assertTrue(StringUtils.contains(fileHeader, "version3/1.2.0-SNAPSHOT\n"));
+    assertTrue(StringUtils.contains(fileHeader, "version4/2.1.2-SNAPSHOT/suffix\n"));
   }
 
   private void assertItem(GeneratedFileContext item, String expectedFileName) {
