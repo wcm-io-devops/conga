@@ -23,6 +23,21 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="1.6.0" date="2018-02-15">
+      <action type="add" dev="sseifert">
+        Allow to define dependencies to other CONGA artifacts in environment YAML files.
+      </action>
+      <action type="add" dev="sseifert">
+        Add maven property value provider plugin.
+      </action>
+      <action type="update" dev="sseifert">
+        Add validation rule that ensures value providers are not used in role definitions. They should only be used in environments.
+      </action>
+      <action type="update" dev="sseifert">
+        File header dependency versions: Replace static snapshot versions like 'xxx-20180125.094723-16' with 'xxx-SNAPSHOT'.
+      </action>
+    </release>
+
     <release version="1.5.0" date="2018-01-15">
       <action type="add" dev="sseifert">
         conga-maven-plugin: Add generic plugin configuration parameter.

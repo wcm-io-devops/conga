@@ -21,6 +21,10 @@ package io.wcm.devops.conga.generator.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 
@@ -31,7 +35,7 @@ public interface UrlFilePlugin extends Plugin {
 
   /**
    * Checks if the plugin can be applied to the given URL.
-   * @param url URL (including prefix)
+   * @param url URL string (including prefix)
    * @param context Context objects
    * @return true when the plugin can be applied to the given URL.
    */
@@ -39,7 +43,7 @@ public interface UrlFilePlugin extends Plugin {
 
   /**
    * Get filename for external file.
-   * @param url URL (including prefix)
+   * @param url URL string (including prefix)
    * @param context Context objects
    * @return Filename
    * @throws IOException I/O exception
@@ -48,11 +52,34 @@ public interface UrlFilePlugin extends Plugin {
 
   /**
    * Get binary data of external file.
-   * @param url URL (including prefix)
+   * @param url URL string (including prefix)
    * @param context Context objects
    * @return Binary data
    * @throws IOException If the access to the file failed
    */
   InputStream getFile(String url, UrlFilePluginContext context) throws IOException;
+
+  /**
+   * Get URL to external file.
+   * @param url URL string (including prefix)
+   * @param context Context objects
+   * @return URL to file
+   * @throws IOException If the access to the file failed
+   */
+  default URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
+    throw new IOException("File URLs not supported for " + getClass().getName());
+  }
+
+  /**
+   * Get URLs of transitive dependencies of external file. This usually applies only to Maven artifacts.
+   * The returned list includes the URL of the artifact itself, and all it's transitive dependencies.
+   * @param url URL string (including prefix)
+   * @param context Context objects
+   * @return URLs to files
+   * @throws IOException If the access to the file failed
+   */
+  default List<URL> getFileUrlsWithDependencies(String url, UrlFilePluginContext context) throws IOException {
+    return ImmutableList.of(getFileUrl(url, context));
+  }
 
 }

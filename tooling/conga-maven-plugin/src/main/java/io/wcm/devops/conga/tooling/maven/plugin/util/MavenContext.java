@@ -17,21 +17,24 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.tooling.maven.plugin.urlfile;
+package io.wcm.devops.conga.tooling.maven.plugin.util;
 
-import org.apache.maven.artifact.repository.ArtifactRepository;
+import java.util.List;
+
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.RepositorySystem;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.repository.RemoteRepository;
 
 /**
  * Contains maven-specific context objects.
  */
-public final class MavenUrlFilePluginContext {
+public final class MavenContext {
 
   private MavenProject project;
-  private RepositorySystem repository;
-  private ArtifactRepository localRepository;
-  private java.util.List<ArtifactRepository> remoteRepositories;
+  private RepositorySystem repoSystem;
+  private RepositorySystemSession repoSession;
+  private List<RemoteRepository> remoteRepos;
 
   /**
    * @return Maven project
@@ -44,56 +47,56 @@ public final class MavenUrlFilePluginContext {
    * @param value Maven project
    * @return this
    */
-  public MavenUrlFilePluginContext project(MavenProject value) {
+  public MavenContext project(MavenProject value) {
     this.project = value;
     return this;
   }
 
   /**
-   * @return Maven repository
+   * @return Repository system
    */
-  public RepositorySystem getRepository() {
-    return this.repository;
+  public RepositorySystem getRepoSystem() {
+    return this.repoSystem;
   }
 
   /**
-   * @param value Maven repository
+   * @param value Repository system
    * @return this
    */
-  public MavenUrlFilePluginContext repository(RepositorySystem value) {
-    this.repository = value;
+  public MavenContext repoSystem(RepositorySystem value) {
+    this.repoSystem = value;
     return this;
   }
 
   /**
-   * @return Local repository
+   * @return Repository session
    */
-  public ArtifactRepository getLocalRepository() {
-    return this.localRepository;
+  public RepositorySystemSession getRepoSession() {
+    return this.repoSession;
   }
 
   /**
-   * @param value Local repository
+   * @param value Repository session
    * @return this
    */
-  public MavenUrlFilePluginContext localRepository(ArtifactRepository value) {
-    this.localRepository = value;
+  public MavenContext repoSession(RepositorySystemSession value) {
+    this.repoSession = value;
     return this;
   }
 
   /**
    * @return Remote repositories
    */
-  public java.util.List<ArtifactRepository> getRemoteRepositories() {
-    return this.remoteRepositories;
+  public List<RemoteRepository> getRemoteRepos() {
+    return this.remoteRepos;
   }
 
   /**
    * @param value Remote repositories
    * @return this
    */
-  public MavenUrlFilePluginContext remoteRepositories(java.util.List<ArtifactRepository> value) {
-    this.remoteRepositories = value;
+  public MavenContext remoteRepos(List<RemoteRepository> value) {
+    this.remoteRepos = value;
     return this;
   }
 

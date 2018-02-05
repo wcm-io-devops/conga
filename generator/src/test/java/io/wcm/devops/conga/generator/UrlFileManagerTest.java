@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -71,6 +72,39 @@ public class UrlFileManagerTest {
   @Test(expected = IOException.class)
   public void testGetFile_Invalid() throws Exception {
     underTest.getFile("other:/x/y/z");
+  }
+
+  @Test
+  public void testGetFileUrl_Absolute() throws Exception {
+    File file = new File("src/test/resources/validators/json/noJson.txt");
+    URL url = underTest.getFileUrl("file:" + file.getAbsolutePath());
+    try (InputStream is = url.openStream()) {
+      assertNotNull(is);
+      assertTrue(IOUtils.toByteArray(is).length > 0);
+    }
+  }
+
+  @Test
+  public void testGetFileUrl_Relative() throws Exception {
+    URL url = underTest.getFileUrl("src/test/resources/validators/json/noJson.txt");
+    try (InputStream is = url.openStream()) {
+      assertNotNull(is);
+      assertTrue(IOUtils.toByteArray(is).length > 0);
+    }
+  }
+
+  @Test
+  public void testGetFileUrl_Classpath() throws Exception {
+    URL url = underTest.getFileUrl("classpath:/validators/json/noJson.txt");
+    try (InputStream is = url.openStream()) {
+      assertNotNull(is);
+      assertTrue(IOUtils.toByteArray(is).length > 0);
+    }
+  }
+
+  @Test(expected = IOException.class)
+  public void testGetFileUrl_Invalid() throws Exception {
+    underTest.getFileUrl("other:/x/y/z");
   }
 
 }

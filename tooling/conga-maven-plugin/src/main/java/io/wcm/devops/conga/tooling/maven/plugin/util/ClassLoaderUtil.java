@@ -31,8 +31,14 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
+import com.google.common.collect.ImmutableMap;
+
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
+import io.wcm.devops.conga.generator.util.VariableStringResolver;
+
 /**
- * Utility methods for building class loaders.
+ * Utility methods for managing classpath and class loaders.
  */
 public final class ClassLoaderUtil {
 
@@ -41,25 +47,50 @@ public final class ClassLoaderUtil {
   }
 
   /**
+   * Build {@link ClassLoader} based on given list of dependency URLs.
+   * @param classpathUrls Classpath urls
+   * @return Resource loader
+   */
+  public static ClassLoader buildClassLoader(List<URL> classpathUrls) {
+    return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]));
+  }
+
+  /**
    * Build class loader from dependency of a maven project.
    * @param project Maven project
    * @return Class loader
    * @throws MojoExecutionException Mojo execution exception
    */
-  public static ClassLoader buildDependencyClassLoader(MavenProject project) throws MojoExecutionException {
+  public static List<URL> getMavenProjectClasspathUrls(MavenProject project) throws MojoExecutionException {
     try {
-      List<URL> classLoaderUrls = new ArrayList<>();
+      List<URL> classpathUrls = new ArrayList<>();
       for (String path : project.getCompileClasspathElements()) {
-        classLoaderUrls.add(new File(path).toURI().toURL());
+        classpathUrls.add(new File(path).toURI().toURL());
       }
       for (Resource resource : project.getResources()) {
-        classLoaderUrls.add(new File(resource.getDirectory()).toURI().toURL());
+        classpathUrls.add(new File(resource.getDirectory()).toURI().toURL());
       }
-      return new URLClassLoader(classLoaderUrls.toArray(new URL[classLoaderUrls.size()]));
+      return classpathUrls;
     }
     catch (MalformedURLException | DependencyResolutionRequiredException ex) {
       throw new MojoExecutionException("Unable to get classpath elements for class loader.", ex);
     }
+  }
+
+  /**
+   * Resolves an environment dependency URL.
+   * @param dependencyUrl Dependeny URL
+   * @param pluginContextOptions Plugin context options
+   * @return Resolved dependency URL.
+   */
+  public static String resolveDependencyUrl(String dependencyUrl, PluginContextOptions pluginContextOptions) {
+
+    ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
+        .pluginContextOptions(pluginContextOptions);
+    VariableStringResolver variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
+
+    // resolver variables without config map - thus supporting only value providers with external values
+    return variableStringResolver.resolveString(dependencyUrl, ImmutableMap.of());
   }
 
 }

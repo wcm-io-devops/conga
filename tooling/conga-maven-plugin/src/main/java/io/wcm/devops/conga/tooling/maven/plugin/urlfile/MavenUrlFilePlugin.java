@@ -24,17 +24,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Set;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import org.eclipse.aether.artifact.Artifact;
 
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
+import io.wcm.devops.conga.tooling.maven.plugin.util.MavenArtifactHelper;
 
 /**
  * Download files from Maven artifact repository.
@@ -46,7 +45,10 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
    */
   public static final String NAME = "maven";
 
-  private static final String PREFIX = "mvn:";
+  /**
+   * Url prefix
+   */
+  public static final String PREFIX = "mvn:";
 
   @Override
   public String getName() {
@@ -60,194 +62,49 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public String getFileName(String url, UrlFilePluginContext context) throws IOException {
-    String mavenCoords = StringUtils.substringAfter(url, PREFIX);
-    MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
-    try {
-      File file = getArtifactFile(mavenCoords, mavenContext);
-      return file.getName();
-    }
-    catch (MojoFailureException | MojoExecutionException ex) {
-      throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
-    }
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
+    File file = mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
+    return file.getName();
   }
 
   @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
-    String mavenCoords = StringUtils.substringAfter(url, PREFIX);
-    MavenUrlFilePluginContext mavenContext = (MavenUrlFilePluginContext)context.getContainerContext();
-    try {
-      File file = getArtifactFile(mavenCoords, mavenContext);
-      return new BufferedInputStream(new FileInputStream(file));
-    }
-    catch (MojoFailureException | MojoExecutionException ex) {
-      throw new IOException("Unable to get Maven artifact '" + mavenCoords + "': " + ex.getMessage(), ex);
-    }
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
+    File file = mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
+    return new BufferedInputStream(new FileInputStream(file));
   }
 
-  private File getArtifactFile(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException, MojoExecutionException {
+  @Override
+  public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
+    File file = mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
+    return file.toURI().toURL();
+  }
 
-    Artifact artifactObject;
-    if (StringUtils.contains(artifact, "/")) {
-      artifactObject = getArtifactFromMavenCoordinatesSlingStartStyle(artifact, context);
-    }
-    else {
-      artifactObject = getArtifactFromMavenCoordinates(artifact, context);
+  @Override
+  public List<URL> getFileUrlsWithDependencies(String url, UrlFilePluginContext context) throws IOException {
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
+    List<URL> urls = new ArrayList<>();
+
+    // add artifact itself
+    Artifact artifact = mavenArtifactHelper.resolveArtifact(getMavenCoords(url));
+    urls.add(artifact.getFile().toURI().toURL());
+
+    // get transitive dependencies of artifact
+    for (Artifact dependencyArtifact : mavenArtifactHelper.getTransitiveDependencies(artifact)) {
+      urls.add(dependencyArtifact.getFile().toURI().toURL());
     }
 
-    // resolve artifact
-    ArtifactResolutionRequest request = new ArtifactResolutionRequest();
-    request.setArtifact(artifactObject);
-    request.setLocalRepository(context.getLocalRepository());
-    request.setRemoteRepositories(context.getRemoteRepositories());
-    ArtifactResolutionResult result = context.getRepository().resolve(request);
-    if (result.isSuccess()) {
-      return artifactObject.getFile();
-    }
-    else {
-      throw new MojoExecutionException("Unable to download artifact: " + artifactObject.toString());
-    }
+    return urls;
   }
 
   /**
-   * Parse coordinates following definition from https://maven.apache.org/pom.html#Maven_Coordinates
-   * @param artifact Artifact coordinates
-   * @return Artifact object
-   * @throws MojoFailureException if coordinates are semantically invalid
+   * Get Maven coordindats
+   * @param url Maven url staring with mvn:
+   * @return Maven coordinates
    */
-  private Artifact getArtifactFromMavenCoordinates(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
-    String[] parts = StringUtils.splitPreserveAllTokens(artifact, ":");
-
-    String version = null;
-    String packaging = null;
-    String classifier = null;
-
-    switch (parts.length) {
-      case 2:
-        // groupId:artifactId
-        break;
-
-      case 3:
-        // groupId:artifactId:version
-        version = StringUtils.defaultIfBlank(parts[2], null);
-        break;
-
-      case 4:
-        // groupId:artifactId:packaging:version
-        packaging = StringUtils.defaultIfBlank(parts[2], null);
-        version = StringUtils.defaultIfBlank(parts[3], null);
-        break;
-
-      case 5:
-        // groupId:artifactId:packaging:classifier:version
-        packaging = StringUtils.defaultIfBlank(parts[2], null);
-        classifier = StringUtils.defaultIfBlank(parts[3], null);
-        version = StringUtils.defaultIfBlank(parts[4], null);
-        break;
-
-      default:
-        throw new MojoFailureException("Invalid artifact: " + artifact);
-    }
-
-    String groupId = StringUtils.defaultIfBlank(parts[0], null);
-    String artifactId = StringUtils.defaultIfBlank(parts[1], null);
-
-    return createArtifact(artifactId, groupId, packaging, classifier, version, context);
-  }
-
-  /**
-   * Parse coordinates in slingstart/Pax URL style following definition from https://ops4j1.jira.com/wiki/x/CoA6
-   * @param artifact Artifact coordinates
-   * @return Artifact object
-   * @throws MojoFailureException if coordinates are semantically invalid
-   */
-  private Artifact getArtifactFromMavenCoordinatesSlingStartStyle(String artifact, MavenUrlFilePluginContext context) throws MojoFailureException {
-    String[] parts = StringUtils.splitPreserveAllTokens(artifact, "/");
-
-    String version = null;
-    String packaging = null;
-    String classifier = null;
-
-    switch (parts.length) {
-      case 2:
-        // groupId/artifactId
-        break;
-
-      case 3:
-        // groupId/artifactId/version
-        version = StringUtils.defaultIfBlank(parts[2], null);
-        break;
-
-      case 4:
-        // groupId/artifactId/version/type
-        packaging = StringUtils.defaultIfBlank(parts[3], null);
-        version = StringUtils.defaultIfBlank(parts[2], null);
-        break;
-
-      case 5:
-        // groupId/artifactId/version/type/classifier
-        packaging = StringUtils.defaultIfBlank(parts[3], null);
-        classifier = StringUtils.defaultIfBlank(parts[4], null);
-        version = StringUtils.defaultIfBlank(parts[2], null);
-        break;
-
-      default:
-        throw new MojoFailureException("Invalid artifact: " + artifact);
-    }
-
-    String groupId = StringUtils.defaultIfBlank(parts[0], null);
-    String artifactId = StringUtils.defaultIfBlank(parts[1], null);
-
-    return createArtifact(artifactId, groupId, packaging, classifier, version, context);
-  }
-
-  private Artifact createArtifact(String artifactId, String groupId, String packaging, String classifier, String version,
-      MavenUrlFilePluginContext context) throws MojoFailureException {
-
-    String artifactVersion = version;
-    if (artifactVersion == null) {
-      artifactVersion = resolveArtifactVersion(artifactId, groupId, packaging, classifier, context);
-    }
-
-    if (StringUtils.isBlank(groupId) || StringUtils.isBlank(artifactId) || StringUtils.isBlank(artifactVersion)) {
-      throw new MojoFailureException("Invalid Maven artifact reference: "
-          + "artifactId=" + artifactId + ", "
-          + "groupId=" + groupId + ", "
-          + "version=" + artifactVersion + ", "
-          + "packaging=" + packaging + ", "
-          + "classifier=" + classifier);
-    }
-
-    if (StringUtils.isEmpty(classifier)) {
-      return context.getRepository().createArtifact(groupId, artifactId, artifactVersion, packaging);
-    }
-    return context.getRepository().createArtifactWithClassifier(groupId, artifactId, artifactVersion, packaging, classifier);
-  }
-
-  private String resolveArtifactVersion(String artifactId, String groupId, String packaging, String classifier,
-      MavenUrlFilePluginContext context) {
-    String version = findVersion(context.getProject().getArtifacts(), artifactId, groupId, packaging, classifier);
-    if (version != null) {
-      return version;
-    }
-    return null;
-  }
-
-  private String findVersion(Set<Artifact> dependencies, String artifactId, String groupId, String packaging, String classifier) {
-    if (dependencies != null) {
-      for (Artifact dependency : dependencies) {
-        if (artifactEquals(dependency, artifactId, groupId, packaging, classifier)) {
-          return dependency.getVersion();
-        }
-      }
-    }
-    return null;
-  }
-
-  private boolean artifactEquals(Artifact dependency, String artifactId, String groupId, String packaging, String classifier) {
-    return StringUtils.equals(dependency.getGroupId(), groupId)
-        && StringUtils.equals(dependency.getArtifactId(), artifactId)
-        && StringUtils.equals(dependency.getClassifier(), classifier)
-        && StringUtils.equals(dependency.getType(), packaging);
+  public static String getMavenCoords(String url) {
+    return StringUtils.substringAfter(url, PREFIX);
   }
 
 }

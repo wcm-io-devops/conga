@@ -19,10 +19,10 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import static io.wcm.devops.conga.generator.GeneratorOptions.CLASSPATH_ENVIRONMENTS_DIR;
+import static io.wcm.devops.conga.generator.GeneratorOptions.CLASSPATH_ROLES_DIR;
+import static io.wcm.devops.conga.generator.GeneratorOptions.CLASSPATH_TEMPLATES_DIR;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSIFIER_DEFINITION;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ENVIRONMENTS_DIR;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ROLES_DIR;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_TEMPLATES_DIR;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.FILE_EXTENSION_DEFINITION;
 import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_DEFINITION;
 
@@ -78,8 +78,8 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
-  @Parameter(defaultValue = "${session}", required = true, readonly = true)
-  private MavenSession session;
+  @Parameter(property = "session", readonly = true, required = true)
+  private MavenSession mavenSession;
 
   @Component
   protected MavenProjectHelper projectHelper;
@@ -87,11 +87,8 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
   @Component(role = Archiver.class, hint = "jar")
   private JarArchiver jarArchiver;
 
-  private ResourceLoader resourceLoader;
-
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    resourceLoader = new ResourceLoader();
 
     // copy definitions to classes dir
     File definitionDir = copyDefinitions();
@@ -135,7 +132,7 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
     }
 
     try {
-      archiver.createArchive(session, project, archive);
+      archiver.createArchive(mavenSession, project, archive);
     }
     catch (ArchiverException | ManifestException | IOException | DependencyResolutionRequiredException ex) {
       throw new MojoExecutionException("Unable to build file " + jarFile.getPath() + ": " + ex.getMessage(), ex);
@@ -171,9 +168,10 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
       outputDir.mkdirs();
     }
 
-    ResourceCollection roleDir = getRoleDir();
-    ResourceCollection templateDir = getTemplateDir();
-    ResourceCollection environmentDir = getEnvironmentDir();
+    ResourceLoader resourceLoader = new ResourceLoader();
+    ResourceCollection roleDir = resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + getRoleDir());
+    ResourceCollection templateDir = resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + getTemplateDir());
+    ResourceCollection environmentDir = resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + getEnvironmentDir());
 
     // copy definitions
     try {
@@ -230,11 +228,6 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
 
   private String unifySlashes(String path) {
     return StringUtils.replace(path, "\\", "/");
-  }
-
-  @Override
-  protected ResourceLoader getResourceLoader() {
-    return resourceLoader;
   }
 
 }
