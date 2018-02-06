@@ -77,7 +77,8 @@ public class GenerateMojo extends AbstractCongaMojo {
         .project(project)
         .repoSystem(repoSystem)
         .repoSession(repoSession)
-        .remoteRepos(remoteRepos);
+        .remoteRepos(remoteRepos)
+        .artifactTypeMappings(getArtifactTypeMappings());
 
     PluginManager pluginManager = new PluginManagerImpl();
 

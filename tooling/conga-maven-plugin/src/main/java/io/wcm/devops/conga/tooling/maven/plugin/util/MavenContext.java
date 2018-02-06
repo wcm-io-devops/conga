@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.tooling.maven.plugin.util;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
@@ -35,6 +36,7 @@ public final class MavenContext {
   private RepositorySystem repoSystem;
   private RepositorySystemSession repoSession;
   private List<RemoteRepository> remoteRepos;
+  private Map<String, String> artifactTypeMappings;
 
   /**
    * @return Maven project
@@ -97,6 +99,22 @@ public final class MavenContext {
    */
   public MavenContext remoteRepos(List<RemoteRepository> value) {
     this.remoteRepos = value;
+    return this;
+  }
+
+  /**
+   * @return Artifact type mappings
+   */
+  public Map<String, String> getArtifactTypeMappings() {
+    return this.artifactTypeMappings;
+  }
+
+  /**
+   * @param value Artifact type mappings
+   * @return this
+   */
+  public MavenContext artifactTypeMappings(Map<String, String> value) {
+    this.artifactTypeMappings = value;
     return this;
   }
 
