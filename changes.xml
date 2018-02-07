@@ -23,13 +23,13 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
-    <release version="1.6.2" date="not released">
+    <release version="1.6.2" date="2018-02-07">
       <action type="update" dev="sseifert">
         CONGA Maven Plugin: Allow to define custom mappings from artifact type to file extension to work around invalid dependency definitions.
       </action>
     </release>
 
-    <release version="1.6.0" date="2018-02-15">
+    <release version="1.6.0" date="2018-02-05">
       <action type="add" dev="sseifert">
         Allow to define dependencies to other CONGA artifacts in environment YAML files.
       </action>
