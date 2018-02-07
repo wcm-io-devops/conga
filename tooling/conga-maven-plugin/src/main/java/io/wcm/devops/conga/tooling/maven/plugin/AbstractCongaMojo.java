@@ -110,6 +110,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   /**
    * Allows to define custom artifact type to extension mappings for resolving dependencies from artifact coordinates
    * where it is not fully clear if the an extension is really the extension or a artifact type identifier.
+   * Defaults to <code>bundle</code>-&gt;<code>jar</code>, <code>content-package</code>-&gt;<code>zip</code>.
    */
   @Parameter
   private Map<String,String> artifactTypeMappings;
