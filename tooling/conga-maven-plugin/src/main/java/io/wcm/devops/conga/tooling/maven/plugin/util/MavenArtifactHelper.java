@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +59,7 @@ public class MavenArtifactHelper {
   private final RepositorySystem repoSystem;
   private final RepositorySystemSession repoSession;
   private final List<RemoteRepository> remoteRepos;
+  private final Map<String, String> artifactTypeMappings;
   private final List<String> environmentDependencyUrls;
   private final PluginContextOptions pluginContextOptions;
 
@@ -71,6 +73,7 @@ public class MavenArtifactHelper {
     this.repoSystem = mavenContext.getRepoSystem();
     this.repoSession = mavenContext.getRepoSession();
     this.remoteRepos = mavenContext.getRemoteRepos();
+    this.artifactTypeMappings = mavenContext.getArtifactTypeMappings();
     this.environmentDependencyUrls = environment != null ? environment.getDependencies() : ImmutableList.of();
     this.pluginContextOptions = pluginContextOptions;
   }
@@ -226,9 +229,15 @@ public class MavenArtifactHelper {
     if (artifactExtension == null) {
       artifactExtension = "jar";
     }
+
     ArtifactType artifactType = repoSession.getArtifactTypeRegistry().get(artifactExtension);
     if (artifactType != null) {
       artifactExtension = artifactType.getExtension();
+    }
+
+    // apply custom mapping from artifact type to extension if defined in plugin config
+    if (artifactTypeMappings != null && artifactTypeMappings.containsKey(artifactExtension)) {
+      artifactExtension = artifactTypeMappings.get(artifactExtension);
     }
 
     if (StringUtils.isBlank(groupId) || StringUtils.isBlank(artifactId) || StringUtils.isBlank(artifactVersion)) {

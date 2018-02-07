@@ -27,6 +27,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.tooling.maven.plugin.util.PluginConfigUtil;
@@ -106,6 +107,18 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter
   private String pluginConfig;
 
+  /**
+   * Allows to define custom artifact type to extension mappings for resolving dependencies from artifact coordinates
+   * where it is not fully clear if the an extension is really the extension or a artifact type identifier.
+   * Defaults to <code>bundle</code>-&gt;<code>jar</code>, <code>content-package</code>-&gt;<code>zip</code>.
+   */
+  @Parameter
+  private Map<String,String> artifactTypeMappings;
+
+  private static final Map<String, String> DEFAULT_ARTIFACT_TYPE_MAPPINGS = ImmutableMap.of(
+      "bundle", "jar",
+      "content-package", "zip");
+
   protected File getTemplateDir() {
     return templateDir;
   }
@@ -139,6 +152,14 @@ abstract class AbstractCongaMojo extends AbstractMojo {
 
   protected Map<String, Map<String, Object>> getPluginConfig() {
     return PluginConfigUtil.getConfigMap(this.pluginConfig);
+  }
+
+  protected Map<String, String> getArtifactTypeMappings() {
+    Map<String, String> mappings = this.artifactTypeMappings;
+    if (mappings == null) {
+      mappings = DEFAULT_ARTIFACT_TYPE_MAPPINGS;
+    }
+    return mappings;
   }
 
 }

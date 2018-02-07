@@ -109,7 +109,8 @@ public class ValidateMojo extends AbstractCongaMojo {
         .project(project)
         .repoSystem(repoSystem)
         .repoSession(repoSession)
-        .remoteRepos(remoteRepos);
+        .remoteRepos(remoteRepos)
+        .artifactTypeMappings(getArtifactTypeMappings());
 
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .baseDir(project.getBasedir())
