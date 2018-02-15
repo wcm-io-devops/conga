@@ -40,13 +40,14 @@ public final class VariableStringResolver {
    * ${provider::var1}
    * ${provider::Var1:defaultValue}
    */
-  private static final String NAME_PATTERN_STRING = "[^\\}\\{\\$\\:]";
+  private static final String NAME_PATTERN_STRING = "[^\\}\\{\\$\\:\\s]";
   private static final String NAME_PATTERN_STRING_NOT_EMPTY = NAME_PATTERN_STRING + "+";
   private static final String NAME_PATTERN_STRING_OR_EMPTY = NAME_PATTERN_STRING + "*";
-  private static final String VARIABLE_PATTERN_STRING = "(\\\\?\\$)"
-      + "\\{((" + NAME_PATTERN_STRING_NOT_EMPTY + ")\\:\\:)?"
+  private static final String VARIABLE_NAME_STRING = "((" + NAME_PATTERN_STRING_NOT_EMPTY + ")\\:\\:)?"
       + "(" + NAME_PATTERN_STRING_NOT_EMPTY + ")"
-      + "(\\:(" + NAME_PATTERN_STRING_OR_EMPTY + "))?\\}";
+      + "(\\:(" + NAME_PATTERN_STRING_OR_EMPTY + "))?";
+  private static final String VARIABLE_PATTERN_STRING = "(\\\\?\\$)"
+      + "\\{" + VARIABLE_NAME_STRING + "\\}";
 
   static final int PATTERN_POS_DOLLAR_SIGN = 1;
   static final int PATTERN_POS_VALUE_PROVIDER_NAME_WITH_COLON = 2;
