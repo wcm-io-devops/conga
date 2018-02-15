@@ -43,30 +43,34 @@ public final class VariableStringResolver {
   private static final String NAME_PATTERN_STRING = "[^\\}\\{\\$\\:\\s]";
   private static final String NAME_PATTERN_STRING_NOT_EMPTY = NAME_PATTERN_STRING + "+";
   private static final String NAME_PATTERN_STRING_OR_EMPTY = NAME_PATTERN_STRING + "*";
-  private static final String VARIABLE_NAME_STRING = "((" + NAME_PATTERN_STRING_NOT_EMPTY + ")\\:\\:)?"
-      + "(" + NAME_PATTERN_STRING_NOT_EMPTY + ")"
-      + "(\\:(" + NAME_PATTERN_STRING_OR_EMPTY + "))?";
-  private static final String VARIABLE_PATTERN_STRING = "(\\\\?\\$)"
-      + "\\{" + VARIABLE_NAME_STRING + "\\}";
+  private static final String EXPRESSION_STRING = "[^\\}\\{]+";
 
-  static final int PATTERN_POS_DOLLAR_SIGN = 1;
-  static final int PATTERN_POS_VALUE_PROVIDER_NAME_WITH_COLON = 2;
-  static final int PATTERN_POS_VALUE_PROVIDER_NAME = 3;
-  static final int PATTERN_POS_VARIABLE = 4;
-  static final int PATTERN_POS_DEFAULT_VALUE_WITH_COLON = 5;
-  static final int PATTERN_POS_DEFAULT_VALUE = 6;
+  private static final int EXPRESSION_POS_DOLLAR_SIGN = 1;
+  private static final int EXPRESSION_POS_EXPRESSION = 2;
 
-  static final Pattern SINGLE_VARIABLE_PATTERN = Pattern.compile("^" + VARIABLE_PATTERN_STRING + "$");
-  static final Pattern MULTI_VARIABLE_PATTERN = Pattern.compile(VARIABLE_PATTERN_STRING);
+  private static final int VARIABLE_POS_VALUE_PROVIDER_NAME = 2;
+  private static final int VARIABLE_POS_VARIABLE = 3;
+  private static final int VARIABLE_POS_DEFAULT_VALUE = 5;
+
+  private static final String EXPRESSION_PATTERN = "(\\\\?\\$)"
+      + "\\{(" + EXPRESSION_STRING + ")\\}";
+  static final Pattern SINGLE_EXPRESSION_PATTERN = Pattern.compile("^" + EXPRESSION_PATTERN + "$");
+  private static final Pattern MULTI_EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN);
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
+  private static final Pattern VARIABLE_PATTERN = Pattern.compile("((" + NAME_PATTERN_STRING_NOT_EMPTY + ")\\:\\:)?"
+      + "(" + NAME_PATTERN_STRING_NOT_EMPTY + ")"
+      + "(\\:(" + NAME_PATTERN_STRING_OR_EMPTY + "))?");
+
   private final VariableResolver variableResolver;
+  private final JexlResolver jexlResolver;
 
   /**
    * @param valueProviderGlobalContext Value provider global context
    */
   public VariableStringResolver(ValueProviderGlobalContext valueProviderGlobalContext) {
     this.variableResolver = new VariableResolver(valueProviderGlobalContext);
+    this.jexlResolver = new JexlResolver();
   }
 
   /**
@@ -139,10 +143,8 @@ public final class VariableStringResolver {
    * @return String with de-escaped variable references.
    */
   public String deescape(String value) {
-    return MULTI_VARIABLE_PATTERN.matcher(value).replaceAll("\\$\\{"
-        + "$" + PATTERN_POS_VALUE_PROVIDER_NAME_WITH_COLON
-        + "$" + PATTERN_POS_VARIABLE
-        + "$" + PATTERN_POS_DEFAULT_VALUE_WITH_COLON + "\\}");
+    return MULTI_EXPRESSION_PATTERN.matcher(value).replaceAll("\\$\\{"
+        + "$" + EXPRESSION_POS_EXPRESSION + "\\}");
   }
 
   private Object resolve(String value, Map<String, Object> variables, int iterationCount) {
@@ -151,41 +153,64 @@ public final class VariableStringResolver {
     }
 
     // check if variable string contains only single variable - in this case resolve and return value without necessarily converting it to a string
-    Matcher matcherSingle = SINGLE_VARIABLE_PATTERN.matcher(value);
+    Matcher matcherSingle = SINGLE_EXPRESSION_PATTERN.matcher(value);
     if (matcherSingle.matches()) {
       return resolveSingle(matcherSingle, variables, iterationCount);
     }
     else {
-      Matcher matcherMulti = MULTI_VARIABLE_PATTERN.matcher(value);
+      Matcher matcherMulti = MULTI_EXPRESSION_PATTERN.matcher(value);
       return resolveMulti(matcherMulti, variables, iterationCount);
     }
   }
 
   private Object resolveSingle(Matcher matcher, Map<String, Object> variables, int iterationCount) {
-    boolean escapedVariable = StringUtils.equals(matcher.group(PATTERN_POS_DOLLAR_SIGN), "\\$");
-    String valueProviderName = matcher.group(PATTERN_POS_VALUE_PROVIDER_NAME);
-    String variable = matcher.group(PATTERN_POS_VARIABLE);
-    String defaultValueString = matcher.group(PATTERN_POS_DEFAULT_VALUE);
+    boolean escapedVariable = StringUtils.equals(matcher.group(EXPRESSION_POS_DOLLAR_SIGN), "\\$");
+    String expression = matcher.group(EXPRESSION_POS_EXPRESSION);
 
     // keep escaped variables intact
     if (escapedVariable) {
       return matcher.group(0);
     }
 
-    // resolve variable
     else {
-      Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
-      if (valueObject != null) {
-        if (valueObject instanceof String) {
-          // try again until all nested references are resolved
-          return resolve((String)valueObject, variables, iterationCount + 1);
+      Matcher variableMatcher = VARIABLE_PATTERN.matcher(expression);
+
+      // resolve variable
+      if (variableMatcher.matches()) {
+        String valueProviderName = variableMatcher.group(VARIABLE_POS_VALUE_PROVIDER_NAME);
+        String variable = variableMatcher.group(VARIABLE_POS_VARIABLE);
+        String defaultValueString = variableMatcher.group(VARIABLE_POS_DEFAULT_VALUE);
+
+        Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
+        if (valueObject != null) {
+          if (valueObject instanceof String) {
+            // try again until all nested references are resolved
+            return resolve((String)valueObject, variables, iterationCount + 1);
+          }
+          else {
+            return valueObject;
+          }
         }
         else {
-          return valueObject;
+          throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
         }
       }
+
+      // resolve JEXL expression
       else {
-        throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
+        Object valueObject = jexlResolver.resolve(expression, variables);
+        if (valueObject != null) {
+          if (valueObject instanceof String) {
+            // try again until all nested references are resolved
+            return resolve((String)valueObject, variables, iterationCount + 1);
+          }
+          else {
+            return valueObject;
+          }
+        }
+        else {
+          throw new IllegalArgumentException("Unable to resolve expression: " + matcher.group(0));
+        }
       }
     }
   }
@@ -194,26 +219,45 @@ public final class VariableStringResolver {
     StringBuffer sb = new StringBuffer();
     boolean replacedAny = false;
     while (matcher.find()) {
-      boolean escapedVariable = StringUtils.equals(matcher.group(PATTERN_POS_DOLLAR_SIGN), "\\$");
-      String valueProviderName = matcher.group(PATTERN_POS_VALUE_PROVIDER_NAME);
-      String variable = matcher.group(PATTERN_POS_VARIABLE);
-      String defaultValueString = matcher.group(PATTERN_POS_DEFAULT_VALUE);
+      boolean escapedVariable = StringUtils.equals(matcher.group(EXPRESSION_POS_DOLLAR_SIGN), "\\$");
+      String expression = matcher.group(EXPRESSION_POS_EXPRESSION);
 
       // keep escaped variables intact
       if (escapedVariable) {
         matcher.appendReplacement(sb, Matcher.quoteReplacement(matcher.group(0)));
       }
 
-      // resolve variable
       else {
-        Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
-        if (valueObject != null) {
-          String variableValue = ValueUtil.valueToString(valueObject);
-          matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
-          replacedAny = true;
+        Matcher variableMatcher = VARIABLE_PATTERN.matcher(expression);
+
+        // resolve variable
+        if (variableMatcher.matches()) {
+          String valueProviderName = variableMatcher.group(VARIABLE_POS_VALUE_PROVIDER_NAME);
+          String variable = variableMatcher.group(VARIABLE_POS_VARIABLE);
+          String defaultValueString = variableMatcher.group(VARIABLE_POS_DEFAULT_VALUE);
+
+          Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
+          if (valueObject != null) {
+            String variableValue = ValueUtil.valueToString(valueObject);
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
+            replacedAny = true;
+          }
+          else {
+            throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
+          }
         }
+
+        // resolve JEXL expression
         else {
-          throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
+          Object valueObject = jexlResolver.resolve(expression, variables);
+          if (valueObject != null) {
+            String variableValue = ValueUtil.valueToString(valueObject);
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
+            replacedAny = true;
+          }
+          else {
+            throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
+          }
         }
       }
 
@@ -234,11 +278,15 @@ public final class VariableStringResolver {
    * @return true if a value provider reference was found.
    */
   public static boolean hasValueProviderReference(String value) {
-    Matcher matcher = MULTI_VARIABLE_PATTERN.matcher(value);
+    Matcher matcher = MULTI_EXPRESSION_PATTERN.matcher(value);
     while (matcher.find()) {
-      String valueProviderName = matcher.group(PATTERN_POS_VALUE_PROVIDER_NAME);
-      if (StringUtils.isNotEmpty(valueProviderName)) {
-        return true;
+      String expression = matcher.group(EXPRESSION_POS_EXPRESSION);
+      Matcher variableMatcher = VARIABLE_PATTERN.matcher(expression);
+      if (variableMatcher.matches()) {
+        String valueProviderName = variableMatcher.group(VARIABLE_POS_VALUE_PROVIDER_NAME);
+        if (StringUtils.isNotEmpty(valueProviderName)) {
+          return true;
+        }
       }
     }
     return false;

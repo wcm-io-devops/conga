@@ -19,10 +19,7 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import static io.wcm.devops.conga.generator.util.VariableStringResolver.PATTERN_POS_DEFAULT_VALUE;
-import static io.wcm.devops.conga.generator.util.VariableStringResolver.PATTERN_POS_VALUE_PROVIDER_NAME;
-import static io.wcm.devops.conga.generator.util.VariableStringResolver.PATTERN_POS_VARIABLE;
-import static io.wcm.devops.conga.generator.util.VariableStringResolver.SINGLE_VARIABLE_PATTERN;
+import static io.wcm.devops.conga.generator.util.VariableStringResolver.SINGLE_EXPRESSION_PATTERN;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,14 +57,12 @@ public final class VariableMapResolver {
 
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
-  private final VariableResolver variableResolver;
   private final VariableStringResolver variableStringResolver;
 
   /**
    * @param valueProviderGlobalContext Value provider global context
    */
   public VariableMapResolver(ValueProviderGlobalContext valueProviderGlobalContext) {
-    this.variableResolver = new VariableResolver(valueProviderGlobalContext);
     this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
   }
 
@@ -200,13 +195,9 @@ public final class VariableMapResolver {
   private List<Object> replaceIterate(Map<String, Object> map, Map<String, Object> variables) {
     Object listObject = map.get(LIST_VARIABLE_ITERATE);
     if (listObject instanceof String) {
-      Matcher matcher = SINGLE_VARIABLE_PATTERN.matcher((String)listObject);
+      Matcher matcher = SINGLE_EXPRESSION_PATTERN.matcher((String)listObject);
       if (matcher.matches()) {
-        String valueProviderName = matcher.group(PATTERN_POS_VALUE_PROVIDER_NAME);
-        String variable = matcher.group(PATTERN_POS_VARIABLE);
-        String defaultValueString = matcher.group(PATTERN_POS_DEFAULT_VALUE);
-
-        listObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
+        listObject = variableStringResolver.resolve((String)listObject, variables);
         if (listObject == null) {
           throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
         }
