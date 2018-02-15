@@ -31,7 +31,7 @@
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.parent</artifactId>
-  <version>1.7.1-SNAPSHOT</version>
+  <version>1.7.0</version>
   <packaging>pom</packaging>
 
   <name>CONGA Parent</name>
