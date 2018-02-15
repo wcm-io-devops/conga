@@ -31,7 +31,7 @@
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.parent</artifactId>
-  <version>1.6.2</version>
+  <version>1.7.0</version>
   <packaging>pom</packaging>
 
   <name>CONGA Parent</name>
@@ -110,6 +110,12 @@
         <groupId>org.apache.sling</groupId>
         <artifactId>org.apache.sling.commons.osgi</artifactId>
         <version>2.4.0</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-jexl3</artifactId>
+        <version>3.1</version>
       </dependency>
 
     </dependencies>

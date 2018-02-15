@@ -25,7 +25,7 @@
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.6.2</version>
+    <version>1.7.0</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
@@ -44,7 +44,7 @@
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.model</artifactId>
-      <version>1.6.2</version>
+      <version>1.7.0</version>
       <scope>compile</scope>
     </dependency>
 
@@ -69,6 +69,12 @@
     <dependency>
       <groupId>uk.com.robust-it</groupId>
       <artifactId>cloning</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-jexl3</artifactId>
       <scope>compile</scope>
     </dependency>
 

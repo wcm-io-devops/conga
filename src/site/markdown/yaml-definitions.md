@@ -130,6 +130,14 @@ ${system::my.system.parameter}
 ${system::my.system.parameter:defaultValue}
 ```
 
+Instead of single variable expression you can also use Java Expression Language ([JEXL][jexl]). This cannot be combined with value provider expressions or default values. Examples:
+
+```
+${myvariable1 + '/' + myvariable2}
+${mygroup.myvariable == 'expected_value'}
+${mynumber + 1}
+```
+
 
 ### Iterate over variable list values
 
@@ -206,3 +214,4 @@ Additionally to the variables defined in the configuration parameter maps a set 
 [extensibility]: extensibility.html
 [artifact-coords-maven]: https://maven.apache.org/pom.html#Maven_Coordinates
 [artifact-coords-paxurl]: https://ops4j1.jira.com/wiki/x/CoA6
+[jexl]: http://commons.apache.org/proper/commons-jexl/

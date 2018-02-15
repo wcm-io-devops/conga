@@ -34,6 +34,9 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
+/**
+ * Test {@link VariableStringResolver} with CONGA variable expressions, default values, value providers.
+ */
 public class VariableStringResolverTest {
 
   private ValueProviderGlobalContext globalContext;
@@ -50,7 +53,6 @@ public class VariableStringResolverTest {
 
   @Test
   public void testSimple() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "v2");
 
     assertEquals("The v1 and v2", underTest.resolve("The ${var1} and ${var2}", variables));
@@ -58,7 +60,6 @@ public class VariableStringResolverTest {
 
   @Test
   public void testSingleVariableWithObject() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", ImmutableList.of("v1", "v2"));
 
     assertEquals(ImmutableList.of("v1", "v2"), underTest.resolve("${var1}", variables));
@@ -66,7 +67,6 @@ public class VariableStringResolverTest {
 
   @Test
   public void testDefaultValue() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", "v1");
 
     assertEquals("The v1 and theDefValue2", underTest.resolve("The ${var1:theDefValue1} and ${var2:theDefValue2}", variables));
@@ -80,7 +80,6 @@ public class VariableStringResolverTest {
 
   @Test
   public void testNestedVariables() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", "v1", "var2", "${var1}${var1}", "var3", "${var2}${var1}");
 
     assertEquals("v1,v1v1,v1v1v1", underTest.resolve("${var1},${var2},${var3}", variables));
@@ -88,7 +87,6 @@ public class VariableStringResolverTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testNestedVariables_IllegalRecursion() {
-
     Map<String, Object> variables = ImmutableMap.of("var1", "${var2}", "var2", "${var1}");
 
     underTest.resolve("${var1}", variables);
@@ -96,7 +94,6 @@ public class VariableStringResolverTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testUnknownVariable() {
-
     Map<String, Object> variables = ImmutableMap.of();
 
     underTest.resolve("${var1}", variables);
