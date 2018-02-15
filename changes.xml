@@ -23,6 +23,12 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="1.7.0" date="not released">
+      <action type="add" dev="sseifert" issue="WDCONGA-20">
+        Support expression language in CONGA variable expressions.
+      </action>
+    </release>
+
     <release version="1.6.2" date="2018-02-07">
       <action type="update" dev="sseifert">
         CONGA Maven Plugin: Allow to define custom mappings from artifact type to file extension to work around invalid dependency definitions.
