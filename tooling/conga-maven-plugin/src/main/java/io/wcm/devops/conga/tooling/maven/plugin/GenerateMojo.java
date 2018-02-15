@@ -67,7 +67,7 @@ public class GenerateMojo extends AbstractCongaMojo {
   private RepositorySystem repoSystem;
   @Parameter(property = "repositorySystemSession", readonly = true)
   private RepositorySystemSession repoSession;
-  @Parameter(property = "project.remotePluginRepositories", readonly = true)
+  @Parameter(property = "project.remoteProjectRepositories", readonly = true)
   private List<RemoteRepository> remoteRepos;
 
   @Override

@@ -27,6 +27,9 @@
       <action type="add" dev="sseifert" issue="WDCONGA-20">
         Support expression language in CONGA variable expressions.
       </action>
+      <action type="fix" dev="sseifert">
+        Fix problem with dependency resolution - use remote project repositories instead of remote plugin repositories.
+      </action>
     </release>
 
     <release version="1.6.2" date="2018-02-07">
