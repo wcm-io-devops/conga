@@ -104,4 +104,9 @@ public final class ContextProperties {
    */
   public static final String TENANT_ROLES = "tenantRoles";
 
+  /**
+   * File index (starting with 0) if a multiply plugin is used.
+   */
+  public static final String MULTIPLY_INDEX = "multiplyIndex";
+
 }
