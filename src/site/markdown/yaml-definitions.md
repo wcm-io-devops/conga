@@ -136,6 +136,7 @@ Instead of single variable expression you can also use Java Expression Language 
 ${myvariable1 + '/' + myvariable2}
 ${mygroup.myvariable == 'expected_value'}
 ${mynumber + 1}
+${new('java.text.DecimalFormat','000').format(multiplyIndex)}
 ```
 
 
