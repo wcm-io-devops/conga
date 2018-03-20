@@ -40,7 +40,7 @@ public final class VariableStringResolver {
    * ${provider::var1}
    * ${provider::Var1:defaultValue}
    */
-  private static final String NAME_PATTERN_STRING = "[^\\}\\{\\$\\:()'\"\\s]";
+  private static final String NAME_PATTERN_STRING = "[^\\}\\{\\$\\:()'\"/\\#,;\\+\\*@!\\^\\s]";
   private static final String NAME_PATTERN_STRING_NOT_EMPTY = NAME_PATTERN_STRING + "+";
   private static final String NAME_PATTERN_STRING_OR_EMPTY = NAME_PATTERN_STRING + "*";
   private static final String EXPRESSION_STRING = "[^\\}\\{]+";
