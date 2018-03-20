@@ -73,8 +73,8 @@ public class GeneratorTestNodeModelExportTest {
     Map<String, Object> role1 = getRole(model1, "role1");
     assertFiles(role1,
         "text/test-role1.variant11.env1.node1.txt",
-        "xml/0_test.tenant1.tenantRole1,tenantRole2.env1.xml",
-        "xml/1_test.tenant2.tenantRole1.env1.xml",
+        "xml/000_test.tenant1.tenantRole1,tenantRole2.env1.xml",
+        "xml/001_test.tenant2.tenantRole1.env1.xml",
         "text/test-conditional-tenant1.txt",
         "files/sample.txt",
         "files/sample-filesystem.txt");
