@@ -110,6 +110,23 @@ public final class UrlFileManager {
     return handleFile(url, plugin -> plugin.getFileUrlsWithDependencies(url, context));
   }
 
+  /**
+   * Delete file with given URL. This is only supported for files in the local filesystem.
+   * @param url URL string
+   * @throws IOException I/O exception
+   */
+  public void deleteFile(String url) throws IOException {
+    handleFile(url, plugin -> {
+      try {
+        plugin.deleteFile(url, context);
+      }
+      catch (UnsupportedOperationException ex) {
+        throw new IOException("Deleting file not permitted: " + url);
+      }
+      return null;
+    });
+  }
+
   private <T> T handleFile(String url, FileHandler<T> fileHandler) throws IOException {
     if (StringUtils.isBlank(url)) {
       throw new IllegalArgumentException("No URL given.");

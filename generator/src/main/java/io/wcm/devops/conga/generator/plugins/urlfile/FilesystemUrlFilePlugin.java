@@ -79,6 +79,15 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
     return file.toURI().toURL();
   }
 
+  @Override
+  public void deleteFile(String url, UrlFilePluginContext context) throws IOException {
+    File file = getFileInternal(url, context);
+    if (!file.exists()) {
+      throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
+    }
+    file.delete();
+  }
+
   private static File getFileInternal(String url, UrlFilePluginContext context) {
     if (StringUtils.startsWith(url, PREFIX)) {
       String absoultePath = StringUtils.substringAfter(url, PREFIX);
