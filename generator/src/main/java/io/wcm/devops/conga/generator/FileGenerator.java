@@ -110,7 +110,8 @@ class FileGenerator {
     this.fileContext = new FileContext()
         .file(file)
         .charset(roleFile.getCharset())
-        .modelOptions(roleFile.getModelOptions());
+        .modelOptions(roleFile.getModelOptions())
+        .targetDir(nodeDir);
 
     // overlay logger in options with plugin-specific logger
     Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");

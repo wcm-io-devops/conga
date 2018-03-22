@@ -30,6 +30,9 @@
       <action type="update" dev="sseifert">
         Allow to delete local files via UrlFileManager.
       </action>
+      <action type="update" dev="sseifert">
+        Provide target directory in FileContext.
+      </action>
     </release>
 
     <release version="1.7.0" date="2018-02-15">
