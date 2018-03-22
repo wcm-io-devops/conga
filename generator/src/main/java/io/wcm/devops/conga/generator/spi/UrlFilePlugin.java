@@ -82,4 +82,15 @@ public interface UrlFilePlugin extends Plugin {
     return ImmutableList.of(getFileUrl(url, context));
   }
 
+  /**
+   * Delete file with given URL. This is only supported by few implementations of this interface - all other throw an
+   * {@link UnsupportedOperationException}.
+   * @param url URL string (including prefix)
+   * @param context Context objects
+   * @throws IOException If deleting the file is supported but failes for some reason
+   */
+  default void deleteFile(String url, UrlFilePluginContext context) throws IOException {
+    throw new UnsupportedOperationException("Unable to delete file: " + url);
+  }
+
 }

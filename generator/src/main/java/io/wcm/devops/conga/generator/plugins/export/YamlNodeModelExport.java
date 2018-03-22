@@ -91,6 +91,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     }
 
     roleMap.put("files", roleData.getFiles().stream()
+        .filter(item -> item.getFileContext().getFile().exists())
         .map(item -> {
           Map<String, Object> itemMap = new LinkedHashMap<String, Object>();
           itemMap.put("path", cleanupFileName(item.getFileContext().getCanonicalPath(), nodeDirPath));

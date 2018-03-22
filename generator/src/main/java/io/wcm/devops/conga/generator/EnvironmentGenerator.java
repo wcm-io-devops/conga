@@ -280,10 +280,12 @@ class EnvironmentGenerator {
         .variableMapResolver(variableMapResolver);
 
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
+    int index = 0;
     for (Map<String, Object> muliplyConfig : muliplyConfigs) {
 
       // resolve variables
       Map<String, Object> resolvedConfig = variableMapResolver.resolve(muliplyConfig, false);
+      resolvedConfig.put(ContextProperties.MULTIPLY_INDEX, index);
 
       // skip file if condition does not evaluate to a non-empty string or is "false"
       boolean skip = false;
@@ -300,6 +302,8 @@ class EnvironmentGenerator {
 
         generatedFiles.addAll(generateFile(roleFile, dir, file, url,
             resolvedConfig, nodeDir, template, roleName, roleVariantNames, templateName));
+
+        index++;
       }
     }
   }

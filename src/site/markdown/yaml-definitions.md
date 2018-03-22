@@ -136,6 +136,7 @@ Instead of single variable expression you can also use Java Expression Language 
 ${myvariable1 + '/' + myvariable2}
 ${mygroup.myvariable == 'expected_value'}
 ${mynumber + 1}
+${new('java.text.DecimalFormat','000').format(multiplyIndex)}
 ```
 
 
@@ -203,6 +204,7 @@ Additionally to the variables defined in the configuration parameter maps a set 
 | `tenantsByRole`      | Map with tenant roles with each entry containing a list of all tenants with this role. Each tenant has properties as defined in the [Tenant model][tenant-model].
 | `tenant`             | Current tenant name. This is only set if the tenant multiple plugin is used.
 | `tenantRoles`        | List of current tenant's role names This is only set if the tenant multiply plugin is used.
+| `multiplyIndex`      | File index (starting with 0) if a multiply plugin is used.
 
 
 [role-model]: generator/apidocs/io/wcm/devops/conga/model/role/Role.html
