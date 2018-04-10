@@ -36,7 +36,7 @@
   <description>wcm.io DevOps CONGA Model classes for java representation of definition files.</description>
 
   <dependencies>
-  
+
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.resource</artifactId>

@@ -147,7 +147,7 @@
         <configuration>
           <skipDeploy>false</skipDeploy>
         </configuration>
-      </plugin>      
+      </plugin>
 
     </plugins>
   </build>

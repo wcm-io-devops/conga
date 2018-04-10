@@ -103,7 +103,7 @@
           <addVersionToProjectName>false</addVersionToProjectName>
         </configuration>
       </plugin>
-      
+
       <!-- deploy site because because of generated javadocs -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -111,14 +111,14 @@
         <configuration>
           <skipDeploy>false</skipDeploy>
         </configuration>
-      </plugin>      
+      </plugin>
 
     </plugins>
   </build>
 
   <reporting>
     <plugins>
-    
+
       <!-- Aggregate JavaDocs of CONGA modules -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

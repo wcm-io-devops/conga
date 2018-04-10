@@ -1,8 +1,8 @@
 ## CONGA - YAML definitions
 
-CONGA uses [YAML][yaml] to describe roles and environments. 
+CONGA uses [YAML][yaml] to describe roles and environments.
 
-[SnakeYAML][snakeyaml] is used to parse the definition files and map them to a Java object model. Because of this the detailed YAML file documentation are the JavaDocs of the model classes. 
+[SnakeYAML][snakeyaml] is used to parse the definition files and map them to a Java object model. Because of this the detailed YAML file documentation are the JavaDocs of the model classes.
 
 Please note that the Java Bean naming conventions are applied: For the property names in the YAML files the "get" prefix from the model class is omitted, and the property is written in headless camel case. Example: `getRoleConfig()` method name results in `roleConfig` property name.
 
