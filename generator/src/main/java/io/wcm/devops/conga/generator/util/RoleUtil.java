@@ -155,6 +155,13 @@ public final class RoleUtil {
         superRole.setVariants(mergedVariants);
       }
     }
+
+    // merge sensitive config parameter names
+    Set<String> sensitiveConfigParameters = new HashSet<>();
+    sensitiveConfigParameters.addAll(role.getSensitiveConfigParameters());
+    sensitiveConfigParameters.addAll(superRole.getSensitiveConfigParameters());
+    role.setSensitiveConfigParameters(ImmutableList.copyOf(sensitiveConfigParameters));
+    superRole.setSensitiveConfigParameters(ImmutableList.copyOf(sensitiveConfigParameters));
   }
 
   /**

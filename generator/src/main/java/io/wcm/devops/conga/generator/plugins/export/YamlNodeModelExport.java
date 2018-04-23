@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +117,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
         })
         .collect(Collectors.toList()));
 
-    roleMap.put("config", cleanupConfig(roleData.getConfig()));
+    roleMap.put("config", prepareConfig(roleData.getConfig(), context));
 
     addTenants(roleMap, roleData, context);
 
@@ -144,7 +145,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     if (!tenantData.getRoles().isEmpty()) {
       tenantMap.put("roles", tenantData.getRoles());
     }
-    tenantMap.put("config", cleanupConfig(tenantData.getConfig()));
+    tenantMap.put("config", prepareConfig(tenantData.getConfig(), context));
 
     tenants.add(tenantMap);
   }
@@ -160,8 +161,36 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     }
   }
 
-  private Map<String, Object> cleanupConfig(Map<String, Object> config) {
-    return ContextPropertiesBuilder.removeContextVariables(config);
+  private Map<String, Object> prepareConfig(Map<String, Object> config, NodeModelExportContext context) {
+    Map<String, Object> processedConfig = ContextPropertiesBuilder.removeContextVariables(config);
+
+    // encrypted sensitive parameter values
+    processedConfig = encryptSensitiveValues(processedConfig, null, context);
+
+    return processedConfig;
+  }
+
+  @SuppressWarnings("unchecked")
+  private Map<String, Object> encryptSensitiveValues(Map<String, Object> config, String prefix, NodeModelExportContext context) {
+    Map<String, Object> map = new HashMap<>(config);
+    for (String key : config.keySet()) {
+      Object value = map.get(key);
+      if (value instanceof Map) {
+        map.put(key, encryptSensitiveValues((Map<String, Object>)value, key + ".", context));
+      }
+      else {
+        String parameterName = StringUtils.defaultString(prefix) + key;
+        boolean isSensitive = context.getSensitiveConfigParameters().contains(parameterName);
+        if (isSensitive) {
+          // TODO: implement encryption
+          map.put(key, "!sample\n" + value);
+        }
+        else {
+          map.put(key, value);
+        }
+      }
+    }
+    return map;
   }
 
   private String cleanupFileName(String fileName, String basePath) {

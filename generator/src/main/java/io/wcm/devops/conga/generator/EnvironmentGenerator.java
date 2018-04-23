@@ -194,7 +194,8 @@ class EnvironmentGenerator {
         mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
         // collect role and tenant information for export model
-        ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig);
+        ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig,
+            role.getSensitiveConfigParameters());
 
         // generate files
         List<GeneratedFileContext> allFiles = new ArrayList<>();

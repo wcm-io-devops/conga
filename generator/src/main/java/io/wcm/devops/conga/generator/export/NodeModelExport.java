@@ -21,8 +21,10 @@ package io.wcm.devops.conga.generator.export;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.rits.cloning.Cloner;
 
@@ -51,6 +53,7 @@ public final class NodeModelExport {
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
   private final Map<String, String> containerVersionInfo;
+  private final Set<String> sensitiveConfigParameters = new HashSet<>();
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
@@ -65,7 +68,8 @@ public final class NodeModelExport {
    * @param containerVersionInfo Version information from container, e.g. configured Maven plugin versions
    */
   public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager,
-      VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver, Map<String, String> containerVersionInfo) {
+      VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver,
+      Map<String, String> containerVersionInfo) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
@@ -93,9 +97,11 @@ public final class NodeModelExport {
    * @param role Role name
    * @param roleVariants Role variant name
    * @param config Merged configuration (unresolved)
+   * @param sensitiveConfigParametersList List of configuration parameter names that contain sensitive data
    * @return Node role data
    */
-  public ExportNodeRoleData addRole(String role, List<String> roleVariants, Map<String, Object> config) {
+  public ExportNodeRoleData addRole(String role, List<String> roleVariants, Map<String, Object> config,
+      List<String> sensitiveConfigParametersList) {
     if (!isActive()) {
       return new ExportNodeRoleData();
     }
@@ -124,6 +130,8 @@ public final class NodeModelExport {
           .config(resolvedTenantConfig));
     }
 
+    // collect sensitive config parameter names
+    sensitiveConfigParameters.addAll(sensitiveConfigParametersList);
 
     ExportNodeRoleData item = new ExportNodeRoleData()
         .role(role)
@@ -150,7 +158,8 @@ public final class NodeModelExport {
           .nodeDir(nodeDir)
           .variableStringResolver(variableStringResolver)
           .variableMapResolver(variableMapResolver)
-          .containerVersionInfo(containerVersionInfo));
+          .containerVersionInfo(containerVersionInfo)
+          .sensitiveConfigParameters(sensitiveConfigParameters));
     }
   }
 
