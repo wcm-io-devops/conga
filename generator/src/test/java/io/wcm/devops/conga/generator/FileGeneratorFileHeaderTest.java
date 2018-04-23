@@ -112,8 +112,8 @@ public class FileGeneratorFileHeaderTest {
         variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of(
             "version1/1.0.0",
             "version2/2.0.0-SNAPSHOT",
-            "version3/1.2.0-20180116.233128-5",
-            "version4/2.1.2-20180125.094723-16/suffix"
+            "version3/1.2.0-SNAPSHOT",
+            "version4/2.1.2-SNAPSHOT/suffix"
             ));
   }
 

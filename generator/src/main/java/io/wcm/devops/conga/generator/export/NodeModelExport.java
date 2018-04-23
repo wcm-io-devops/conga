@@ -50,6 +50,7 @@ public final class NodeModelExport {
   private final List<NodeModelExportPlugin> nodeModelExportPlugins = new ArrayList<>();
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
+  private final Map<String, String> containerVersionInfo;
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
@@ -61,14 +62,16 @@ public final class NodeModelExport {
    * @param pluginManager Plugin manager
    * @param variableStringResolver Variable string resolver
    * @param variableMapResolver Variable map resolver
+   * @param containerVersionInfo Version information from container, e.g. configured Maven plugin versions
    */
   public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager,
-      VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver) {
+      VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver, Map<String, String> containerVersionInfo) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
     this.variableStringResolver = variableStringResolver;
     this.variableMapResolver = variableMapResolver;
+    this.containerVersionInfo = containerVersionInfo;
 
     // get export plugins
     if (modelExport != null) {
@@ -146,8 +149,8 @@ public final class NodeModelExport {
           .roleData(roleData)
           .nodeDir(nodeDir)
           .variableStringResolver(variableStringResolver)
-          .variableMapResolver(variableMapResolver));
-
+          .variableMapResolver(variableMapResolver)
+          .containerVersionInfo(containerVersionInfo));
     }
   }
 

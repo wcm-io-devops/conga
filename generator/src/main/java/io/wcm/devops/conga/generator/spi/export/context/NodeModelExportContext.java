@@ -41,6 +41,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   private Map<String, Object> config;
   private VariableStringResolver variableStringResolver;
   private VariableMapResolver variableMapResolver;
+  private Map<String, String> containerVersionInfo;
 
   /**
    * @return Node
@@ -151,6 +152,22 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
    */
   public NodeModelExportContext variableMapResolver(VariableMapResolver value) {
     this.variableMapResolver = value;
+    return this;
+  }
+
+  /**
+   * @return Version information from container, e.g. configured Maven plugin versions
+   */
+  public Map<String, String> getContainerVersionInfo() {
+    return this.containerVersionInfo;
+  }
+
+  /**
+   * @param value Version information from container, e.g. configured Maven plugin versions
+   * @return this
+   */
+  public NodeModelExportContext containerVersionInfo(Map<String, String> value) {
+    this.containerVersionInfo = value;
     return this;
   }
 

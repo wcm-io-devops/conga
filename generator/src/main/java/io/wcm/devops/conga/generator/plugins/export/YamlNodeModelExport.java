@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedMap;
 
 import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
 import io.wcm.devops.conga.generator.GeneratorException;
@@ -71,6 +72,11 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
     Map<String, Object> modelMap = new LinkedHashMap<>();
     modelMap.put("roles", roles);
+
+    Map<String, String> versionInfo = context.getContainerVersionInfo();
+    if (versionInfo != null) {
+      modelMap.put("versionInfo", ImmutableSortedMap.copyOf(versionInfo));
+    }
 
     // save YAML file
     save(modelMap, context);
