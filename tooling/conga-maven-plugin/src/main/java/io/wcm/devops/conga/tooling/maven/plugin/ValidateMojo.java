@@ -84,7 +84,7 @@ import io.wcm.devops.conga.tooling.maven.plugin.validation.TemplateValidator;
 public class ValidateMojo extends AbstractCongaMojo {
 
   /**
-   * Selected environments to generate.
+   * Selected environments to validate.
    */
   @Parameter(property = "conga.environments")
   private String[] environments;
