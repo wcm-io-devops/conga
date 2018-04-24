@@ -75,6 +75,7 @@ public class RoleUtilTest {
         buildFile("role1", "file1.1"),
         buildFile("role1", "file1.2"),
         buildUrlFile("role1", "http://file1.3")));
+    role1.setSensitiveConfigParameters(ImmutableList.of("param1"));
     roleMap.put("role1", role1);
 
     Role role2 = new Role();
@@ -93,6 +94,7 @@ public class RoleUtilTest {
         buildUrlFile("role2", "http://file2.3", "variant1")));
     role2.setInherits(ImmutableList.of(
         buildInherit("role1")));
+    role2.setSensitiveConfigParameters(ImmutableList.of("param2"));
     roleMap.put("role2", role2);
 
     Role role3 = new Role();
@@ -157,6 +159,8 @@ public class RoleUtilTest {
     assertFile(role, "role1", "file1.1");
     assertFile(role, "role1", "file1.2");
     assertUrlFile(role, "role1", "http://file1.3");
+
+    assertEquals(ImmutableList.of("param1"), role.getSensitiveConfigParameters());
   }
 
   @Test
@@ -188,6 +192,8 @@ public class RoleUtilTest {
     assertVariant(role2, "variant2", ImmutableMap.<String, Object>of(
         "varparam1", "varvalue2.1",
         "varparam2", 888));
+
+    assertEquals(ImmutableList.of("param1", "param2"), role2.getSensitiveConfigParameters());
   }
 
   @Test
@@ -233,6 +239,8 @@ public class RoleUtilTest {
         "varparam2", 888));
     assertVariant(role3, "variant3", ImmutableMap.<String, Object>of(
         "varparam1", "varvalue3.2"));
+
+    assertEquals(ImmutableList.of("param1", "param2"), role3.getSensitiveConfigParameters());
   }
 
   @Test(expected = GeneratorException.class)

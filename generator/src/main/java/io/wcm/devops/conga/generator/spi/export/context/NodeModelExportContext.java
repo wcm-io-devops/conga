@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator.spi.export.context;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.wcm.devops.conga.generator.spi.context.AbstractPluginContext;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
@@ -42,6 +43,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   private VariableStringResolver variableStringResolver;
   private VariableMapResolver variableMapResolver;
   private Map<String, String> containerVersionInfo;
+  private Set<String> sensitiveConfigParameters;
 
   /**
    * @return Node
@@ -168,6 +170,22 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
    */
   public NodeModelExportContext containerVersionInfo(Map<String, String> value) {
     this.containerVersionInfo = value;
+    return this;
+  }
+
+  /**
+   * @return List of configuration parameter names that contain sensitive data.
+   */
+  public Set<String> getSensitiveConfigParameters() {
+    return this.sensitiveConfigParameters;
+  }
+
+  /**
+   * @param value List of configuration parameter names that contain sensitive data
+   * @return this
+   */
+  public NodeModelExportContext sensitiveConfigParameters(Set<String> value) {
+    this.sensitiveConfigParameters = value;
     return this;
   }
 

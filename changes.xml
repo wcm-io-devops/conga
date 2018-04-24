@@ -27,6 +27,9 @@
       <action type="update" dev="sseifert">
         Add version information of Maven and CONGA plugins in model export YAML file.
       </action>
+      <action type="update" dev="sseifert">
+        Encrypt sensitive configuration parameter values in model export YAML file.
+      </action>
     </release>
 
     <release version="1.8.0" date="2018-03-23">
