@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.wcm.devops.conga.generator.spi.context.AbstractPluginContext;
+import io.wcm.devops.conga.generator.util.ModelExportConfigProcessor;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -44,6 +45,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   private VariableMapResolver variableMapResolver;
   private Map<String, String> containerVersionInfo;
   private Set<String> sensitiveConfigParameters;
+  private ModelExportConfigProcessor modelExportConfigProcessor;
 
   /**
    * @return Node
@@ -187,6 +189,16 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   public NodeModelExportContext sensitiveConfigParameters(Set<String> value) {
     this.sensitiveConfigParameters = value;
     return this;
+  }
+
+  /**
+   * @return Model export configuration processor
+   */
+  public ModelExportConfigProcessor getModelExportConfigProcessor() {
+    if (this.modelExportConfigProcessor == null) {
+      this.modelExportConfigProcessor = new ModelExportConfigProcessor(getPluginContextOptions(), getSensitiveConfigParameters());
+    }
+    return this.modelExportConfigProcessor;
   }
 
 }
