@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2017 wcm.io
+ * Copyright (C) 2018 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,13 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.spi;
-
-import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
+package io.wcm.devops.conga.generator.spi.context;
 
 /**
- * Provides configuration values from external sources.
+ * Context for a single {@link io.wcm.devops.conga.generator.spi.ValueEncryptionPlugin} instance.
  */
-public interface ValueProviderPlugin extends Plugin {
+public final class ValueEncryptionContext extends AbstractPluginContext<ValueEncryptionContext> {
 
-  /**
-   * Gets parameter value from value provider.
-   * @param variableName Variable name
-   * @param context Context
-   * @return Parameter value or null if none found
-   */
-  Object resolve(String variableName, ValueProviderContext context);
+  // not specific methods
 
 }

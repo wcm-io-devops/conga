@@ -166,8 +166,8 @@ class EnvironmentGenerator {
     log.info("----- Node '{}' -----", node.getNode());
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
-    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, options.getModelExport(), options.getPluginManager(),
-        variableStringResolver, variableMapResolver, options.getContainerVersionInfo());
+    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, options.getModelExport(),
+        variableStringResolver, variableMapResolver, options.getContainerVersionInfo(), pluginContextOptions);
 
     for (NodeRole nodeRole : node.getRoles()) {
       // get role and resolve all inheritance relations

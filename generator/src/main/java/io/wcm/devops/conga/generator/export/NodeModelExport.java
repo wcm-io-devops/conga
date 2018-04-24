@@ -29,11 +29,11 @@ import java.util.Set;
 import com.rits.cloning.Cloner;
 
 import io.wcm.devops.conga.generator.ContextProperties;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -54,6 +54,7 @@ public final class NodeModelExport {
   private final VariableMapResolver variableMapResolver;
   private final Map<String, String> containerVersionInfo;
   private final Set<String> sensitiveConfigParameters = new HashSet<>();
+  private final PluginContextOptions pluginContextOptions;
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
@@ -62,27 +63,28 @@ public final class NodeModelExport {
    * @param node Node
    * @param environment Environment
    * @param modelExport Model export
-   * @param pluginManager Plugin manager
    * @param variableStringResolver Variable string resolver
    * @param variableMapResolver Variable map resolver
    * @param containerVersionInfo Version information from container, e.g. configured Maven plugin versions
+   * @param pluginContextOptions Plugin context options
    */
-  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager,
+  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport,
       VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver,
-      Map<String, String> containerVersionInfo) {
+      Map<String, String> containerVersionInfo, PluginContextOptions pluginContextOptions) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
     this.variableStringResolver = variableStringResolver;
     this.variableMapResolver = variableMapResolver;
     this.containerVersionInfo = containerVersionInfo;
+    this.pluginContextOptions = pluginContextOptions;
 
     // get export plugins
     if (modelExport != null) {
       List<String> nodeExportPlugins = modelExport.getNode();
       if (nodeExportPlugins != null) {
         for (String nodeExportPlugin : nodeExportPlugins) {
-          nodeModelExportPlugins.add(pluginManager.get(nodeExportPlugin, NodeModelExportPlugin.class));
+          nodeModelExportPlugins.add(pluginContextOptions.getPluginManager().get(nodeExportPlugin, NodeModelExportPlugin.class));
         }
       }
     }
@@ -152,6 +154,7 @@ public final class NodeModelExport {
 
     for (NodeModelExportPlugin plugin : nodeModelExportPlugins) {
       plugin.export(new NodeModelExportContext()
+          .pluginContextOptions(pluginContextOptions)
           .node(node)
           .environment(environment)
           .roleData(roleData)

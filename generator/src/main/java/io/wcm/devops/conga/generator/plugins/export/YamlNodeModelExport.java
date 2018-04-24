@@ -38,6 +38,8 @@ import com.google.common.collect.ImmutableSortedMap;
 
 import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
 import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.ValueEncryptionPlugin;
+import io.wcm.devops.conga.generator.spi.context.ValueEncryptionContext;
 import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
@@ -178,17 +180,20 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
       if (value instanceof Map) {
         map.put(key, encryptSensitiveValues((Map<String, Object>)value, key + ".", context));
       }
-      else {
+      else if (value != null) {
         String parameterName = StringUtils.defaultString(prefix) + key;
         boolean isSensitive = context.getSensitiveConfigParameters().contains(parameterName);
         if (isSensitive) {
-          // TODO: implement encryption
-          map.put(key, "!sample\n" + value);
-        }
-        else {
-          map.put(key, value);
+          // encrypt value if an enabled encryption plugin is present
+          ValueEncryptionPlugin plugin = getFirstEnabledValueEncryptionPlugin(context);
+          if (plugin != null) {
+            ValueEncryptionContext valueEncryptionContext = new ValueEncryptionContext()
+                .pluginContextOptions(context.getPluginContextOptions());
+            value = plugin.encrypt(parameterName, value, valueEncryptionContext);
+          }
         }
       }
+      map.put(key, value);
     }
     return map;
   }
@@ -196,6 +201,13 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
   private String cleanupFileName(String fileName, String basePath) {
     String relativePath = StringUtils.substring(fileName, basePath.length() + 1);
     return StringUtils.replace(relativePath, File.separator, "/");
+  }
+
+  private ValueEncryptionPlugin getFirstEnabledValueEncryptionPlugin(NodeModelExportContext context) {
+    return context.getPluginManager().getAll(ValueEncryptionPlugin.class)
+        .stream()
+        .filter(ValueEncryptionPlugin::isEnabled)
+        .findFirst().orElse(null);
   }
 
 }
