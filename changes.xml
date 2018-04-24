@@ -30,6 +30,9 @@
       <action type="update" dev="sseifert">
         Encrypt sensitive configuration parameter values in model export YAML file.
       </action>
+      <action type="update" dev="sseifert">
+        conga-maven-plugin: Respect filtering for environments via conga.environments for validate goal as well.
+      </action>
     </release>
 
     <release version="1.8.0" date="2018-03-23">
