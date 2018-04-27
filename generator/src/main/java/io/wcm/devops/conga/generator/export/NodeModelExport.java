@@ -21,7 +21,6 @@ package io.wcm.devops.conga.generator.export;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +52,7 @@ public final class NodeModelExport {
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
   private final Map<String, String> containerVersionInfo;
-  private final Set<String> sensitiveConfigParameters = new HashSet<>();
+  private final Set<String> sensitiveConfigParameters;
   private final PluginContextOptions pluginContextOptions;
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
@@ -67,10 +66,13 @@ public final class NodeModelExport {
    * @param variableMapResolver Variable map resolver
    * @param containerVersionInfo Version information from container, e.g. configured Maven plugin versions
    * @param pluginContextOptions Plugin context options
+   * @param sensitiveConfigParameters Combined list of all sensitive config parameter names from all roles in the
+   *          environment.
    */
   public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport,
       VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver,
-      Map<String, String> containerVersionInfo, PluginContextOptions pluginContextOptions) {
+      Map<String, String> containerVersionInfo, PluginContextOptions pluginContextOptions,
+      Set<String> sensitiveConfigParameters) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
@@ -78,6 +80,7 @@ public final class NodeModelExport {
     this.variableMapResolver = variableMapResolver;
     this.containerVersionInfo = containerVersionInfo;
     this.pluginContextOptions = pluginContextOptions;
+    this.sensitiveConfigParameters = sensitiveConfigParameters;
 
     // get export plugins
     if (modelExport != null) {
@@ -131,9 +134,6 @@ public final class NodeModelExport {
           .roles(tenant.getRoles())
           .config(resolvedTenantConfig));
     }
-
-    // collect sensitive config parameter names
-    sensitiveConfigParameters.addAll(sensitiveConfigParametersList);
 
     ExportNodeRoleData item = new ExportNodeRoleData()
         .role(role)

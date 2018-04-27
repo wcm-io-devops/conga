@@ -87,6 +87,7 @@ class EnvironmentGenerator {
   private final VariableMapResolver variableMapResolver;
   private final VariableObjectTreeResolver variableObjectTreeResolver;
   private final Collection<String> dependencyVersions;
+  private final Set<String> sensitiveConfigParameters = new HashSet<>();
 
   private final Map<String, Role> roles;
   private final Map<String, Object> environmentContextProperties;
@@ -129,6 +130,9 @@ class EnvironmentGenerator {
 
     this.roles = ResourceLoaderUtil.readModels(roleDirs, new RoleReader());
 
+    // collect sensitive configuration parameter names from all roles
+    this.roles.values().forEach(role -> sensitiveConfigParameters.addAll(role.getSensitiveConfigParameters()));
+
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .pluginContextOptions(pluginContextOptions)
         .baseDir(options.getBaseDir())
@@ -167,7 +171,8 @@ class EnvironmentGenerator {
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
     NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, options.getModelExport(),
-        variableStringResolver, variableMapResolver, options.getContainerVersionInfo(), pluginContextOptions);
+        variableStringResolver, variableMapResolver, options.getContainerVersionInfo(), pluginContextOptions,
+        sensitiveConfigParameters);
 
     for (NodeRole nodeRole : node.getRoles()) {
       // get role and resolve all inheritance relations
