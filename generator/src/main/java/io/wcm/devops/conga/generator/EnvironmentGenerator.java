@@ -48,8 +48,11 @@ import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
+import io.wcm.devops.conga.generator.spi.export.YamlRepresentPlugin;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
+import io.wcm.devops.conga.generator.spi.export.context.YamlRepresentContext;
+import io.wcm.devops.conga.generator.spi.export.context.YamlRepresenter;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.spi.handlebars.context.EscapingStrategyContext;
 import io.wcm.devops.conga.generator.util.EnvironmentExpander;
@@ -92,6 +95,7 @@ class EnvironmentGenerator {
   private final Map<String, Role> roles;
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
+  private final YamlRepresenter yamlRepresenter;
 
   EnvironmentGenerator(String environmentName, Environment environment, File destDir,
       GeneratorOptions options) {
@@ -148,6 +152,15 @@ class EnvironmentGenerator {
             variableObjectTreeResolver, variableStringResolver));
 
     this.dependencyVersions = options.getDependencyVersionBuilder() != null ? options.getDependencyVersionBuilder().apply(environment) : ImmutableList.of();
+
+    // prepare YAML representer
+    yamlRepresenter = new YamlRepresenter();
+    options.getPluginManager().getAll(YamlRepresentPlugin.class).forEach(plugin -> {
+      YamlRepresentContext context = new YamlRepresentContext()
+          .pluginContextOptions(pluginContextOptions)
+          .yamlRepresenter(yamlRepresenter);
+      plugin.register(context);
+    });
   }
 
   public void generate() {
@@ -172,7 +185,7 @@ class EnvironmentGenerator {
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
     NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, options.getModelExport(),
         variableStringResolver, variableMapResolver, options.getContainerVersionInfo(), pluginContextOptions,
-        sensitiveConfigParameters);
+        sensitiveConfigParameters, yamlRepresenter);
 
     for (NodeRole nodeRole : node.getRoles()) {
       // get role and resolve all inheritance relations

@@ -33,6 +33,7 @@ import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
+import io.wcm.devops.conga.generator.spi.export.context.YamlRepresenter;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -52,8 +53,9 @@ public final class NodeModelExport {
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
   private final Map<String, String> containerVersionInfo;
-  private final Set<String> sensitiveConfigParameters;
   private final PluginContextOptions pluginContextOptions;
+  private final Set<String> sensitiveConfigParameters;
+  private final YamlRepresenter yamlRepresenter;
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
@@ -68,11 +70,12 @@ public final class NodeModelExport {
    * @param pluginContextOptions Plugin context options
    * @param sensitiveConfigParameters Combined list of all sensitive config parameter names from all roles in the
    *          environment.
+   * @param yamlRepresenter YAML representer
    */
   public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport,
       VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver,
       Map<String, String> containerVersionInfo, PluginContextOptions pluginContextOptions,
-      Set<String> sensitiveConfigParameters) {
+      Set<String> sensitiveConfigParameters, YamlRepresenter yamlRepresenter) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
@@ -81,6 +84,7 @@ public final class NodeModelExport {
     this.containerVersionInfo = containerVersionInfo;
     this.pluginContextOptions = pluginContextOptions;
     this.sensitiveConfigParameters = sensitiveConfigParameters;
+    this.yamlRepresenter = yamlRepresenter;
 
     // get export plugins
     if (modelExport != null) {
@@ -162,7 +166,8 @@ public final class NodeModelExport {
           .variableStringResolver(variableStringResolver)
           .variableMapResolver(variableMapResolver)
           .containerVersionInfo(containerVersionInfo)
-          .sensitiveConfigParameters(sensitiveConfigParameters));
+          .sensitiveConfigParameters(sensitiveConfigParameters)
+          .yamlRepresenter(yamlRepresenter));
     }
   }
 

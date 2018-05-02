@@ -46,6 +46,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   private Map<String, String> containerVersionInfo;
   private Set<String> sensitiveConfigParameters;
   private ModelExportConfigProcessor modelExportConfigProcessor;
+  private YamlRepresenter yamlRepresenter;
 
   /**
    * @return Node
@@ -199,6 +200,22 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
       this.modelExportConfigProcessor = new ModelExportConfigProcessor(getPluginContextOptions(), getSensitiveConfigParameters());
     }
     return this.modelExportConfigProcessor;
+  }
+
+  /**
+   * @return YAML representer
+   */
+  public YamlRepresenter getYamlRepresenter() {
+    return this.yamlRepresenter;
+  }
+
+  /**
+   * @param value YAML representer
+   * @return this
+   */
+  public NodeModelExportContext yamlRepresenter(YamlRepresenter value) {
+    this.yamlRepresenter = value;
+    return this;
   }
 
 }
