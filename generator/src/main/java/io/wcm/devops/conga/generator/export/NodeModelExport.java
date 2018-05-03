@@ -33,7 +33,7 @@ import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
-import io.wcm.devops.conga.generator.spi.export.context.YamlRepresenter;
+import io.wcm.devops.conga.generator.spi.yaml.context.YamlRepresenter;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;

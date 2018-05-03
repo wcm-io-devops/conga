@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import io.wcm.devops.conga.generator.spi.context.AbstractPluginContext;
+import io.wcm.devops.conga.generator.spi.yaml.context.YamlRepresenter;
 import io.wcm.devops.conga.generator.util.ModelExportConfigProcessor;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;

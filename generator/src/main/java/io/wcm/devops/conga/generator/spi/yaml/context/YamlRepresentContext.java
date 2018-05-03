@@ -17,23 +17,31 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.spi.export.context;
+package io.wcm.devops.conga.generator.spi.yaml.context;
 
-import org.yaml.snakeyaml.representer.Represent;
-import org.yaml.snakeyaml.representer.Representer;
+import io.wcm.devops.conga.generator.spi.context.AbstractPluginContext;
 
 /**
- * SnakeYAML {@link Representer} implementation.
+ * Context for {@link io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin}.
  */
-public final class YamlRepresenter extends Representer {
+public final class YamlRepresentContext extends AbstractPluginContext<YamlRepresentContext> {
+
+  private YamlRepresenter yamlRepresenter;
 
   /**
-   * Register a represent.
-   * @param clazz Class to represent
-   * @param represent Represent implementation
+   * @return YAML representer
    */
-  public void registerRepresent(Class<?> clazz, Represent represent) {
-    this.representers.put(clazz, represent);
+  public YamlRepresenter getYamlRepresenter() {
+    return this.yamlRepresenter;
+  }
+
+  /**
+   * @param value YAML representer
+   * @return this
+   */
+  public YamlRepresentContext yamlRepresenter(YamlRepresenter value) {
+    this.yamlRepresenter = value;
+    return this;
   }
 
 }
