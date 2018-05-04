@@ -52,6 +52,9 @@ import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.spi.handlebars.context.EscapingStrategyContext;
+import io.wcm.devops.conga.generator.spi.yaml.YamlRepresentPlugin;
+import io.wcm.devops.conga.generator.spi.yaml.context.YamlRepresentContext;
+import io.wcm.devops.conga.generator.spi.yaml.context.YamlRepresenter;
 import io.wcm.devops.conga.generator.util.EnvironmentExpander;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.RoleUtil;
@@ -87,10 +90,12 @@ class EnvironmentGenerator {
   private final VariableMapResolver variableMapResolver;
   private final VariableObjectTreeResolver variableObjectTreeResolver;
   private final Collection<String> dependencyVersions;
+  private final Set<String> sensitiveConfigParameters = new HashSet<>();
 
   private final Map<String, Role> roles;
   private final Map<String, Object> environmentContextProperties;
   private final Set<String> generatedFilePaths = new HashSet<>();
+  private final YamlRepresenter yamlRepresenter;
 
   EnvironmentGenerator(String environmentName, Environment environment, File destDir,
       GeneratorOptions options) {
@@ -129,6 +134,9 @@ class EnvironmentGenerator {
 
     this.roles = ResourceLoaderUtil.readModels(roleDirs, new RoleReader());
 
+    // collect sensitive configuration parameter names from all roles
+    this.roles.values().forEach(role -> sensitiveConfigParameters.addAll(role.getSensitiveConfigParameters()));
+
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
         .pluginContextOptions(pluginContextOptions)
         .baseDir(options.getBaseDir())
@@ -144,6 +152,15 @@ class EnvironmentGenerator {
             variableObjectTreeResolver, variableStringResolver));
 
     this.dependencyVersions = options.getDependencyVersionBuilder() != null ? options.getDependencyVersionBuilder().apply(environment) : ImmutableList.of();
+
+    // prepare YAML representer
+    yamlRepresenter = new YamlRepresenter();
+    options.getPluginManager().getAll(YamlRepresentPlugin.class).forEach(plugin -> {
+      YamlRepresentContext context = new YamlRepresentContext()
+          .pluginContextOptions(pluginContextOptions)
+          .yamlRepresenter(yamlRepresenter);
+      plugin.register(context);
+    });
   }
 
   public void generate() {
@@ -166,8 +183,9 @@ class EnvironmentGenerator {
     log.info("----- Node '{}' -----", node.getNode());
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
-    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, options.getModelExport(), options.getPluginManager(),
-        variableStringResolver, variableMapResolver);
+    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, options.getModelExport(),
+        variableStringResolver, variableMapResolver, options.getContainerVersionInfo(), pluginContextOptions,
+        sensitiveConfigParameters, yamlRepresenter);
 
     for (NodeRole nodeRole : node.getRoles()) {
       // get role and resolve all inheritance relations
@@ -194,7 +212,8 @@ class EnvironmentGenerator {
         mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
         // collect role and tenant information for export model
-        ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig);
+        ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig,
+            role.getSensitiveConfigParameters());
 
         // generate files
         List<GeneratedFileContext> allFiles = new ArrayList<>();

@@ -23,15 +23,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.rits.cloning.Cloner;
 
 import io.wcm.devops.conga.generator.ContextProperties;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
-import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.spi.yaml.context.YamlRepresenter;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -50,6 +52,10 @@ public final class NodeModelExport {
   private final List<NodeModelExportPlugin> nodeModelExportPlugins = new ArrayList<>();
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
+  private final Map<String, String> containerVersionInfo;
+  private final PluginContextOptions pluginContextOptions;
+  private final Set<String> sensitiveConfigParameters;
+  private final YamlRepresenter yamlRepresenter;
 
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
@@ -58,24 +64,34 @@ public final class NodeModelExport {
    * @param node Node
    * @param environment Environment
    * @param modelExport Model export
-   * @param pluginManager Plugin manager
    * @param variableStringResolver Variable string resolver
    * @param variableMapResolver Variable map resolver
+   * @param containerVersionInfo Version information from container, e.g. configured Maven plugin versions
+   * @param pluginContextOptions Plugin context options
+   * @param sensitiveConfigParameters Combined list of all sensitive config parameter names from all roles in the
+   *          environment.
+   * @param yamlRepresenter YAML representer
    */
-  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport, PluginManager pluginManager,
-      VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver) {
+  public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport,
+      VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver,
+      Map<String, String> containerVersionInfo, PluginContextOptions pluginContextOptions,
+      Set<String> sensitiveConfigParameters, YamlRepresenter yamlRepresenter) {
     this.node = node;
     this.environment = environment;
     this.nodeDir = nodeDir;
     this.variableStringResolver = variableStringResolver;
     this.variableMapResolver = variableMapResolver;
+    this.containerVersionInfo = containerVersionInfo;
+    this.pluginContextOptions = pluginContextOptions;
+    this.sensitiveConfigParameters = sensitiveConfigParameters;
+    this.yamlRepresenter = yamlRepresenter;
 
     // get export plugins
     if (modelExport != null) {
       List<String> nodeExportPlugins = modelExport.getNode();
       if (nodeExportPlugins != null) {
         for (String nodeExportPlugin : nodeExportPlugins) {
-          nodeModelExportPlugins.add(pluginManager.get(nodeExportPlugin, NodeModelExportPlugin.class));
+          nodeModelExportPlugins.add(pluginContextOptions.getPluginManager().get(nodeExportPlugin, NodeModelExportPlugin.class));
         }
       }
     }
@@ -90,9 +106,11 @@ public final class NodeModelExport {
    * @param role Role name
    * @param roleVariants Role variant name
    * @param config Merged configuration (unresolved)
+   * @param sensitiveConfigParametersList List of configuration parameter names that contain sensitive data
    * @return Node role data
    */
-  public ExportNodeRoleData addRole(String role, List<String> roleVariants, Map<String, Object> config) {
+  public ExportNodeRoleData addRole(String role, List<String> roleVariants, Map<String, Object> config,
+      List<String> sensitiveConfigParametersList) {
     if (!isActive()) {
       return new ExportNodeRoleData();
     }
@@ -121,7 +139,6 @@ public final class NodeModelExport {
           .config(resolvedTenantConfig));
     }
 
-
     ExportNodeRoleData item = new ExportNodeRoleData()
         .role(role)
         .roleVariant(roleVariants)
@@ -141,13 +158,16 @@ public final class NodeModelExport {
 
     for (NodeModelExportPlugin plugin : nodeModelExportPlugins) {
       plugin.export(new NodeModelExportContext()
+          .pluginContextOptions(pluginContextOptions)
           .node(node)
           .environment(environment)
           .roleData(roleData)
           .nodeDir(nodeDir)
           .variableStringResolver(variableStringResolver)
-          .variableMapResolver(variableMapResolver));
-
+          .variableMapResolver(variableMapResolver)
+          .containerVersionInfo(containerVersionInfo)
+          .sensitiveConfigParameters(sensitiveConfigParameters)
+          .yamlRepresenter(yamlRepresenter));
     }
   }
 

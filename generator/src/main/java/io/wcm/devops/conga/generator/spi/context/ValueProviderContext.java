@@ -24,7 +24,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Context for a slinge {@link io.wcm.devops.conga.generator.spi.ValueProviderPlugin} instance.
+ * Context for a single {@link io.wcm.devops.conga.generator.spi.ValueProviderPlugin} instance.
  */
 public final class ValueProviderContext extends AbstractPluginContext<ValueProviderContext> {
 

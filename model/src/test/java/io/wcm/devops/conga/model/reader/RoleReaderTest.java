@@ -71,10 +71,11 @@ public class RoleReaderTest {
 
     assertEquals(ImmutableMap.of(
         "var1", "value1",
+        "group1", ImmutableMap.of("var2", "value2"),
         "tomcat", ImmutableMap.of("port", 8080, "path", "/path/to/tomcat"),
         "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("min", "512m", "max", "2048m"), "permgenspace", ImmutableMap.of("max", "256m")),
         "topologyConnectors", ImmutableList.of("http://localhost:8080/libs/sling/topology/connector")
-        ), role.getConfig());
+    ), role.getConfig());
   }
 
   @Test
@@ -132,6 +133,11 @@ public class RoleReaderTest {
     assertEquals("download", file.getDir());
     assertEquals("classpath://xyz.txt", file.getUrl());
     assertEquals(ImmutableMap.of("modelOption1", "value1"), file.getModelOptions());
+  }
+
+  @Test
+  public void testSensitiveConfigurationParameters() {
+    assertEquals(ImmutableList.of("var1", "group1.var2"), role.getSensitiveConfigParameters());
   }
 
 }

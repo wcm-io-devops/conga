@@ -31,8 +31,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.IOUtils;
@@ -84,9 +82,6 @@ class FileGenerator {
   private final FileHeaderContext fileHeaderContext;
   private final ValidatorContext validatorContext;
   private final PostProcessorContext postProcessorContext;
-
-  // match versions like 2.1.2-20180125.094723-16
-  private static final Pattern SNAPSHOT_VERSION_PATTERN = Pattern.compile("(\\d+(\\.\\d+)*)-(\\d{8}\\.\\d{6}\\-\\d+)");
 
   //CHECKSTYLE:OFF
   FileGenerator(GeneratorOptions options, String environmentName,
@@ -160,28 +155,10 @@ class FileGenerator {
     if (dependencyVersions != null && !dependencyVersions.isEmpty()) {
       lines.add("");
       lines.add("Dependencies:");
-      dependencyVersions.stream()
-          .map(this::cleanupSnapshotVersion)
-          .forEach(lines::add);
+      lines.addAll(dependencyVersions);
     }
 
     return formatFileHeaderCommentLines(lines);
-  }
-
-  /**
-   * Replaces "static" snapshot version like 2.1.2-20180125.094723-16 with dynamic ones like 2.1.2-SNAPSHOT.
-   * @param versionLine Version line
-   * @return Reformatted version line
-   */
-  private String cleanupSnapshotVersion(String versionLine) {
-    Matcher matcher = SNAPSHOT_VERSION_PATTERN.matcher(versionLine);
-    StringBuffer sb = new StringBuffer();
-    while (matcher.find()) {
-      String version = matcher.group(1) + "-SNAPSHOT";
-      matcher.appendReplacement(sb, version);
-    }
-    matcher.appendTail(sb);
-    return sb.toString();
   }
 
   /**

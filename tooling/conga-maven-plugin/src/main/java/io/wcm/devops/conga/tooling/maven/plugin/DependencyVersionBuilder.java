@@ -41,6 +41,7 @@ import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.tooling.maven.plugin.util.MavenArtifactHelper;
 import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
+import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 
 class DependencyVersionBuilder implements Function<Environment, Collection<String>> {
 
@@ -127,7 +128,7 @@ class DependencyVersionBuilder implements Function<Environment, Collection<Strin
    */
   private String toArtifactCoordsPaxUrlStyle(Artifact artifact) {
     return artifact.getGroupId() + "/" + artifact.getArtifactId()
-        + "/" + artifact.getVersion()
+        + "/" + VersionInfoUtil.cleanupSnapshotVersion(artifact.getVersion())
         + (StringUtils.isNotEmpty(artifact.getClassifier()) ? "/" + artifact.getExtension() + "/" + artifact.getClassifier() : "");
   }
 

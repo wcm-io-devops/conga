@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2015 wcm.io
+ * Copyright (C) 2018 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,7 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.util.testmodel;
-
-import io.wcm.devops.conga.model.shared.AbstractConfigurable;
-
-public class ConfScope3 extends AbstractConfigurable {
-
-  private String prop3;
-
-  public String getProp3() {
-    return this.prop3;
-  }
-
-  public void setProp3(String prop3) {
-    this.prop3 = prop3;
-  }
-
-}
+/**
+ * CONGA SPI for customizing Snake YAML file handling.
+ */
+package io.wcm.devops.conga.generator.spi.yaml;

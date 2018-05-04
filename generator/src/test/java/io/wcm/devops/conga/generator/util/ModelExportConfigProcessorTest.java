@@ -1,0 +1,140 @@
+/*
+ * #%L
+ * wcm.io
+ * %%
+ * Copyright (C) 2018 wcm.io
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package io.wcm.devops.conga.generator.util;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
+import io.wcm.devops.conga.generator.spi.ValueEncryptionPlugin;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.spi.context.ValueEncryptionContext;
+
+@RunWith(MockitoJUnitRunner.class)
+public class ModelExportConfigProcessorTest {
+
+  private static final Set<String> SENSITIVE_PARAMS = ImmutableSet.of(
+      "param1",
+      "group1.param3",
+      "group1.group2.param4",
+      "list1",
+      "list2.param1",
+      "list2.list3.param3"
+      );
+
+  @Mock
+  private PluginManager pluginManager;
+  @Mock
+  private ValueEncryptionPlugin valueEncryptPlugin;
+
+  private PluginContextOptions pluginContextOptions;
+
+  private ModelExportConfigProcessor underTest;
+
+  @Before
+  public void setUp() {
+    // simulate valueEncryptPlugin that prepends {enc} to the value
+    when(pluginManager.getAll(ValueEncryptionPlugin.class)).thenReturn(ImmutableList.of(valueEncryptPlugin));
+    when(valueEncryptPlugin.isEnabled()).thenReturn(true);
+    when(valueEncryptPlugin.encrypt(anyString(), any(), any(ValueEncryptionContext.class))).then(new Answer<Object>() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        Object value = invocation.getArgument(1);
+        return "{enc}" + value.toString();
+      }
+    });
+
+    pluginContextOptions = new PluginContextOptions()
+        .pluginManager(pluginManager);
+    underTest = new ModelExportConfigProcessor(pluginContextOptions, SENSITIVE_PARAMS);
+  }
+
+  @Test
+  public void testNestedParams() {
+    Map<String, Object> config = ImmutableMap.<String, Object>of(
+        "param1", "value1",
+        "param2", "value2",
+        "group1", ImmutableMap.<String, Object>of(
+            "param3", 123,
+            "group2", ImmutableMap.<String, Object>of(
+                "param4", true,
+                "param5", 5L)));
+
+    Map<String, Object> expected = ImmutableMap.<String, Object>of(
+        "param1", "{enc}value1",
+        "param2", "value2",
+        "group1", ImmutableMap.<String, Object>of(
+            "param3", "{enc}123",
+            "group2", ImmutableMap.<String, Object>of(
+                "param4", "{enc}true",
+                "param5", 5L)));
+
+    assertEquals(expected, underTest.apply(config));
+  }
+
+  @Test
+  public void testList() {
+    Map<String, Object> config = ImmutableMap.<String, Object>of(
+        "list1", ImmutableList.of("value1", "value2"),
+        "list2", ImmutableList.of(
+            ImmutableMap.<String, Object>of(
+                "param1", "value1a",
+                "param2", 123,
+                "list3", ImmutableList.of(
+                    ImmutableMap.of(
+                        "param3", "value3"))),
+            ImmutableMap.<String, Object>of(
+                "param1", "value1b",
+                "param2", 345)));
+
+    Map<String, Object> expected = ImmutableMap.<String, Object>of(
+        "list1", ImmutableList.of("{enc}value1", "{enc}value2"),
+        "list2", ImmutableList.of(
+            ImmutableMap.<String, Object>of(
+                "param1", "{enc}value1a",
+                "param2", 123,
+                "list3", ImmutableList.of(
+                    ImmutableMap.of(
+                        "param3", "{enc}value3"))),
+            ImmutableMap.<String, Object>of(
+                "param1", "{enc}value1b",
+                "param2", 345)));
+
+    assertEquals(expected, underTest.apply(config));
+  }
+
+}
+

@@ -22,7 +22,7 @@ package io.wcm.devops.conga.generator.spi;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 
 /**
- * Provides configuation values from external sources.
+ * Provides configuration values from external sources.
  */
 public interface ValueProviderPlugin extends Plugin {
 

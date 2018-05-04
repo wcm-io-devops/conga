@@ -27,8 +27,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.SortedSet;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -60,6 +62,7 @@ import io.wcm.devops.conga.model.reader.RoleReader;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceInfo;
 import io.wcm.devops.conga.resource.ResourceLoader;
 import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
@@ -79,6 +82,12 @@ import io.wcm.devops.conga.tooling.maven.plugin.validation.TemplateValidator;
 @Mojo(name = "validate", defaultPhase = LifecyclePhase.VALIDATE, requiresProject = true, threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE)
 public class ValidateMojo extends AbstractCongaMojo {
+
+  /**
+   * Selected environments to validate.
+   */
+  @Parameter(property = "conga.environments")
+  private String[] environments;
 
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
@@ -138,10 +147,22 @@ public class ValidateMojo extends AbstractCongaMojo {
     validateFiles(roleDir, roleDir, new NoValueProviderInRoleValidator());
 
     // validate environment definition syntax
-    List<Environment> environments = validateFiles(environmentDir, environmentDir, new ModelValidator<Environment>("Environment", new EnvironmentReader()));
+    List<Environment> environmentList = validateFiles(environmentDir, environmentDir, new ModelValidator<Environment>("Environment", new EnvironmentReader()),
+        // filter environments
+        resourceInfo -> {
+          if (this.environments == null || this.environments.length == 0) {
+            return true;
+          }
+          for (String environment : this.environments) {
+            if (StringUtils.equals(environment, FilenameUtils.getBaseName(resourceInfo.getName()))) {
+              return true;
+            }
+          }
+          return false;
+        });
 
     // validate version information - for each environment separately
-    for (Environment environment : environments) {
+    for (Environment environment : environmentList) {
       UrlFilePluginContext environmentUrlFilePluginContext = new UrlFilePluginContext()
           .baseDir(project.getBasedir())
           .resourceClassLoader(mavenProjectClassLoader)
@@ -161,6 +182,11 @@ public class ValidateMojo extends AbstractCongaMojo {
 
   private <T> List<T> validateFiles(ResourceCollection sourceDir, ResourceCollection rootSourceDir, DefinitionValidator<T> validator)
       throws MojoFailureException {
+    return validateFiles(sourceDir, rootSourceDir, validator, resourceInfo -> true);
+  }
+
+  private <T> List<T> validateFiles(ResourceCollection sourceDir, ResourceCollection rootSourceDir, DefinitionValidator<T> validator,
+      Function<ResourceInfo, Boolean> resourceFilter) throws MojoFailureException {
     if (!sourceDir.exists()) {
       return ImmutableList.of();
     }
@@ -172,10 +198,14 @@ public class ValidateMojo extends AbstractCongaMojo {
 
     List<T> result = new ArrayList<>();
     for (Resource file : files) {
-      result.add(validator.validate(file, getPathForLog(rootSourceDir, file)));
+      if (resourceFilter.apply(file)) {
+        result.add(validator.validate(file, getPathForLog(rootSourceDir, file)));
+      }
     }
     for (ResourceCollection dir : dirs) {
-      result.addAll(validateFiles(dir, rootSourceDir, validator));
+      if (resourceFilter.apply(dir)) {
+        result.addAll(validateFiles(dir, rootSourceDir, validator, resourceFilter));
+      }
     }
     return result;
   }

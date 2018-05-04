@@ -19,7 +19,10 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -40,6 +43,7 @@ import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
+import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 
 /**
  * Generates configuration using CONGA generator.
@@ -59,6 +63,13 @@ public class GenerateMojo extends AbstractCongaMojo {
    */
   @Parameter(defaultValue = "false")
   private boolean deleteBeforeGenerate;
+
+  /**
+   * Plugin keys (groupId:artifactId) of additional Maven plugins of the current project's POM
+   * to be included in the model export version information.
+   */
+  @Parameter(defaultValue = "io.wcm.maven.plugins:wcmio-content-package-maven-plugin")
+  private String[] versionInfoAdditionalPlugins;
 
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
@@ -104,10 +115,35 @@ public class GenerateMojo extends AbstractCongaMojo {
         .containerClasspathUrls(ClassLoaderUtil.getMavenProjectClasspathUrls(project))
         .pluginManager(pluginManager)
         .dependencyVersionBuilder(new DependencyVersionBuilder(pluginContextOptions))
+        .containerVersionInfo(buildContainerVersionInfo())
         .logger(new MavenSlf4jLogFacade(getLog()));
 
     Generator generator = new Generator(options);
     generator.generate(environments);
+  }
+
+  /**
+   * Build version information about CONGA Maven plugin and CONGA plugins, plus
+   * additional plugin versions as defined in plugin configuration. This version
+   * information is included in the model export.
+   * @return Version information
+   */
+  private Map<String, String> buildContainerVersionInfo() {
+    Map<String, String> versionInfo = new HashMap<>();
+
+    Properties pluginProps = VersionInfoUtil.getVersionInfoProperties(project);
+    for (Map.Entry<Object, Object> entry : pluginProps.entrySet()) {
+      versionInfo.put(entry.getKey().toString(), entry.getValue().toString());
+    }
+
+    for (String pluginKey : versionInfoAdditionalPlugins) {
+      String pluginVersion = VersionInfoUtil.getPluginVersionFromPluginManagement(pluginKey, project);
+      if (pluginVersion != null) {
+        versionInfo.put(pluginKey, pluginVersion);
+      }
+    }
+
+    return versionInfo;
   }
 
 }

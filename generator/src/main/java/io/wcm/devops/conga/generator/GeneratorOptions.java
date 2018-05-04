@@ -59,7 +59,6 @@ public final class GeneratorOptions {
    */
   public static final String CLASSPATH_ENVIRONMENTS_DIR = CLASSPATH_PREFIX + "environments";
 
-
   private File baseDir;
   private File roleDir;
   private File templateDir;
@@ -74,6 +73,7 @@ public final class GeneratorOptions {
   private List<URL> containerClasspathUrls = new ArrayList<>();
   private PluginManager pluginManager;
   private Function<Environment, Collection<String>> dependencyVersionBuilder;
+  private Map<String, String> containerVersionInfo;
   private Logger logger = LoggerFactory.getLogger(Generator.class);
 
   /**
@@ -306,6 +306,22 @@ public final class GeneratorOptions {
    */
   public GeneratorOptions dependencyVersionBuilder(Function<Environment, Collection<String>> value) {
     this.dependencyVersionBuilder = value;
+    return this;
+  }
+
+  /**
+   * @return Version information from container, e.g. configured Maven plugin versions
+   */
+  public Map<String, String> getContainerVersionInfo() {
+    return this.containerVersionInfo;
+  }
+
+  /**
+   * @param value Version information from container, e.g. configured Maven plugin versions
+   * @return this
+   */
+  public GeneratorOptions containerVersionInfo(Map<String, String> value) {
+    this.containerVersionInfo = value;
     return this;
   }
 

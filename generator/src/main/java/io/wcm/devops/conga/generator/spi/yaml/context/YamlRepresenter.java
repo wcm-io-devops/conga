@@ -2,7 +2,7 @@
  * #%L
  * wcm.io
  * %%
- * Copyright (C) 2015 wcm.io
+ * Copyright (C) 2018 wcm.io
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,23 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.generator.util.testmodel;
+package io.wcm.devops.conga.generator.spi.yaml.context;
 
-import io.wcm.devops.conga.model.shared.AbstractConfigurable;
+import org.yaml.snakeyaml.representer.Represent;
+import org.yaml.snakeyaml.representer.Representer;
 
-public class ConfScope3 extends AbstractConfigurable {
+/**
+ * SnakeYAML {@link Representer} implementation.
+ */
+public final class YamlRepresenter extends Representer {
 
-  private String prop3;
-
-  public String getProp3() {
-    return this.prop3;
-  }
-
-  public void setProp3(String prop3) {
-    this.prop3 = prop3;
+  /**
+   * Register a represent.
+   * @param clazz Class to represent
+   * @param represent Represent implementation
+   */
+  public void registerRepresent(Class<?> clazz, Represent represent) {
+    this.representers.put(clazz, represent);
   }
 
 }
