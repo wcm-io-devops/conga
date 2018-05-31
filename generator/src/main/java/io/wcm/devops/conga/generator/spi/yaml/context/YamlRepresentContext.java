@@ -22,7 +22,7 @@ package io.wcm.devops.conga.generator.spi.yaml.context;
 import io.wcm.devops.conga.generator.spi.context.AbstractPluginContext;
 
 /**
- * Context for {@link io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin}.
+ * Context for {@link io.wcm.devops.conga.generator.spi.yaml.YamlRepresentPlugin}.
  */
 public final class YamlRepresentContext extends AbstractPluginContext<YamlRepresentContext> {
 

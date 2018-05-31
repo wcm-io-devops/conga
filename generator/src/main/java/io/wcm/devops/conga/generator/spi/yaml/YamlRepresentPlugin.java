@@ -23,7 +23,7 @@ import io.wcm.devops.conga.generator.spi.Plugin;
 import io.wcm.devops.conga.generator.spi.yaml.context.YamlRepresentContext;
 
 /**
- * Plugin that allows to register custom SnakeYAMl {@link org.yaml.snakeyaml.representer.Represent} implementations.
+ * Plugin that allows to register custom SnakeYAML {@link org.yaml.snakeyaml.representer.Represent} implementations.
  */
 public interface YamlRepresentPlugin extends Plugin {
 
