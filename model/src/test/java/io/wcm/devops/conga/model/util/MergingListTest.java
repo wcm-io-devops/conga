@@ -20,10 +20,10 @@
 package io.wcm.devops.conga.model.util;
 
 import static io.wcm.devops.conga.model.util.MapMerger.LIST_MERGE_ENTRY;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
@@ -31,7 +31,7 @@ public class MergingListTest {
 
   private MergingList<String> underTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     underTest = new MergingList<>();
   }

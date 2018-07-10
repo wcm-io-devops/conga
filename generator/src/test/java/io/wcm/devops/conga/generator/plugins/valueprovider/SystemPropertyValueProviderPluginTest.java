@@ -19,11 +19,11 @@
  */
 package io.wcm.devops.conga.generator.plugins.valueprovider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
@@ -39,7 +39,7 @@ public class SystemPropertyValueProviderPluginTest {
   private ValueProviderPlugin underTest;
   private ValueProviderContext context;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     PluginManager pluginManager = new PluginManagerImpl();
     underTest = pluginManager.get(SystemPropertyValueProviderPlugin.NAME, ValueProviderPlugin.class);

@@ -19,13 +19,14 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
@@ -36,7 +37,7 @@ public class PluginManagerImplTest {
 
   private PluginManager underTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     underTest = new PluginManagerImpl();
   }
@@ -47,9 +48,11 @@ public class PluginManagerImplTest {
     assertTrue(plugin instanceof TenantMultiply);
   }
 
-  @Test(expected = GeneratorException.class)
+  @Test
   public void testNonExistingPlugin() {
-    underTest.get("unknown", MultiplyPlugin.class);
+    assertThrows(GeneratorException.class, () -> {
+      underTest.get("unknown", MultiplyPlugin.class);
+    });
   }
 
   @Test

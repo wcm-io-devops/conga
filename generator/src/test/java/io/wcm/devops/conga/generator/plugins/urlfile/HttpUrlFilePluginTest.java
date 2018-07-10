@@ -19,16 +19,16 @@
  */
 package io.wcm.devops.conga.generator.plugins.urlfile;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
@@ -38,7 +38,7 @@ public class HttpUrlFilePluginTest {
   private UrlFilePlugin underTest;
   private UrlFilePluginContext context;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     underTest = new HttpUrlFilePlugin();
     context = new UrlFilePluginContext();

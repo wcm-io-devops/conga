@@ -20,9 +20,9 @@
 package io.wcm.devops.conga.resource;
 
 import static io.wcm.devops.conga.resource.ResourceLoader.FILE_PREFIX;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -30,8 +30,8 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
@@ -41,7 +41,7 @@ public class ResourceLoaderFilesystemTest {
 
   private ResourceLoader underTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     underTest = new ResourceLoader();
   }
@@ -54,8 +54,8 @@ public class ResourceLoaderFilesystemTest {
     assertEquals("file1.txt", resource.getName());
     assertEquals("txt", resource.getFileExtension());
     assertEquals(ROOT + "/folder1/file1.txt", unifySlashes(resource.getPath()));
-    assertTrue("Canonical path " + unifySlashes(resource.getCanonicalPath()) + " does not end with /" + ROOT + "/folder1/file1.txt",
-        StringUtils.endsWith(unifySlashes(resource.getCanonicalPath()), "/" + ROOT + "/folder1/file1.txt"));
+    assertTrue(StringUtils.endsWith(unifySlashes(resource.getCanonicalPath()), "/" + ROOT + "/folder1/file1.txt"),
+        "Canonical path " + unifySlashes(resource.getCanonicalPath()) + " does not end with /" + ROOT + "/folder1/file1.txt");
 
     assertTrue(resource.getLastModified() > 0);
 
@@ -71,8 +71,8 @@ public class ResourceLoaderFilesystemTest {
     assertTrue(col.exists());
     assertEquals("folder1", col.getName());
     assertEquals(ROOT + "/folder1", unifySlashes(col.getPath()));
-    assertTrue("Canonical path " + unifySlashes(col.getCanonicalPath()) + " does not end with /" + ROOT + "/folder1",
-        StringUtils.endsWith(unifySlashes(col.getCanonicalPath()), "/" + ROOT + "/folder1"));
+    assertTrue(StringUtils.endsWith(unifySlashes(col.getCanonicalPath()), "/" + ROOT + "/folder1"),
+        "Canonical path " + unifySlashes(col.getCanonicalPath()) + " does not end with /" + ROOT + "/folder1");
 
     List<Resource> resources = ImmutableList.copyOf(col.getResources());
     assertEquals(2, resources.size());

@@ -19,14 +19,14 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -41,7 +41,7 @@ public class EnvironmentReaderTest {
 
   private Environment environment;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     EnvironmentReader reader = new EnvironmentReader();
     try (InputStream is = getClass().getResourceAsStream("/environment.yaml")) {
