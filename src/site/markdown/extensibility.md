@@ -9,20 +9,23 @@ For the plugin architecture the Java ServiceLoader concept is used. See the Orac
 
 CONGA allows to provider custom plugins that are applied on generated files:
 
-* **File Header Plugin**: Plugin is used to add a CONGA file header to all generated files. The plugin controls at which position and with which comment syntax the headers are inserted. *)
-* **Validator Plugin**: Plugin validates files after generation to ensure they are syntactically correct. *)
-* **Handlebars Escaping Strategy Plugin**: Plugin allows to define escaping rules for special chars. *)
+* **File Header Plugin**: Plugin is used to add a CONGA file header to all generated files. The plugin controls at which position and with which comment syntax the headers are inserted. \*)
+* **Validator Plugin**: Plugin validates files after generation to ensure they are syntactically correct. \*)
+* **Handlebars Escaping Strategy Plugin**: Plugin allows to define escaping rules for special chars. \*)
 * **Post Processor Plugin**: Plugin that operations on a generated file, e.g. to convert it to a binary file.
 
-*) These plugins detect files with certain extensions, and are executed automatically on them.
+\*) These plugins detect files with certain extensions, and are executed automatically on them.
 
 Other plugins:
 
 * **Multiply Plugin**: Plugin controls the generation of multiple files from a single file definition.
 * **Value Provider Plugin**: Allows to provide values form external sources, which can be referenced like variables
-* **Node Model Export Plugin**: Allows to export "model data" (expanded configurations, list of generated files and tenants) from CONGA to a file which can be picked up by infrastructure automation tools
-* **URL File Plugin**: Allows to copy or download files from external sources identified via "URL prefixes"
+* **Value Encryption Plugin**: Encrypts a sensitive configuration parameter value e.g. for YAML model file export.
+* **Node Model Export Plugin**: Allows to export "model data" (expanded configurations, list of generated files and tenants) from CONGA to a file which can be picked up by infrastructure automation tools.
+* **URL File Plugin**: Allows to copy or download files from external sources identified via "URL prefixes".
 * **Handlebars Helper Plugin**: Plugin allows to register your own Handlebar helper to define custom handlebar expression usable in the CONGA templates.
+* **YAML Represent Plugin**: Allows to customize the YAML file generation by adding custom represent implementations e.g. for encrypted values.
+* **YAML Constructor Plugin**: Allows to customize the constructor for parsing YAML files.
 
 See API documentation for the detailed plugin interfaces:
 
@@ -52,7 +55,8 @@ See API documentation for the detailed plugin interfaces:
 
 | Plugin name | Description
 |-------------|-------------
-| `system`    | Allows to reference Java System Parameters in variable definitions, e.g. `${system::mysystemparam}`
+| `system`    | Allows to reference Java system properties in variable definitions, e.g. `${system::mysystemparam}`
+| `maven`     | Allows to reference Maven properties in variable definitions, e.g. `${maven::my.maven.param}`
 
 #### Export plugins
 

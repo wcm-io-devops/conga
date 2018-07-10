@@ -63,6 +63,7 @@ public class SystemPropertyValueProviderPluginTest {
     assertNull(underTest.resolve(propertyName3, context));
 
     System.clearProperty(propertyName1);
+    System.clearProperty(propertyName2);
   }
 
 }

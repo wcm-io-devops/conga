@@ -36,6 +36,7 @@ public final class Role extends AbstractConfigurable {
   private List<RoleVariant> variants = new ArrayList<>();
   private String templateDir;
   private List<RoleFile> files = new ArrayList<>();
+  private List<String> sensitiveConfigParameters = new ArrayList<>();
 
   /**
    * Defines inheritance relations for this role.
@@ -85,6 +86,19 @@ public final class Role extends AbstractConfigurable {
 
   public void setFiles(List<RoleFile> files) {
     this.files = defaultEmptyList(files);
+  }
+
+  /**
+   * List of configuration parameter names that contain sensitive data (like passwords)
+   * that should be encrypted on serialization e.g. in model export files.
+   * @return List of configuration parameter names (with "." as hierarchy separator)
+   */
+  public List<String> getSensitiveConfigParameters() {
+    return defaultEmptyList(this.sensitiveConfigParameters);
+  }
+
+  public void setSensitiveConfigParameters(List<String> sensitiveProperties) {
+    this.sensitiveConfigParameters = sensitiveProperties;
   }
 
 }

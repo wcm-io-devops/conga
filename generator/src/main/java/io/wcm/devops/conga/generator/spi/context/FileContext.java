@@ -35,6 +35,7 @@ public final class FileContext {
   private String canonicalPath;
   private String charset;
   private Map<String, Object> modelOptions = new HashMap<>();
+  private File targetDir;
 
   /**
    * @return File
@@ -98,6 +99,22 @@ public final class FileContext {
    */
   public FileContext modelOptions(Map<String, Object> value) {
     this.modelOptions = value;
+    return this;
+  }
+
+  /**
+   * @return Target directory for generated configuration
+   */
+  public File getTargetDir() {
+    return this.targetDir;
+  }
+
+  /**
+   * @param value Target directory for generated configuration
+   * @return this
+   */
+  public FileContext targetDir(File value) {
+    this.targetDir = value;
     return this;
   }
 

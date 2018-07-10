@@ -33,6 +33,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import io.wcm.devops.conga.generator.GeneratorOptions;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 
@@ -54,7 +55,7 @@ public class GenerateVersionInfoMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    File outputDir = new File(definitionTarget, BuildConstants.CLASSPATH_PREFIX);
+    File outputDir = new File(definitionTarget, GeneratorOptions.CLASSPATH_PREFIX);
     if (!outputDir.exists()) {
       outputDir.mkdirs();
     }

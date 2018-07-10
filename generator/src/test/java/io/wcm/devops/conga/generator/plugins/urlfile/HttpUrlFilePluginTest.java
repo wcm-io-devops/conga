@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +55,15 @@ public class HttpUrlFilePluginTest {
   @Test
   public void testGetFile() throws Exception {
     try (InputStream is = underTest.getFile("http://wcm.io/", context)) {
+      assertNotNull(is);
+      assertTrue(IOUtils.toByteArray(is).length > 0);
+    }
+  }
+
+  @Test
+  public void testGetFileUrl() throws Exception {
+    URL url = underTest.getFileUrl("http://wcm.io/", context);
+    try (InputStream is = url.openStream()) {
       assertNotNull(is);
       assertTrue(IOUtils.toByteArray(is).length > 0);
     }

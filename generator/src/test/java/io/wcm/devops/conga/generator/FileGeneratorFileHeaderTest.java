@@ -19,7 +19,8 @@
  */
 package io.wcm.devops.conga.generator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -35,12 +36,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
@@ -72,10 +75,8 @@ public class FileGeneratorFileHeaderTest {
   private Template template;
   @Mock
   private PluginManager pluginManager;
-  @Mock
-  private Logger logger;
 
-  @BeforeEach
+  @Before
   public void setUp() {
     destDir = new File("target/generation-test/" + getClass().getSimpleName());
     file = new File(destDir, "test.txt");
@@ -96,22 +97,24 @@ public class FileGeneratorFileHeaderTest {
       }
     });
 
+    GeneratorOptions options = new GeneratorOptions()
+        .pluginManager(pluginManager)
+        .version("1.0");
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
-        .logger(logger);
-    EnvironmentGeneratorOptions options = new EnvironmentGeneratorOptions()
-        .environmentName("env1")
-        .pluginManager(pluginManager)
-        .urlFileManager(urlFileManager)
-        .version("1.0")
-        .dependencyVersions(ImmutableList.<String>of())
-        .pluginContextOptions(pluginContextOptions)
-        .logger(logger);
+        .logger(options.getLogger());
     VariableMapResolver variableMapResolver = new VariableMapResolver(
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
-    underTest = new FileGenerator(options, "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template, variableMapResolver);
+    underTest = new FileGenerator(options, "env1",
+        "role1", ImmutableList.of("variant1"), "template1",
+        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template,
+        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of(
+            "version1/1.0.0",
+            "version2/2.0.0-SNAPSHOT",
+            "version3/1.2.0-SNAPSHOT",
+            "version4/2.1.2-SNAPSHOT/suffix"
+            ));
   }
 
   @Test
@@ -175,6 +178,27 @@ public class FileGeneratorFileHeaderTest {
 
     verify(one, times(1)).apply(any(FileContext.class), any(FileHeaderContext.class));
     verify(two, times(1)).apply(any(FileContext.class), any(FileHeaderContext.class));
+  }
+
+  @Test
+  public void testVersions() throws Exception {
+    FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.NEVER);
+    roleFile.setFileHeader("one");
+
+    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+
+    assertEquals(1, result.size());
+    assertItem(result.get(0), "test.txt");
+
+    ArgumentCaptor<FileHeaderContext> contextCaptor = ArgumentCaptor.forClass(FileHeaderContext.class);
+    verify(one, times(1)).apply(any(FileContext.class), contextCaptor.capture());
+    FileHeaderContext context = contextCaptor.getValue();
+
+    String fileHeader = StringUtils.join(context.getCommentLines(), "\n");
+    assertTrue(StringUtils.contains(fileHeader, "version1/1.0.0\n"));
+    assertTrue(StringUtils.contains(fileHeader, "version2/2.0.0-SNAPSHOT\n"));
+    assertTrue(StringUtils.contains(fileHeader, "version3/1.2.0-SNAPSHOT\n"));
+    assertTrue(StringUtils.contains(fileHeader, "version4/2.1.2-SNAPSHOT/suffix\n"));
   }
 
   private void assertItem(GeneratedFileContext item, String expectedFileName) {

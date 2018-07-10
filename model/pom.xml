@@ -25,7 +25,7 @@
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.4.5-SNAPSHOT</version>
+    <version>1.9.1-SNAPSHOT</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
@@ -36,11 +36,11 @@
   <description>wcm.io DevOps CONGA Model classes for java representation of definition files.</description>
 
   <dependencies>
-  
+
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.resource</artifactId>
-      <version>1.4.5-SNAPSHOT</version>
+      <version>1.9.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>

@@ -28,7 +28,6 @@ import java.util.Map;
  */
 public final class ValueProviderGlobalContext extends AbstractPluginContext<ValueProviderGlobalContext> {
 
-  private Map<String, Map<String, Object>> valueProviderConfig;
   private Map<String, Object> globalValueProviderCache = new HashMap<>();
 
   /**
@@ -43,10 +42,11 @@ public final class ValueProviderGlobalContext extends AbstractPluginContext<Valu
    *         Never null.
    */
   public Map<String, Map<String, Object>> getValueProviderConfig() {
-    if (this.valueProviderConfig == null) {
-      return Collections.emptyMap();
+    Map<String, Map<String, Object>> value = this.getPluginContextOptions().getValueProviderConfig();
+    if (value == null) {
+      value = Collections.emptyMap();
     }
-    return this.valueProviderConfig;
+    return value;
   }
 
   /**
@@ -59,16 +59,6 @@ public final class ValueProviderGlobalContext extends AbstractPluginContext<Valu
       return Collections.emptyMap();
     }
     return config;
-  }
-
-  /**
-   * @param value Configuration for value providers.
-   *          The outer map uses the value provider plugin name as key, the inner map contain the config properties.
-   * @return this
-   */
-  public ValueProviderGlobalContext valueProviderConfig(Map<String, Map<String, Object>> value) {
-    this.valueProviderConfig = value;
-    return this;
   }
 
   /**

@@ -33,33 +33,26 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
-import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 public final class TestUtils {
 
   public static final String TEST_VERSION = "testVersion1ForFileHeader";
-  public static final String TEST_DEPENDENCY_VERSION = "testVersion2ForFileHeader";
 
   private TestUtils() {
     // static methods only
   }
 
   public static Generator setupGenerator(File destDir) {
-    ResourceLoader resourceLoader = new ResourceLoader();
-    ResourceCollection baseDir = resourceLoader.getResourceCollection("src/test/definitions");
-    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext();
-
     GeneratorOptions options = new GeneratorOptions()
-        .roleDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "roles")))
-        .templateDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "templates")))
-        .environmentDirs(ImmutableList.of(resourceLoader.getResourceCollection(baseDir, "environments")))
+        .baseDir(new File("."))
+        .roleDir(new File("src/test/definitions/roles"))
+        .templateDir(new File("src/test/definitions/templates"))
+        .environmentDir(new File("src/test/definitions/environments"))
         .destDir(destDir)
-        .urlFilePluginContext(urlFilePluginContext)
         .version(TEST_VERSION)
-        .dependencyVersions(ImmutableList.of(TEST_DEPENDENCY_VERSION));
+        .pluginManager(new PluginManagerImpl());
 
     ModelExport modelExport = new ModelExport();
     modelExport.setNode(ImmutableList.of("yaml"));

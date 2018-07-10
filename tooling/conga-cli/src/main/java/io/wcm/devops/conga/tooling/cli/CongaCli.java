@@ -20,7 +20,6 @@
 package io.wcm.devops.conga.tooling.cli;
 
 import java.io.File;
-import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -28,13 +27,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.Generator;
 import io.wcm.devops.conga.generator.GeneratorOptions;
-import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
 /**
  * CONGA command line interface.
@@ -75,25 +70,21 @@ public final class CongaCli {
       return;
     }
 
-    String templateDir = commandLine.getOptionValue("templateDir", "templates");
-    String roleDir = commandLine.getOptionValue("roleDir", "roles");
-    String environmentDir = commandLine.getOptionValue("environmentDir", "environments");
-    String targetDir = commandLine.getOptionValue("target", "target");
+    File baseDir = new File(".");
+    File templateDir = new File(commandLine.getOptionValue("templateDir", "templates"));
+    File roleDir = new File(commandLine.getOptionValue("roleDir", "roles"));
+    File environmentDir = new File(commandLine.getOptionValue("environmentDir", "environments"));
+    File targetDir = new File(commandLine.getOptionValue("target", "target"));
     String[] environments = StringUtils.split(commandLine.getOptionValue("environments", null), ",");
 
-    ResourceLoader resourceLoader = new ResourceLoader();
-    List<ResourceCollection> roleDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + roleDir));
-    List<ResourceCollection> templateDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + templateDir));
-    List<ResourceCollection> environmentDirs = ImmutableList.of(resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + environmentDir));
-    File targetDirecotry = new File(targetDir);
-
     GeneratorOptions options = new GeneratorOptions()
-        .roleDirs(roleDirs)
-        .templateDirs(templateDirs)
-        .environmentDirs(environmentDirs)
-        .destDir(targetDirecotry)
-        .urlFilePluginContext(new UrlFilePluginContext())
-        .deleteBeforeGenerate(true);
+        .baseDir(baseDir)
+        .roleDir(roleDir)
+        .templateDir(templateDir)
+        .environmentDir(environmentDir)
+        .destDir(targetDir)
+        .deleteBeforeGenerate(true)
+        .pluginManager(new PluginManagerImpl());
 
     Generator generator = new Generator(options);
     generator.generate(environments);

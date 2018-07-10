@@ -33,8 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedMap;
 
-import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
@@ -72,6 +72,11 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     Map<String, Object> modelMap = new LinkedHashMap<>();
     modelMap.put("roles", roles);
 
+    Map<String, String> versionInfo = context.getContainerVersionInfo();
+    if (versionInfo != null) {
+      modelMap.put("versionInfo", ImmutableSortedMap.copyOf(versionInfo));
+    }
+
     // save YAML file
     save(modelMap, context);
   }
@@ -91,6 +96,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     }
 
     roleMap.put("files", roleData.getFiles().stream()
+        .filter(item -> item.getFileContext().getFile().exists())
         .map(item -> {
           Map<String, Object> itemMap = new LinkedHashMap<String, Object>();
           itemMap.put("path", cleanupFileName(item.getFileContext().getCanonicalPath(), nodeDirPath));
@@ -109,7 +115,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
         })
         .collect(Collectors.toList()));
 
-    roleMap.put("config", cleanupConfig(roleData.getConfig()));
+    roleMap.put("config", context.getModelExportConfigProcessor().apply(roleData.getConfig()));
 
     addTenants(roleMap, roleData, context);
 
@@ -137,7 +143,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     if (!tenantData.getRoles().isEmpty()) {
       tenantMap.put("roles", tenantData.getRoles());
     }
-    tenantMap.put("config", cleanupConfig(tenantData.getConfig()));
+    tenantMap.put("config", context.getModelExportConfigProcessor().apply(tenantData.getConfig()));
 
     tenants.add(tenantMap);
   }
@@ -146,15 +152,12 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     File file = new File(context.getNodeDir(), MODEL_FILE);
     try (FileOutputStream os = new FileOutputStream(file);
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
-      new Yaml().dump(modelMap, writer);
+      Yaml yaml = new Yaml(context.getYamlRepresenter());
+      yaml.dump(modelMap, writer);
     }
     /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
       throw new GeneratorException("Unable to write model file: " + FileUtil.getCanonicalPath(file), ex);
     }
-  }
-
-  private Map<String, Object> cleanupConfig(Map<String, Object> config) {
-    return ContextPropertiesBuilder.removeContextVariables(config);
   }
 
   private String cleanupFileName(String fileName, String basePath) {

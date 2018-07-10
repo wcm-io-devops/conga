@@ -1,8 +1,8 @@
 ## CONGA - YAML definitions
 
-CONGA uses [YAML][yaml] to describe roles and environments. 
+CONGA uses [YAML][yaml] to describe roles and environments.
 
-[SnakeYAML][snakeyaml] is used to parse the definition files and map them to a Java object model. Because of this the detailed YAML file documentation are the JavaDocs of the model classes. 
+[SnakeYAML][snakeyaml] is used to parse the definition files and map them to a Java object model. Because of this the detailed YAML file documentation are the JavaDocs of the model classes.
 
 Please note that the Java Bean naming conventions are applied: For the property names in the YAML files the "get" prefix from the model class is omitted, and the property is written in headless camel case. Example: `getRoleConfig()` method name results in `roleConfig` property name.
 
@@ -130,6 +130,15 @@ ${system::my.system.parameter}
 ${system::my.system.parameter:defaultValue}
 ```
 
+Instead of single variable expression you can also use Java Expression Language ([JEXL][jexl]). This cannot be combined with value provider expressions or default values. Examples:
+
+```
+${myvariable1 + '/' + myvariable2}
+${mygroup.myvariable == 'expected_value'}
+${mynumber + 1}
+${new('java.text.DecimalFormat','000').format(multiplyIndex)}
+```
+
 
 ### Iterate over variable list values
 
@@ -195,6 +204,7 @@ Additionally to the variables defined in the configuration parameter maps a set 
 | `tenantsByRole`      | Map with tenant roles with each entry containing a list of all tenants with this role. Each tenant has properties as defined in the [Tenant model][tenant-model].
 | `tenant`             | Current tenant name. This is only set if the tenant multiple plugin is used.
 | `tenantRoles`        | List of current tenant's role names This is only set if the tenant multiply plugin is used.
+| `multiplyIndex`      | File index (starting with 0) if a multiply plugin is used.
 
 
 [role-model]: generator/apidocs/io/wcm/devops/conga/model/role/Role.html
@@ -206,3 +216,4 @@ Additionally to the variables defined in the configuration parameter maps a set 
 [extensibility]: extensibility.html
 [artifact-coords-maven]: https://maven.apache.org/pom.html#Maven_Coordinates
 [artifact-coords-paxurl]: https://ops4j1.jira.com/wiki/x/CoA6
+[jexl]: http://commons.apache.org/proper/commons-jexl/

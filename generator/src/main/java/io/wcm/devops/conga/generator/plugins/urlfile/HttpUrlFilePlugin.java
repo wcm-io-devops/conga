@@ -57,8 +57,13 @@ public class HttpUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
-    URL urlObject = new URL(url);
-    return new BufferedInputStream(urlObject.openStream());
+    URL result = new URL(url);
+    return new BufferedInputStream(result.openStream());
+  }
+
+  @Override
+  public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
+    return new URL(url);
   }
 
 }

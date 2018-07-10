@@ -24,7 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,6 +68,26 @@ public class FilesystemUrlFilePluginTest {
       assertNotNull(is);
       assertTrue(IOUtils.toByteArray(is).length > 0);
     }
+  }
+
+  @Test(expected = FileNotFoundException.class)
+  public void testGetFile_NonExisting() throws Exception {
+    underTest.getFile("file:non-existing-file", context);
+  }
+
+  @Test
+  public void testGetFileUrl() throws Exception {
+    File file = new File("src/test/resources/validators/json/noJson.txt");
+    URL url = underTest.getFileUrl("file:" + file.getAbsolutePath(), context);
+    try (InputStream is = url.openStream()) {
+      assertNotNull(is);
+      assertTrue(IOUtils.toByteArray(is).length > 0);
+    }
+  }
+
+  @Test(expected = FileNotFoundException.class)
+  public void testGetFileUrl_NonExisting() throws Exception {
+    underTest.getFileUrl("file:non-existing-file", context);
   }
 
 }

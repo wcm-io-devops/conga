@@ -19,13 +19,14 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -33,12 +34,15 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
+/**
+ * Test {@link VariableStringResolver} with CONGA variable expressions, default values, value providers.
+ */
 public class VariableStringResolverTest {
 
   private ValueProviderGlobalContext globalContext;
   private VariableStringResolver underTest;
 
-  @BeforeEach
+  @Before
   public void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(new PluginManagerImpl());
@@ -81,22 +85,18 @@ public class VariableStringResolverTest {
     assertEquals("v1,v1v1,v1v1v1", underTest.resolve("${var1},${var2},${var3}", variables));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testNestedVariables_IllegalRecursion() {
     Map<String, Object> variables = ImmutableMap.of("var1", "${var2}", "var2", "${var1}");
 
-    assertThrows(IllegalArgumentException.class, () -> {
-      underTest.resolve("${var1}", variables);
-    });
+    underTest.resolve("${var1}", variables);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testUnknownVariable() {
     Map<String, Object> variables = ImmutableMap.of();
 
-    assertThrows(IllegalArgumentException.class, () -> {
-      underTest.resolve("${var1}", variables);
-    });
+    underTest.resolve("${var1}", variables);
   }
 
   @Test
@@ -157,7 +157,8 @@ public class VariableStringResolverTest {
   @Test
   public void testCustomValueProvider() {
     // define value provider name 'customProvider' of type 'system'
-    globalContext.valueProviderConfig(ImmutableMap.of("customProvider", ImmutableMap.of(ValueProviderGlobalContext.PARAM_PLUGIN_NAME, "system")));
+    globalContext.getPluginContextOptions()
+        .valueProviderConfig(ImmutableMap.of("customProvider", ImmutableMap.of(ValueProviderGlobalContext.PARAM_PLUGIN_NAME, "system")));
 
     String propertyName1 = getClass().getName() + "-test.propCustom1";
     String propertyName2 = getClass().getName() + "-test.propCustom2";
@@ -178,6 +179,17 @@ public class VariableStringResolverTest {
 
     assertEquals("The v1 and value1 and 5", underTest.resolve("The ${var1} and ${dummy-map::map.param1} and ${dummy-map::map.param2}", variables));
     assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${dummy-map::map.paramNotDefined:theDefValue}", variables));
+  }
+
+  @Test
+  public void testHasValueProviderReference() {
+    assertFalse(VariableStringResolver.hasValueProviderReference(""));
+    assertFalse(VariableStringResolver.hasValueProviderReference("abc"));
+    assertFalse(VariableStringResolver.hasValueProviderReference("${var1}"));
+    assertFalse(VariableStringResolver.hasValueProviderReference("${var1} ${var2:default}"));
+
+    assertTrue(VariableStringResolver.hasValueProviderReference("${provider::var1}"));
+    assertTrue(VariableStringResolver.hasValueProviderReference("${var1} ${provider::var2:default}"));
   }
 
 }

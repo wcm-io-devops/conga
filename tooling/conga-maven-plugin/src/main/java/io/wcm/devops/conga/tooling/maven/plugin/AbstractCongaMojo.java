@@ -27,10 +27,9 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
 import io.wcm.devops.conga.tooling.maven.plugin.util.PluginConfigUtil;
 
 /**
@@ -42,25 +41,25 @@ abstract class AbstractCongaMojo extends AbstractMojo {
    * Source path with templates.
    */
   @Parameter(defaultValue = "${basedir}/src/main/templates")
-  private String templateDir;
+  private File templateDir;
 
   /**
    * Source path with role definitions.
    */
   @Parameter(defaultValue = "${basedir}/src/main/roles")
-  private String roleDir;
+  private File roleDir;
 
   /**
    * Target path for the generated configuration files.
    */
   @Parameter(defaultValue = "${project.build.directory}/configuration")
-  private String target;
+  private File target;
 
   /**
    * Source path with environment definitions.
    */
   @Parameter(defaultValue = "${basedir}/src/main/environments")
-  private String environmentDir;
+  private File environmentDir;
 
   /**
    * List for plugins for exporting model data for nodes.
@@ -108,20 +107,32 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter
   private String pluginConfig;
 
-  protected ResourceCollection getTemplateDir() {
-    return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + templateDir);
+  /**
+   * Allows to define custom artifact type to extension mappings for resolving dependencies from artifact coordinates
+   * where it is not fully clear if the an extension is really the extension or a artifact type identifier.
+   * Defaults to <code>bundle</code>-&gt;<code>jar</code>, <code>content-package</code>-&gt;<code>zip</code>.
+   */
+  @Parameter
+  private Map<String,String> artifactTypeMappings;
+
+  private static final Map<String, String> DEFAULT_ARTIFACT_TYPE_MAPPINGS = ImmutableMap.of(
+      "bundle", "jar",
+      "content-package", "zip");
+
+  protected File getTemplateDir() {
+    return templateDir;
   }
 
-  protected ResourceCollection getRoleDir() {
-    return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + roleDir);
+  protected File getRoleDir() {
+    return roleDir;
   }
 
-  protected ResourceCollection getEnvironmentDir() {
-    return getResourceLoader().getResourceCollection(ResourceLoader.FILE_PREFIX + environmentDir);
+  protected File getEnvironmentDir() {
+    return environmentDir;
   }
 
   protected File getTargetDir() {
-    return new File(target);
+    return target;
   }
 
   protected ModelExport getModelExport() {
@@ -143,6 +154,12 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     return PluginConfigUtil.getConfigMap(this.pluginConfig);
   }
 
-  protected abstract ResourceLoader getResourceLoader();
+  protected Map<String, String> getArtifactTypeMappings() {
+    Map<String, String> mappings = this.artifactTypeMappings;
+    if (mappings == null) {
+      mappings = DEFAULT_ARTIFACT_TYPE_MAPPINGS;
+    }
+    return mappings;
+  }
 
 }

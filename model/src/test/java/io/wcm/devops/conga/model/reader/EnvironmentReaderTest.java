@@ -61,6 +61,8 @@ public class EnvironmentReaderTest {
         "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "4096m")),
         "topologyConnectors", ImmutableList.of("http://host1${topologyConnectorPath}", "http://host2${topologyConnectorPath}")
         ), environment.getConfig());
+
+    assertEquals(ImmutableList.of("url1", "mvn:url2"), environment.getDependencies());
   }
 
   @Test

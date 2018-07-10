@@ -36,7 +36,7 @@ import io.wcm.devops.conga.resource.Resource;
 /**
  * Ensures that all template files references in role definitions point to an existing template.
  */
-public final class RoleTemplateFileValidator implements DefinitionValidator {
+public final class RoleTemplateFileValidator implements DefinitionValidator<Void> {
 
   private final ModelReader<Role> modelReader = new RoleReader();
 
@@ -50,20 +50,24 @@ public final class RoleTemplateFileValidator implements DefinitionValidator {
   }
 
   @Override
-  public void validate(Resource resource, String pathForLog) throws MojoFailureException {
+  public Void validate(Resource resource, String pathForLog) throws MojoFailureException {
     try {
       Role role = modelReader.read(resource);
       for (RoleFile roleFile : role.getFiles()) {
-        Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, roleFile.getCharset());
+
+        // validate template file
         String templateFile = FileUtil.getTemplatePath(role, roleFile);
         if (StringUtils.isNotEmpty(templateFile)) {
+          Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, roleFile.getCharset());
           handlebars.compile(templateFile);
         }
+
       }
     }
     /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
       throw new MojoFailureException("Role definition " + pathForLog + " is invalid:\n" + ex.getMessage());
     }
+    return null;
   }
 
 }

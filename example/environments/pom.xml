@@ -22,39 +22,39 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.example</artifactId>
     <version>1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  
+
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.example.environments</artifactId>
   <packaging>config</packaging>
 
   <name>CONGA Packaging Example: Environments</name>
   <description>Contains environment definitions and generates the configuration.</description>
-  
+
   <dependencies>
-  
+
     <!-- Reference role and template definitions from maven artifact -->
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.example.definitions</artifactId>
       <version>1-SNAPSHOT</version>
     </dependency>
-    
+
     <!-- Example reference for downloading maven artifact in CONGA -->
     <dependency>
       <groupId>io.wcm.devops</groupId>
       <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-      <version>1.0.8</version>
+      <version>1.0.10</version>
       <type>xml</type>
       <classifier>site</classifier>
     </dependency>
 
   </dependencies>
-  
+
 </project>

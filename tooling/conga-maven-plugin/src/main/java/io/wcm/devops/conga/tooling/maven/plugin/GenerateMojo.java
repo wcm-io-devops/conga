@@ -19,28 +19,11 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ENVIRONMENTS_DIR;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_ROLES_DIR;
-import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSPATH_TEMPLATES_DIR;
-
-import java.io.IOException;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.Map;
+import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.versioning.VersionRange;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -49,25 +32,24 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.RepositorySystem;
-
-import com.google.common.collect.ImmutableList;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.repository.RemoteRepository;
 
 import io.wcm.devops.conga.generator.Generator;
-import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.GeneratorOptions;
-import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
-import io.wcm.devops.conga.generator.util.FileUtil;
-import io.wcm.devops.conga.resource.ResourceCollection;
-import io.wcm.devops.conga.resource.ResourceLoader;
-import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePluginContext;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.util.PluginManager;
+import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.tooling.maven.plugin.util.ClassLoaderUtil;
+import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
+import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
 
 /**
  * Generates configuration using CONGA generator.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES, requiresProject = true, threadSafe = true,
-requiresDependencyResolution = ResolutionScope.COMPILE)
+    requiresDependencyResolution = ResolutionScope.COMPILE)
 public class GenerateMojo extends AbstractCongaMojo {
 
   /**
@@ -82,137 +64,86 @@ public class GenerateMojo extends AbstractCongaMojo {
   @Parameter(defaultValue = "false")
   private boolean deleteBeforeGenerate;
 
+  /**
+   * Plugin keys (groupId:artifactId) of additional Maven plugins of the current project's POM
+   * to be included in the model export version information.
+   */
+  @Parameter(defaultValue = "io.wcm.maven.plugins:wcmio-content-package-maven-plugin")
+  private String[] versionInfoAdditionalPlugins;
+
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
   @Component
-  private ArtifactResolver resolver;
-  @Component
-  private ArtifactHandlerManager artifactHandlerManager;
-  @Parameter(property = "session", readonly = true, required = true)
-  private MavenSession mavenSession;
-
-  @Component
-  private RepositorySystem repository;
-  @Parameter(property = "localRepository", required = true, readonly = true)
-  private ArtifactRepository localRepository;
-  @Parameter(property = "project.remoteArtifactRepositories", required = true, readonly = true)
-  private java.util.List<ArtifactRepository> remoteRepositories;
-
-  private ResourceLoader resourceLoader;
+  private RepositorySystem repoSystem;
+  @Parameter(property = "repositorySystemSession", readonly = true)
+  private RepositorySystemSession repoSession;
+  @Parameter(property = "project.remoteProjectRepositories", readonly = true)
+  private List<RemoteRepository> remoteRepos;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    ClassLoader resourceClassLoader = ClassLoaderUtil.buildDependencyClassLoader(project);
-    resourceLoader = new ResourceLoader(resourceClassLoader);
 
-    List<ResourceCollection> roleDirs = ImmutableList.of(getRoleDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_ROLES_DIR));
-    List<ResourceCollection> templateDirs = ImmutableList.of(getTemplateDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_TEMPLATES_DIR));
-    List<ResourceCollection> environmentDirs = ImmutableList.of(getEnvironmentDir(),
-        getResourceLoader().getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + CLASSPATH_ENVIRONMENTS_DIR));
+    MavenContext mavenContext = new MavenContext()
+        .project(project)
+        .repoSystem(repoSystem)
+        .repoSession(repoSession)
+        .remoteRepos(remoteRepos)
+        .artifactTypeMappings(getArtifactTypeMappings());
 
-    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
-        .baseDir(project.getBasedir())
-        .resourceClassLoader(resourceClassLoader)
-        .containerContext(new MavenUrlFilePluginContext()
-            .project(project)
-            .repository(repository)
-            .localRepository(localRepository)
-            .remoteRepositories(remoteRepositories));
+    PluginManager pluginManager = new PluginManagerImpl();
+
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(pluginManager)
+        .valueProviderConfig(getValueProviderConfig())
+        .genericPluginConfig(getPluginConfig())
+        .containerContext(mavenContext)
+        .logger(new MavenSlf4jLogFacade(getLog()));
 
     GeneratorOptions options = new GeneratorOptions()
-        .roleDirs(roleDirs)
-        .templateDirs(templateDirs)
-        .environmentDirs(environmentDirs)
+        .baseDir(project.getBasedir())
+        .roleDir(getRoleDir())
+        .templateDir(getTemplateDir())
+        .environmentDir(getEnvironmentDir())
         .destDir(getTargetDir())
-        .urlFilePluginContext(urlFilePluginContext)
         .deleteBeforeGenerate(deleteBeforeGenerate)
         .version(project.getVersion())
-        .dependencyVersions(buildDependencyVersionList())
         .modelExport(getModelExport())
         .valueProviderConfig(getValueProviderConfig())
-        .genericPluginConfig(getPluginConfig());
+        .genericPluginConfig(getPluginConfig())
+        .containerContext(mavenContext)
+        .containerClasspathUrls(ClassLoaderUtil.getMavenProjectClasspathUrls(project))
+        .pluginManager(pluginManager)
+        .dependencyVersionBuilder(new DependencyVersionBuilder(pluginContextOptions))
+        .containerVersionInfo(buildContainerVersionInfo())
+        .logger(new MavenSlf4jLogFacade(getLog()));
 
     Generator generator = new Generator(options);
-    generator.setLogger(new MavenSlf4jLogFacade(getLog()));
     generator.generate(environments);
   }
 
   /**
-   * Build list of referenced dependencies to be included in file header of generated files.
-   * @return Version list
+   * Build version information about CONGA Maven plugin and CONGA plugins, plus
+   * additional plugin versions as defined in plugin configuration. This version
+   * information is included in the model export.
+   * @return Version information
    */
-  @SuppressWarnings("deprecation")
-  private List<String> buildDependencyVersionList() {
-    getLog().info("Scanning dependencies for CONGA definitions...");
-    return project.getCompileDependencies().stream()
-        // include only dependencies with a CONGA-INF/ directory
-        .filter(this::hasCongaDefinitions)
-        // transform to string
-        .map(dependency -> dependency.getGroupId() + "/" + dependency.getArtifactId() + "/" + dependency.getVersion()
-        + (dependency.getClassifier() != null ? "/" + dependency.getClassifier() : ""))
-        .collect(Collectors.toList());
-  }
+  private Map<String, String> buildContainerVersionInfo() {
+    Map<String, String> versionInfo = new HashMap<>();
 
-  /**
-   * Checks if the JAR file of the given dependency has a CONGA-INF/ directory.
-   * @param dependency Dependency
-   * @return true if configuration definitions found
-   */
-  private boolean hasCongaDefinitions(Dependency dependency) {
-    if (!StringUtils.equals(dependency.getType(), "jar")) {
-      return false;
+    Properties pluginProps = VersionInfoUtil.getVersionInfoProperties(project);
+    for (Map.Entry<Object, Object> entry : pluginProps.entrySet()) {
+      versionInfo.put(entry.getKey().toString(), entry.getValue().toString());
     }
-    String fileInfo = dependency.toString();
-    try {
-      Artifact artifact = getArtifact(dependency);
-      fileInfo = FileUtil.getCanonicalPath(artifact.getFile());
-      try (ZipFile zipFile = new ZipFile(artifact.getFile())) {
-        Enumeration<? extends ZipEntry> entries = zipFile.entries();
-        while (entries.hasMoreElements()) {
-          ZipEntry entry = entries.nextElement();
-          if (StringUtils.startsWith(entry.getName(), BuildConstants.CLASSPATH_PREFIX)) {
-            return true;
-          }
-        }
+
+    for (String pluginKey : versionInfoAdditionalPlugins) {
+      String pluginVersion = VersionInfoUtil.getPluginVersionFromPluginManagement(pluginKey, project);
+      if (pluginVersion != null) {
+        versionInfo.put(pluginKey, pluginVersion);
       }
     }
-    catch (IOException ex) {
-      throw new GeneratorException("Unable to read from JAR file: " + fileInfo, ex);
-    }
-    return false;
-  }
 
-  /**
-   * Get a resolved Artifact from the coordinates provided
-   * @return the artifact, which has been resolved.
-   */
-  @SuppressWarnings("deprecation")
-  private Artifact getArtifact(Dependency dependency) throws IOException {
-    Artifact artifact = new DefaultArtifact(dependency.getGroupId(),
-        dependency.getArtifactId(),
-        VersionRange.createFromVersion(dependency.getVersion()),
-        dependency.getScope(),
-        dependency.getType(),
-        dependency.getClassifier(),
-        artifactHandlerManager.getArtifactHandler(dependency.getType()));
-    try {
-      this.resolver.resolve(artifact, this.project.getRemoteArtifactRepositories(), this.mavenSession.getLocalRepository());
-    }
-    catch (final ArtifactResolutionException ex) {
-      throw new IOException("Unable to get artifact for " + dependency, ex);
-    }
-    catch (ArtifactNotFoundException ex) {
-      throw new IOException("Unable to get artifact for " + dependency, ex);
-    }
-    return artifact;
-  }
-
-  @Override
-  protected ResourceLoader getResourceLoader() {
-    return resourceLoader;
+    return versionInfo;
   }
 
 }

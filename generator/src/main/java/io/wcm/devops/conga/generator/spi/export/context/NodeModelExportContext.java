@@ -22,8 +22,11 @@ package io.wcm.devops.conga.generator.spi.export.context;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.wcm.devops.conga.generator.spi.context.AbstractPluginContext;
+import io.wcm.devops.conga.generator.spi.yaml.context.YamlRepresenter;
+import io.wcm.devops.conga.generator.util.ModelExportConfigProcessor;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -41,6 +44,10 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   private Map<String, Object> config;
   private VariableStringResolver variableStringResolver;
   private VariableMapResolver variableMapResolver;
+  private Map<String, String> containerVersionInfo;
+  private Set<String> sensitiveConfigParameters;
+  private ModelExportConfigProcessor modelExportConfigProcessor;
+  private YamlRepresenter yamlRepresenter;
 
   /**
    * @return Node
@@ -151,6 +158,64 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
    */
   public NodeModelExportContext variableMapResolver(VariableMapResolver value) {
     this.variableMapResolver = value;
+    return this;
+  }
+
+  /**
+   * @return Version information from container, e.g. configured Maven plugin versions
+   */
+  public Map<String, String> getContainerVersionInfo() {
+    return this.containerVersionInfo;
+  }
+
+  /**
+   * @param value Version information from container, e.g. configured Maven plugin versions
+   * @return this
+   */
+  public NodeModelExportContext containerVersionInfo(Map<String, String> value) {
+    this.containerVersionInfo = value;
+    return this;
+  }
+
+  /**
+   * @return List of configuration parameter names that contain sensitive data.
+   */
+  public Set<String> getSensitiveConfigParameters() {
+    return this.sensitiveConfigParameters;
+  }
+
+  /**
+   * @param value List of configuration parameter names that contain sensitive data
+   * @return this
+   */
+  public NodeModelExportContext sensitiveConfigParameters(Set<String> value) {
+    this.sensitiveConfigParameters = value;
+    return this;
+  }
+
+  /**
+   * @return Model export configuration processor
+   */
+  public ModelExportConfigProcessor getModelExportConfigProcessor() {
+    if (this.modelExportConfigProcessor == null) {
+      this.modelExportConfigProcessor = new ModelExportConfigProcessor(getPluginContextOptions(), getSensitiveConfigParameters());
+    }
+    return this.modelExportConfigProcessor;
+  }
+
+  /**
+   * @return YAML representer
+   */
+  public YamlRepresenter getYamlRepresenter() {
+    return this.yamlRepresenter;
+  }
+
+  /**
+   * @param value YAML representer
+   * @return this
+   */
+  public NodeModelExportContext yamlRepresenter(YamlRepresenter value) {
+    this.yamlRepresenter = value;
     return this;
   }
 
