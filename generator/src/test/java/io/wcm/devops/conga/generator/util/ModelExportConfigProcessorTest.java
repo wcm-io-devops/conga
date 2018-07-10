@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -27,12 +27,12 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.ImmutableList;
@@ -43,7 +43,7 @@ import io.wcm.devops.conga.generator.spi.ValueEncryptionPlugin;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueEncryptionContext;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ModelExportConfigProcessorTest {
 
   private static final Set<String> SENSITIVE_PARAMS = ImmutableSet.of(
@@ -64,7 +64,7 @@ public class ModelExportConfigProcessorTest {
 
   private ModelExportConfigProcessor underTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // simulate valueEncryptPlugin that prepends {enc} to the value
     when(pluginManager.getAll(ValueEncryptionPlugin.class)).thenReturn(ImmutableList.of(valueEncryptPlugin));

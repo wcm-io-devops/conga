@@ -19,12 +19,12 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.valueprovider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.maven.project.MavenProject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
@@ -35,7 +35,6 @@ import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
 
-
 public class MavenPropertyValueProviderPluginTest {
 
   private ValueProviderPlugin underTest;
@@ -43,7 +42,7 @@ public class MavenPropertyValueProviderPluginTest {
 
   private MavenProject mavenProject;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     mavenProject = new MavenProject();
 

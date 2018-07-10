@@ -105,9 +105,11 @@ public class UrlFileManagerTest {
     }
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testGetFileUrl_Invalid() throws Exception {
-    underTest.getFileUrl("other:/x/y/z");
+    assertThrows(IOException.class, () -> {
+      underTest.getFileUrl("other:/x/y/z");
+    });
   }
 
 }

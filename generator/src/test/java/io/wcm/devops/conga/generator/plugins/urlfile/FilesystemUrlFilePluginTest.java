@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator.plugins.urlfile;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -70,9 +71,11 @@ public class FilesystemUrlFilePluginTest {
     }
   }
 
-  @Test(expected = FileNotFoundException.class)
+  @Test
   public void testGetFile_NonExisting() throws Exception {
-    underTest.getFile("file:non-existing-file", context);
+    assertThrows(FileNotFoundException.class, () -> {
+      underTest.getFile("file:non-existing-file", context);
+    });
   }
 
   @Test
@@ -85,9 +88,11 @@ public class FilesystemUrlFilePluginTest {
     }
   }
 
-  @Test(expected = FileNotFoundException.class)
+  @Test
   public void testGetFileUrl_NonExisting() throws Exception {
-    underTest.getFileUrl("file:non-existing-file", context);
+    assertThrows(FileNotFoundException.class, () -> {
+      underTest.getFileUrl("file:non-existing-file", context);
+    });
   }
 
 }
