@@ -19,28 +19,30 @@
  */
 package io.wcm.devops.conga.generator.spi.yaml.context;
 
+import org.yaml.snakeyaml.constructor.Constructor;
+
 import io.wcm.devops.conga.generator.spi.context.AbstractPluginContext;
 
 /**
- * Context for {@link io.wcm.devops.conga.generator.spi.yaml.YamlRepresentPlugin}.
+ * Context for {@link io.wcm.devops.conga.generator.spi.yaml.YamlConstructorPlugin}.
  */
-public final class YamlRepresentContext extends AbstractPluginContext<YamlRepresentContext> {
+public final class YamlConstructorContext extends AbstractPluginContext<YamlConstructorContext> {
 
-  private YamlRepresenter yamlRepresenter;
+  private Constructor yamlConstructor;
 
   /**
-   * @return YAML representer
+   * @return YAML constructor
    */
-  public YamlRepresenter getYamlRepresenter() {
-    return this.yamlRepresenter;
+  public Constructor getYamlConstructor() {
+    return this.yamlConstructor;
   }
 
   /**
-   * @param value YAML representer
+   * @param value YAML constructor
    * @return this
    */
-  public YamlRepresentContext yamlRepresenter(YamlRepresenter value) {
-    this.yamlRepresenter = value;
+  public YamlConstructorContext yamlConstructor(Constructor value) {
+    this.yamlConstructor = value;
     return this;
   }
 

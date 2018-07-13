@@ -19,14 +19,15 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -42,7 +43,7 @@ public class VariableStringResolverTest {
   private ValueProviderGlobalContext globalContext;
   private VariableStringResolver underTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(new PluginManagerImpl());
@@ -85,18 +86,22 @@ public class VariableStringResolverTest {
     assertEquals("v1,v1v1,v1v1v1", underTest.resolve("${var1},${var2},${var3}", variables));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNestedVariables_IllegalRecursion() {
     Map<String, Object> variables = ImmutableMap.of("var1", "${var2}", "var2", "${var1}");
 
-    underTest.resolve("${var1}", variables);
+    assertThrows(IllegalArgumentException.class, () -> {
+      underTest.resolve("${var1}", variables);
+    });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUnknownVariable() {
     Map<String, Object> variables = ImmutableMap.of();
 
-    underTest.resolve("${var1}", variables);
+    assertThrows(IllegalArgumentException.class, () -> {
+      underTest.resolve("${var1}", variables);
+    });
   }
 
   @Test

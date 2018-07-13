@@ -19,12 +19,13 @@
  */
 package io.wcm.devops.conga.generator.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -37,7 +38,7 @@ public class JexlResolverTest {
   private Map<String, Object> object1;
   private Map<String, Object> object2;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     underTest = new JexlResolver();
     object2 = ImmutableMap.of("var4", "value4");
@@ -66,9 +67,11 @@ public class JexlResolverTest {
     assertEquals("value4", underTest.resolve("object1.object2.var4", variables));
   }
 
-  @Test(expected = GeneratorException.class)
+  @Test
   public void testInvalidExpressions() {
-    underTest.resolve("'abc", variables);
+    assertThrows(GeneratorException.class, () -> {
+      underTest.resolve("'abc", variables);
+    });
   }
 
 }

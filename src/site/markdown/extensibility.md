@@ -21,10 +21,11 @@ Other plugins:
 * **Multiply Plugin**: Plugin controls the generation of multiple files from a single file definition.
 * **Value Provider Plugin**: Allows to provide values form external sources, which can be referenced like variables
 * **Value Encryption Plugin**: Encrypts a sensitive configuration parameter value e.g. for YAML model file export.
-* **Node Model Export Plugin**: Allows to export "model data" (expanded configurations, list of generated files and tenants) from CONGA to a file which can be picked up by infrastructure automation tools
-* **URL File Plugin**: Allows to copy or download files from external sources identified via "URL prefixes"
+* **Node Model Export Plugin**: Allows to export "model data" (expanded configurations, list of generated files and tenants) from CONGA to a file which can be picked up by infrastructure automation tools.
+* **URL File Plugin**: Allows to copy or download files from external sources identified via "URL prefixes".
 * **Handlebars Helper Plugin**: Plugin allows to register your own Handlebar helper to define custom handlebar expression usable in the CONGA templates.
-* **YAML Represent Plugin**: Allows to customize the YAML file generation by adding custom represent implementations e.g. for encrypted values
+* **YAML Represent Plugin**: Allows to customize the YAML file generation by adding custom represent implementations e.g. for encrypted values.
+* **YAML Constructor Plugin**: Allows to customize the constructor for parsing YAML files.
 
 See API documentation for the detailed plugin interfaces:
 

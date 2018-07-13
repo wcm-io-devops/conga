@@ -17,21 +17,20 @@
  * limitations under the License.
  * #L%
  */
-package io.wcm.devops.conga.tooling.maven.plugin.util;
+package io.wcm.devops.conga.generator.spi.yaml;
 
-import static io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil.cleanupSnapshotVersion;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import io.wcm.devops.conga.generator.spi.Plugin;
+import io.wcm.devops.conga.generator.spi.yaml.context.YamlConstructorContext;
 
-import org.junit.jupiter.api.Test;
+/**
+ * Plugin that allows to customize SnakeYAML {@link org.yaml.snakeyaml.constructor.Constructor} implementation.
+ */
+public interface YamlConstructorPlugin extends Plugin {
 
-public class VersionInfoUtilTest {
-
-  @Test
-  public void testCleanupSnapshotVersion() {
-    assertEquals("1", cleanupSnapshotVersion("1"));
-    assertEquals("1.2.3", cleanupSnapshotVersion("1.2.3"));
-    assertEquals("1.1-SNAPSHOT", cleanupSnapshotVersion("1.1-SNAPSHOT"));
-    assertEquals("2.1.2-SNAPSHOT", cleanupSnapshotVersion("2.1.2-20180125.094723-16"));
-  }
+  /**
+   * Register YAML constructor modifications.
+   * @param context Context
+   */
+  void register(YamlConstructorContext context);
 
 }

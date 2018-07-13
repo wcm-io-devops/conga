@@ -19,8 +19,8 @@
  */
 package io.wcm.devops.conga.generator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,19 +63,22 @@ public final class TestUtils {
 
   public static File assertDirectory(File assertBaseDir, String path) {
     File dir = new File(assertBaseDir, path);
-    assertTrue("Directory does not exist: " + FileUtil.getCanonicalPath(dir), dir.exists() && dir.isDirectory());
+    assertTrue(dir.exists() && dir.isDirectory(),
+        "Directory does not exist: " + FileUtil.getCanonicalPath(dir));
     return dir;
   }
 
   public static File assertFile(File assertBaseDir, String path) {
     File file = new File(assertBaseDir, path);
-    assertTrue("File does not exist: " + FileUtil.getCanonicalPath(file), file.exists() && file.isFile());
+    assertTrue(file.exists() && file.isFile(),
+        "File does not exist: " + FileUtil.getCanonicalPath(file));
     return file;
   }
 
   public static void assertNotFile(File assertBaseDir, String path) {
     File file = new File(assertBaseDir, path);
-    assertFalse("File does exist: " + FileUtil.getCanonicalPath(file), file.exists() && file.isFile());
+    assertFalse(file.exists() && file.isFile(),
+        "File does exist: " + FileUtil.getCanonicalPath(file));
   }
 
   public static void assertContains(File file, String contains) {
@@ -85,7 +88,8 @@ public final class TestUtils {
   public static void assertContains(File file, String contains, Charset charset) {
     try {
       String fileContent = FileUtils.readFileToString(file, charset);
-      assertTrue("File " + FileUtil.getCanonicalPath(file) + " does not contain: " + contains, StringUtils.contains(fileContent, contains));
+      assertTrue(StringUtils.contains(fileContent, contains),
+          "File " + FileUtil.getCanonicalPath(file) + " does not contain: " + contains);
     }
     catch (IOException ex) {
       throw new RuntimeException("Unable to read contents from: " + FileUtil.getCanonicalPath(file), ex);

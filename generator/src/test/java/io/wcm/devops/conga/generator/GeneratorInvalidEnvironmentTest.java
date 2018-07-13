@@ -20,26 +20,29 @@
 package io.wcm.devops.conga.generator;
 
 import static io.wcm.devops.conga.generator.TestUtils.setupGenerator;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GeneratorInvalidEnvironmentTest {
 
   private Generator underTest;
   private File destDir;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     destDir = new File("target/generation-test/" + getClass().getSimpleName());
     underTest = setupGenerator(destDir);
   }
 
-  @Test(expected = GeneratorException.class)
+  @Test
   public void testInvalidEnvironments() {
-    underTest.generate("unknown");
+    assertThrows(GeneratorException.class, () -> {
+      underTest.generate("unknown");
+    });
   }
 
 }
