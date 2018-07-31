@@ -23,6 +23,15 @@ To join a list of values with a separator character:
 ```
 
 
+### replace
+
+Replace some characters in a string:
+
+```
+{{replace group1.param1 "." "_"}}
+```
+
+
 ### ifEquals
 
 Conditional if statement - block is rendered if expression equals to an argument:
