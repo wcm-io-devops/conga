@@ -48,9 +48,10 @@ public final class VariableStringResolver {
   private static final int EXPRESSION_POS_DOLLAR_SIGN = 1;
   private static final int EXPRESSION_POS_EXPRESSION = 2;
 
-  private static final int VARIABLE_POS_VALUE_PROVIDER_NAME = 2;
-  private static final int VARIABLE_POS_VARIABLE = 3;
-  private static final int VARIABLE_POS_DEFAULT_VALUE = 5;
+  private static final int VARIABLE_POS_VARIABLE_1 = 2;
+  private static final int VARIABLE_POS_VALUE_PROVIDER_NAME = 4;
+  private static final int VARIABLE_POS_VARIABLE_2 = 5;
+  private static final int VARIABLE_POS_DEFAULT_VALUE = 7;
 
   private static final String EXPRESSION_PATTERN = "(\\\\?\\$)"
       + "\\{(" + EXPRESSION_STRING + ")\\}";
@@ -58,8 +59,13 @@ public final class VariableStringResolver {
   private static final Pattern MULTI_EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN);
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
-  private static final Pattern VARIABLE_PATTERN = Pattern.compile("((" + NAME_PATTERN_STRING_NOT_EMPTY + ")\\:\\:)?"
-      + "(" + NAME_PATTERN_STRING_NOT_EMPTY + ")"
+  /*
+   * Either expect single strict variable name, or allow more complex expressions (e.g. jsonpath)
+   * if a value provider plugin is referenced.
+   */
+  private static final Pattern VARIABLE_PATTERN = Pattern.compile("((" + NAME_PATTERN_STRING_NOT_EMPTY + ")|"
+      + "((" + NAME_PATTERN_STRING_NOT_EMPTY + ")\\:\\:)"
+      + "([^\\}\\{]*?))"
       + "(\\:(" + NAME_PATTERN_STRING_OR_EMPTY + "))?");
 
   private final VariableResolver variableResolver;
@@ -178,7 +184,7 @@ public final class VariableStringResolver {
       // resolve variable
       if (variableMatcher.matches()) {
         String valueProviderName = variableMatcher.group(VARIABLE_POS_VALUE_PROVIDER_NAME);
-        String variable = variableMatcher.group(VARIABLE_POS_VARIABLE);
+        String variable = StringUtils.defaultString(variableMatcher.group(VARIABLE_POS_VARIABLE_1), variableMatcher.group(VARIABLE_POS_VARIABLE_2));
         String defaultValueString = variableMatcher.group(VARIABLE_POS_DEFAULT_VALUE);
 
         Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
@@ -233,7 +239,7 @@ public final class VariableStringResolver {
         // resolve variable
         if (variableMatcher.matches()) {
           String valueProviderName = variableMatcher.group(VARIABLE_POS_VALUE_PROVIDER_NAME);
-          String variable = variableMatcher.group(VARIABLE_POS_VARIABLE);
+          String variable = StringUtils.defaultString(variableMatcher.group(VARIABLE_POS_VARIABLE_1), variableMatcher.group(VARIABLE_POS_VARIABLE_2));
           String defaultValueString = variableMatcher.group(VARIABLE_POS_DEFAULT_VALUE);
 
           Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);

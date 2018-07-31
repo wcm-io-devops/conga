@@ -174,6 +174,10 @@ public class VariableStringResolverTest {
     assertEquals("The v1 and value1", underTest.resolve("The ${var1} and ${customProvider::" + propertyName1 + "}", variables));
     assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${customProvider::" + propertyName2 + ":theDefValue}", variables));
 
+    // test with more complex epxression for custom value provider (e.g. jsonpath)
+    assertEquals("Value: theDefValue", underTest.resolve("Value: ${customProvider::$.jsonpathexpr:theDefValue}", variables));
+    assertEquals("Value: theDefValue", underTest.resolve("Value: ${customProvider::$.jsonpathexpr[2:3]:theDefValue}", variables));
+
     System.clearProperty(propertyName1);
     System.clearProperty(propertyName2);
   }
