@@ -24,6 +24,9 @@
   <body>
 
     <release version="1.9.4" date="not released">
+      <action type="add" dev="trichter">
+        Add "replace" handlebars helper.
+      </action>
       <action type="update" dev="sseifert">
         Allow custom expressions in value provider variable references.
       </action>
