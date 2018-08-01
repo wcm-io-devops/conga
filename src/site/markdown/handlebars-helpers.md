@@ -42,6 +42,16 @@ Conditional if statement - block is rendered if expression equals to an argument
 {{/ifEquals}}
 ```
 
+### ifNotEquals
+
+Conditional if statement - block is rendered if expression unequals to
+an argument:
+
+```
+{{#ifNotEquals group1.param1 "myValue"}}
+  condition met block...
+{{/ifEquals}}
+```
 
 ### defaultIfEmpty
 

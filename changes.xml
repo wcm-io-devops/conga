@@ -27,6 +27,9 @@
       <action type="add" dev="trichter">
         Add "replace" handlebars helper.
       </action>
+      <action type="add" dev="trichter">
+        Add "ifNotEquals" handlebars helper.
+      </action>
       <action type="update" dev="sseifert">
         Allow custom expressions in value provider variable references.
       </action>
