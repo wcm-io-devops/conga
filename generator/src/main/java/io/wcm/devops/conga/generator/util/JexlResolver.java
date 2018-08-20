@@ -36,6 +36,8 @@ import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.MapContext;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.ImmutableMap;
+
 import io.wcm.devops.conga.generator.GeneratorException;
 
 final class JexlResolver {
@@ -45,9 +47,13 @@ final class JexlResolver {
   private final JexlEngine jexl;
   private final VariableMapResolver variableMapResolver;
 
+  private static final Map<String, Object> JEXL_FUNCTION_NS = ImmutableMap.of(
+      "stringUtils", StringUtils.class);
+
   JexlResolver(VariableMapResolver variableMapResolver) {
     this.jexl = new JexlBuilder()
         .cache(CACHE_SIZE)
+        .namespaces(JEXL_FUNCTION_NS)
         .create();
     this.variableMapResolver = variableMapResolver;
   }

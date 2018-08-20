@@ -27,6 +27,9 @@
       <action type="fix" dev="sseifert">
         Resolve (trivial) variable references in map context of expression language expressions.
       </action>
+      <action type="update" dev="sseifert">
+        Allow access to StringUtils methods in expression language expressions.
+      </action>
     </release>
 
     <release version="1.10.0" date="2018-08-17">
