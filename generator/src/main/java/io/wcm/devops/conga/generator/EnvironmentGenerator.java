@@ -115,8 +115,8 @@ class EnvironmentGenerator {
     // prepare variable resolvers
     ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
         .pluginContextOptions(this.pluginContextOptions);
-    this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
     this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
+    this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext, variableMapResolver);
     this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
 
     // build resource loaded based on combined dependency lists of environment and container

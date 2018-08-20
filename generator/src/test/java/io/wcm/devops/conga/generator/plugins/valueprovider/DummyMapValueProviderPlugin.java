@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator.plugins.valueprovider;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
@@ -46,7 +47,8 @@ public class DummyMapValueProviderPlugin implements ValueProviderPlugin {
     if (StringUtils.equals(variableName, "map")) {
       return ImmutableMap.of(
           "param1", "value1",
-          "param2", 5);
+          "param2", 5,
+          "listParam", ImmutableList.of("v1", "v2", "v3"));
     }
     else {
       return null;

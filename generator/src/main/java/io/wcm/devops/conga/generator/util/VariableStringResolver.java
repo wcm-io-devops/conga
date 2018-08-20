@@ -45,8 +45,8 @@ public final class VariableStringResolver {
   private static final String NAME_PATTERN_STRING_OR_EMPTY = NAME_PATTERN_STRING + "*";
   private static final String EXPRESSION_STRING = "[^\\}\\{]+";
 
-  private static final int EXPRESSION_POS_DOLLAR_SIGN = 1;
-  private static final int EXPRESSION_POS_EXPRESSION = 2;
+  static final int EXPRESSION_POS_DOLLAR_SIGN = 1;
+  static final int EXPRESSION_POS_EXPRESSION = 2;
 
   private static final int VARIABLE_POS_VARIABLE_1 = 2;
   private static final int VARIABLE_POS_VALUE_PROVIDER_NAME = 4;
@@ -56,14 +56,14 @@ public final class VariableStringResolver {
   private static final String EXPRESSION_PATTERN = "(\\\\?\\$)"
       + "\\{(" + EXPRESSION_STRING + ")\\}";
   static final Pattern SINGLE_EXPRESSION_PATTERN = Pattern.compile("^" + EXPRESSION_PATTERN + "$");
-  private static final Pattern MULTI_EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN);
+  static final Pattern MULTI_EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_PATTERN);
   private static final int REPLACEMENT_MAX_ITERATIONS = 20;
 
   /*
    * Either expect single strict variable name, or allow more complex expressions (e.g. jsonpath)
    * if a value provider plugin is referenced.
    */
-  private static final Pattern VARIABLE_PATTERN = Pattern.compile("((" + NAME_PATTERN_STRING_NOT_EMPTY + ")|"
+  static final Pattern VARIABLE_PATTERN = Pattern.compile("((" + NAME_PATTERN_STRING_NOT_EMPTY + ")|"
       + "((" + NAME_PATTERN_STRING_NOT_EMPTY + ")\\:\\:)"
       + "([^\\}\\{]*?))"
       + "(\\:(" + NAME_PATTERN_STRING_OR_EMPTY + "))?");
@@ -73,10 +73,12 @@ public final class VariableStringResolver {
 
   /**
    * @param valueProviderGlobalContext Value provider global context
+   * @param variableMapResolver Variable map resolver
    */
-  public VariableStringResolver(ValueProviderGlobalContext valueProviderGlobalContext) {
+  public VariableStringResolver(ValueProviderGlobalContext valueProviderGlobalContext,
+      VariableMapResolver variableMapResolver) {
     this.variableResolver = new VariableResolver(valueProviderGlobalContext);
-    this.jexlResolver = new JexlResolver();
+    this.jexlResolver = new JexlResolver(variableMapResolver);
   }
 
   /**

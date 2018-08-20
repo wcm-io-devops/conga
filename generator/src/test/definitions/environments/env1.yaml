@@ -46,6 +46,8 @@ config:
   - e2
   - _merge_
   tenantNameSuffix: _TenantSuffix
+  listParamFromValueProvider: ${dummy-map::map.listParam}
+  listParamJoined: ${new('java.lang.String').join('|',listParamFromValueProvider)}
 
 
 # Tenant defintions
