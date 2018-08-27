@@ -63,7 +63,7 @@ public final class VariableMapResolver {
    * @param valueProviderGlobalContext Value provider global context
    */
   public VariableMapResolver(ValueProviderGlobalContext valueProviderGlobalContext) {
-    this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
+    this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext, this);
   }
 
   /**

@@ -47,7 +47,9 @@ public class VariableStringResolverExpressionTest {
         .pluginManager(new PluginManagerImpl());
     globalContext = new ValueProviderGlobalContext()
         .pluginContextOptions(pluginContextOptions);
-    underTest = new VariableStringResolver(globalContext);
+
+    VariableMapResolver variableMapResolver = new VariableMapResolver(globalContext);
+    underTest = new VariableStringResolver(globalContext, variableMapResolver);
   }
 
   @Test
@@ -110,6 +112,13 @@ public class VariableStringResolverExpressionTest {
     Map<String, Object> variables = ImmutableMap.of("var1", ImmutableList.of("v1", "v2", ImmutableList.of("v31", "v32")));
 
     assertEquals("The v1,v2,v31,v32", underTest.resolve("The ${ var1 }", variables));
+  }
+
+  @Test
+  public void testListVariable_StringJoin() {
+    Map<String, Object> variables = ImmutableMap.of("var1", ImmutableList.of("v1", "v2", "v3"));
+
+    assertEquals("The v1 v2 v3", underTest.resolve("The ${new('java.lang.String').join(' ',var1)}", variables));
   }
 
   @Test

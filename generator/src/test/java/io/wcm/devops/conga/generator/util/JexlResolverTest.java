@@ -30,6 +30,8 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
+import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
 public class JexlResolverTest {
 
@@ -40,10 +42,24 @@ public class JexlResolverTest {
 
   @BeforeEach
   public void setUp() {
-    underTest = new JexlResolver();
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(new PluginManagerImpl());
+    ValueProviderGlobalContext context = new ValueProviderGlobalContext()
+        .pluginContextOptions(pluginContextOptions);
+    VariableMapResolver variableMapResolver = new VariableMapResolver(context);
+
+    underTest = new JexlResolver(variableMapResolver);
     object2 = ImmutableMap.of("var4", "value4");
     object1 = ImmutableMap.of("var3", "value3", "object2", object2);
-    variables = ImmutableMap.of("var1", "value1", "var2", 123, "object1", object1);
+    variables = ImmutableMap.<String, Object>builder()
+        .put("var1", "value1")
+        .put("var2", 123)
+        .put("object1", object1)
+        .put("refVar1", "${var1}")
+        .put("refVar2", "${var2}")
+        .put("refCombined", "${object1.var3}|${var1}")
+        .put("jexlExpr", "${object1.var3 + ';' + var1}")
+        .build();
   }
 
   @Test

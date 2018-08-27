@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
+import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 
 /**
@@ -87,7 +88,8 @@ public final class ClassLoaderUtil {
 
     ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
         .pluginContextOptions(pluginContextOptions);
-    VariableStringResolver variableStringResolver = new VariableStringResolver(valueProviderGlobalContext);
+    VariableMapResolver variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
+    VariableStringResolver variableStringResolver = new VariableStringResolver(valueProviderGlobalContext, variableMapResolver);
 
     // resolver variables without config map - thus supporting only value providers with external values
     return variableStringResolver.resolveString(dependencyUrl, ImmutableMap.of());

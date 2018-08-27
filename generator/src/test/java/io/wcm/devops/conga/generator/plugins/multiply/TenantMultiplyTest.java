@@ -73,14 +73,18 @@ public class TenantMultiplyTest {
         .pluginManager(pluginManager);
     ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
         .pluginContextOptions(pluginContextOptions);
+
+    VariableMapResolver variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
+    VariableStringResolver variableStringResolver = new VariableStringResolver(valueProviderGlobalContext, variableMapResolver);
+
     context = new MultiplyContext()
         .pluginContextOptions(pluginContextOptions)
         .role(role)
         .roleFile(roleFile)
         .environment(environment)
         .config(config)
-        .variableStringResolver(new VariableStringResolver(valueProviderGlobalContext))
-        .variableMapResolver(new VariableMapResolver(valueProviderGlobalContext));
+        .variableStringResolver(variableStringResolver)
+        .variableMapResolver(variableMapResolver);
   }
 
   @Test

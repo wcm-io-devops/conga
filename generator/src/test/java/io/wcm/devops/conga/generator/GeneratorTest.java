@@ -68,6 +68,9 @@ public class GeneratorTest {
     assertContains(text1, ContextProperties.TENANTS + ": tenant1,tenant2,tenant3_TenantSuffix", StandardCharsets.ISO_8859_1);
     assertContains(text1, ContextProperties.TENANTS_BY_ROLE + ": tenant1,tenant2", StandardCharsets.ISO_8859_1);
 
+    assertContains(text1, "listParamFromValueProvider: [v1, v2, v3]", StandardCharsets.ISO_8859_1);
+    assertContains(text1, "listParamJoined: v1|v2|v3", StandardCharsets.ISO_8859_1);
+
     File json1 = assertFile(node1Dir, "json/test.json");
     assertContains(json1, "JSON file äöüß€ with UTF-8 encoding");
     assertContains(json1, "\"defaultString\": \"value2\"");

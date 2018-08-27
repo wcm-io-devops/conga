@@ -49,7 +49,8 @@ public class VariableStringResolverTest {
         .pluginManager(new PluginManagerImpl());
     globalContext = new ValueProviderGlobalContext()
         .pluginContextOptions(pluginContextOptions);
-    underTest = new VariableStringResolver(globalContext);
+    VariableMapResolver variableMapResolver = new VariableMapResolver(globalContext);
+    underTest = new VariableStringResolver(globalContext, variableMapResolver);
   }
 
   @Test
@@ -174,7 +175,7 @@ public class VariableStringResolverTest {
     assertEquals("The v1 and value1", underTest.resolve("The ${var1} and ${customProvider::" + propertyName1 + "}", variables));
     assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${customProvider::" + propertyName2 + ":theDefValue}", variables));
 
-    // test with more complex epxression for custom value provider (e.g. jsonpath)
+    // test with more complex expression for custom value provider (e.g. jsonpath)
     assertEquals("Value: theDefValue", underTest.resolve("Value: ${customProvider::$.jsonpathexpr:theDefValue}", variables));
     assertEquals("Value: theDefValue", underTest.resolve("Value: ${customProvider::$.jsonpathexpr[2:3]:theDefValue}", variables));
 
@@ -188,6 +189,11 @@ public class VariableStringResolverTest {
 
     assertEquals("The v1 and value1 and 5", underTest.resolve("The ${var1} and ${dummy-map::map.param1} and ${dummy-map::map.param2}", variables));
     assertEquals("The v1 and theDefValue", underTest.resolve("The ${var1} and ${dummy-map::map.paramNotDefined:theDefValue}", variables));
+  }
+
+  @Test
+  public void testDummyMapValueProvider_ListReturnValue() {
+    assertEquals(ImmutableList.of("v1", "v2", "v3"), underTest.resolve("${dummy-map::map.listParam}", ImmutableMap.of()));
   }
 
   @Test
