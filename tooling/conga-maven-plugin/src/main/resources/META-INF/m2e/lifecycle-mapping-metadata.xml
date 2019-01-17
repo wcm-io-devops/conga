@@ -27,11 +27,10 @@
       <pluginExecutionFilter>
         <goals>
           <goal>definition-package</goal>
-          <goal>definition-validate</goal>
           <goal>generate</goal>
           <goal>generate-version-info</goal>
           <goal>package</goal>
-          <goal>validate-version-info</goal>
+          <goal>validate</goal>
         </goals>
       </pluginExecutionFilter>
       <action>
