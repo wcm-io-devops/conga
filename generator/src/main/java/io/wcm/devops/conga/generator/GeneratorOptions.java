@@ -196,7 +196,7 @@ public final class GeneratorOptions {
   }
 
   /**
-   * If it is allowed to create symlinks instead of copying files if they are local files.
+   * Is it allowed to create symlinks instead of copying files if they are local files.
    * @return Allow symlinks
    */
   public boolean isAllowSymlinks() {
