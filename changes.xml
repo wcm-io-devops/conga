@@ -24,6 +24,9 @@
   <body>
 
     <release version="1.10.4" date="not released">
+      <action type="update" dev="sseifert">
+        Update dependencies.
+      </action>
       <action type="fix" dev="sseifert">
         conga-maven-plugin: Include 'validate' goal in ignore list for m2e.
       </action>
