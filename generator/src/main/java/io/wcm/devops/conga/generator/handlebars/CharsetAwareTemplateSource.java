@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator.handlebars;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
 
@@ -34,19 +35,19 @@ import io.wcm.devops.conga.resource.Resource;
 class CharsetAwareTemplateSource extends AbstractTemplateSource {
 
   private final Resource file;
-  private final String charset;
+  private final String templateCharset;
   private final String location;
 
   CharsetAwareTemplateSource(Resource file, String charset, String location) {
     this.file = file;
-    this.charset = charset;
+    this.templateCharset = charset;
     this.location = location;
   }
 
   @Override
-  public String content() throws IOException {
+  public String content(Charset charset) throws IOException {
     try (InputStream is = file.getInputStream()) {
-      return IOUtils.toString(is, charset);
+      return IOUtils.toString(is, templateCharset);
     }
   }
 

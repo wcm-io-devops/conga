@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -125,6 +126,26 @@ public final class UrlFileManager {
       }
       return null;
     });
+  }
+
+  /**
+   * Checks if the given file is a file from the local file system and can be safely referenced via symlink.
+   * @param url URL string (including prefix)
+   * @return true if file is a local file
+   * @throws IOException If the access to the file failed
+   */
+  public boolean isLocalFile(String url) throws IOException {
+    return handleFile(url, plugin -> plugin.isLocalFile(url, context));
+  }
+
+  /**
+   * Get local file reference to given URL.
+   * @param url URL string (including prefix)
+   * @return Local file reference.
+   * @throws IOException If the access to the file failed
+   */
+  public File getLocalFile(String url) throws IOException {
+    return handleFile(url, plugin -> plugin.getLocalFile(url, context));
   }
 
   private <T> T handleFile(String url, FileHandler<T> fileHandler) throws IOException {
