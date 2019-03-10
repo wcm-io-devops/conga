@@ -62,22 +62,19 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public String getFileName(String url, UrlFilePluginContext context) throws IOException {
-    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
-    File file = mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
+    File file = getLocalFile(url, context);
     return file.getName();
   }
 
   @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
-    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
-    File file = mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
+    File file = getLocalFile(url, context);
     return new BufferedInputStream(new FileInputStream(file));
   }
 
   @Override
   public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
-    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
-    File file = mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
+    File file = getLocalFile(url, context);
     return file.toURI().toURL();
   }
 
@@ -98,8 +95,20 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
     return urls;
   }
 
+  @Override
+  public boolean isLocalFile(String url, UrlFilePluginContext context) throws IOException {
+    File file = getLocalFile(url, context);
+    return file != null;
+  }
+
+  @Override
+  public File getLocalFile(String url, UrlFilePluginContext context) throws IOException {
+    MavenArtifactHelper mavenArtifactHelper = new MavenArtifactHelper(context.getEnvironment(), context.getPluginContextOptions());
+    return mavenArtifactHelper.resolveArtifact(getMavenCoords(url)).getFile();
+  }
+
   /**
-   * Get Maven coordindats
+   * Get Maven coordinates
    * @param url Maven url staring with mvn:
    * @return Maven coordinates
    */

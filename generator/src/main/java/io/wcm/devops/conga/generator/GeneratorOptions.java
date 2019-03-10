@@ -66,6 +66,7 @@ public final class GeneratorOptions {
   private File destDir;
   private boolean deleteBeforeGenerate;
   private String version;
+  private boolean allowSymlinks = true;
   private ModelExport modelExport;
   private Map<String, Map<String, Object>> valueProviderConfig;
   private Map<String, Map<String, Object>> genericPluginConfig;
@@ -191,6 +192,23 @@ public final class GeneratorOptions {
    */
   public GeneratorOptions version(String value) {
     this.version = value;
+    return this;
+  }
+
+  /**
+   * If it is allowed to create symlinks instead of copying files if they are local files.
+   * @return Allow symlinks
+   */
+  public boolean isAllowSymlinks() {
+    return this.allowSymlinks;
+  }
+
+  /**
+   * @param value Allow symlinks
+   * @return this
+   */
+  public GeneratorOptions setAllowSymlinks(boolean value) {
+    this.allowSymlinks = value;
     return this;
   }
 
