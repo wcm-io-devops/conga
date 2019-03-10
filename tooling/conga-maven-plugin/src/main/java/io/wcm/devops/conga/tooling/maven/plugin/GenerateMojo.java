@@ -65,6 +65,12 @@ public class GenerateMojo extends AbstractCongaMojo {
   private boolean deleteBeforeGenerate;
 
   /**
+   * Is it allowed to create symlinks instead of copying files if they are local files e.g. from Maven Repository.
+   */
+  @Parameter(defaultValue = "true")
+  private boolean allowSymlinks;
+
+  /**
    * Plugin keys (groupId:artifactId) of additional Maven plugins of the current project's POM
    * to be included in the model export version information.
    */
@@ -108,6 +114,7 @@ public class GenerateMojo extends AbstractCongaMojo {
         .destDir(getTargetDir())
         .deleteBeforeGenerate(deleteBeforeGenerate)
         .version(project.getVersion())
+        .setAllowSymlinks(allowSymlinks)
         .modelExport(getModelExport())
         .valueProviderConfig(getValueProviderConfig())
         .genericPluginConfig(getPluginConfig())

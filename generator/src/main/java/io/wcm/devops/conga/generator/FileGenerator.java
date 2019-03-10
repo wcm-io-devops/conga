@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -82,6 +84,10 @@ class FileGenerator {
   private final FileHeaderContext fileHeaderContext;
   private final ValidatorContext validatorContext;
   private final PostProcessorContext postProcessorContext;
+  private final boolean allowSymlinks;
+
+  // if the creation of a symlink fails once, do not try it again (esp. e.g. on windows systems)
+  private static boolean symlinkCreationFailed;
 
   //CHECKSTYLE:OFF
   FileGenerator(GeneratorOptions options, String environmentName,
@@ -128,6 +134,7 @@ class FileGenerator {
         .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)));
 
     this.config = variableMapResolver.deescape(config);
+    this.allowSymlinks = options.isAllowSymlinks();
   }
 
   /**
@@ -209,10 +216,25 @@ class FileGenerator {
 
     }
     else if (StringUtils.isNotBlank(url)) {
-      log.info("Copy file {} from {}", getFilenameForLog(fileContext), url);
 
-      // generate by downloading/copying from URL, and post-process downloaded file
-      generateFromUrlFile();
+      boolean symlinkCreated = false;
+      if (allowSymlinks && !symlinkCreationFailed && urlFileManager.isLocalFile(url)) {
+        log.info("Symlink file {} from {}", getFilenameForLog(fileContext), url);
+        if (createSymlinkToLocalFile()) {
+          symlinkCreated = true;
+        }
+        else {
+          symlinkCreationFailed = true;
+        }
+      }
+
+      // generate by downloading/copying from URL
+      if (!symlinkCreated) {
+        log.info("Copy file {} from {}", getFilenameForLog(fileContext), url);
+        copyFromUrlFile();
+      }
+
+      // post-process downloaded or symlinked file
       postProcessedFiles = applyPostProcessor(fileContext);
     }
     else {
@@ -237,13 +259,34 @@ class FileGenerator {
   }
 
   /**
-   * Generate file by downloading/copying from URL
+   * Generate file by downloading/copying it's binary content from URL.
    */
-  private void generateFromUrlFile() throws IOException {
+  private void copyFromUrlFile() throws IOException {
     try (FileOutputStream fos = new FileOutputStream(file);
         InputStream is = urlFileManager.getFile(url)) {
       IOUtils.copy(is, fos);
       fos.flush();
+    }
+  }
+
+  /**
+   * Create a symlink to a local file.
+   * @return true if symlink creation was successful. This is likely to return false on windows operating systems.
+   * @throws IOException If an unexpected error occurs
+   */
+  private boolean createSymlinkToLocalFile() throws IOException {
+    // if file is a local file try to create a symlink to it
+    File localFile = urlFileManager.getLocalFile(url);
+    Path targetPath = file.toPath();
+    Path sourcePath = localFile.toPath();
+    try {
+      Files.createSymbolicLink(targetPath, sourcePath);
+      return true;
+    }
+    catch (IOException ex) {
+      // creates symbolic link failed - log warning and fallback to copying content
+      log.warn("Unable to create symbolic link at " + FileUtil.getCanonicalPath(file) + ": " + ex.getMessage());
+      return false;
     }
   }
 
