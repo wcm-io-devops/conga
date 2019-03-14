@@ -46,6 +46,8 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 import com.google.common.collect.ImmutableSet;
 
+import io.wcm.devops.conga.generator.util.FileUtil;
+
 /**
  * Packages the generated configurations in a ZIP file.
  */
@@ -143,7 +145,8 @@ public class PackageMojo extends AbstractCongaMojo {
   private File buildZipFile(File contentDirectory, String classifier) throws MojoExecutionException {
     File zipFile = new File(project.getBuild().getDirectory(), buildZipFileName(classifier));
 
-    zipArchiver.addDirectory(contentDirectory);
+    String basePath = toZipDirectoryPath(contentDirectory);
+    addZipDirectory(basePath, contentDirectory);
     zipArchiver.setDestFile(zipFile);
     try {
       zipArchiver.createArchive();
@@ -153,6 +156,33 @@ public class PackageMojo extends AbstractCongaMojo {
     }
 
     return zipFile;
+  }
+
+  /**
+   * Recursive through all directory and add file to zipArchiver.
+   * This is used instead of zipArchiver.addDirectory to make sure for symlinks the target of the symlink
+   * are included rather than the symlink information itself.
+   * @param basePath Base path
+   * @param directory Directory to include
+   */
+  private void addZipDirectory(String basePath, File directory) {
+    String directoryPath = toZipDirectoryPath(directory);
+    if (StringUtils.startsWith(directoryPath, basePath)) {
+      String relativeDirectoryPath = StringUtils.substring(directoryPath, basePath.length());
+      for (File file : directory.listFiles()) {
+        if (file.isDirectory()) {
+          addZipDirectory(basePath, file);
+        }
+        else {
+          zipArchiver.addFile(file, relativeDirectoryPath + file.getName());
+        }
+      }
+    }
+  }
+
+  private String toZipDirectoryPath(File directory) {
+    String canoncialPath = FileUtil.getCanonicalPath(directory);
+    return StringUtils.replace(canoncialPath, "\\", "/") + "/";
   }
 
   private String buildZipFileName(String classifier) {

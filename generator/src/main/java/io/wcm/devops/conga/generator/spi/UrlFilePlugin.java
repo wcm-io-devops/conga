@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.spi;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -91,6 +92,28 @@ public interface UrlFilePlugin extends Plugin {
    */
   default void deleteFile(String url, UrlFilePluginContext context) throws IOException {
     throw new UnsupportedOperationException("Unable to delete file: " + url);
+  }
+
+  /**
+   * Checks if the given file is a file from the local file system and can be safely referenced via symlink.
+   * @param url URL string (including prefix)
+   * @param context Context objects
+   * @return true if file is a local file
+   * @throws IOException If the access to the file failed
+   */
+  default boolean isLocalFile(String url, UrlFilePluginContext context) throws IOException {
+    return false;
+  }
+
+  /**
+   * Get local file reference to given URL.
+   * @param url URL string (including prefix)
+   * @param context Context objects
+   * @return Local file reference.
+   * @throws IOException If the access to the file failed
+   */
+  default File getLocalFile(String url, UrlFilePluginContext context) throws IOException {
+    throw new IOException("Local file not supported for " + getClass().getName());
   }
 
 }
