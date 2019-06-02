@@ -52,7 +52,7 @@ Definitions for CONGA:
 
 ### Further Resources
 
-* [wcm.io CONGA training material with exercises](http://training.wcm.io/conga/)
+* [wcm.io CONGA training material with exercises](https://training.wcm.io/conga/)
 * [adaptTo() 2015 Talk: CONGA - Configuration generation for Sling and AEM][adaptto-talk-2015-conga]
 * [adaptTo() 2017 Talk: Automate AEM Deployment with Ansible and wcm.io CONGA][adaptto-talk-2017-aem-ansible]
 * [adaptTo() 2018 Talk: Maven Archetypes for AEM][adaptto-talk-2018-aem-archetypes]
@@ -73,4 +73,4 @@ Definitions for CONGA:
 [adaptto-talk-2015-conga]: https://adapt.to/2015/en/schedule/conga---configuration-generation-for-sling-and-aem.html
 [adaptto-talk-2017-aem-ansible]: https://adapt.to/2017/en/schedule/automate-aem-deployment-with-ansible-and-wcm-io-conga.html
 [adaptto-talk-2018-aem-archetypes]: https://adapt.to/2018/en/schedule/maven-archetypes-for-aem.html
-[aem-ansible]: http://devops.wcm.io/ansible-aem/
+[aem-ansible]: https://devops.wcm.io/ansible-aem/
