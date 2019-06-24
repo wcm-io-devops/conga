@@ -19,15 +19,20 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.ImmutableSet;
 
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.environment.RoleConfig;
+import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.shared.Configurable;
 import io.wcm.devops.conga.model.util.MapMerger;
 
@@ -47,8 +52,8 @@ public final class ConfigInheritanceResolver extends AbstractConfigurableObjectT
     }
   };
 
-  private ConfigInheritanceResolver() {
-    // static methods only
+  private ConfigInheritanceResolver(Set<String> ignorePropertyNames) {
+    super(ignorePropertyNames);
   }
 
   /**
@@ -56,10 +61,15 @@ public final class ConfigInheritanceResolver extends AbstractConfigurableObjectT
    * @param model Model with {@link Configurable} instances at any nested level.
    */
   public static void resolve(Object model) {
+    Set<String> ignorePropertyNames = Collections.emptySet();
     if (model instanceof Environment) {
       resolveEnvironment((Environment)model);
     }
-    new ConfigInheritanceResolver().process(model, PROCESSOR, new HashMap<>());
+    if (model instanceof Role) {
+      // do not inherit config of role variants field (WDCONGA-24)
+      ignorePropertyNames = ImmutableSet.of("variants");
+    }
+    new ConfigInheritanceResolver(ignorePropertyNames).process(model, PROCESSOR, new HashMap<>());
   }
 
   /**
@@ -67,7 +77,7 @@ public final class ConfigInheritanceResolver extends AbstractConfigurableObjectT
    * @param environment Environment
    */
   private static void resolveEnvironment(Environment environment) {
-    ConfigInheritanceResolver resolver = new ConfigInheritanceResolver();
+    ConfigInheritanceResolver resolver = new ConfigInheritanceResolver(Collections.emptySet());
 
     Map<String, Object> rootConfig = environment.getConfig();
     resolver.process(environment.getTenants(), PROCESSOR, rootConfig);

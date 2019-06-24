@@ -20,8 +20,10 @@
 package io.wcm.devops.conga.generator.util;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -34,6 +36,16 @@ import io.wcm.devops.conga.model.shared.Configurable;
  * @param <T> Payload for processor
  */
 abstract class AbstractConfigurableObjectTreeProcessor<T> {
+
+  private final Set<String> ignorePropertyNames;
+
+  protected AbstractConfigurableObjectTreeProcessor() {
+    this(Collections.emptySet());
+  }
+
+  protected AbstractConfigurableObjectTreeProcessor(Set<String> ignorePropertyNames) {
+    this.ignorePropertyNames = ignorePropertyNames;
+  }
 
   /**
    * Iterator over object tree an visit all {@link Configurable} instances. Payload
@@ -74,7 +86,7 @@ abstract class AbstractConfigurableObjectTreeProcessor<T> {
       Map<String, String> description = BeanUtils.describe(object);
       for (String propertyName : description.keySet()) {
         Object propertyValue = PropertyUtils.getProperty(object, propertyName);
-        if (!StringUtils.equals(propertyName, "class")) {
+        if (!StringUtils.equals(propertyName, "class") && !ignorePropertyNames.contains(propertyName)) {
           process(propertyValue, processor, parentPayload);
         }
       }
