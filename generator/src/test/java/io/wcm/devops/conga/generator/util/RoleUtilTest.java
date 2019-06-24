@@ -284,6 +284,7 @@ public class RoleUtilTest {
     return file;
   }
 
+  @SuppressWarnings("unused")
   private RoleFile buildUrlFile(String role, String url, String... variants) {
     RoleFile file = new RoleFile();
     file.setUrl(url);
@@ -293,7 +294,7 @@ public class RoleUtilTest {
     return file;
   }
 
-  private RoleInherit buildInherit(String roleName, String... variants) {
+  private RoleInherit buildInherit(String roleName) {
     RoleInherit inherit = new RoleInherit();
     inherit.setRole(roleName);
     return inherit;
@@ -324,6 +325,7 @@ public class RoleUtilTest {
     fail("File '" + file + "' with template '" + template + "' found, but expected to not find it.");
   }
 
+  @SuppressWarnings("unused")
   private void assertUrlFile(Role role, String roleName, String url, String... variants) {
     for (RoleFile fileItem : role.getFiles()) {
       if (StringUtils.equals(url, fileItem.getUrl())

@@ -99,7 +99,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
     return null;
   }
 
-  protected int getInsertPosition(String content) {
+  protected int getInsertPosition(@SuppressWarnings("unused") String content) {
     return 0;
   }
 
