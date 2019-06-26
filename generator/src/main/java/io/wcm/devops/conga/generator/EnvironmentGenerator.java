@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -193,19 +194,21 @@ class EnvironmentGenerator {
       for (Map.Entry<String, Role> resolvedRole : resolvedRoles.entrySet()) {
         String roleName = resolvedRole.getKey();
         Role role = resolvedRole.getValue();
+        List<String> variants = nodeRole.getAggregatedVariants();
+
+        // collect default config from role and it's variant.
+        // default config in variants has higher precedence than config in the role itself
+        // variants listed first have higher precedence than variants listed last
+        Map<String, Object> roleDefaultConfig = new HashMap<String, Object>();
+        for (String variant : variants) {
+          RoleVariant roleVariant = getRoleVariant(role, variant, roleName, node);
+          roleDefaultConfig = MapMerger.merge(roleDefaultConfig, roleVariant.getConfig());
+        }
+        roleDefaultConfig = MapMerger.merge(roleDefaultConfig, role.getConfig());
 
         // merge default values to config
-        List<String> variants = nodeRole.getAggregatedVariants();
         Map<String, Object> mergedConfig = nodeRole.getConfig();
-        if (variants.isEmpty()) {
-          mergedConfig = MapMerger.merge(mergedConfig, role.getConfig());
-        }
-        else {
-          for (String variant : variants) {
-            RoleVariant roleVariant = getRoleVariant(role, variant, roleName, node);
-            mergedConfig = MapMerger.merge(mergedConfig, roleVariant.getConfig());
-          }
-        }
+        mergedConfig = MapMerger.merge(mergedConfig, roleDefaultConfig);
 
         // additionally set context variables
         mergedConfig.putAll(environmentContextProperties);

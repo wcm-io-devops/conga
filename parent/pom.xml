@@ -25,13 +25,13 @@
   <parent>
     <groupId>io.wcm.devops</groupId>
     <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.6</version>
     <relativePath />
   </parent>
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.parent</artifactId>
-  <version>1.11.0</version>
+  <version>1.11.2</version>
   <packaging>pom</packaging>
 
   <name>CONGA Parent</name>

@@ -141,6 +141,15 @@ public class GeneratorTest {
     assertContains(xml4tenant2, "<var2>v2-role1-variant11</var2>");
     assertContains(xml4tenant2, "<var3>v3-role1-variant11</var3>");
     assertContains(xml4tenant2, "<var4>v4-role1-variant13</var4>");
+    assertContains(xml4tenant2, "<var5>v5-role1-variant11</var5>");
+
+    File node5Dir = assertDirectory(destDir, "env1/node5");
+    File xml5tenant2 = assertFile(node5Dir, "xml/001_test.tenant2.tenantRole1.env1.xml");
+    assertContains(xml5tenant2, "<var1>v1-tenant2</var1>");
+    assertContains(xml5tenant2, "<var2>v2-role1-variant13</var2>");
+    assertContains(xml5tenant2, "<var3>v3-role1-variant11</var3>");
+    assertContains(xml5tenant2, "<var4>v4-role1-variant13</var4>");
+    assertContains(xml4tenant2, "<var5>v5-role1-variant11</var5>");
 
   }
 

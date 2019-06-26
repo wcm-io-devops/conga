@@ -29,6 +29,13 @@ nodes:
     - variant11
     - variant13
 
+- node: node5
+  roles:
+  - role: role1
+    variants:
+    - variant13
+    - variant11
+
 
 # Role-specific global configuration
 roleConfig:
