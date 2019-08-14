@@ -55,7 +55,8 @@ files:
 
 # Download file from maven repository, use artifact filename.
 # Derive version from maven project.
-- url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel//xml/site
+- file: test.xml
+  url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel/1.1.0/xml/site
   dir: download
 
 
