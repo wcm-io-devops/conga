@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Helper methods for defaulting for fallback values if a given value is null.
@@ -41,6 +42,12 @@ public final class DefaultUtil {
    */
   public static <T> List<T> defaultEmptyList(List<T> list) {
     if (list != null) {
+
+      // do not allow null entries in list
+      if (list.stream().filter(Objects::isNull).findFirst().isPresent()) {
+        throw new IllegalArgumentException("Null element detected in list.");
+      }
+
       return list;
     }
     else {

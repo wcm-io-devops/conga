@@ -1,0 +1,17 @@
+nodes:
+
+- node: webserver
+  roles:
+  - role: webserver-routing
+
+# Tenant defintions
+tenants:
+  -
+
+  - tenant: tenant1
+    roles:
+    - website
+    - application
+    config:
+      domain: mysite.de
+      website.hostname: www.${domain}
