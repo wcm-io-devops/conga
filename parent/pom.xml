@@ -34,7 +34,7 @@
   <version>1.11.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>CONGA Parent</name>
+  <name>CONGA</name>
   <description>Parent POM for all wcm.io CONGA projects.</description>
 
   <dependencyManagement>
