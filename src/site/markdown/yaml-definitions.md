@@ -29,8 +29,8 @@ Alternatively it is possible to specify an URL instead of a template. In this ca
 - `mvn:` - Maven Artifact coordinates (only supported when CONGA runs inside Maven)
     - Maven Coordinates Syntax 1 ([Maven-style][artifact-coords-maven]): `groupId:artifactId[:packaging][:classifier]:version`
     - Maven Coordinates Syntax 2 ([Pax URL-style][artifact-coords-paxurl]): `groupId/artifactId/version[/type][/classifier]`
-    - `classifier` and  `type` are optional.
-    - If the version is empty in the role file it is resolved from the Maven project.
+    - `classifier` and  `type` are optional
+    - if the version is empty in the role file it is resolved from the Maven project
 
 If no prefix is specified the URL is interpreted as relative path in the local filesystem.
 
@@ -137,6 +137,7 @@ ${myvariable1 + '/' + myvariable2}
 ${mygroup.myvariable == 'expected_value'}
 ${mynumber + 1}
 ${new('java.text.DecimalFormat','000').format(multiplyIndex)}
+${stringUtils:join(listParam,'|')}
 ```
 
 
