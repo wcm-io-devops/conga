@@ -27,6 +27,9 @@
       <action type="fix" dev="sseifert">
         Fail build when YAML contains invalid "null" elements (e.g. in tenant list).
       </action>
+      <action type="update" dev="sseifert">
+        Update dependencies.
+      </action>
     </release>
 
     <release version="1.11.2" date="2019-06-26">
