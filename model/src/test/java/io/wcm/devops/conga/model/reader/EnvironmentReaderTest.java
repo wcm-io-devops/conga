@@ -21,12 +21,14 @@ package io.wcm.devops.conga.model.reader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.constructor.ConstructorException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -115,6 +117,16 @@ public class EnvironmentReaderTest {
 
     assertEquals(ImmutableList.of("website", "application"), tenant.getRoles());
     assertEquals(ImmutableMap.of("domain", "mysite.de", "website", ImmutableMap.of("hostname", "www.${domain}")), tenant.getConfig());
+  }
+
+  @Test
+  public void testEnvironmentWithNullTenant() {
+    assertThrows(ConstructorException.class, () -> {
+      EnvironmentReader reader = new EnvironmentReader();
+      try (InputStream is = getClass().getResourceAsStream("/environment_null_tenant.yaml")) {
+        reader.read(is);
+      }
+    });
   }
 
 }

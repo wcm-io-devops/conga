@@ -31,10 +31,10 @@
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.parent</artifactId>
-  <version>1.11.2</version>
+  <version>1.11.4</version>
   <packaging>pom</packaging>
 
-  <name>CONGA Parent</name>
+  <name>CONGA</name>
   <description>Parent POM for all wcm.io CONGA projects.</description>
 
   <dependencyManagement>
@@ -43,19 +43,19 @@
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.24</version>
+        <version>1.25</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.8.1</version>
+        <version>3.9</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.6</version>
+        <version>1.8</version>
       </dependency>
 
       <dependency>
@@ -67,7 +67,7 @@
       <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
-        <version>1.9.3</version>
+        <version>1.9.4</version>
       </dependency>
 
       <dependency>
@@ -103,7 +103,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>4.3.22.RELEASE</version>
+        <version>4.3.25.RELEASE</version>
       </dependency>
 
       <dependency>
