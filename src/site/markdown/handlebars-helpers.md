@@ -2,8 +2,12 @@
 
 By using CONGA handlebars helper plugins it is possible to extend handlebars by registering custom expressions. Out of the box CONGA ships with a set of built-in custom expressions documented in this chapter. See [Extensibility model][extensibility] how to register you own helpers.
 
-The basic handlebars expressions are documented in the [Handlebars quickstart][handlebars-quickstart]. The CONGA AEM plugin also provides a set of [Custom Handlebars expressions for AEM][aem-handlebars-helpers].
+The basic handlebars expressions are documented in the [Handlebars quickstart][handlebars-quickstart].
 
+You can also use the [jknack/handlebars ConditionalHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
+
+The CONGA AEM plugin also provides a set of
+[Custom Handlebars expressions for AEM][aem-handlebars-helpers].
 
 ### regexQuote
 

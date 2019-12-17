@@ -43,6 +43,7 @@ Optionally you can define an else block:
 {{/if}}
 ```
 
+You can also use the [jknack/handlebars ConditionalHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
 
 ### For each loop
 

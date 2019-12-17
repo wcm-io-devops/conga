@@ -27,6 +27,7 @@ import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -67,6 +68,9 @@ public class HandlebarsManager {
             }
           });
 
+          // register helpers
+          handlebars.registerHelpers(ConditionalHelpers.class);
+
           // register helper plugins
           pluginManager.getAll(HelperPlugin.class)
               .forEach(plugin -> handlebars.registerHelper(plugin.getName(), new Helper<Object>() {
@@ -75,6 +79,7 @@ public class HandlebarsManager {
                   return plugin.apply(context, helperOptions, helperContext);
                 }
               }));
+
 
           return handlebars;
         }
