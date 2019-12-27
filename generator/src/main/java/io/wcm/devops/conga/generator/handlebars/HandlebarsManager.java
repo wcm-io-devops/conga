@@ -28,6 +28,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;
+import com.github.jknack.handlebars.helper.StringHelpers;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -68,7 +69,8 @@ public class HandlebarsManager {
             }
           });
 
-          // register helpers
+          // register helpers provided by JKnack Handlebars implementation
+          handlebars.registerHelpers(StringHelpers.class);
           handlebars.registerHelpers(ConditionalHelpers.class);
 
           // register helper plugins
