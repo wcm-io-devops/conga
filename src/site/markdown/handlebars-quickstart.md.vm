@@ -1,10 +1,13 @@
-## CONGA - Handlebars quickstart
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+${symbol_pound}${symbol_pound} CONGA - Handlebars quickstart
 
 For a full documentation of handlebars syntax see [Handlebars][handlebars] and [Handlebars Java][handlebars-java] websites. This page lists a collection of handlebars expressions that are most useful when writing CONGA templates.
 
 See also [Custom Handlebars expressions][handlebars-helpers].
 
-### Variable references
+${symbol_pound}${symbol_pound}${symbol_pound} Variable references
 
 To insert a variable from configuration parameter maps with escaping (escaping strategy depending on file type):
 
@@ -23,12 +26,12 @@ To insert a variable without escaping (you have to take care of generating a val
 See [YAML definition][yaml-definitions] for more information about configuration parameter maps.
 
 
-### Conditions
+${symbol_pound}${symbol_pound}${symbol_pound} Conditions
 
 To conditionally generate a block:
 
 ```
-{{#if group1.flag1}}
+{{${symbol_pound}if group1.flag1}}
   condition met block...
 {{/if}}
 ```
@@ -36,21 +39,21 @@ To conditionally generate a block:
 Optionally you can define an else block:
 
 ```
-{{#if group1.flag1}}
+{{${symbol_pound}if group1.flag1}}
   condition met block...
 {{else}}
   condition not met block...
 {{/if}}
 ```
 
-You can also use the [jknack/handlebars ConditionalHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
+You can also use the [ConditionalHelpers](https://javadoc.io/static/com.github.jknack/handlebars/${project.properties['jknack.handlebars.version']}/com/github/jknack/handlebars/helper/ConditionalHelpers.html) provided by [handlebars.java](https://github.com/jknack/handlebars.java).
 
-### For each loop
+${symbol_pound}${symbol_pound}${symbol_pound} For each loop
 
 To loop about a list of values:
 
 ```
-{{#each group1.list}}
+{{${symbol_pound}each group1.list}}
   {{this.param1}}
 {{/each}}
 ```
@@ -58,28 +61,28 @@ To loop about a list of values:
 If you want to add a separator between each item but not after the last:
 
 ```
-{{#each group1.list}}
-  "{{this.param1}}"{{#unless @last}},{{/unless}}
+{{${symbol_pound}each group1.list}}
+  "{{this.param1}}"{{${symbol_pound}unless @last}},{{/unless}}
 {{/each}}
 ```
 
 To insert the list index from the for each loop:
 
 ```
-{{#each group1.list}}
+{{${symbol_pound}each group1.list}}
   "prop{{@index}}": "{{this.param1}}",
 {{/each}}
 ```
 
 
-### Whitespace handling
+${symbol_pound}${symbol_pound}${symbol_pound} Whitespace handling
 
 You can control whitespace handling around handlebar expressions by inserting `~` at the beginning or end of the handlebars expression. On the side of this expression all whitespaces are removed up to the next handlebars expression or non-white space content.
 
 Example: Remove all whitespaces inside the expression:
 
 ```
-{{#if group1.flag1 ~}}
+{{${symbol_pound}if group1.flag1 ~}}
   conditional block...
 {{~/if}}
 ```
@@ -87,28 +90,28 @@ Example: Remove all whitespaces inside the expression:
 Example: Remove all whitespaces around the expression:
 
 ```
-{{~#if group1.flag1}}
+{{~${symbol_pound}if group1.flag1}}
   conditional block...
 {{/if ~}}
 ```
 
 
-### Partials and blocks
+${symbol_pound}${symbol_pound}${symbol_pound} Partials and blocks
 
 If you want to modularize your templates and reused a shared set of content or expressions in multiple templates you can use partials and blocks.
 
 Example of a file with shared content/expressions using blocks:
 
 ```
-{{#block "serverName"}}
+{{${symbol_pound}block "serverName"}}
   ServerName {{group1.serverName}}
 {{/block}}
 
-{{#block "documentRoot"}}
+{{${symbol_pound}block "documentRoot"}}
   DocumentRoot "{{group1.rootPath}}"
 {{/block}}
 
-{{#block "logSettings"}}
+{{${symbol_pound}block "logSettings"}}
   LogLevel warn
   ErrorLog ${APACHE_LOG_DIR}/error.log
   CustomLog ${APACHE_LOG_DIR}/access.log combined
@@ -130,7 +133,7 @@ You can overwrite parts from the shared file by overwriting single blocks with a
 ```
 ... main template start
 
-{{#partial "serverName"}}
+{{${symbol_pound}partial "serverName"}}
   ServerName {{group1.otherServerName}}
   ServerAlias {{group1.aliasName}}
 {{/partial}}
@@ -141,7 +144,7 @@ You can overwrite parts from the shared file by overwriting single blocks with a
 ```
 
 
-### Comments
+${symbol_pound}${symbol_pound}${symbol_pound} Comments
 
 To include a comment that is stripped from the generated file:
 

@@ -1,15 +1,21 @@
-## CONGA - Custom Handlebars expressions
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+${symbol_pound}${symbol_pound} CONGA - Custom Handlebars expressions
 
 By using CONGA handlebars helper plugins it is possible to extend handlebars by registering custom expressions. Out of the box CONGA ships with a set of built-in custom expressions documented in this chapter. See [Extensibility model][extensibility] how to register you own helpers.
 
 The basic handlebars expressions are documented in the [Handlebars quickstart][handlebars-quickstart].
 
-You can also use the [jknack/handlebars ConditionalHelpers](https://github.com/jknack/handlebars.java/blob/master/handlebars/src/main/java/com/github/jknack/handlebars/helper/ConditionalHelpers.java).
+You can also use the following helpers provided by [handlebars.java](https://github.com/jknack/handlebars.java):
 
-The CONGA AEM plugin also provides a set of
+* [StringHelpers](https://javadoc.io/static/com.github.jknack/handlebars/${project.properties['jknack.handlebars.version']}/com/github/jknack/handlebars/helper/StringHelpers.html)
+* [ConditionalHelpers](https://javadoc.io/static/com.github.jknack/handlebars/${project.properties['jknack.handlebars.version']}/com/github/jknack/handlebars/helper/ConditionalHelpers.html)
+
+Additionally, the CONGA AEM plugin provides a set of
 [Custom Handlebars expressions for AEM][aem-handlebars-helpers].
 
-### regexQuote
+${symbol_pound}${symbol_pound}${symbol_pound} regexQuote
 
 To insert a variable expression and applying regex quoting on it:
 
@@ -18,88 +24,61 @@ To insert a variable expression and applying regex quoting on it:
 ```
 
 
-### join
-
-To join a list of values with a separator character:
-
-```
-{{join group1.list ","}}
-```
-
-
-### replace
-
-Replace some characters in a string:
-
-```
-{{replace group1.param1 "." "_"}}
-```
-
-
-### ifEquals
+${symbol_pound}${symbol_pound}${symbol_pound} ifEquals
 
 Conditional if statement - block is rendered if expression equals to an argument:
 
 ```
-{{#ifEquals group1.param1 "myValue"}}
+{{${symbol_pound}ifEquals group1.param1 "myValue"}}
   condition met block...
 {{/ifEquals}}
 ```
 
-### ifNotEquals
+${symbol_pound}${symbol_pound}${symbol_pound} ifNotEquals
 
 Conditional if statement - block is rendered if expression unequals to
 an argument:
 
 ```
-{{#ifNotEquals group1.param1 "myValue"}}
+{{${symbol_pound}ifNotEquals group1.param1 "myValue"}}
   condition met block...
 {{/ifEquals}}
 ```
 
-### defaultIfEmpty
-
-To insert a default value if the given variable expression is not set:
-
-```
-{{defaultIfEmpty group1.param1 "defaultValue"}}
-```
-
-
-### eachIf
+${symbol_pound}${symbol_pound}${symbol_pound} eachIf
 
 Conditional for each loop - loop is generated if condition is true:
 
 ```
-{{#eachIf group1.list "group1.flag1"}},
+{{${symbol_pound}eachIf group1.list "group1.flag1"}},
   conditional loop block
 {{/eachIf}}
 ```
 
 
-### eachIfEquals
+${symbol_pound}${symbol_pound}${symbol_pound} eachIfEquals
 
 Conditional for each loop - loop is generated if expression equals to an argument:
 
 ```
-{{#eachIfEquals group1.list "group1.param1" "myValue"}},
+{{${symbol_pound}eachIfEquals group1.list "group1.param1" "myValue"}},
   conditional loop block
 {{/eachIfEquals}}
 ```
 
 
-### contains
+${symbol_pound}${symbol_pound}${symbol_pound} contains
 
 Checks for presence of a given value in a list:
 
 ```
-{{#contains group1.list1 "myValue"}}
+{{${symbol_pound}contains group1.list1 "myValue"}}
   condition met block...
 {{/contains}}
 ```
 
 
-### ensureProperties
+${symbol_pound}${symbol_pound}${symbol_pound} ensureProperties
 
 Ensure that all properties with the given names are set. Build fails if this is not the case, the exception message contains the missing properties.
 
