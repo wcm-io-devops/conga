@@ -194,7 +194,6 @@ class FileGenerator {
   /**
    * Generate file(s).
    * @return List of files that where generated directly or indirectly (by post processors).
-   * @throws IOException
    */
   public Collection<GeneratedFileContext> generate() throws IOException {
     File dir = file.getParentFile();

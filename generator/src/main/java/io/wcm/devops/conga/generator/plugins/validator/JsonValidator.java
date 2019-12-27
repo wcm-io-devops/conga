@@ -42,21 +42,12 @@ import io.wcm.devops.conga.generator.util.FileUtil;
  */
 public final class JsonValidator implements ValidatorPlugin {
 
-  private final JsonParser jsonParser;
-
   /**
    * Plugin name
    */
   public static final String NAME = "json";
 
   private static final String FILE_EXTENSION = "json";
-
-  /**
-   * Constructor.
-   */
-  public JsonValidator() {
-    jsonParser = new JsonParser();
-  }
 
   @Override
   public String getName() {
@@ -72,7 +63,7 @@ public final class JsonValidator implements ValidatorPlugin {
   public Void apply(FileContext file, ValidatorContext context) throws ValidationException {
     try (InputStream is = new BufferedInputStream(new FileInputStream(file.getFile()));
         Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
-      jsonParser.parse(reader);
+      JsonParser.parseReader(reader);
     }
     catch (IOException | JsonIOException | JsonSyntaxException ex) {
       throw new ValidationException("JSON file is not valid: " + ex.getMessage(), ex);
