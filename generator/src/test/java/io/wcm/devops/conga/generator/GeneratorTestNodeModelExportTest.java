@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator;
 
 import static io.wcm.devops.conga.generator.TestUtils.assertDirectory;
 import static io.wcm.devops.conga.generator.TestUtils.assertFile;
+import static io.wcm.devops.conga.generator.TestUtils.assertNotDirectory;
 import static io.wcm.devops.conga.generator.TestUtils.setupGenerator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
@@ -58,14 +60,15 @@ public class GeneratorTestNodeModelExportTest {
   private File destDir;
 
   @BeforeEach
-  public void setUp() {
+  public void setUp() throws IOException {
     destDir = new File("target/generation-test/" + getClass().getSimpleName());
+    FileUtils.deleteDirectory(destDir);
     underTest = setupGenerator(destDir);
-    underTest.generate();
   }
 
   @Test
   public void testAllEnvironments() throws IOException {
+    underTest.generate();
     File node1Dir = assertDirectory(destDir, "env1/node1");
     File model1File = assertFile(node1Dir, "model.yaml");
     Map<String, Object> model1 = readYaml(model1File);
@@ -110,6 +113,26 @@ public class GeneratorTestNodeModelExportTest {
     Map<String, Object> superrole1 = getRole(model1, "superrole1");
     assertFiles(superrole1,
         "text/test-superrole1.txt");
+  }
+
+  @Test
+  public void testAllNodes() {
+    underTest.generate();
+    assertDirectory(destDir, "env1/node1");
+    assertDirectory(destDir, "env1/node2");
+    assertDirectory(destDir, "env1/node3");
+    assertDirectory(destDir, "env1/node4");
+    assertDirectory(destDir, "env1/node5");
+  }
+
+  @Test
+  public void testSelectedNodes() {
+    underTest.generate(new String[] {}, "node1", "node3", "node5");
+    assertDirectory(destDir, "env1/node1");
+    assertNotDirectory(destDir, "env1/node2");
+    assertDirectory(destDir, "env1/node3");
+    assertNotDirectory(destDir, "env1/node4");
+    assertDirectory(destDir, "env1/node5");
   }
 
   private Map<String, Object> readYaml(File file) throws IOException {

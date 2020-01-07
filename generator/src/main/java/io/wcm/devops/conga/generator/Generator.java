@@ -64,6 +64,10 @@ public final class Generator {
    * @param environmentNames Environments to generate. If none specified all environments are generated.
    */
   public void generate(String... environmentNames) {
+    generate(environmentNames, new String[] {});
+  }
+
+  public void generate(String[] environmentNames, String... nodeNames) {
     Map<String, Environment> selectedEnvironments = new HashMap<>();
     if (environmentNames == null || environmentNames.length == 0) {
       selectedEnvironments.putAll(environments);
@@ -93,7 +97,7 @@ public final class Generator {
       }
 
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(entry.getKey(), entry.getValue(), environmentDestDir, options);
-      environmentGenerator.generate();
+      environmentGenerator.generate(nodeNames);
     }
   }
 

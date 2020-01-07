@@ -24,13 +24,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
@@ -38,6 +41,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
@@ -164,15 +168,28 @@ class EnvironmentGenerator {
     });
   }
 
-  public void generate() {
+  public void generate(String... nodeNames) {
     log.info("");
     log.info("===== Environment '{}' =====", environmentName);
 
+    Set<String> nodeNamesIndex = ArrayUtils.isEmpty(nodeNames) ? Collections.emptySet() : ImmutableSet.copyOf(nodeNames);
     for (Node node : environment.getNodes()) {
-      generateNode(node);
+      if (isSelectedNode(node, nodeNamesIndex)) {
+        generateNode(node);
+      }
     }
 
     log.info("");
+  }
+
+  private boolean isSelectedNode(Node node, Set<String> nodeNames) {
+    if (nodeNames.isEmpty()) {
+      return true;
+    }
+    if (StringUtils.isNotBlank(node.getNode()) && nodeNames.contains(node.getNode())) {
+      return true;
+    }
+    return CollectionUtils.containsAny(node.getNodes(), nodeNames);
   }
 
   private void generateNode(Node node) {
