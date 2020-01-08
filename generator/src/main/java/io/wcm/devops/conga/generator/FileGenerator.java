@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader;
 import io.wcm.devops.conga.generator.plugins.validator.NoneValidator;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
@@ -196,6 +197,7 @@ class FileGenerator {
    * Generate file(s).
    * @return List of files that where generated directly or indirectly (by post processors).
    */
+  @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
   public Collection<GeneratedFileContext> generate() throws IOException {
     File dir = file.getParentFile();
     if (!dir.exists()) {
