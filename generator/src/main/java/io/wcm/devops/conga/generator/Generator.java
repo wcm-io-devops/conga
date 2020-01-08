@@ -63,10 +63,15 @@ public final class Generator {
    * Generate files for environment(s).
    * @param environmentNames Environments to generate. If none specified all environments are generated.
    */
-  public void generate(String... environmentNames) {
+  public void generate(String[] environmentNames) {
     generate(environmentNames, new String[] {});
   }
 
+  /**
+   * Generate files for environment(s).
+   * @param environmentNames Environments to generate. If none specified all environments are generated.
+   * @param nodeNames Node names to generate. If none specified all nodes are generated.
+   */
   public void generate(String[] environmentNames, String[] nodeNames) {
     Map<String, Environment> selectedEnvironments = new HashMap<>();
     if (environmentNames == null || environmentNames.length == 0) {

@@ -68,7 +68,7 @@ public class GeneratorTestNodeModelExportTest {
 
   @Test
   public void testAllEnvironments() throws IOException {
-    underTest.generate();
+    underTest.generate(new String[0]);
     File node1Dir = assertDirectory(destDir, "env1/node1");
     File model1File = assertFile(node1Dir, "model.yaml");
     Map<String, Object> model1 = readYaml(model1File);
@@ -117,7 +117,7 @@ public class GeneratorTestNodeModelExportTest {
 
   @Test
   public void testAllNodes() {
-    underTest.generate();
+    underTest.generate(new String[0]);
     assertDirectory(destDir, "env1/node1");
     assertDirectory(destDir, "env1/node2");
     assertDirectory(destDir, "env1/node3");

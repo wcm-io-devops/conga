@@ -168,10 +168,10 @@ class EnvironmentGenerator {
     });
   }
 
-  public void generate() {
-    generate(new String[0]);
-  }
-
+  /**
+   * Generate files for environment.
+   * @param nodeNames Node names to generate. If none specified all nodes are generated.
+   */
   public void generate(String[] nodeNames) {
     log.info("");
     log.info("===== Environment '{}' =====", environmentName);
