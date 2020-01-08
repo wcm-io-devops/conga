@@ -67,7 +67,7 @@ public final class Generator {
     generate(environmentNames, new String[] {});
   }
 
-  public void generate(String[] environmentNames, String... nodeNames) {
+  public void generate(String[] environmentNames, String[] nodeNames) {
     Map<String, Environment> selectedEnvironments = new HashMap<>();
     if (environmentNames == null || environmentNames.length == 0) {
       selectedEnvironments.putAll(environments);

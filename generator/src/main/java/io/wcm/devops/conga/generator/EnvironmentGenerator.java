@@ -168,7 +168,11 @@ class EnvironmentGenerator {
     });
   }
 
-  public void generate(String... nodeNames) {
+  public void generate() {
+    generate(new String[0]);
+  }
+
+  public void generate(String[] nodeNames) {
     log.info("");
     log.info("===== Environment '{}' =====", environmentName);
 

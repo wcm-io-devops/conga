@@ -127,7 +127,7 @@ public class GeneratorTestNodeModelExportTest {
 
   @Test
   public void testSelectedNodes() {
-    underTest.generate(new String[] {}, "node1", "node3", "node5");
+    underTest.generate(new String[] {}, new String[] { "node1", "node3", "node5" });
     assertDirectory(destDir, "env1/node1");
     assertNotDirectory(destDir, "env1/node2");
     assertDirectory(destDir, "env1/node3");
