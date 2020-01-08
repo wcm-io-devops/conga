@@ -44,7 +44,7 @@ public class GeneratorTest {
     destDir = new File("target/generation-test/" + getClass().getSimpleName());
     FileUtils.deleteDirectory(destDir);
     underTest = setupGenerator(destDir);
-    underTest.generate();
+    underTest.generate(new String[0]);
   }
 
   @Test
