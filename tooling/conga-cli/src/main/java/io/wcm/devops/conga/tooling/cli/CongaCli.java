@@ -25,6 +25,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import io.wcm.devops.conga.generator.Generator;
@@ -56,10 +57,10 @@ public final class CongaCli {
   /**
    * CLI entry point
    * @param args Command line arguments
-   * @throws Exception Exception
+   * @throws ParseException Parse exceptoin
    */
   //CHECKSTYLE:OFF
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws ParseException {
     //CHECKSTYLE:ON
     CommandLine commandLine = new DefaultParser().parse(CLI_OPTIONS, args);
 

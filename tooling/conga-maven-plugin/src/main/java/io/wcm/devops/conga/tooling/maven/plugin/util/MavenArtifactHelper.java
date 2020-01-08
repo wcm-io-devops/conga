@@ -105,6 +105,7 @@ public class MavenArtifactHelper {
    * @return Artifact
    * @throws IOException If dependency resolution fails
    */
+  @SuppressWarnings("PMD.UseObjectForClearerAPI")
   public Artifact resolveArtifact(String groupId, String artifactId, String type, String classifier, String version) throws IOException {
     Artifact artifact = createArtifact(groupId, artifactId, type, classifier, version);
     return resolveArtifact(artifact);
@@ -164,6 +165,7 @@ public class MavenArtifactHelper {
    * @param artifactCoords Artifact coordinates
    * @return Artifact object
    */
+  @SuppressWarnings("PMD.PreserveStackTrace")
   private Artifact getArtifactFromMavenCoordinates(String artifactCoords) throws IOException {
     try {
       Artifact artifact = new DefaultArtifact(artifactCoords);

@@ -52,6 +52,7 @@ public final class TemplateValidator implements DefinitionValidator<Void> {
   }
 
   @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
   public Void validate(Resource resource, String pathForLog) throws MojoFailureException {
     if (StringUtils.equalsIgnoreCase(resource.getFileExtension(), FILE_EXTENSION)) {
       String templatePath = StringUtils.substringAfter(PathUtil.unifySlashes(resource.getCanonicalPath()),

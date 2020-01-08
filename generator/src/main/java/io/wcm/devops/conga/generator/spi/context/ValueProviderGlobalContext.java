@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public final class ValueProviderGlobalContext extends AbstractPluginContext<ValueProviderGlobalContext> {
 
-  private Map<String, Object> globalValueProviderCache = new HashMap<>();
+  private final Map<String, Object> globalValueProviderCache = new HashMap<>();
 
   /**
    * Parameter name in value provider configuration to specify the value provider plugin name.

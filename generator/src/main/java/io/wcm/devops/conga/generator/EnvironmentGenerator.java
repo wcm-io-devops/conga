@@ -89,7 +89,6 @@ class EnvironmentGenerator {
   private final Logger log;
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
-  private final VariableObjectTreeResolver variableObjectTreeResolver;
   private final Collection<String> dependencyVersions;
   private final Set<String> sensitiveConfigParameters = new HashSet<>();
 
@@ -118,7 +117,7 @@ class EnvironmentGenerator {
         .pluginContextOptions(this.pluginContextOptions);
     this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
     this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext, variableMapResolver);
-    this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
+    VariableObjectTreeResolver variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
 
     // build resource loaded based on combined dependency lists of environment and container
     List<URL> combindedClasspathUrls = ResourceLoaderUtil.getEnvironmentClasspathUrls(environment.getDependencies(), this.variableStringResolver, options);
@@ -330,6 +329,7 @@ class EnvironmentGenerator {
     }
   }
 
+  @SuppressWarnings("PMD.PreserveStackTrace")
   private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
       Map<String, Object> config, File nodeDir, Template template,
       String roleName, List<String> roleVariantNames, String templateName) {
@@ -360,7 +360,7 @@ class EnvironmentGenerator {
       generatedFiles.forEach(generatedFileContext -> {
         String path = generatedFileContext.getFileContext().getCanonicalPath();
         if (generatedFilePaths.contains(path)) {
-          log.warn("File was generated already, check for file name clashes: " + path);
+          log.warn("File was generated already, check for file name clashes: {}", path);
         }
         else {
           generatedFilePaths.add(path);

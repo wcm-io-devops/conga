@@ -53,7 +53,7 @@ public final class ClassLoaderUtil {
    * @return Resource loader
    */
   public static ClassLoader buildClassLoader(List<URL> classpathUrls) {
-    return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]));
+    return new URLClassLoader(classpathUrls.toArray(new URL[0]));
   }
 
   /**

@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -70,9 +69,6 @@ public class PackageMojo extends AbstractCongaMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
-  @Parameter(property = "session", readonly = true, required = true)
-  private MavenSession mavenSession;
-
   @Component
   protected MavenProjectHelper projectHelper;
 
@@ -80,6 +76,7 @@ public class PackageMojo extends AbstractCongaMojo {
   private ZipArchiver zipArchiver;
 
   @Override
+  @SuppressWarnings("PMD.UseStringBufferForStringAppends")
   public void execute() throws MojoExecutionException, MojoFailureException {
     Set<String> selectedEnvironments;
     if (environments != null && environments.length > 0) {
@@ -140,7 +137,6 @@ public class PackageMojo extends AbstractCongaMojo {
    * Build JAR file with definitions.
    * @param contentDirectory Content directory for JAR file
    * @return JAR file
-   * @throws MojoExecutionException
    */
   private File buildZipFile(File contentDirectory, String classifier) throws MojoExecutionException {
     File zipFile = new File(project.getBuild().getDirectory(), buildZipFileName(classifier));
@@ -169,12 +165,15 @@ public class PackageMojo extends AbstractCongaMojo {
     String directoryPath = toZipDirectoryPath(directory);
     if (StringUtils.startsWith(directoryPath, basePath)) {
       String relativeDirectoryPath = StringUtils.substring(directoryPath, basePath.length());
-      for (File file : directory.listFiles()) {
-        if (file.isDirectory()) {
-          addZipDirectory(basePath, file);
-        }
-        else {
-          zipArchiver.addFile(file, relativeDirectoryPath + file.getName());
+      File[] files = directory.listFiles();
+      if (files != null) {
+        for (File file : files) {
+          if (file.isDirectory()) {
+            addZipDirectory(basePath, file);
+          }
+          else {
+            zipArchiver.addFile(file, relativeDirectoryPath + file.getName());
+          }
         }
       }
     }

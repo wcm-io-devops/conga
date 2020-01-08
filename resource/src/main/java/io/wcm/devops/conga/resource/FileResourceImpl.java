@@ -48,6 +48,7 @@ class FileResourceImpl extends AbstractFileResourceInfoImpl implements Resource 
   }
 
   @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
   public InputStream getInputStream() {
     try {
       return new BufferedInputStream(new FileInputStream(file));

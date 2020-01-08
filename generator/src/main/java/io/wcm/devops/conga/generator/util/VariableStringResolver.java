@@ -247,7 +247,7 @@ public final class VariableStringResolver {
           Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
           if (valueObject != null) {
             String variableValue = ValueUtil.valueToString(valueObject);
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue));
             replacedAny = true;
           }
           else {
@@ -260,7 +260,7 @@ public final class VariableStringResolver {
           Object valueObject = jexlResolver.resolve(expression, variables);
           if (valueObject != null) {
             String variableValue = ValueUtil.valueToString(valueObject);
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue.toString()));
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(variableValue));
             replacedAny = true;
           }
           else {

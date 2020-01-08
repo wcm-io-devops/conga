@@ -73,6 +73,7 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
    * See <a href="http://maven.apache.org/shared/maven-archiver/index.html">Maven Archiver Reference</a>.
    */
   @Parameter
+  @SuppressWarnings("PMD.ImmutableField")
   private MavenArchiveConfiguration archive = new MavenArchiveConfiguration();
 
   @Parameter(property = "project", required = true, readonly = true)
@@ -109,7 +110,6 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
    * Build JAR file with definitions.
    * @param contentDirectory Content directory for JAR file
    * @return JAR file
-   * @throws MojoExecutionException
    */
   private File buildJarFile(File contentDirectory) throws MojoExecutionException {
     File jarFile = new File(project.getBuild().getDirectory(), buildJarFileName());
@@ -145,7 +145,7 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
     if (values == null || values.isEmpty()) {
       return null;
     }
-    return values.toArray(new String[values.size()]);
+    return values.toArray(new String[0]);
   }
 
   private String buildJarFileName() {
@@ -160,7 +160,6 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
 
   /**
    * Copy definitions and template files to classes folder to include them in JAR artifact.
-   * @throws MojoExecutionException
    */
   private File copyDefinitions() throws MojoExecutionException {
     File outputDir = new File(definitionTarget);

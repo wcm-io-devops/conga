@@ -224,7 +224,6 @@ public class ValidateMojo extends AbstractCongaMojo {
    * @param environment Environment
    * @param mavenProjectClasspathUrls Classpath URLs of maven project
    * @param pluginContextOptions Plugin context options
-   * @throws MojoExecutionException
    */
   private void validateVersionInfo(Environment environment, List<URL> mavenProjectClasspathUrls, PluginContextOptions pluginContextOptions)
       throws MojoExecutionException {

@@ -43,6 +43,7 @@ public final class ModelValidator<T> implements DefinitionValidator<T> {
   }
 
   @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
   public T validate(Resource resource, String pathForLog) throws MojoFailureException {
     try {
       return modelReader.read(resource);

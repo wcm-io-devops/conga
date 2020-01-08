@@ -85,7 +85,7 @@ public final class Generator {
           FileUtils.deleteDirectory(environmentDestDir);
         }
         catch (IOException ex) {
-          throw new GeneratorException("Unable to delete existing target directory: " + FileUtil.getCanonicalPath(environmentDestDir));
+          throw new GeneratorException("Unable to delete existing target directory: " + FileUtil.getCanonicalPath(environmentDestDir), ex);
         }
       }
       if (!environmentDestDir.exists()) {
