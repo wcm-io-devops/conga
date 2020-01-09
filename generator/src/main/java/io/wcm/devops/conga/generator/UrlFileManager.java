@@ -122,7 +122,7 @@ public final class UrlFileManager {
         plugin.deleteFile(url, context);
       }
       catch (UnsupportedOperationException ex) {
-        throw new IOException("Deleting file not permitted: " + url);
+        throw new IOException("Deleting file not permitted: " + url, ex);
       }
       return null;
     });

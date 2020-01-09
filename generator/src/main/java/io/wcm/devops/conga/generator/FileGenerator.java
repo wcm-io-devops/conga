@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader;
 import io.wcm.devops.conga.generator.plugins.validator.NoneValidator;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
@@ -65,6 +66,7 @@ import io.wcm.devops.conga.model.util.MapMerger;
 /**
  * Generates file for one environment.
  */
+@SuppressWarnings("PMD.MoreThanOneLogger")
 class FileGenerator {
 
   private final String environmentName;
@@ -194,8 +196,8 @@ class FileGenerator {
   /**
    * Generate file(s).
    * @return List of files that where generated directly or indirectly (by post processors).
-   * @throws IOException
    */
+  @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
   public Collection<GeneratedFileContext> generate() throws IOException {
     File dir = file.getParentFile();
     if (!dir.exists()) {
@@ -274,6 +276,7 @@ class FileGenerator {
    * @return true if symlink creation was successful. This is likely to return false on windows operating systems.
    * @throws IOException If an unexpected error occurs
    */
+  @SuppressWarnings("PMD.GuardLogStatement")
   private boolean createSymlinkToLocalFile() throws IOException {
     // if file is a local file try to create a symlink to it
     File localFile = urlFileManager.getLocalFile(url);

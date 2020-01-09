@@ -68,6 +68,13 @@ public final class TestUtils {
     return dir;
   }
 
+  public static File assertNotDirectory(File assertBaseDir, String path) {
+    File dir = new File(assertBaseDir, path);
+    assertFalse(dir.exists() && dir.isDirectory(),
+        "Directory does exist: " + FileUtil.getCanonicalPath(dir));
+    return dir;
+  }
+
   public static File assertFile(File assertBaseDir, String path) {
     File file = new File(assertBaseDir, path);
     assertTrue(file.exists() && file.isFile(),

@@ -24,13 +24,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
@@ -38,6 +41,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
@@ -89,7 +93,6 @@ class EnvironmentGenerator {
   private final Logger log;
   private final VariableStringResolver variableStringResolver;
   private final VariableMapResolver variableMapResolver;
-  private final VariableObjectTreeResolver variableObjectTreeResolver;
   private final Collection<String> dependencyVersions;
   private final Set<String> sensitiveConfigParameters = new HashSet<>();
 
@@ -118,7 +121,7 @@ class EnvironmentGenerator {
         .pluginContextOptions(this.pluginContextOptions);
     this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
     this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext, variableMapResolver);
-    this.variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
+    VariableObjectTreeResolver variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
 
     // build resource loaded based on combined dependency lists of environment and container
     List<URL> combindedClasspathUrls = ResourceLoaderUtil.getEnvironmentClasspathUrls(environment.getDependencies(), this.variableStringResolver, options);
@@ -164,15 +167,32 @@ class EnvironmentGenerator {
     });
   }
 
-  public void generate() {
+  /**
+   * Generate files for environment.
+   * @param nodeNames Node names to generate. If none specified all nodes are generated.
+   */
+  public void generate(String[] nodeNames) {
     log.info("");
     log.info("===== Environment '{}' =====", environmentName);
 
+    Set<String> nodeNamesIndex = ArrayUtils.isEmpty(nodeNames) ? Collections.emptySet() : ImmutableSet.copyOf(nodeNames);
     for (Node node : environment.getNodes()) {
-      generateNode(node);
+      if (isSelectedNode(node, nodeNamesIndex)) {
+        generateNode(node);
+      }
     }
 
     log.info("");
+  }
+
+  private boolean isSelectedNode(Node node, Set<String> nodeNames) {
+    if (nodeNames.isEmpty()) {
+      return true;
+    }
+    if (StringUtils.isNotBlank(node.getNode()) && nodeNames.contains(node.getNode())) {
+      return true;
+    }
+    return CollectionUtils.containsAny(node.getNodes(), nodeNames);
   }
 
   private void generateNode(Node node) {
@@ -330,6 +350,7 @@ class EnvironmentGenerator {
     }
   }
 
+  @SuppressWarnings("PMD.PreserveStackTrace")
   private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
       Map<String, Object> config, File nodeDir, Template template,
       String roleName, List<String> roleVariantNames, String templateName) {
@@ -360,7 +381,7 @@ class EnvironmentGenerator {
       generatedFiles.forEach(generatedFileContext -> {
         String path = generatedFileContext.getFileContext().getCanonicalPath();
         if (generatedFilePaths.contains(path)) {
-          log.warn("File was generated already, check for file name clashes: " + path);
+          log.warn("File was generated already, check for file name clashes: {}", path);
         }
         else {
           generatedFilePaths.add(path);

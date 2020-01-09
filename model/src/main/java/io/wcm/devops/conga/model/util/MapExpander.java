@@ -54,7 +54,7 @@ public final class MapExpander {
       String keyPart = StringUtils.substringBefore(key, ".");
       String keySuffix = StringUtils.substringAfter(key, ".");
       Object resultKeyPart = map.get(keyPart);
-      if (resultKeyPart != null && resultKeyPart instanceof Map) {
+      if (resultKeyPart instanceof Map) {
         return getDeep((Map<String, Object>)resultKeyPart, keySuffix);
       }
     }

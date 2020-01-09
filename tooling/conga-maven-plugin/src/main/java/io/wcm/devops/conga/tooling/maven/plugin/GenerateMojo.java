@@ -59,6 +59,12 @@ public class GenerateMojo extends AbstractCongaMojo {
   private String[] environments;
 
   /**
+   * Selected nodes to generate.
+   */
+  @Parameter(property = "conga.nodes")
+  private String[] nodes;
+
+  /**
    * Delete folders of environments before generating the new files.
    */
   @Parameter(defaultValue = "false")
@@ -126,7 +132,7 @@ public class GenerateMojo extends AbstractCongaMojo {
         .logger(new MavenSlf4jLogFacade(getLog()));
 
     Generator generator = new Generator(options);
-    generator.generate(environments);
+    generator.generate(environments, nodes);
   }
 
   /**

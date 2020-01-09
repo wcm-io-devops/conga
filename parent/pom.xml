@@ -25,17 +25,21 @@
   <parent>
     <groupId>io.wcm.devops</groupId>
     <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-    <version>1.1.6</version>
+    <version>1.2.0</version>
     <relativePath />
   </parent>
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.parent</artifactId>
-  <version>1.11.4</version>
+  <version>1.12.0</version>
   <packaging>pom</packaging>
 
   <name>CONGA</name>
   <description>Parent POM for all wcm.io CONGA projects.</description>
+  
+  <properties>
+    <jknack.handlebars.version>4.1.2</jknack.handlebars.version>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -85,13 +89,13 @@
       <dependency>
         <groupId>com.github.jknack</groupId>
         <artifactId>handlebars</artifactId>
-        <version>4.1.2</version>
+        <version>${jknack.handlebars.version}</version>
       </dependency>
 
       <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.8.5</version>
+        <version>2.8.6</version>
       </dependency>
 
       <dependency>

@@ -31,6 +31,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.google.common.collect.ImmutableMap;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
@@ -53,8 +54,9 @@ final class ResourceLoaderUtil {
    * @param classpathUrls Classpath urls
    * @return Resource loader
    */
+  @SuppressFBWarnings("DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED")
   public static ClassLoader buildClassLoader(List<URL> classpathUrls) {
-    return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]));
+    return new URLClassLoader(classpathUrls.toArray(new URL[0]));
   }
 
   /**

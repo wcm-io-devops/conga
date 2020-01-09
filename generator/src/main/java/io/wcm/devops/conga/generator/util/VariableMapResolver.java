@@ -99,6 +99,7 @@ public final class VariableMapResolver {
     return deescapeMap(config);
   }
 
+  @SuppressWarnings("PMD.CompareObjectsWithEquals")
   private Map<String, Object> resolve(Map<String, Object> config, boolean deescapeVariables, int iterationCount) {
     if (iterationCount >= REPLACEMENT_MAX_ITERATIONS) {
       throw new IllegalArgumentException("Cyclic dependencies in config map detected: " + config);
@@ -153,6 +154,7 @@ public final class VariableMapResolver {
     }
   }
 
+  @SuppressWarnings("PMD.CompareObjectsWithEquals")
   private List<Object> replaceList(List<Object> list, Map<String, Object> variables) {
     boolean replacedAny = false;
     List<Object> listCopy = new ArrayList<>(list);
@@ -238,6 +240,7 @@ public final class VariableMapResolver {
     return variableStringResolver.deescape(value);
   }
 
+  @SuppressWarnings("PMD.CompareObjectsWithEquals")
   private List<Object> deescapeList(List<Object> list) {
     List<Object> listCopy = new ArrayList<>(list);
     for (int i = 0; i < listCopy.size(); i++) {

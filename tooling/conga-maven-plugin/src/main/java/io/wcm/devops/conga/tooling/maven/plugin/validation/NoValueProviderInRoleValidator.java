@@ -39,6 +39,7 @@ public final class NoValueProviderInRoleValidator implements DefinitionValidator
   private final ModelReader<Map> mapReader = new MapReader();
 
   @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
   public Void validate(Resource resource, String pathForLog) throws MojoFailureException {
     try {
       // iterate over whole value and validate all string values that are found

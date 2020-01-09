@@ -63,7 +63,16 @@ public final class Generator {
    * Generate files for environment(s).
    * @param environmentNames Environments to generate. If none specified all environments are generated.
    */
-  public void generate(String... environmentNames) {
+  public void generate(String[] environmentNames) {
+    generate(environmentNames, new String[] {});
+  }
+
+  /**
+   * Generate files for environment(s).
+   * @param environmentNames Environments to generate. If none specified all environments are generated.
+   * @param nodeNames Node names to generate. If none specified all nodes are generated.
+   */
+  public void generate(String[] environmentNames, String[] nodeNames) {
     Map<String, Environment> selectedEnvironments = new HashMap<>();
     if (environmentNames == null || environmentNames.length == 0) {
       selectedEnvironments.putAll(environments);
@@ -85,7 +94,7 @@ public final class Generator {
           FileUtils.deleteDirectory(environmentDestDir);
         }
         catch (IOException ex) {
-          throw new GeneratorException("Unable to delete existing target directory: " + FileUtil.getCanonicalPath(environmentDestDir));
+          throw new GeneratorException("Unable to delete existing target directory: " + FileUtil.getCanonicalPath(environmentDestDir), ex);
         }
       }
       if (!environmentDestDir.exists()) {
@@ -93,7 +102,7 @@ public final class Generator {
       }
 
       EnvironmentGenerator environmentGenerator = new EnvironmentGenerator(entry.getKey(), entry.getValue(), environmentDestDir, options);
-      environmentGenerator.generate();
+      environmentGenerator.generate(nodeNames);
     }
   }
 

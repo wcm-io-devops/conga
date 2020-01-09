@@ -72,7 +72,7 @@ public abstract class AbstractPostProcessor implements PostProcessorPlugin {
 
   /**
    * Find matching file header plugin for the given file.
-   * @param file
+   * @param file File context
    * @return File header plugin or null if no match found.
    */
   private FileHeaderPlugin detectFileHeaderPlugin(FileContext file, PostProcessorContext postProcessorContext) {

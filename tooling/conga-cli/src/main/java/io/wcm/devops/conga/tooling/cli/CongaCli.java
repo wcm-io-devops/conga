@@ -25,6 +25,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import io.wcm.devops.conga.generator.Generator;
@@ -46,6 +47,7 @@ public final class CongaCli {
     CLI_OPTIONS.addOption("environmentDir", true, "Source path with environment definitions.");
     CLI_OPTIONS.addOption("target", true, "Target path for the generated configuration files.");
     CLI_OPTIONS.addOption("environments", true, "Selected environments to generate (separated by ',').");
+    CLI_OPTIONS.addOption("nodes", true, "Selected nodes to generate (separated by ',').");
     CLI_OPTIONS.addOption("?", false, "Print usage help.");
   }
 
@@ -56,10 +58,10 @@ public final class CongaCli {
   /**
    * CLI entry point
    * @param args Command line arguments
-   * @throws Exception Exception
+   * @throws ParseException Parse exceptoin
    */
   //CHECKSTYLE:OFF
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws ParseException {
     //CHECKSTYLE:ON
     CommandLine commandLine = new DefaultParser().parse(CLI_OPTIONS, args);
 
@@ -76,6 +78,7 @@ public final class CongaCli {
     File environmentDir = new File(commandLine.getOptionValue("environmentDir", "environments"));
     File targetDir = new File(commandLine.getOptionValue("target", "target"));
     String[] environments = StringUtils.split(commandLine.getOptionValue("environments", null), ",");
+    String[] nodes = StringUtils.split(commandLine.getOptionValue("nodes", null), ",");
 
     GeneratorOptions options = new GeneratorOptions()
         .baseDir(baseDir)
@@ -87,7 +90,7 @@ public final class CongaCli {
         .pluginManager(new PluginManagerImpl());
 
     Generator generator = new Generator(options);
-    generator.generate(environments);
+    generator.generate(environments, nodes);
   }
 
 }
