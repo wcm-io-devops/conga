@@ -140,6 +140,11 @@ ${new('java.text.DecimalFormat','000').format(multiplyIndex)}
 ${stringUtils:join(listParam,'|')}
 ```
 
+When you escape the dollar sign with a backslash the variable is untouched by CONGA:
+```
+\${my-static-string}
+```
+
 
 ### Iterate over variable list values
 
@@ -155,7 +160,7 @@ Example from an environment definition file:
   config:
     replication.author.publishTargets:
       _iterate_: ${system::publishTransportUrls}
-      name: publish{_itemIndex_}
+      name: publish${_itemIndex_}
       host: ${_item_}
       transportUser: ...
       transportPassword: ...
