@@ -29,6 +29,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.google.common.collect.ImmutableList;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.reader.EnvironmentReader;
@@ -72,6 +73,7 @@ public final class Generator {
    * @param environmentNames Environments to generate. If none specified all environments are generated.
    * @param nodeNames Node names to generate. If none specified all nodes are generated.
    */
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   public void generate(String[] environmentNames, String[] nodeNames) {
     Map<String, Environment> selectedEnvironments = new HashMap<>();
     if (environmentNames == null || environmentNames.length == 0) {

@@ -197,7 +197,7 @@ class FileGenerator {
    * Generate file(s).
    * @return List of files that where generated directly or indirectly (by post processors).
    */
-  @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
+  @SuppressFBWarnings({ "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" })
   public Collection<GeneratedFileContext> generate() throws IOException {
     File dir = file.getParentFile();
     if (!dir.exists()) {

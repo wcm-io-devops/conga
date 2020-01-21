@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
@@ -40,6 +41,7 @@ import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 public abstract class AbstractFileHeader implements FileHeaderPlugin {
 
   @Override
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   public final Void apply(FileContext file, FileHeaderContext context) {
     String lineBreak = StringUtils.defaultString(getLineBreak());
     try {

@@ -25,6 +25,7 @@ import java.io.IOException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.role.Role;
@@ -81,6 +82,7 @@ public final class FileUtil {
    * @param dir Directory
    * @return Directory
    */
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   public static File ensureDirExistsAutocreate(File dir) {
     if (!dir.exists()) {
       dir.mkdirs();

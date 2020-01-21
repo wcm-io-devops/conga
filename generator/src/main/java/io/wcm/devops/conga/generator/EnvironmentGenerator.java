@@ -43,6 +43,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
@@ -351,6 +352,7 @@ class EnvironmentGenerator {
   }
 
   @SuppressWarnings("PMD.PreserveStackTrace")
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
       Map<String, Object> config, File nodeDir, Template template,
       String roleName, List<String> roleVariantNames, String templateName) {

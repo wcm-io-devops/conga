@@ -55,6 +55,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
@@ -151,6 +152,7 @@ public class FileGeneratorPostProcessorTest {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
       @Override
+      @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
         // delete input file and create new file test.abc instead
         FileContext input = invocation.getArgument(0);
@@ -189,6 +191,7 @@ public class FileGeneratorPostProcessorTest {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
       @Override
+      @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
         // delete input file and create new file test.abc instead
         FileContext input = invocation.getArgument(0);
