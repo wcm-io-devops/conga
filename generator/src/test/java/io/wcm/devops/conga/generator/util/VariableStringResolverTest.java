@@ -125,6 +125,20 @@ public class VariableStringResolverTest {
   }
 
   @Test
+  public void testEscapedVariables_ComplexExpression() {
+    String expression = "${var1:http://myhost.com\\$\\{lowercase:\\$1\\}|NOT_FOUND}";
+    assertEquals("v1", underTest.resolve(expression, ImmutableMap.of("var1", "v1"), false));
+    assertEquals("http://myhost.com${lowercase:$1}|NOT_FOUND", underTest.resolve(expression, ImmutableMap.of(), false));
+  }
+
+  @Test
+  public void testEscapedVariables_ComplexExpression_Jexl() {
+    String expression = "${var1 ? var1 : 'http://myhost.com\\u0024\\u007blowercase:\\u00241\\u007d|NOT_FOUND'}";
+    assertEquals("v1", underTest.resolve(expression, ImmutableMap.of("var1", "v1"), false));
+    assertEquals("http://myhost.com${lowercase:$1}|NOT_FOUND", underTest.resolve(expression, ImmutableMap.of(), false));
+  }
+
+  @Test
   public void testDeepMapVariable() {
     Map<String, Object> variables = ImmutableMap.of("var1", ImmutableMap.of("k1", "v1", "k2", ImmutableMap.of("k21", "v21", "k22", "v22")));
 
