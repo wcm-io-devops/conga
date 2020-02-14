@@ -67,3 +67,9 @@ tenants:
 dependencies:
 - url1
 - mvn:url2 
+
+# Plugin config
+pluginConfig:
+  examplePlugin:
+    pluginParam1: value1
+    pluginParam2: 25

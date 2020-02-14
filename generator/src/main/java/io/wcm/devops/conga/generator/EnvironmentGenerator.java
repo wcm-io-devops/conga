@@ -113,7 +113,7 @@ class EnvironmentGenerator {
     this.pluginContextOptions = new PluginContextOptions()
         .pluginManager(options.getPluginManager())
         .valueProviderConfig(options.getValueProviderConfig())
-        .genericPluginConfig(options.getGenericPluginConfig())
+        .genericPluginConfig(mergePluginConfig(environment.getPluginConfig(), options.getGenericPluginConfig()))
         .containerContext(options.getContainerContext())
         .logger(this.log);
 
@@ -398,6 +398,11 @@ class EnvironmentGenerator {
     /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
       throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file) + "\n" + ex.getMessage(), ex);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private Map<String, Map<String, Object>> mergePluginConfig(Map<String, Map<String, Object>> map1, Map<String, Map<String, Object>> map2) {
+    return MapMerger.merge((Map)map1, (Map)map2);
   }
 
 }

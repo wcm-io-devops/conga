@@ -151,6 +151,13 @@ public class GeneratorTest {
     assertContains(xml5tenant2, "<var4>v4-role1-variant13</var4>");
     assertContains(xml4tenant2, "<var5>v5-role1-variant11</var5>");
 
+    // check merging plugin config
+    assertContains(text1, "pluginConfig.param1: value1", StandardCharsets.ISO_8859_1);
+    assertContains(text1, "pluginConfig.param2: 66", StandardCharsets.ISO_8859_1);
+    assertContains(text1, "pluginConfig.param31: value31", StandardCharsets.ISO_8859_1);
+    assertContains(text1, "pluginConfig.param32: value32-X", StandardCharsets.ISO_8859_1);
+    assertContains(text1, "pluginConfig.param4: value4", StandardCharsets.ISO_8859_1);
+
   }
 
 }

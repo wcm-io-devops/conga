@@ -31,8 +31,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
+import io.wcm.devops.conga.generator.plugins.valueprovider.DummyPluginConfigValueProviderPlugin;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
@@ -52,7 +54,12 @@ public final class TestUtils {
         .environmentDir(new File("src/test/definitions/environments"))
         .destDir(destDir)
         .version(TEST_VERSION)
-        .pluginManager(new PluginManagerImpl());
+        .pluginManager(new PluginManagerImpl())
+        .genericPluginConfig(ImmutableMap.of(
+            DummyPluginConfigValueProviderPlugin.NAME, ImmutableMap.of(
+                "param1", "value1",
+                "param2", 55,
+                "param3", ImmutableMap.of("param31", "value31", "param32", "value32"))));
 
     ModelExport modelExport = new ModelExport();
     modelExport.setNode(ImmutableList.of("yaml"));
