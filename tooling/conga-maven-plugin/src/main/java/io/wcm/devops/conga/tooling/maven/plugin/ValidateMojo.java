@@ -32,7 +32,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.artifact.resolver.ResolutionErrorHandler;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -44,6 +46,7 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.sonatype.plexus.build.incremental.BuildContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.collect.ImmutableList;
@@ -93,11 +96,19 @@ public class ValidateMojo extends AbstractCongaMojo {
   private MavenProject project;
 
   @Component
+  private org.apache.maven.repository.RepositorySystem repositorySystem;
+  @Component
+  private ResolutionErrorHandler resolutionErrorHandler;
+  @Component
   private RepositorySystem repoSystem;
+  @Component
+  private BuildContext buildContext;
   @Parameter(property = "repositorySystemSession", readonly = true)
   private RepositorySystemSession repoSession;
   @Parameter(property = "project.remoteProjectRepositories", readonly = true)
   private List<RemoteRepository> remoteRepos;
+  @Parameter(defaultValue = "${session}", readonly = true, required = false)
+  private MavenSession session;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -116,6 +127,11 @@ public class ValidateMojo extends AbstractCongaMojo {
 
     MavenContext mavenContext = new MavenContext()
         .project(project)
+        .session(session)
+        .setRepositorySystem(repositorySystem)
+        .resolutionErrorHandler(resolutionErrorHandler)
+        .buildContext(buildContext)
+        .log(getLog())
         .repoSystem(repoSystem)
         .repoSession(repoSession)
         .remoteRepos(remoteRepos)

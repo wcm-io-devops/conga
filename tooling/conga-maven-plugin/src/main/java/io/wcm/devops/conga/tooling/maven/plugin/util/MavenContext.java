@@ -22,10 +22,14 @@ package io.wcm.devops.conga.tooling.maven.plugin.util;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.artifact.resolver.ResolutionErrorHandler;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.sonatype.plexus.build.incremental.BuildContext;
 
 /**
  * Contains maven-specific context objects.
@@ -33,6 +37,11 @@ import org.eclipse.aether.repository.RemoteRepository;
 public final class MavenContext {
 
   private MavenProject project;
+  private MavenSession session;
+  private org.apache.maven.repository.RepositorySystem repositorySystem;
+  private ResolutionErrorHandler resolutionErrorHandler;
+  private BuildContext buildContext;
+  private Log log;
   private RepositorySystem repoSystem;
   private RepositorySystemSession repoSession;
   private List<RemoteRepository> remoteRepos;
@@ -51,6 +60,86 @@ public final class MavenContext {
    */
   public MavenContext project(MavenProject value) {
     this.project = value;
+    return this;
+  }
+
+  /**
+   * @return Maven Session
+   */
+  public MavenSession getSession() {
+    return this.session;
+  }
+
+  /**
+   * @param value Maven Session
+   * @return this
+   */
+  public MavenContext session(MavenSession value) {
+    this.session = value;
+    return this;
+  }
+
+  /**
+   * @return Repository system
+   */
+  public org.apache.maven.repository.RepositorySystem getRepositorySystem() {
+    return this.repositorySystem;
+  }
+
+  /**
+   * @param value Repository system
+   * @return this
+   */
+  public MavenContext setRepositorySystem(org.apache.maven.repository.RepositorySystem value) {
+    this.repositorySystem = value;
+    return this;
+  }
+
+  /**
+   * @return Resolution error handler
+   */
+  public ResolutionErrorHandler getResolutionErrorHandler() {
+    return this.resolutionErrorHandler;
+  }
+
+  /**
+   * @param value Resolution error handler
+   * @return this
+   */
+  public MavenContext resolutionErrorHandler(ResolutionErrorHandler value) {
+    this.resolutionErrorHandler = value;
+    return this;
+  }
+
+  /**
+   * @return Build context
+   */
+  public BuildContext getBuildContext() {
+    return this.buildContext;
+  }
+
+  /**
+   * @param value Build context
+   * @return this
+   */
+  public MavenContext buildContext(BuildContext value) {
+    this.buildContext = value;
+    return this;
+  }
+
+  /**
+   * @return Log
+   */
+  public Log getLog() {
+    return this.log;
+  }
+
+  /**
+   * @param value Log
+   * @return this
+   */
+  public MavenContext log(Log value) {
+    this.log = value;
     return this;
   }
 
