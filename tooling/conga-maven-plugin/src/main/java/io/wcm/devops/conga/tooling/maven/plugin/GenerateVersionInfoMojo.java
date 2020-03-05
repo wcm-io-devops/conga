@@ -33,6 +33,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.GeneratorOptions;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.tooling.maven.plugin.util.VersionInfoUtil;
@@ -54,6 +55,7 @@ public class GenerateVersionInfoMojo extends AbstractMojo {
   private MavenProject project;
 
   @Override
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   public void execute() throws MojoExecutionException, MojoFailureException {
     File outputDir = new File(definitionTarget, GeneratorOptions.CLASSPATH_PREFIX);
     if (!outputDir.exists()) {

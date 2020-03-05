@@ -52,6 +52,7 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.ManifestException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.resource.Resource;
 import io.wcm.devops.conga.resource.ResourceCollection;
 import io.wcm.devops.conga.resource.ResourceLoader;
@@ -161,6 +162,7 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
   /**
    * Copy definitions and template files to classes folder to include them in JAR artifact.
    */
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   private File copyDefinitions() throws MojoExecutionException {
     File outputDir = new File(definitionTarget);
     if (!outputDir.exists()) {
@@ -185,6 +187,7 @@ public class DefinitionPackageMojo extends AbstractCongaMojo {
     return outputDir;
   }
 
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   private void copyDefinitions(ResourceCollection sourceDir, File rootOutputDir, File parentTargetDir, String dirName) throws IOException {
     if (!sourceDir.exists()) {
       return;
