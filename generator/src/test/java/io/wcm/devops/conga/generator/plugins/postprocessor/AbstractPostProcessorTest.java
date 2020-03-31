@@ -70,4 +70,26 @@ public class AbstractPostProcessorTest {
     result.forEach(fc -> fc.getFile().delete());
   }
 
+  @Test
+  public void testApplyWithoutFileHeader() throws Exception {
+    File file = new File("target/generation-test/postProcessor.json");
+    FileUtils.copyFile(new File(getClass().getResource("/validators/json/validJson.json").toURI()), file);
+
+    FileContext fileContext = new FileContext().file(file);
+
+    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+        .pluginManager(new PluginManagerImpl());
+
+    PostProcessorPlugin postProcessor = new DummyPostProcessor();
+    PostProcessorContext postProcessorContext = new PostProcessorContext()
+        .pluginContextOptions(pluginContextOptions);
+
+    List<FileContext> result = postProcessor.apply(fileContext, postProcessorContext);
+
+    assertEquals(1, result.size());
+
+    file.delete();
+    result.forEach(fc -> fc.getFile().delete());
+  }
+
 }

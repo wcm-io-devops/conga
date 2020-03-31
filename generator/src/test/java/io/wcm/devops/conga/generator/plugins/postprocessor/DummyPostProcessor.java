@@ -57,7 +57,9 @@ class DummyPostProcessor extends AbstractPostProcessor {
     }
     FileContext newFileContext = new FileContext().file(newFile).charset(StandardCharsets.UTF_8);
 
-    applyFileHeader(newFileContext, fileHeader, context);
+    if (fileHeader != null) {
+      applyFileHeader(newFileContext, fileHeader, context);
+    }
 
     return ImmutableList.of(newFileContext);
   }

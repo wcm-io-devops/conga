@@ -27,6 +27,9 @@
       <action type="add" dev="sseifert">
         Support 'pluginConfig' section in environments to define different plugin parameter in environment. The parameters are merged with those defined in the POM.
       </action>
+      <action type="fix" dev="sseifert">
+        Fix NPE when generating files without file header.
+      </action>
     </release>
 
     <release version="1.12.0" date="2020-01-09">
