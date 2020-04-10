@@ -192,7 +192,12 @@ public final class RoleUtil {
 
   private static String getFileNameKey(RoleFile file) {
     if (StringUtils.isNotBlank(file.getFile())) {
-      return file.getFile();
+      if (StringUtils.isNotBlank(file.getDir())) {
+        return file.getDir() + "/" + file.getFile();
+      }
+      else {
+        return file.getFile();
+      }
     }
     else if (StringUtils.isNotBlank(file.getUrl())) {
       return file.getUrl();
