@@ -31,7 +31,7 @@ install: "mvn -s ./.travis.maven-settings.xml clean"
 script:
 - "mvn -s ./.travis.maven-settings.xml -Pcontinuous-integration -U install"
 # Separate build for example due to dependeny on conga-maven-plugin
-- "mvn -s ./.travis.maven-settings.xml -Pcontinuous-integration -U package -f example"
+- "mvn -s ./.travis.maven-settings.xml -Pcontinuous-integration -U install -f example"
 # Remove wcm.io artefacts from repository before cache
 - rm -rf $HOME/.m2/repository/io/wcm
 

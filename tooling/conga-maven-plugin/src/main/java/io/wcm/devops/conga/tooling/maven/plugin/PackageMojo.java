@@ -38,7 +38,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
@@ -66,18 +65,24 @@ public class PackageMojo extends AbstractCongaMojo {
   @Parameter(defaultValue = "true")
   private boolean artifactPerEnvironment;
 
-  @Parameter(property = "project", required = true, readonly = true)
-  private MavenProject project;
-
-  @Component
-  protected MavenProjectHelper projectHelper;
-
   @Component(role = Archiver.class, hint = "zip")
   private ZipArchiver zipArchiver;
 
   @Override
   @SuppressWarnings("PMD.UseStringBufferForStringAppends")
   public void execute() throws MojoExecutionException, MojoFailureException {
+
+    // build a JAR file with all CONGA definitions and resources
+    buildDefinitionsJarFile();
+
+    // build attachments with all generated configurations
+    buildGeneratedConfigurationAttachments();
+
+  }
+
+
+  @SuppressWarnings("PMD.UseStringBufferForStringAppends")
+  private void buildGeneratedConfigurationAttachments() throws MojoExecutionException {
     Set<String> selectedEnvironments;
     if (environments != null && environments.length > 0) {
       selectedEnvironments = ImmutableSet.copyOf(environments);
@@ -93,6 +98,7 @@ public class PackageMojo extends AbstractCongaMojo {
         .filter(dir -> selectedEnvironments == null || selectedEnvironments.contains(dir.getName()))
         .collect(Collectors.toList());
 
+    MavenProject project = getProject();
     if (artifactPerEnvironment) {
       // generate an ZIP artifact with generated configurations for each environment
       for (File environmentDir : environmentDirs) {
@@ -139,7 +145,7 @@ public class PackageMojo extends AbstractCongaMojo {
    * @return JAR file
    */
   private File buildZipFile(File contentDirectory, String classifier) throws MojoExecutionException {
-    File zipFile = new File(project.getBuild().getDirectory(), buildZipFileName(classifier));
+    File zipFile = new File(getProject().getBuild().getDirectory(), buildZipFileName(classifier));
 
     String basePath = toZipDirectoryPath(contentDirectory);
     addZipDirectory(basePath, contentDirectory);
@@ -186,7 +192,7 @@ public class PackageMojo extends AbstractCongaMojo {
 
   private String buildZipFileName(String classifier) {
     StringBuilder sb = new StringBuilder();
-    sb.append(project.getBuild().getFinalName());
+    sb.append(getProject().getBuild().getFinalName());
     if (StringUtils.isNotBlank(classifier)) {
       sb.append("-").append(classifier);
     }
