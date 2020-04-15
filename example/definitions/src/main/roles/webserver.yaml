@@ -5,8 +5,18 @@ files:
 
 # Define a file to be generated per tenant
 - file: "${tenant}_vhost.conf"
-  dir: vhosts
+  dir: available_vhosts
   template: tenant_vhost.conf.hbs
+  # Multiply file for each tenant that has the given roles
+  multiply: tenant
+  multiplyOptions:
+    roles:
+    - website
+
+# Symlink pointing to a generate file
+- file: "${tenant}_vhost.conf"
+  dir: enabled_vhosts
+  symlinkTarget: "available_vhosts/${tenant}_vhost.conf"
   # Multiply file for each tenant that has the given roles
   multiply: tenant
   multiplyOptions:

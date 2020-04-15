@@ -24,6 +24,7 @@ import static io.wcm.devops.conga.generator.TestUtils.assertContains;
 import static io.wcm.devops.conga.generator.TestUtils.assertDirectory;
 import static io.wcm.devops.conga.generator.TestUtils.assertFile;
 import static io.wcm.devops.conga.generator.TestUtils.assertNotFile;
+import static io.wcm.devops.conga.generator.TestUtils.assertSymlink;
 import static io.wcm.devops.conga.generator.TestUtils.setupGenerator;
 
 import java.io.File;
@@ -96,6 +97,9 @@ public class GeneratorTest {
 
     File sample1b = assertFile(node1Dir, "files/sample-filesystem.txt");
     assertContains(sample1b, "This is an example text file: äöüß€");
+
+    File sample1a_symlink = assertSymlink(node1Dir, "files/sample-symlink.txt");
+    assertContains(sample1a_symlink, "This is an example text file: äöüß€");
 
     File sample1c = assertFile(node1Dir, "text/test-superrole1.txt");
     assertContains(sample1c, "This is a textfile äöüß with ISO-8859-1 encoding.", StandardCharsets.ISO_8859_1);

@@ -270,7 +270,7 @@ class EnvironmentGenerator {
   private Template getHandlebarsTemplate(Role role, RoleFile roleFile, NodeRole nodeRole) {
     String templateFile = FileUtil.getTemplatePath(role, roleFile);
     if (StringUtils.isEmpty(templateFile)) {
-      if (StringUtils.isEmpty(roleFile.getUrl())) {
+      if (StringUtils.isEmpty(roleFile.getUrl()) && StringUtils.isEmpty(roleFile.getSymlinkTarget())) {
         throw new GeneratorException("No template defined for file: " + FileUtil.getFileInfo(nodeRole, roleFile));
       }
       else {
@@ -342,8 +342,9 @@ class EnvironmentGenerator {
         String dir = variableStringResolver.resolveString(roleFile.getDir(), resolvedConfig);
         String file = variableStringResolver.resolveString(roleFile.getFile(), resolvedConfig);
         String url = variableStringResolver.resolveString(roleFile.getUrl(), resolvedConfig);
+        String symlinkTarget = variableStringResolver.resolveString(roleFile.getSymlinkTarget(), resolvedConfig);
 
-        generatedFiles.addAll(generateFile(roleFile, dir, file, url,
+        generatedFiles.addAll(generateFile(roleFile, dir, file, url, symlinkTarget,
             resolvedConfig, nodeDir, template, roleName, roleVariantNames, templateName));
 
         index++;
@@ -353,7 +354,8 @@ class EnvironmentGenerator {
 
   @SuppressWarnings("PMD.PreserveStackTrace")
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
-  private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir, String fileName, String url,
+  private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir,
+      String fileName, String url, String symlinkTarget,
       Map<String, Object> config, File nodeDir, Template template,
       String roleName, List<String> roleVariantNames, String templateName) {
 
@@ -374,7 +376,8 @@ class EnvironmentGenerator {
 
     FileGenerator fileGenerator = new FileGenerator(options, environmentName,
         roleName, roleVariantNames, templateName,
-        nodeDir, file, url, roleFile, config, template,
+        nodeDir, file, url, symlinkTarget,
+        roleFile, config, template,
         variableMapResolver, urlFileManager, pluginContextOptions, dependencyVersions);
     try {
       Collection<GeneratedFileContext> generatedFiles = fileGenerator.generate();

@@ -111,7 +111,7 @@ public class FileGeneratorFileHeaderTest {
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
     underTest = new FileGenerator(options, "env1",
         "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, roleFile, ImmutableMap.<String, Object>of(), template,
+        destDir, file, null, null, roleFile, ImmutableMap.<String, Object>of(), template,
         variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of(
             "version1/1.0.0",
             "version2/2.0.0-SNAPSHOT",

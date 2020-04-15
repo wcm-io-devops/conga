@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -86,6 +87,13 @@ public final class TestUtils {
     File file = new File(assertBaseDir, path);
     assertTrue(file.exists() && file.isFile(),
         "File does not exist: " + FileUtil.getCanonicalPath(file));
+    return file;
+  }
+
+  public static File assertSymlink(File assertBaseDir, String path) {
+    File file = new File(assertBaseDir, path);
+    assertTrue(file.exists(), "File does not exist: " + FileUtil.getCanonicalPath(file));
+    assertTrue(Files.isSymbolicLink(file.toPath()), "File is not a symlink: " + FileUtil.getCanonicalPath(file));
     return file;
   }
 

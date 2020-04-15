@@ -76,6 +76,7 @@ class FileGenerator {
   private final File nodeDir;
   private final File file;
   private final String url;
+  private final String symlinkTarget;
   private final RoleFile roleFile;
   private final Map<String, Object> config;
   private final Template template;
@@ -94,7 +95,8 @@ class FileGenerator {
   //CHECKSTYLE:OFF
   FileGenerator(GeneratorOptions options, String environmentName,
       String roleName, List<String> roleVariantNames, String templateName,
-      File nodeDir, File file, String url, RoleFile roleFile, Map<String, Object> config, Template template,
+      File nodeDir, File file, String url, String symlinkTarget,
+      RoleFile roleFile, Map<String, Object> config, Template template,
       VariableMapResolver variableMapResolver, UrlFileManager urlFileManager, PluginContextOptions pluginContextOptions,
       Collection<String> dependencyVersions) {
     //CHECKSTYLE:ON
@@ -105,6 +107,7 @@ class FileGenerator {
     this.nodeDir = nodeDir;
     this.file = file;
     this.url = url;
+    this.symlinkTarget = symlinkTarget;
     this.roleFile = roleFile;
     this.template = template;
     this.pluginManager = options.getPluginManager();
@@ -219,6 +222,7 @@ class FileGenerator {
     }
     else if (StringUtils.isNotBlank(url)) {
 
+      // if copying from a local file try to create a symlink instead of coyping it
       boolean symlinkCreated = false;
       if (allowSymlinks && !symlinkCreationFailed && urlFileManager.isLocalFile(url)) {
         log.info("Symlink file {} from {}", getFilenameForLog(fileContext), url);
@@ -239,8 +243,17 @@ class FileGenerator {
       // post-process downloaded or symlinked file
       postProcessedFiles = applyPostProcessor(fileContext);
     }
+    else if (StringUtils.isNotBlank(symlinkTarget)) {
+
+      // create a symlink pointing to the given target
+      createSymlinkToSymlinkTarget();
+
+      // post-process symlinked file
+      postProcessedFiles = applyPostProcessor(fileContext);
+
+    }
     else {
-      throw new IOException("No template and nor URL defined for file: " + FileUtil.getFileInfo(roleName, roleFile));
+      throw new IOException("No template, URL or symlink target defined for file: " + FileUtil.getFileInfo(roleName, roleFile));
     }
 
     return postProcessedFiles;
@@ -280,16 +293,37 @@ class FileGenerator {
   private boolean createSymlinkToLocalFile() throws IOException {
     // if file is a local file try to create a symlink to it
     File localFile = urlFileManager.getLocalFile(url);
-    Path targetPath = file.toPath();
-    Path sourcePath = localFile.toPath();
+    Path linkPath = file.toPath();
+    Path targetPath = localFile.toPath();
     try {
-      Files.createSymbolicLink(targetPath, sourcePath);
+      Files.createSymbolicLink(linkPath, targetPath);
       return true;
     }
     catch (IOException ex) {
       // creates symbolic link failed - log warning and fallback to copying content
       log.warn("Unable to create symbolic link at " + FileUtil.getCanonicalPath(file) + ": " + ex.getMessage());
       return false;
+    }
+  }
+
+  /**
+   * Create a symlink to the given symlink target.
+   * @throws IOException If an unexpected error occurs
+   */
+  @SuppressWarnings("PMD.GuardLogStatement")
+  private void createSymlinkToSymlinkTarget() throws IOException {
+    File localFile = new File(nodeDir, this.symlinkTarget);
+    if (!localFile.exists()) {
+      throw new IOException("Symlink target file not found: " + FileUtil.getCanonicalPath(localFile));
+    }
+    Path linkPath = file.toPath();
+    Path targetPath = localFile.toPath();
+    try {
+      Files.createSymbolicLink(linkPath, linkPath.getParent().relativize(targetPath));
+    }
+    catch (IOException ex) {
+      // creates symbolic link failed - log warning and fallback to copying content
+      throw new IOException("Unable to create symbolic link at " + FileUtil.getCanonicalPath(file) + ": " + ex.getMessage(), ex);
     }
   }
 

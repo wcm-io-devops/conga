@@ -46,6 +46,7 @@ public final class RoleFile extends AbstractModel {
   private String dir;
   private String template;
   private String url;
+  private String symlinkTarget;
   private List<String> variants = new ArrayList<>();
   private String condition;
   private List<String> validators = new ArrayList<>();
@@ -104,7 +105,7 @@ public final class RoleFile extends AbstractModel {
 
   /**
    * URL to download file from. If a URL is defined the template is ignored, and the target file property optional.
-   * If not file property is defined, the file name of the downloaded file is used.
+   * If no file property is defined, the file name of the downloaded file is used.
    * For URL protocols you can use http://, https://, classpath:// file:// or mvn://.
    * @return Download URL
    */
@@ -114,6 +115,20 @@ public final class RoleFile extends AbstractModel {
 
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  /**
+   * Target path for symlink. If a symlink target is defined, no file is generated or downloaded, but a symlink
+   * is created in the file system pointing to the given target. The target has to point to another file
+   * generated or downloaded by CONGA.
+   * @return Symlink target
+   */
+  public String getSymlinkTarget() {
+    return this.symlinkTarget;
+  }
+
+  public void setSymlinkTarget(String symlinkTarget) {
+    this.symlinkTarget = symlinkTarget;
   }
 
   /**
