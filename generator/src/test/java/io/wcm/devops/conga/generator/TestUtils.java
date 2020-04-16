@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +94,22 @@ public final class TestUtils {
   public static File assertSymlink(File assertBaseDir, String path) {
     File file = new File(assertBaseDir, path);
     assertTrue(file.exists(), "File does not exist: " + FileUtil.getCanonicalPath(file));
-    assertTrue(Files.isSymbolicLink(file.toPath()), "File is not a symlink: " + FileUtil.getCanonicalPath(file));
+    if (!Files.isSymbolicLink(file.toPath())) {
+      // check for fallback link on windows
+      try {
+        String linkPath = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        File targetFile = new File(file.getParentFile(), linkPath);
+        if (!targetFile.exists()) {
+          fail("File is not a symlink or target is invalid: " + FileUtil.getCanonicalPath(file));
+        }
+        else {
+          return targetFile;
+        }
+      }
+      catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
     return file;
   }
 

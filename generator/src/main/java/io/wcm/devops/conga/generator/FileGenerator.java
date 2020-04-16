@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -301,7 +303,7 @@ class FileGenerator {
     }
     catch (IOException ex) {
       // creates symbolic link failed - log warning and fallback to copying content
-      log.warn("Unable to create symbolic link at " + FileUtil.getCanonicalPath(file) + ": " + ex.getMessage());
+      log.warn("Unable to create symbolic link: " + ex.getMessage());
       return false;
     }
   }
@@ -318,12 +320,14 @@ class FileGenerator {
     }
     Path linkPath = file.toPath();
     Path targetPath = localFile.toPath();
+    Path relativizedPath = file.getParentFile().toPath().relativize(targetPath);
     try {
-      Files.createSymbolicLink(linkPath, linkPath.getParent().relativize(targetPath));
+      Files.createSymbolicLink(linkPath, relativizedPath);
     }
     catch (IOException ex) {
-      // creates symbolic link failed - log warning and fallback to copying content
-      throw new IOException("Unable to create symbolic link at " + FileUtil.getCanonicalPath(file) + ": " + ex.getMessage(), ex);
+      // creates symbolic link failed - create text file with link instead (similar to git)
+      log.warn("Created link textfile instead of symbolic link: " + ex.getMessage());
+      FileUtils.write(linkPath.toFile(), relativizedPath.toString(), StandardCharsets.UTF_8);
     }
   }
 
