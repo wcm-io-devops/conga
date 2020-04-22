@@ -73,9 +73,6 @@ public class PackageMojo extends AbstractCongaMojo {
   @SuppressWarnings("PMD.UseStringBufferForStringAppends")
   public void execute() throws MojoExecutionException, MojoFailureException {
 
-    // build a JAR file with all CONGA definitions and resources
-    buildDefinitionsJarFile();
-
     // build attachments with all generated configurations
     buildGeneratedConfigurationAttachments();
 
@@ -83,7 +80,7 @@ public class PackageMojo extends AbstractCongaMojo {
 
 
   @SuppressWarnings("PMD.UseStringBufferForStringAppends")
-  private void buildGeneratedConfigurationAttachments() throws MojoExecutionException {
+  private void buildGeneratedConfigurationAttachments() throws MojoExecutionException, MojoFailureException {
     Set<String> selectedEnvironments;
     if (environments != null && environments.length > 0) {
       selectedEnvironments = ImmutableSet.copyOf(environments);
@@ -119,6 +116,10 @@ public class PackageMojo extends AbstractCongaMojo {
         projectHelper.attachArtifact(project, outputFile, classifier);
 
       }
+
+      // additionally build a JAR file with all CONGA definitions and resources as main artifact
+      buildDefinitionsJarFile();
+
     }
     else {
       // generate an ZIP artifact containing all environments
