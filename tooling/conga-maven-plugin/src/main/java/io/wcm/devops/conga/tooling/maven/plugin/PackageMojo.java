@@ -25,6 +25,7 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -167,7 +168,7 @@ public class PackageMojo extends AbstractCongaMojo {
    * @param basePath Base path
    * @param directory Directory to include
    */
-  private void addZipDirectory(String basePath, File directory) {
+  private void addZipDirectory(String basePath, File directory) throws MojoExecutionException {
     String directoryPath = toZipDirectoryPath(directory);
     if (StringUtils.startsWith(directoryPath, basePath)) {
       String relativeDirectoryPath = StringUtils.substring(directoryPath, basePath.length());
@@ -176,6 +177,15 @@ public class PackageMojo extends AbstractCongaMojo {
         for (File file : files) {
           if (file.isDirectory()) {
             addZipDirectory(basePath, file);
+          }
+          else if (Files.isSymbolicLink(file.toPath())) {
+            // include file symlink is pointing at
+            try {
+              zipArchiver.addFile(file.toPath().toRealPath().toFile(), relativeDirectoryPath + file.getName());
+            }
+            catch (IOException ex) {
+              throw new MojoExecutionException("Unable to include symlinked file " + FileUtil.getCanonicalPath(file), ex);
+            }
           }
           else {
             zipArchiver.addFile(file, relativeDirectoryPath + file.getName());
