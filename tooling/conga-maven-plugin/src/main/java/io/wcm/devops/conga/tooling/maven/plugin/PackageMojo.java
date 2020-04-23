@@ -25,6 +25,7 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -38,7 +39,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
@@ -66,18 +66,21 @@ public class PackageMojo extends AbstractCongaMojo {
   @Parameter(defaultValue = "true")
   private boolean artifactPerEnvironment;
 
-  @Parameter(property = "project", required = true, readonly = true)
-  private MavenProject project;
-
-  @Component
-  protected MavenProjectHelper projectHelper;
-
   @Component(role = Archiver.class, hint = "zip")
   private ZipArchiver zipArchiver;
 
   @Override
   @SuppressWarnings("PMD.UseStringBufferForStringAppends")
   public void execute() throws MojoExecutionException, MojoFailureException {
+
+    // build attachments with all generated configurations
+    buildGeneratedConfigurationAttachments();
+
+  }
+
+
+  @SuppressWarnings("PMD.UseStringBufferForStringAppends")
+  private void buildGeneratedConfigurationAttachments() throws MojoExecutionException, MojoFailureException {
     Set<String> selectedEnvironments;
     if (environments != null && environments.length > 0) {
       selectedEnvironments = ImmutableSet.copyOf(environments);
@@ -93,6 +96,7 @@ public class PackageMojo extends AbstractCongaMojo {
         .filter(dir -> selectedEnvironments == null || selectedEnvironments.contains(dir.getName()))
         .collect(Collectors.toList());
 
+    MavenProject project = getProject();
     if (artifactPerEnvironment) {
       // generate an ZIP artifact with generated configurations for each environment
       for (File environmentDir : environmentDirs) {
@@ -112,6 +116,10 @@ public class PackageMojo extends AbstractCongaMojo {
         projectHelper.attachArtifact(project, outputFile, classifier);
 
       }
+
+      // additionally build a JAR file with all CONGA definitions and resources as main artifact
+      buildDefinitionsJarFile();
+
     }
     else {
       // generate an ZIP artifact containing all environments
@@ -139,7 +147,7 @@ public class PackageMojo extends AbstractCongaMojo {
    * @return JAR file
    */
   private File buildZipFile(File contentDirectory, String classifier) throws MojoExecutionException {
-    File zipFile = new File(project.getBuild().getDirectory(), buildZipFileName(classifier));
+    File zipFile = new File(getProject().getBuild().getDirectory(), buildZipFileName(classifier));
 
     String basePath = toZipDirectoryPath(contentDirectory);
     addZipDirectory(basePath, contentDirectory);
@@ -161,7 +169,7 @@ public class PackageMojo extends AbstractCongaMojo {
    * @param basePath Base path
    * @param directory Directory to include
    */
-  private void addZipDirectory(String basePath, File directory) {
+  private void addZipDirectory(String basePath, File directory) throws MojoExecutionException {
     String directoryPath = toZipDirectoryPath(directory);
     if (StringUtils.startsWith(directoryPath, basePath)) {
       String relativeDirectoryPath = StringUtils.substring(directoryPath, basePath.length());
@@ -170,6 +178,15 @@ public class PackageMojo extends AbstractCongaMojo {
         for (File file : files) {
           if (file.isDirectory()) {
             addZipDirectory(basePath, file);
+          }
+          else if (Files.isSymbolicLink(file.toPath())) {
+            // include file symlink is pointing at
+            try {
+              zipArchiver.addFile(file.toPath().toRealPath().toFile(), relativeDirectoryPath + file.getName());
+            }
+            catch (IOException ex) {
+              throw new MojoExecutionException("Unable to include symlinked file " + FileUtil.getCanonicalPath(file), ex);
+            }
           }
           else {
             zipArchiver.addFile(file, relativeDirectoryPath + file.getName());
@@ -186,7 +203,7 @@ public class PackageMojo extends AbstractCongaMojo {
 
   private String buildZipFileName(String classifier) {
     StringBuilder sb = new StringBuilder();
-    sb.append(project.getBuild().getFinalName());
+    sb.append(getProject().getBuild().getFinalName());
     if (StringUtils.isNotBlank(classifier)) {
       sb.append("-").append(classifier);
     }

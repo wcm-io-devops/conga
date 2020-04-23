@@ -20,9 +20,12 @@
 package io.wcm.devops.conga.model.environment;
 
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyList;
+import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
@@ -36,6 +39,7 @@ public final class Environment extends AbstractConfigurable {
   private List<RoleConfig> roleConfig = new ArrayList<>();
   private List<Tenant> tenants = new ArrayList<>();
   private List<String> dependencies = new ArrayList<>();
+  private Map<String, Map<String, Object>> pluginConfig = new HashMap<>();
 
   /**
    * Defines nodes for the environment.
@@ -86,6 +90,28 @@ public final class Environment extends AbstractConfigurable {
 
   public void setDependencies(List<String> dependencies) {
     this.dependencies = defaultEmptyList(dependencies);
+  }
+
+  /**
+   * Defines a map of configuration parameters for CONGA plugins.
+   * <p>
+   * The outer map contains the plugin names as keys, and the configuration for this plugin as value.
+   * The inner map contains the key/value pairs for the plugin configuration.
+   * </p>
+   * <p>
+   * The configurations are merged with the configuration parameters defined in the POM.
+   * </p>
+   * @return Plugin configuration parameter map
+   */
+  public Map<String, Map<String, Object>> getPluginConfig() {
+    return this.pluginConfig;
+  }
+
+  /**
+   * @param pluginConfig Plugin configuration parameter map
+   */
+  public void setPluginConfig(Map<String, Map<String, Object>> pluginConfig) {
+    this.pluginConfig = defaultEmptyMap(pluginConfig);
   }
 
 }

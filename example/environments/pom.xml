@@ -20,7 +20,7 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>io.wcm.devops</groupId>
       <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.2</version>
       <type>xml</type>
       <classifier>site</classifier>
     </dependency>

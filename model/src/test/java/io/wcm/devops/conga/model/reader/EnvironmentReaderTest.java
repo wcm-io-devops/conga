@@ -21,10 +21,12 @@ package io.wcm.devops.conga.model.reader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,8 +65,6 @@ public class EnvironmentReaderTest {
         "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "4096m")),
         "topologyConnectors", ImmutableList.of("http://host1${topologyConnectorPath}", "http://host2${topologyConnectorPath}")
         ), environment.getConfig());
-
-    assertEquals(ImmutableList.of("url1", "mvn:url2"), environment.getDependencies());
   }
 
   @Test
@@ -127,6 +127,24 @@ public class EnvironmentReaderTest {
         reader.read(is);
       }
     });
+  }
+
+  @Test
+  public void testDependencies() {
+    assertEquals(ImmutableList.of("url1", "mvn:url2"), environment.getDependencies());
+  }
+
+  @Test
+  public void testPluginConfig() {
+    Map<String, Map<String, Object>> pluginConfig = environment.getPluginConfig();
+    assertNotNull(pluginConfig);
+
+    Map<String, Object> config = pluginConfig.get("examplePlugin");
+    assertNotNull(config);
+    assertEquals("value1", config.get("pluginParam1"));
+    assertEquals(25, config.get("pluginParam2"));
+
+    assertNull(pluginConfig.get("notExistingPlugin"));
   }
 
 }

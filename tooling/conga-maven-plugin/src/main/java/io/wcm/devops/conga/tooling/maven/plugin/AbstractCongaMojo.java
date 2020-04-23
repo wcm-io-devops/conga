@@ -19,17 +19,48 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin;
 
-import java.io.File;
-import java.util.Map;
+import static io.wcm.devops.conga.generator.GeneratorOptions.CLASSPATH_ENVIRONMENTS_DIR;
+import static io.wcm.devops.conga.generator.GeneratorOptions.CLASSPATH_ROLES_DIR;
+import static io.wcm.devops.conga.generator.GeneratorOptions.CLASSPATH_TEMPLATES_DIR;
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.CLASSIFIER_DEFINITION;
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.FILE_EXTENSION_DEFINITION;
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_CONFIGURATION;
+import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_DEFINITION;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.archiver.MavenArchiveConfiguration;
+import org.apache.maven.archiver.MavenArchiver;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
+import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.jar.JarArchiver;
+import org.codehaus.plexus.archiver.jar.ManifestException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.ModelExport;
+import io.wcm.devops.conga.resource.Resource;
+import io.wcm.devops.conga.resource.ResourceCollection;
+import io.wcm.devops.conga.resource.ResourceLoader;
 import io.wcm.devops.conga.tooling.maven.plugin.util.PluginConfigUtil;
 
 /**
@@ -60,6 +91,12 @@ abstract class AbstractCongaMojo extends AbstractMojo {
    */
   @Parameter(defaultValue = "${basedir}/src/main/environments")
   private File environmentDir;
+
+  /**
+   * Target path for the prepared definition files.
+   */
+  @Parameter(defaultValue = "${project.build.directory}/definitions")
+  private String definitionTarget;
 
   /**
    * List for plugins for exporting model data for nodes.
@@ -115,6 +152,26 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter
   private Map<String,String> artifactTypeMappings;
 
+  @Parameter(property = "project", required = true, readonly = true)
+  private MavenProject project;
+
+  @Component(role = Archiver.class, hint = "jar")
+  private JarArchiver jarArchiver;
+
+  /**
+   * The archive configuration to use.
+   * See <a href="http://maven.apache.org/shared/maven-archiver/index.html">Maven Archiver Reference</a>.
+   */
+  @Parameter
+  @SuppressWarnings("PMD.ImmutableField")
+  private MavenArchiveConfiguration archive = new MavenArchiveConfiguration();
+
+  @Parameter(property = "session", readonly = true, required = true)
+  private MavenSession mavenSession;
+
+  @Component
+  protected MavenProjectHelper projectHelper;
+
   private static final Map<String, String> DEFAULT_ARTIFACT_TYPE_MAPPINGS = ImmutableMap.of(
       "bundle", "jar",
       "content-package", "zip");
@@ -133,6 +190,10 @@ abstract class AbstractCongaMojo extends AbstractMojo {
 
   protected File getTargetDir() {
     return target;
+  }
+
+  protected MavenProject getProject() {
+    return project;
   }
 
   protected ModelExport getModelExport() {
@@ -160,6 +221,153 @@ abstract class AbstractCongaMojo extends AbstractMojo {
       mappings = DEFAULT_ARTIFACT_TYPE_MAPPINGS;
     }
     return mappings;
+  }
+
+  /**
+   * Builds a JAR file with all CONGA definitions and resources. This is the main output artefact.
+   * @throws MojoExecutionException MOJO execution exception
+   * @throws MojoFailureException MOJO failure exception
+   */
+  protected void buildDefinitionsJarFile() throws MojoExecutionException, MojoFailureException {
+
+    // copy definitions to classes dir
+    File definitionDir = copyDefinitions();
+
+    // build JAR artifact
+    File outputFile = buildJarFile(definitionDir);
+
+    // set or attach JAR artifact
+    if (StringUtils.equalsAny(project.getPackaging(), PACKAGING_DEFINITION, PACKAGING_CONFIGURATION)) {
+      project.getArtifact().setFile(outputFile);
+    }
+    else {
+      projectHelper.attachArtifact(project, outputFile, CLASSIFIER_DEFINITION);
+    }
+  }
+
+  /**
+   * Build JAR file with definitions.
+   * @param contentDirectory Content directory for JAR file
+   * @return JAR file
+   */
+  private File buildJarFile(File contentDirectory) throws MojoExecutionException {
+    File jarFile = new File(project.getBuild().getDirectory(), buildJarFileName());
+
+    MavenArchiver archiver = new MavenArchiver();
+    archiver.setArchiver(jarArchiver);
+    archiver.setOutputFile(jarFile);
+    archive.setForced(true);
+
+    // include definitions
+    archiver.getArchiver().addDirectory(contentDirectory);
+
+    // include resources
+    for (org.apache.maven.model.Resource resource : project.getResources()) {
+      File resourceDir = new File(resource.getDirectory());
+      if (resourceDir.exists()) {
+        archiver.getArchiver().addDirectory(resourceDir,
+            toArray(resource.getIncludes()), toArray(resource.getExcludes()));
+      }
+    }
+
+    try {
+      archiver.createArchive(mavenSession, project, archive);
+    }
+    catch (ArchiverException | ManifestException | IOException | DependencyResolutionRequiredException ex) {
+      throw new MojoExecutionException("Unable to build file " + jarFile.getPath() + ": " + ex.getMessage(), ex);
+    }
+
+    return jarFile;
+  }
+
+  private String[] toArray(List<String> values) {
+    if (values == null || values.isEmpty()) {
+      return null;
+    }
+    return values.toArray(new String[0]);
+  }
+
+  private String buildJarFileName() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(project.getBuild().getFinalName());
+    if (!StringUtils.equalsAny(project.getPackaging(), PACKAGING_DEFINITION, PACKAGING_CONFIGURATION)) {
+      sb.append("-").append(CLASSIFIER_DEFINITION);
+    }
+    sb.append(".").append(FILE_EXTENSION_DEFINITION);
+    return sb.toString();
+  }
+
+  /**
+   * Copy definitions and template files to classes folder to include them in JAR artifact.
+   */
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+  private File copyDefinitions() throws MojoExecutionException {
+    File outputDir = new File(definitionTarget);
+    if (!outputDir.exists()) {
+      outputDir.mkdirs();
+    }
+
+    ResourceLoader resourceLoader = new ResourceLoader();
+    ResourceCollection roleDirCol = resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + getRoleDir());
+    ResourceCollection templateDirCol = resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + getTemplateDir());
+    ResourceCollection environmentDirCol = resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + getEnvironmentDir());
+
+    // copy definitions
+    try {
+      copyDefinitions(roleDirCol, outputDir, outputDir, CLASSPATH_ROLES_DIR);
+      copyDefinitions(templateDirCol, outputDir, outputDir, CLASSPATH_TEMPLATES_DIR);
+      copyDefinitions(environmentDirCol, outputDir, outputDir, CLASSPATH_ENVIRONMENTS_DIR);
+    }
+    catch (IOException ex) {
+      throw new MojoExecutionException("Unable to copy definitions:" + ex.getMessage(), ex);
+    }
+
+    return outputDir;
+  }
+
+  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+  private void copyDefinitions(ResourceCollection sourceDir, File rootOutputDir, File parentTargetDir, String dirName) throws IOException {
+    if (!sourceDir.exists()) {
+      return;
+    }
+    SortedSet<Resource> files = sourceDir.getResources();
+    SortedSet<ResourceCollection> dirs = sourceDir.getResourceCollections();
+    if (files.isEmpty() && dirs.isEmpty()) {
+      return;
+    }
+
+    File targetDir = new File(parentTargetDir, dirName);
+    if (!targetDir.exists()) {
+      targetDir.mkdirs();
+    }
+
+    for (Resource file : files) {
+      File targetFile = new File(targetDir, file.getName());
+
+      getLog().info("Include " + getPathForLog(rootOutputDir, targetFile));
+
+      if (targetFile.exists()) {
+        targetFile.delete();
+      }
+      try (InputStream is = file.getInputStream()) {
+        byte[] data = IOUtils.toByteArray(is);
+        FileUtils.writeByteArrayToFile(targetFile, data);
+      }
+    }
+
+    for (ResourceCollection dir : dirs) {
+      copyDefinitions(dir, rootOutputDir, targetDir, dir.getName());
+    }
+  }
+
+  private String getPathForLog(File rootOutputDir, File file) throws IOException {
+    String path = unifySlashes(file.getCanonicalPath());
+    String rootPath = unifySlashes(rootOutputDir.getCanonicalPath()) + "/";
+    return StringUtils.substringAfter(path, rootPath);
+  }
+
+  private String unifySlashes(String path) {
+    return StringUtils.replace(path, "\\", "/");
   }
 
 }

@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProject;
 
 import com.google.common.collect.ImmutableMap;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
@@ -52,6 +53,7 @@ public final class ClassLoaderUtil {
    * @param classpathUrls Classpath urls
    * @return Resource loader
    */
+  @SuppressFBWarnings("DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED")
   public static ClassLoader buildClassLoader(List<URL> classpathUrls) {
     return new URLClassLoader(classpathUrls.toArray(new URL[0]));
   }

@@ -42,12 +42,12 @@ import io.wcm.devops.conga.model.role.RoleInherit;
 import io.wcm.devops.conga.model.role.RoleVariant;
 import io.wcm.devops.conga.model.shared.LineEndings;
 
-public class RoleReaderTest {
+class RoleReaderTest {
 
   private Role role;
 
   @BeforeEach
-  public void setUp() throws IOException {
+  void setUp() throws IOException {
     RoleReader reader = new RoleReader();
     try (InputStream is = getClass().getResourceAsStream("/role.yaml")) {
       role = reader.read(is);
@@ -56,7 +56,7 @@ public class RoleReaderTest {
   }
 
   @Test
-  public void testRole() {
+  void testRole() {
 
     List<RoleInherit> inherits = role.getInherits();
     assertEquals(2, inherits.size());
@@ -67,7 +67,7 @@ public class RoleReaderTest {
     assertEquals("tomcat-services", role.getTemplateDir());
 
     List<RoleFile> files = role.getFiles();
-    assertEquals(6, files.size());
+    assertEquals(7, files.size());
 
     assertEquals(ImmutableMap.of(
         "var1", "value1",
@@ -79,14 +79,14 @@ public class RoleReaderTest {
   }
 
   @Test
-  public void testInherit() {
+  void testInherit() {
     RoleInherit inherit = role.getInherits().get(0);
 
     assertEquals("superRole1", inherit.getRole());
   }
 
   @Test
-  public void testVariant() {
+  void testVariant() {
     RoleVariant variant = role.getVariants().get(0);
 
     assertEquals("services", variant.getVariant());
@@ -94,7 +94,7 @@ public class RoleReaderTest {
   }
 
   @Test
-  public void testFile() {
+  void testFile() {
     RoleFile file = role.getFiles().get(0);
 
     assertEquals("systemconfig-importer.txt", file.getFile());
@@ -127,7 +127,7 @@ public class RoleReaderTest {
   }
 
   @Test
-  public void testDownload() {
+  void testDownload() {
     RoleFile file = role.getFiles().get(5);
 
     assertEquals("download", file.getDir());
@@ -136,7 +136,16 @@ public class RoleReaderTest {
   }
 
   @Test
-  public void testSensitiveConfigurationParameters() {
+  void testSymlink() {
+    RoleFile file = role.getFiles().get(6);
+
+    assertEquals("systemconfig_symlink.txt", file.getFile());
+    assertEquals("symlink", file.getDir());
+    assertEquals("systemconfig.txt", file.getSymlinkTarget());
+  }
+
+  @Test
+  void testSensitiveConfigurationParameters() {
     assertEquals(ImmutableList.of("var1", "group1.var2"), role.getSensitiveConfigParameters());
   }
 

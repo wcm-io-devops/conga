@@ -55,6 +55,12 @@ config:
   tenantNameSuffix: _TenantSuffix
   listParamFromValueProvider: ${dummy-map::map.listParam}
   listParamJoined: ${stringUtils:join(listParamFromValueProvider,'|')}
+  pluginConfigTest:
+    param1: ${dummy-plugin-config::config.param1}
+    param2: ${dummy-plugin-config::config.param2}
+    param31: ${dummy-plugin-config::config.param3.param31}
+    param32: ${dummy-plugin-config::config.param3.param32}
+    param4: ${dummy-plugin-config::config.param4}
 
 
 # Tenant defintions
@@ -82,3 +88,12 @@ tenants:
 - tenant: tenant3${tenantNameSuffix}
   config:
     generateConditionalFile: false
+
+
+# Test plugin defined in environment
+pluginConfig:
+  dummy-plugin-config:
+    param2: 66
+    param3:
+      param32: value32-X
+    param4: value4

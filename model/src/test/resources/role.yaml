@@ -66,6 +66,10 @@ files:
   modelOptions:
     modelOption1: value1
 
+- file: systemconfig_symlink.txt
+  dir: symlink
+  symlinkTarget: systemconfig.txt
+
 # Defines configuration parameters and default values
 config:
   var1: value1

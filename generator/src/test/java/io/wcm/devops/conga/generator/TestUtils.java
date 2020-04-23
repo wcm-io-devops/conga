@@ -21,18 +21,22 @@ package io.wcm.devops.conga.generator;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
+import io.wcm.devops.conga.generator.plugins.valueprovider.DummyPluginConfigValueProviderPlugin;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
@@ -52,7 +56,12 @@ public final class TestUtils {
         .environmentDir(new File("src/test/definitions/environments"))
         .destDir(destDir)
         .version(TEST_VERSION)
-        .pluginManager(new PluginManagerImpl());
+        .pluginManager(new PluginManagerImpl())
+        .genericPluginConfig(ImmutableMap.of(
+            DummyPluginConfigValueProviderPlugin.NAME, ImmutableMap.of(
+                "param1", "value1",
+                "param2", 55,
+                "param3", ImmutableMap.of("param31", "value31", "param32", "value32"))));
 
     ModelExport modelExport = new ModelExport();
     modelExport.setNode(ImmutableList.of("yaml"));
@@ -79,6 +88,28 @@ public final class TestUtils {
     File file = new File(assertBaseDir, path);
     assertTrue(file.exists() && file.isFile(),
         "File does not exist: " + FileUtil.getCanonicalPath(file));
+    return file;
+  }
+
+  public static File assertSymlink(File assertBaseDir, String path) {
+    File file = new File(assertBaseDir, path);
+    assertTrue(file.exists(), "File does not exist: " + FileUtil.getCanonicalPath(file));
+    if (!Files.isSymbolicLink(file.toPath())) {
+      // check for fallback link on windows
+      try {
+        String linkPath = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        File targetFile = new File(file.getParentFile(), linkPath);
+        if (!targetFile.exists()) {
+          fail("File is not a symlink or target is invalid: " + FileUtil.getCanonicalPath(file));
+        }
+        else {
+          return targetFile;
+        }
+      }
+      catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
     return file;
   }
 

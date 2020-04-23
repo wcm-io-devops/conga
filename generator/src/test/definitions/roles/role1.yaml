@@ -51,6 +51,10 @@ files:
   modelOptions:
     modelOption1: value1
 
+- file: sample-symlink.txt
+  dir: files
+  symlinkTarget: files/sample.txt
+
 
 config:
   generateConditionalFile: false
