@@ -91,6 +91,11 @@
         <artifactId>handlebars</artifactId>
         <version>${jknack.handlebars.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.github.jknack</groupId>
+        <artifactId>handlebars-helpers</artifactId>
+        <version>${jknack.handlebars.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>com.google.code.gson</groupId>

@@ -59,6 +59,11 @@
       <artifactId>handlebars</artifactId>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.github.jknack</groupId>
+      <artifactId>handlebars-helpers</artifactId>
+      <scope>compile</scope>
+    </dependency>
 
     <dependency>
       <groupId>com.google.code.gson</groupId>
