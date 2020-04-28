@@ -31,7 +31,7 @@
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.parent</artifactId>
-  <version>1.13.0</version>
+  <version>1.13.2</version>
   <packaging>pom</packaging>
 
   <name>CONGA</name>
@@ -89,6 +89,11 @@
       <dependency>
         <groupId>com.github.jknack</groupId>
         <artifactId>handlebars</artifactId>
+        <version>${jknack.handlebars.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.jknack</groupId>
+        <artifactId>handlebars-helpers</artifactId>
         <version>${jknack.handlebars.version}</version>
       </dependency>
 

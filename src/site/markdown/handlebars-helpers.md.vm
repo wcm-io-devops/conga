@@ -11,6 +11,7 @@ You can also use the following helpers provided by [handlebars.java](https://git
 
 * [StringHelpers](https://javadoc.io/static/com.github.jknack/handlebars/${project.properties['jknack.handlebars.version']}/com/github/jknack/handlebars/helper/StringHelpers.html)
 * [ConditionalHelpers](https://javadoc.io/static/com.github.jknack/handlebars/${project.properties['jknack.handlebars.version']}/com/github/jknack/handlebars/helper/ConditionalHelpers.html)
+* [AssignHelper](https://www.javadoc.io/static/com.github.jknack/handlebars-helpers/${project.properties['jknack.handlebars.version']}/com/github/jknack/handlebars/helper/AssignHelper.html)
 
 Additionally, the CONGA AEM plugin provides a set of
 [Custom Handlebars expressions for AEM][aem-handlebars-helpers].

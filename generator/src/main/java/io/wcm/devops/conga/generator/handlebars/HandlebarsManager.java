@@ -27,6 +27,7 @@ import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.helper.AssignHelper;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import com.github.jknack.handlebars.helper.StringHelpers;
 import com.github.jknack.handlebars.io.TemplateLoader;
@@ -72,6 +73,7 @@ public class HandlebarsManager {
           // register helpers provided by JKnack Handlebars implementation
           handlebars.registerHelpers(StringHelpers.class);
           handlebars.registerHelpers(ConditionalHelpers.class);
+          handlebars.registerHelper(AssignHelper.NAME, new AssignHelper());
 
           // register helper plugins
           pluginManager.getAll(HelperPlugin.class)
