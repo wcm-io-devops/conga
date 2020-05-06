@@ -31,7 +31,7 @@
 
     <release version="1.13.0" date="2020-04-23">
       <action type="add" dev="sseifert">
-        Support 'pluginConfig' section in environments to define different plugin parameter in environment. The parameters are merged with those defined in the POM.
+        Support 'pluginConfig' section in environments to define different plugin parameters in environment. The parameters are merged with those defined in the POM.
       </action>
       <action type="add" dev="sseifert">
         Support creating symlinks via CONGA using a new "symlinkTarget" role file property.
@@ -58,7 +58,7 @@
         Register all helpers from com.github.jknack.handlebars.helper.ConditionalHelpers.
       </action>
       <action type="add" dev="sseifert">
-        Register all helpers from com.github.jknack.handlebars.helper.StringHelpers. This replaces the individual helper plugins fro defaultIfEmpty, join, replace.
+        Register all helpers from com.github.jknack.handlebars.helper.StringHelpers. This replaces the individual helper plugins for defaultIfEmpty, join, replace.
       </action>
     </release>
 

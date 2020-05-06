@@ -13,7 +13,7 @@ files:
     roles:
     - website
 
-# Symlink pointing to a generate file
+# Symlink pointing to a generated file
 - file: "${tenant}_vhost.conf"
   dir: enabled_vhosts
   symlinkTarget: "available_vhosts/${tenant}_vhost.conf"
