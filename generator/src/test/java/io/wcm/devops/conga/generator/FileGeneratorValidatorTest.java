@@ -37,6 +37,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -81,8 +82,8 @@ public class FileGeneratorValidatorTest {
   private Logger logger;
 
   @BeforeEach
-  public void setUp() {
-    destDir = new File("target/generation-test/" + getClass().getSimpleName());
+  public void setUp(TestInfo testInfo) {
+    destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     file = new File(destDir, "test.txt");
     roleFile = new RoleFile();
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext();

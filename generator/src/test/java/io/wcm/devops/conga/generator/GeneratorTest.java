@@ -34,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class GeneratorTest {
 
@@ -41,8 +42,8 @@ public class GeneratorTest {
   private File destDir;
 
   @BeforeEach
-  public void setUp() throws IOException {
-    destDir = new File("target/generation-test/" + getClass().getSimpleName());
+  public void setUp(TestInfo testInfo) throws IOException {
+    destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     FileUtils.deleteDirectory(destDir);
     underTest = setupGenerator(destDir);
     underTest.generate(new String[0]);

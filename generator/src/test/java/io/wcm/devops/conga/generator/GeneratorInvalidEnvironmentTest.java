@@ -26,6 +26,7 @@ import java.io.File;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 public class GeneratorInvalidEnvironmentTest {
 
@@ -33,8 +34,8 @@ public class GeneratorInvalidEnvironmentTest {
   private File destDir;
 
   @BeforeEach
-  public void setUp() {
-    destDir = new File("target/generation-test/" + getClass().getSimpleName());
+  public void setUp(TestInfo testInfo) {
+    destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     underTest = setupGenerator(destDir);
   }
 
