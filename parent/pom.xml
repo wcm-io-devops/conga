@@ -36,7 +36,7 @@
 
   <name>CONGA</name>
   <description>Parent POM for all wcm.io CONGA projects.</description>
-  
+
   <properties>
     <jknack.handlebars.version>4.2.0</jknack.handlebars.version>
   </properties>

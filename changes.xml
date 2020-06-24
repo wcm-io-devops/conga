@@ -79,7 +79,7 @@
 
     <release version="1.11.0" date="2019-03-14">
       <action type="add" dev="sseifert">
-        Create symlinks to artifacts from local Maven repository instead of copying them (if filesystem permits). 
+        Create symlinks to artifacts from local Maven repository instead of copying them (if filesystem permits).
       </action>
       <action type="update" dev="sseifert">
         Update dependencies.
