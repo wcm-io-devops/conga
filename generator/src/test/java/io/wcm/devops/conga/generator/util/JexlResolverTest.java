@@ -50,7 +50,9 @@ public class JexlResolverTest {
 
     underTest = new JexlResolver(variableMapResolver);
     object2 = ImmutableMap.of("var4", "value4");
-    object1 = ImmutableMap.of("var3", "value3", "object2", object2);
+    object1 = ImmutableMap.of("var3", "value3", "object2", object2,
+        "nested1var1", "${nested1.nested1var1}",
+        "nested2var1", "${nested1.nested2.nested2var1}");
     variables = ImmutableMap.<String, Object>builder()
         .put("var1", "value1")
         .put("var2", 123)
@@ -59,6 +61,12 @@ public class JexlResolverTest {
         .put("refVar2", "${var2}")
         .put("refCombined", "${object1.var3}|${var1}")
         .put("jexlExpr", "${object1.var3 + ';' + var1}")
+        .put("nested1", ImmutableMap.of(
+            "nested1var1", "nested1-value1",
+            "nested1JexlExpr", "${object1.var3 + ';' + var1}",
+            "nested2", ImmutableMap.of(
+                "nested2var1", "nested2-value1",
+                "nested2JexlExpr", "${object1.var3 + ';' + var1}")))
         .build();
   }
 
@@ -78,9 +86,10 @@ public class JexlResolverTest {
     assertEquals("value1a", underTest.resolve("var1+'a'", variables));
     assertEquals(123, underTest.resolve("var2", variables));
     assertEquals(125, underTest.resolve("var2+2", variables));
-    assertEquals(object1, underTest.resolve("object1", variables));
     assertEquals("value3", underTest.resolve("object1.var3", variables));
     assertEquals("value4", underTest.resolve("object1.object2.var4", variables));
+    assertEquals("nested1-value1", underTest.resolve("object1.nested1var1", variables));
+    assertEquals("nested2-value1", underTest.resolve("object1.nested2var1", variables));
   }
 
   @Test

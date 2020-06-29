@@ -24,7 +24,7 @@ import static io.wcm.devops.conga.generator.util.VariableStringResolver.EXPRESSI
 import static io.wcm.devops.conga.generator.util.VariableStringResolver.MULTI_EXPRESSION_PATTERN;
 import static io.wcm.devops.conga.generator.util.VariableStringResolver.VARIABLE_PATTERN;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
@@ -39,6 +39,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.GeneratorException;
+import io.wcm.devops.conga.model.util.MapMerger;
+import io.wcm.devops.conga.model.util.MapSplitter;
+import io.wcm.devops.conga.model.util.MapSplitter.SplitResult;
 
 final class JexlResolver {
 
@@ -71,24 +74,29 @@ final class JexlResolver {
   }
 
   private Map<String, Object> resolveMapWithoutCycles(Map<String, Object> variables) {
-    Map<String, Object> variablesExcludedFromResolver = new HashMap<>();
 
-    // remove variables with values containing expressions that are not simple variable references
-    Map<String, Object> cleanedUpVariables = new HashMap<>();
-    for (Map.Entry<String, Object> entry : variables.entrySet()) {
-      if (entry.getValue() != null && !hasJexlExpresssions(entry.getValue().toString())) {
-        cleanedUpVariables.put(entry.getKey(), entry.getValue());
+    // split out variables with values containing expressions that are not simple variable references
+    SplitResult splitResult = MapSplitter.splitMap(variables, entry -> {
+      if (entry.getValue() instanceof List) {
+        for (Object item : (List)entry.getValue()) {
+          if (item instanceof String) {
+            if (hasJexlExpresssions((String)item)) {
+              return false;
+            }
+          }
+        }
       }
-      else {
-        variablesExcludedFromResolver.put(entry.getKey(), entry.getValue());
+      else if (entry.getValue() instanceof String) {
+        return !hasJexlExpresssions((String)entry.getValue());
       }
-    }
+      return true;
+    });
 
     // resolve simple variable references inside map
-    Map<String, Object> resolvedVariables = variableMapResolver.resolve(cleanedUpVariables);
+    Map<String, Object> resolvedVariables = variableMapResolver.resolve(splitResult.getMatching());
 
     // add back variables with complex expressions without resolving them
-    resolvedVariables.putAll(variablesExcludedFromResolver);
+    resolvedVariables = MapMerger.merge(resolvedVariables, splitResult.getUnmatching());
 
     return resolvedVariables;
   }
