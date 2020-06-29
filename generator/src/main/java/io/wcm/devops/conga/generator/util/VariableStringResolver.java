@@ -200,7 +200,7 @@ public final class VariableStringResolver {
           }
         }
         else {
-          throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
+          throw new IllegalArgumentException("Unable to resolve variable: " + variable);
         }
       }
 
@@ -217,7 +217,7 @@ public final class VariableStringResolver {
           }
         }
         else {
-          throw new IllegalArgumentException("Unable to resolve expression: " + matcher.group(0));
+          throw new IllegalArgumentException("Unable to resolve variable expression: " + expression);
         }
       }
     }
@@ -251,7 +251,7 @@ public final class VariableStringResolver {
             replacedAny = true;
           }
           else {
-            throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
+            throw new IllegalArgumentException("Unable to resolve variable: " + variable);
           }
         }
 
@@ -264,7 +264,7 @@ public final class VariableStringResolver {
             replacedAny = true;
           }
           else {
-            throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
+            throw new IllegalArgumentException("Unable to resolve variable expression: " + expression);
           }
         }
       }

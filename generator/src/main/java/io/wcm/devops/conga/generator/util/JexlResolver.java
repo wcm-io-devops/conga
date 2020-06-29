@@ -103,7 +103,7 @@ final class JexlResolver {
       // keep escaped variables intact
       if (!escapedVariable) {
         Matcher variableMatcher = VARIABLE_PATTERN.matcher(expression);
-        // if expression found that mathces not the variable pattern this string contains Jexl expressions
+        // if expression found that matches not the variable pattern this string contains Jexl expressions
         if (!variableMatcher.matches()) {
           return true;
         }
