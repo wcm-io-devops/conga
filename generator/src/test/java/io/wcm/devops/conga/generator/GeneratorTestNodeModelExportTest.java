@@ -46,6 +46,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.yaml.snakeyaml.Yaml;
 
 import com.google.common.collect.ImmutableList;
@@ -60,8 +61,8 @@ public class GeneratorTestNodeModelExportTest {
   private File destDir;
 
   @BeforeEach
-  public void setUp() throws IOException {
-    destDir = new File("target/generation-test/" + getClass().getSimpleName());
+  public void setUp(TestInfo testInfo) throws IOException {
+    destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     FileUtils.deleteDirectory(destDir);
     underTest = setupGenerator(destDir);
   }

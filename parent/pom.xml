@@ -25,20 +25,20 @@
   <parent>
     <groupId>io.wcm.devops</groupId>
     <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.4</version>
     <relativePath />
   </parent>
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.parent</artifactId>
-  <version>1.13.2</version>
+  <version>1.13.4</version>
   <packaging>pom</packaging>
 
   <name>CONGA</name>
   <description>Parent POM for all wcm.io CONGA projects.</description>
-  
+
   <properties>
-    <jknack.handlebars.version>4.1.2</jknack.handlebars.version>
+    <jknack.handlebars.version>4.2.0</jknack.handlebars.version>
   </properties>
 
   <dependencyManagement>
@@ -47,13 +47,13 @@
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.25</version>
+        <version>1.26</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.9</version>
+        <version>3.10</version>
       </dependency>
 
       <dependency>
@@ -65,7 +65,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>18.0</version>
+        <version>29.0-jre</version>
       </dependency>
 
       <dependency>
@@ -77,7 +77,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.6</version>
+        <version>2.7</version>
       </dependency>
 
       <dependency>
@@ -112,7 +112,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>4.3.25.RELEASE</version>
+        <version>4.3.27.RELEASE</version>
       </dependency>
 
       <dependency>

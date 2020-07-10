@@ -50,7 +50,7 @@
     <dependency>
       <groupId>io.wcm.devops</groupId>
       <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-      <version>1.2.2</version>
+      <version>1.2.4</version>
       <type>xml</type>
       <classifier>site</classifier>
     </dependency>
