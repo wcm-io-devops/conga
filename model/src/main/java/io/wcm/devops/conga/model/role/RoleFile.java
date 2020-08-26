@@ -228,6 +228,15 @@ public final class RoleFile extends AbstractModel {
   /**
    * Defines configuration parameters that are passed as options to the post processor plugins.
    * They are merged with the configuration parameters from the configuration inheritance tree.
+   * <p>
+   * Two generic parameters are supported for all post processor:
+   * </p>
+   * <ul>
+   * <li><code>postProcessor.fileHeader</code>: Allows to set a file header for the post-processed files (or "none" for
+   * no header).</li>
+   * <li><code>postProcessor.validators</code>: Allows to set a list of validators for the post-processed files (or
+   * "none" for no validation)</li>
+   * </ul>
    * @return Configuration parameters
    */
   public Map<String, Object> getPostProcessorOptions() {

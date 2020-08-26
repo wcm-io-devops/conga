@@ -57,12 +57,16 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
+import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
+import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
+import io.wcm.devops.conga.generator.spi.context.ValidatorContext;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 import io.wcm.devops.conga.generator.spi.export.context.GeneratedFileContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
@@ -79,6 +83,9 @@ public class FileGeneratorPostProcessorTest {
   private UrlFileManager urlFileManager;
   private FileGenerator underTest;
   private Map<String, PostProcessorPlugin> postProcessorPlugins = new HashMap<>();
+  private GeneratorOptions options;
+  private PluginContextOptions pluginContextOptions;
+  private VariableMapResolver variableMapResolver;
 
   @Mock
   private Template template;
@@ -108,14 +115,14 @@ public class FileGeneratorPostProcessorTest {
       }
     });
 
-    GeneratorOptions options = new GeneratorOptions()
+    options = new GeneratorOptions()
         .pluginManager(pluginManager)
         .version("1.0");
-    PluginContextOptions pluginContextOptions = new PluginContextOptions()
+    pluginContextOptions = new PluginContextOptions()
         .pluginManager(pluginManager)
         .urlFileManager(urlFileManager)
         .logger(options.getLogger());
-    VariableMapResolver variableMapResolver = new VariableMapResolver(
+    variableMapResolver = new VariableMapResolver(
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
     underTest = new FileGenerator(options, "env1",
         "role1", ImmutableList.of("variant1"), "template1",
@@ -152,6 +159,7 @@ public class FileGeneratorPostProcessorTest {
   public void testOnePostProcessorWithRewrite() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
+
       @Override
       @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
@@ -170,6 +178,56 @@ public class FileGeneratorPostProcessorTest {
     assertItem(result.get(0), "test.abc", ImmutableMap.of(), ImmutableSet.of("one"));
 
     verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
+  }
+
+  @Test
+  public void testOnePostProcessorWithRewrite_WithFileHeaderAndValidator() throws Exception {
+    PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
+    when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
+      @Override
+      @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+      public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
+        // delete input file and create new file test.abc instead
+        FileContext input = invocation.getArgument(0);
+        assertItem(input, "test.txt", ImmutableMap.of());
+        input.getFile().delete();
+        return ImmutableList.of(newFile("test.abc"));
+      }
+    });
+    roleFile.setPostProcessors(ImmutableList.of("one"));
+
+    roleFile.setPostProcessorOptions(ImmutableMap.of(
+        FileGenerator.POSTPROCESSOR_KEY_FILE_HEADER, "my-fileheader",
+        FileGenerator.POSTPROCESSOR_KEY_VALIDATORS, ImmutableList.of("my-validator")));
+    underTest = new FileGenerator(options, "env1",
+        "role1", ImmutableList.of("variant1"), "template1",
+        destDir, file, null, null, roleFile, ImmutableMap.<String, Object>of(), template,
+        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of());
+
+    FileHeaderPlugin fileHeaderPlugin = mock(FileHeaderPlugin.class);
+    when(pluginManager.get(eq("my-fileheader"), eq(FileHeaderPlugin.class))).thenAnswer(new Answer<FileHeaderPlugin>() {
+      @Override
+      public FileHeaderPlugin answer(InvocationOnMock invocation) throws Throwable {
+        return fileHeaderPlugin;
+      }
+    });
+
+    ValidatorPlugin validatorPlugin = mock(ValidatorPlugin.class);
+    when(pluginManager.get(eq("my-validator"), eq(ValidatorPlugin.class))).thenAnswer(new Answer<ValidatorPlugin>() {
+      @Override
+      public ValidatorPlugin answer(InvocationOnMock invocation) throws Throwable {
+        return validatorPlugin;
+      }
+    });
+
+    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+
+    assertEquals(1, result.size());
+    assertItem(result.get(0), "test.abc", ImmutableMap.of(), ImmutableSet.of("one"));
+
+    verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
+    verify(fileHeaderPlugin, times(1)).apply(any(FileContext.class), any(FileHeaderContext.class));
+    verify(validatorPlugin, times(1)).apply(any(FileContext.class), any(ValidatorContext.class));
   }
 
   @Test

@@ -63,6 +63,7 @@ import io.wcm.devops.conga.generator.util.LineEndingConverter;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.model.role.RoleFile;
+import io.wcm.devops.conga.model.util.MapExpander;
 import io.wcm.devops.conga.model.util.MapMerger;
 
 /**
@@ -93,6 +94,9 @@ class FileGenerator {
 
   // if the creation of a symlink fails once, do not try it again (esp. e.g. on windows systems)
   private static boolean symlinkCreationFailed;
+
+  static final String POSTPROCESSOR_KEY_FILE_HEADER = "postProcessor.fileHeader";
+  static final String POSTPROCESSOR_KEY_VALIDATORS = "postProcessor.validators";
 
   //CHECKSTYLE:OFF
   FileGenerator(GeneratorOptions options, String environmentName,
@@ -478,12 +482,33 @@ class FileGenerator {
     if (processedFiles != null) {
       // add file header, validate files
       processedFiles.forEach(processedFile -> {
-            applyFileHeader(processedFile, (String)null);
-            applyValidation(processedFile, ImmutableList.of());
+        applyFileHeader(processedFile, getPostProcessorFileHeader());
+        applyValidation(processedFile, getPostProcessorValidators());
       });
     }
 
     return processedFiles;
+  }
+
+  private String getPostProcessorFileHeader() {
+    Object fileHeader = MapExpander.getDeep(postProcessorContext.getOptions(), POSTPROCESSOR_KEY_FILE_HEADER);
+    if (fileHeader instanceof String) {
+      return (String)fileHeader;
+    }
+    else {
+      return null;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<String> getPostProcessorValidators() {
+    Object validators = MapExpander.getDeep(postProcessorContext.getOptions(), POSTPROCESSOR_KEY_VALIDATORS);
+    if (validators instanceof List) {
+      return (List<String>)validators;
+    }
+    else {
+      return ImmutableList.of();
+    }
   }
 
   private String getFilenameForLog(FileContext fileItem) {
