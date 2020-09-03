@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -89,6 +90,7 @@ class EnvironmentGenerator {
   private final File destDir;
   private final PluginContextOptions pluginContextOptions;
   private final HandlebarsManager handlebarsManager;
+  private final UrlFilePluginContext urlFilePluginContext;
   private final UrlFileManager urlFileManager;
   private final MultiplyPlugin defaultMultiplyPlugin;
   private final Logger log;
@@ -142,12 +144,12 @@ class EnvironmentGenerator {
     // collect sensitive configuration parameter names from all roles
     this.roles.values().forEach(role -> sensitiveConfigParameters.addAll(role.getSensitiveConfigParameters()));
 
-    UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
+    this.urlFilePluginContext = new UrlFilePluginContext()
         .pluginContextOptions(pluginContextOptions)
         .baseDir(options.getBaseDir())
         .resourceClassLoader(resourceClassLoader)
         .environment(environment);
-    this.urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
+    this.urlFileManager = new UrlFileManager(options.getPluginManager(), this.urlFilePluginContext);
 
     this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginContextOptions);
 
@@ -205,56 +207,69 @@ class EnvironmentGenerator {
     log.info("----- Node '{}' -----", node.getNode());
 
     File nodeDir = FileUtil.ensureDirExistsAutocreate(new File(destDir, node.getNode()));
-    NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, options.getModelExport(),
-        variableStringResolver, variableMapResolver, options.getContainerVersionInfo(), pluginContextOptions,
-        sensitiveConfigParameters, yamlRepresenter);
+    try {
+      this.urlFilePluginContext.baseNodeDir(nodeDir);
 
-    for (NodeRole nodeRole : node.getRoles()) {
-      // get role and resolve all inheritance relations
-      Map<String, Role> resolvedRoles = RoleUtil.resolveRole(nodeRole.getRole(), environmentName + "/" + node.getNode(), roles);
-      for (Map.Entry<String, Role> resolvedRole : resolvedRoles.entrySet()) {
-        String roleName = resolvedRole.getKey();
-        Role role = resolvedRole.getValue();
-        List<String> variants = nodeRole.getAggregatedVariants();
+      NodeModelExport exportModelGenerator = new NodeModelExport(nodeDir, node, environment, options.getModelExport(),
+          variableStringResolver, variableMapResolver, options.getContainerVersionInfo(), pluginContextOptions,
+          sensitiveConfigParameters, yamlRepresenter);
 
-        // collect default config from role and it's variant.
-        // default config in variants has higher precedence than config in the role itself
-        // variants listed first have higher precedence than variants listed last
-        Map<String, Object> roleDefaultConfig = new HashMap<String, Object>();
-        for (String variant : variants) {
-          RoleVariant roleVariant = getRoleVariant(role, variant, roleName, node);
-          roleDefaultConfig = MapMerger.merge(roleDefaultConfig, roleVariant.getConfig());
-        }
-        roleDefaultConfig = MapMerger.merge(roleDefaultConfig, role.getConfig());
+      for (NodeRole nodeRole : node.getRoles()) {
+        // get role and resolve all inheritance relations
+        Map<String, Role> resolvedRoles = RoleUtil.resolveRole(nodeRole.getRole(), environmentName + "/" + node.getNode(), roles);
+        for (Map.Entry<String, Role> resolvedRole : resolvedRoles.entrySet()) {
+          String roleName = resolvedRole.getKey();
+          Role role = resolvedRole.getValue();
+          List<String> variants = nodeRole.getAggregatedVariants();
 
-        // merge default values to config
-        Map<String, Object> mergedConfig = nodeRole.getConfig();
-        mergedConfig = MapMerger.merge(mergedConfig, roleDefaultConfig);
-
-        // additionally set context variables
-        mergedConfig.putAll(environmentContextProperties);
-        mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
-
-        // collect role and tenant information for export model
-        ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig,
-            role.getSensitiveConfigParameters());
-
-        // generate files
-        List<GeneratedFileContext> allFiles = new ArrayList<>();
-        for (RoleFile roleFile : role.getFiles()) {
-          // generate file if no variant is required, or at least one of the given variants is defined for the node/role
-          if (RoleUtil.matchesRoleFile(roleFile, variants)) {
-            Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
-            multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
-                roleName, variants, roleFile.getTemplate(), allFiles);
+          // collect default config from role and it's variant.
+          // default config in variants has higher precedence than config in the role itself
+          // variants listed first have higher precedence than variants listed last
+          Map<String, Object> roleDefaultConfig = new HashMap<String, Object>();
+          for (String variant : variants) {
+            RoleVariant roleVariant = getRoleVariant(role, variant, roleName, node);
+            roleDefaultConfig = MapMerger.merge(roleDefaultConfig, roleVariant.getConfig());
           }
-        }
-        exportNodeRoleData.files(allFiles);
-      }
-    }
+          roleDefaultConfig = MapMerger.merge(roleDefaultConfig, role.getConfig());
 
-    // save export model
-    exportModelGenerator.generate();
+          // merge default values to config
+          Map<String, Object> mergedConfig = nodeRole.getConfig();
+          mergedConfig = MapMerger.merge(mergedConfig, roleDefaultConfig);
+
+          // additionally set context variables
+          mergedConfig.putAll(environmentContextProperties);
+          mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
+
+          // collect role and tenant information for export model
+          ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig,
+              role.getSensitiveConfigParameters());
+
+          // generate files
+          List<GeneratedFileContext> allFiles = new ArrayList<>();
+          for (RoleFile roleFile : role.getFiles()) {
+            // generate file if no variant is required, or at least one of the given variants is defined for the node/role
+            if (RoleUtil.matchesRoleFile(roleFile, variants)) {
+              Template template = getHandlebarsTemplate(role, roleFile, nodeRole);
+              multiplyFiles(role, roleFile, mergedConfig, nodeDir, template,
+                  roleName, variants, roleFile.getTemplate(), allFiles);
+            }
+          }
+
+          // filter out result files probably deleted by other file definitions
+          allFiles = allFiles.stream()
+              .filter(generatedFile -> generatedFile.getFileContext().getFile().exists())
+              .collect(Collectors.toList());
+
+          exportNodeRoleData.files(allFiles);
+        }
+      }
+
+      // save export model
+      exportModelGenerator.generate();
+    }
+    finally {
+      this.urlFilePluginContext.baseNodeDir(null);
+    }
   }
 
   private RoleVariant getRoleVariant(Role role, String variant, String roleName, Node node) {

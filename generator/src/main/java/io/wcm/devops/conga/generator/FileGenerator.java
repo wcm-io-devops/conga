@@ -230,7 +230,7 @@ class FileGenerator {
 
       // if copying from a local file try to create a symlink instead of coyping it
       boolean symlinkCreated = false;
-      if (allowSymlinks && !symlinkCreationFailed && urlFileManager.isLocalFile(url)) {
+      if (allowSymlinks && !symlinkCreationFailed && urlFileManager.isLocalFile(url) && !roleFile.isDeleteSource()) {
         log.info("Symlink file {} from {}", getFilenameForLog(fileContext), url);
         if (createSymlinkToLocalFile()) {
           symlinkCreated = true;
@@ -287,6 +287,9 @@ class FileGenerator {
         InputStream is = urlFileManager.getFile(url)) {
       IOUtils.copy(is, fos);
       fos.flush();
+    }
+    if (roleFile.isDeleteSource()) {
+      urlFileManager.deleteFile(url);
     }
   }
 

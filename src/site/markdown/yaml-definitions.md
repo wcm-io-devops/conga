@@ -24,6 +24,7 @@ Files are generated using a Handlebars template. After generation a file header 
 Alternatively it is possible to specify an URL instead of a template. In this case the file is copied/downloaded from an external source. The following URL prefixes are supported out of the box:
 
 - `file:` - Absolute filesystem path
+- `file-node:` - Filesystem path relative to the node root in the target directory of generated files
 - `classpath:` - Classpath resource reference
 - `http://` or `https://` - External URL
 - `mvn:` - Maven Artifact coordinates (only supported when CONGA runs inside Maven)
@@ -32,7 +33,7 @@ Alternatively it is possible to specify an URL instead of a template. In this ca
     - `classifier` and  `type` are optional
     - if the version is empty in the role file it is resolved from the Maven project
 
-If no prefix is specified the URL is interpreted as relative path in the local filesystem.
+If no prefix is specified the URL is interpreted as path relative to the POM root directory in the local filesystem.
 
 #### Role Inheritance
 

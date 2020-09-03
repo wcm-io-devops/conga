@@ -105,6 +105,9 @@ public class GeneratorTest {
     File sample1c = assertFile(node1Dir, "text/test-superrole1.txt");
     assertContains(sample1c, "This is a textfile äöüß with ISO-8859-1 encoding.", StandardCharsets.ISO_8859_1);
 
+    File sample1d = assertFile(node1Dir, "files/sample-copy.txt");
+    assertContains(sample1d, "textfile äöüß with ISO-8859-1 encoding", StandardCharsets.ISO_8859_1);
+
     File node2Dir = assertDirectory(destDir, "env1/node2");
 
     File xml2tenant1 = assertFile(node2Dir, "xml/000_test.tenant1.tenantRole1,tenantRole2.env1.xml");

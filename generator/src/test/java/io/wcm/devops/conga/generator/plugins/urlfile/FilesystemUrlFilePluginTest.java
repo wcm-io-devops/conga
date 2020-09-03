@@ -33,6 +33,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 
@@ -69,6 +70,22 @@ public class FilesystemUrlFilePluginTest {
       assertNotNull(is);
       assertTrue(IOUtils.toByteArray(is).length > 0);
     }
+  }
+
+  @Test
+  public void testRelativeFileNode() throws Exception {
+    context.baseNodeDir(new File("src/test/resources/validators"));
+    try (InputStream is = underTest.getFile("file-node:json/noJson.txt", context)) {
+      assertNotNull(is);
+      assertTrue(IOUtils.toByteArray(is).length > 0);
+    }
+  }
+
+  @Test
+  public void testRelativeFileNode_NoNodeBaseDir() throws Exception {
+    assertThrows(GeneratorException.class, () -> {
+      underTest.getFile("file-node:json/noJson.txt", context);
+    });
   }
 
   @Test

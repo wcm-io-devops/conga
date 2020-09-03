@@ -60,6 +60,7 @@ public final class RoleFile extends AbstractModel {
   private LineEndings lineEndings = LineEndings.unix;
   private String escapingStrategy;
   private Map<String, Object> modelOptions = new HashMap<>();
+  private boolean deleteSource;
 
   /**
    * Defines the file name of the generated or downloaded file.
@@ -325,6 +326,20 @@ public final class RoleFile extends AbstractModel {
 
   public void setModelOptions(Map<String, Object> modelOptions) {
     this.modelOptions = modelOptions;
+  }
+
+  /**
+   * Whether to delete the the source file that was copied with this file definition.
+   * This can only be applied when a) the file defined was not generated but copied from an url and
+   * b) the url file provider supports deleting the source file (e.g. in local file system and not a remote URL).
+   * @return true if the source file references by the url should be deleted
+   */
+  public boolean isDeleteSource() {
+    return this.deleteSource;
+  }
+
+  public void setDeleteSource(boolean deleteSource) {
+    this.deleteSource = deleteSource;
   }
 
 

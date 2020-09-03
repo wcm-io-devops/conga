@@ -55,6 +55,16 @@ files:
   dir: files
   symlinkTarget: files/sample.txt
 
+- file: "sample-to-be-deleted.txt"
+  dir: text
+  template: "test.txt.hbs"
+  charset: ISO-8859-1
+
+- file: sample-copy.txt
+  url: "file-node:text/sample-to-be-deleted.txt"
+  dir: files
+  deleteSource: true
+
 
 config:
   generateConditionalFile: false

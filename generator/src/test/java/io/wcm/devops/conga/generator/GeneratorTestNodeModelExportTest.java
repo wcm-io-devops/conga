@@ -82,7 +82,8 @@ public class GeneratorTestNodeModelExportTest {
         "text/test-conditional-tenant1.txt",
         "files/sample.txt",
         "files/sample-filesystem.txt",
-        "files/sample-symlink.txt");
+        "files/sample-symlink.txt",
+        "files/sample-copy.txt");
 
     assertFileModelOptions(role1, "files/sample-filesystem.txt",
         ImmutableMap.<String, Object>of("modelOption1", "value1"));

@@ -29,6 +29,7 @@ import io.wcm.devops.conga.model.environment.Environment;
 public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePluginContext> {
 
   private File baseDir = new File(".");
+  private File nodeBaseDir;
   private ClassLoader resourceClassLoader = getClass().getClassLoader();
   private Environment environment;
 
@@ -37,6 +38,31 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
    */
   public File getBaseDir() {
     return baseDir;
+  }
+
+  /**
+   * @param value Base directory for resolving relative files in filesystem
+   * @return this
+   */
+  public UrlFilePluginContext baseDir(File value) {
+    baseDir = value;
+    return this;
+  }
+
+  /**
+   * @return Base directory for resolving relative files of the generated files for the current node in filesystem
+   */
+  public File getNodeBaseDir() {
+    return nodeBaseDir;
+  }
+
+  /**
+   * @param value Base directory for resolving relative files of the generated files for the current node in filesystem
+   * @return this
+   */
+  public UrlFilePluginContext baseNodeDir(File value) {
+    nodeBaseDir = value;
+    return this;
   }
 
   /**
@@ -53,15 +79,6 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
    */
   public ClassLoader getResourceClassLoader() {
     return resourceClassLoader;
-  }
-
-  /**
-   * @param value Base directory for resolving relative files in filesystem
-   * @return this
-   */
-  public UrlFilePluginContext baseDir(File value) {
-    baseDir = value;
-    return this;
   }
 
   /**
