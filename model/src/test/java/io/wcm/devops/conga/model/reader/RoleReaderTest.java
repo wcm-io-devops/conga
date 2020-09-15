@@ -133,6 +133,7 @@ class RoleReaderTest {
     assertEquals("download", file.getDir());
     assertEquals("classpath://xyz.txt", file.getUrl());
     assertEquals(ImmutableMap.of("modelOption1", "value1"), file.getModelOptions());
+    assertTrue(file.isDeleteSource());
   }
 
   @Test

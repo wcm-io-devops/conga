@@ -68,7 +68,7 @@ See API documentation for the detailed plugin interfaces:
 
 | Plugin name  | URL Prefix            | Description
 |--------------|-----------------------|-------------
-| `filesystem` | `file:`               | Copy files from local filesystem
+| `filesystem` | `file:`, `file-node:` | Copy files from local filesystem (relative to maven project root / node root directory)
 | `classpath`  | `classpath:`          | Copy files from classpath
 | `http`       | `http://`, `https://` | Download files from HTTP or HTTPS URLs
 | `maven`      | `mvn:`                | Download files from Maven Artifact repository (only supported when CONGA runs inside Maven)

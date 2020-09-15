@@ -39,11 +39,18 @@ files:
   # Default charset is UTF-8 unless specified otherwise
   charset: ISO-8859-1
 
-- file: setenv.bat
+# Generate a single file that is later renamed to another filename (which may happen in an inheriting role)
+- file: setenv-to-be-renamed.bat
   dir: bin
   template: setenv.bat.hbs
   charset: ISO-8859-1
   lineEndings: windows
+
+# Generate a file by copying from another generated file - and delete the source afterwards
+- file: setenv.bat
+  dir: bin
+  url: file-node:bin/setenv-to-be-renamed.bat
+  deleteSource: true
 
 # Copy file from classpath
 - file: mysample.txt

@@ -60,6 +60,7 @@ public final class RoleFile extends AbstractModel {
   private LineEndings lineEndings = LineEndings.unix;
   private String escapingStrategy;
   private Map<String, Object> modelOptions = new HashMap<>();
+  private boolean deleteSource;
 
   /**
    * Defines the file name of the generated or downloaded file.
@@ -228,6 +229,15 @@ public final class RoleFile extends AbstractModel {
   /**
    * Defines configuration parameters that are passed as options to the post processor plugins.
    * They are merged with the configuration parameters from the configuration inheritance tree.
+   * <p>
+   * Two generic parameters are supported for all post processor:
+   * </p>
+   * <ul>
+   * <li><code>postProcessor.fileHeader</code>: Allows to set a file header for the post-processed files (or "none" for
+   * no header).</li>
+   * <li><code>postProcessor.validators</code>: Allows to set a list of validators for the post-processed files (or
+   * "none" for no validation)</li>
+   * </ul>
    * @return Configuration parameters
    */
   public Map<String, Object> getPostProcessorOptions() {
@@ -316,6 +326,20 @@ public final class RoleFile extends AbstractModel {
 
   public void setModelOptions(Map<String, Object> modelOptions) {
     this.modelOptions = modelOptions;
+  }
+
+  /**
+   * Whether to delete the the source file that was copied with this file definition.
+   * This can only be applied when a) the file defined was not generated but copied from an url and
+   * b) the url file provider supports deleting the source file (e.g. in local file system and not a remote URL).
+   * @return true if the source file references by the url should be deleted
+   */
+  public boolean isDeleteSource() {
+    return this.deleteSource;
+  }
+
+  public void setDeleteSource(boolean deleteSource) {
+    this.deleteSource = deleteSource;
   }
 
 

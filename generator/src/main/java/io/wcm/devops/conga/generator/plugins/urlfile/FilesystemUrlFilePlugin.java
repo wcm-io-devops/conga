@@ -30,6 +30,7 @@ import java.net.URL;
 import org.apache.commons.lang3.StringUtils;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.FileUtil;
@@ -45,6 +46,7 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   public static final String NAME = "filesystem";
 
   private static final String PREFIX = "file:";
+  private static final String PREFIX_NODE = "file-node:";
 
   @Override
   public String getName() {
@@ -53,7 +55,8 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public boolean accepts(String url, UrlFilePluginContext context) {
-    return StringUtils.startsWith(url, PREFIX);
+    return StringUtils.startsWith(url, PREFIX)
+        || StringUtils.startsWith(url, PREFIX_NODE);
   }
 
   @Override
@@ -92,12 +95,22 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
 
   private static File getFileInternal(String url, UrlFilePluginContext context) {
     if (StringUtils.startsWith(url, PREFIX)) {
-      String absoultePath = StringUtils.substringAfter(url, PREFIX);
-      return new File(absoultePath);
+      String absolutePath = StringUtils.substringAfter(url, PREFIX);
+      return new File(absolutePath);
+    }
+    else if (StringUtils.startsWith(url, PREFIX_NODE)) {
+      File nodeBaseDir = context.getNodeBaseDir();
+      if (nodeBaseDir != null) {
+        String relativePath = StringUtils.substringAfter(url, PREFIX_NODE);
+        return new File(nodeBaseDir, relativePath);
+      }
+      else {
+        throw new GeneratorException("Unable to get node basedir outside not generation context.");
+      }
     }
     else {
-      String revaltivePath = url;
-      return new File(context.getBaseDir(), revaltivePath);
+      String relativePath = url;
+      return new File(context.getBaseDir(), relativePath);
     }
   }
 

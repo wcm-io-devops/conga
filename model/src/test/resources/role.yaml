@@ -65,6 +65,7 @@ files:
   dir: download
   modelOptions:
     modelOption1: value1
+  deleteSource: true
 
 - file: systemconfig_symlink.txt
   dir: symlink
