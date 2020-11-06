@@ -20,6 +20,8 @@
 package io.wcm.devops.conga.tooling.maven.plugin.valueprovider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.maven.project.MavenProject;
@@ -62,13 +64,18 @@ public class MavenPropertyValueProviderPluginTest {
     String propertyName1 = getClass().getName() + "-test.prop1";
     String propertyName2 = getClass().getName() + "-test.prop2";
     String propertyName3 = getClass().getName() + "-test.prop3";
+    String propertyJavaVersion = "java.version";
 
     mavenProject.getProperties().setProperty(propertyName1, "value1");
     mavenProject.getProperties().setProperty(propertyName2, "value1,value2,value3");
+    mavenProject.getProperties().setProperty(propertyJavaVersion, "my-java-version");
 
     assertEquals("value1", underTest.resolve(propertyName1, context));
     assertEquals(ImmutableList.of("value1", "value2", "value3"), underTest.resolve(propertyName2, context));
     assertNull(underTest.resolve(propertyName3, context));
+
+    assertNotNull(underTest.resolve(propertyJavaVersion, context));
+    assertNotEquals("my-java-version", underTest.resolve(propertyJavaVersion, context));
   }
 
 }

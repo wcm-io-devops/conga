@@ -42,7 +42,10 @@ public class MavenPropertyValueProviderPlugin implements ValueProviderPlugin {
   @Override
   public Object resolve(String variableName, ValueProviderContext context) {
     MavenContext mavenContext = (MavenContext)context.getContainerContext();
-    String value = mavenContext.getProject().getProperties().getProperty(variableName);
+    String value = System.getProperty(variableName);
+    if (value == null) {
+      value = mavenContext.getProject().getProperties().getProperty(variableName);
+    }
     return ValueUtil.stringToValue(value);
   }
 

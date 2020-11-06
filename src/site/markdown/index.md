@@ -55,6 +55,7 @@ Definitions for CONGA:
 * [wcm.io CONGA training material with exercises](https://training.wcm.io/conga/)
 * [adaptTo() 2015 Talk: CONGA - Configuration generation for Sling and AEM][adaptto-talk-2015-conga]
 * [adaptTo() 2017 Talk: Automate AEM Deployment with Ansible and wcm.io CONGA][adaptto-talk-2017-aem-ansible]
+* [adaptTo() 2017 Lightning Talk: Use CONGA to provision your local AEM instance][adaptto-talk-2017-lightning-provision-local-aem]
 * [adaptTo() 2018 Talk: Maven Archetypes for AEM][adaptto-talk-2018-aem-archetypes]
 * [wcm.io Ansible Automation for AEM][aem-ansible]
 
@@ -72,5 +73,6 @@ Definitions for CONGA:
 [handlebars-helpers]: handlebars-helpers.html
 [adaptto-talk-2015-conga]: https://adapt.to/2015/en/schedule/conga---configuration-generation-for-sling-and-aem.html
 [adaptto-talk-2017-aem-ansible]: https://adapt.to/2017/en/schedule/automate-aem-deployment-with-ansible-and-wcm-io-conga.html
+[adaptto-talk-2017-lightning-provision-local-aem]: https://adapt.to/2017/en/schedule/lightning-talks/use-conga-to-provision-your-local-aem-instance.html
 [adaptto-talk-2018-aem-archetypes]: https://adapt.to/2018/en/schedule/maven-archetypes-for-aem.html
 [aem-ansible]: https://devops.wcm.io/ansible-aem/
