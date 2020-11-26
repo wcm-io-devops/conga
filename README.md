@@ -1,6 +1,6 @@
 <img src="https://wcm.io/images/favicon-16@2x.png"/> CONGA - CONfiguration GenerAtor
 ======
-[![Build Status](https://travis-ci.org/wcm-io-devops/conga.png?branch=develop)](https://travis-ci.org/wcm-io-devops/conga)
+[![Build Status](https://travis-ci.com/wcm-io-devops/conga.png?branch=develop)](https://travis-ci.com/wcm-io-devops/conga)
 [![Code Coverage](https://codecov.io/gh/wcm-io-devops/conga/branch/develop/graph/badge.svg)](https://codecov.io/gh/wcm-io-devops/conga)
 
 wcm.io DevOps CONGA Configuration Generator.
@@ -8,7 +8,7 @@ wcm.io DevOps CONGA Configuration Generator.
 Documentation: https://devops.wcm.io/conga/<br/>
 Issues: https://wcm-io.atlassian.net/projects/WDCONGA<br/>
 Wiki: https://wcm-io.atlassian.net/wiki/<br/>
-Continuous Integration: https://travis-ci.org/wcm-io-devops/conga<br/>
+Continuous Integration: https://travis-ci.com/wcm-io-devops/conga<br/>
 Commercial support: https://wcm.io/commercial-support.html
 
 
