@@ -34,6 +34,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * The filename of the environment YAML file is the environment name, it's not included in the model.
  */
 public final class Environment extends AbstractConfigurable {
+  private static final long serialVersionUID = -3146650632389125273L;
 
   private List<Node> nodes = new ArrayList<>();
   private List<RoleConfig> roleConfig = new ArrayList<>();

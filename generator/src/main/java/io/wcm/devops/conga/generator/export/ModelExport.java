@@ -27,6 +27,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * Defines an export configuration for model information.
  */
 public final class ModelExport extends AbstractConfigurable {
+  private static final long serialVersionUID = 4642081520558431376L;
 
   private List<String> node;
 

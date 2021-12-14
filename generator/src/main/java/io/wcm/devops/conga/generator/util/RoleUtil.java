@@ -29,7 +29,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
-import com.rits.cloning.Cloner;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.model.role.Role;
@@ -106,7 +105,7 @@ public final class RoleUtil {
           + "referenced in " + context + " does not exist.");
     }
     // clone role object because it may be changed when resolving inheritance
-    return Cloner.standard().deepClone(role);
+    return ObjectCloner.deepClone(role);
   }
 
   private static void validateRole(String roleName, Role role, String superRoleName, Role superRole) {
@@ -151,7 +150,7 @@ public final class RoleUtil {
       if (!found) {
         // if super role does not have the variant from the sub role, add it to super role as well
         List<RoleVariant> mergedVariants = new ArrayList<>(superRole.getVariants());
-        mergedVariants.add(Cloner.standard().deepClone(variant));
+        mergedVariants.add(ObjectCloner.deepClone(variant));
         superRole.setVariants(mergedVariants);
       }
     }

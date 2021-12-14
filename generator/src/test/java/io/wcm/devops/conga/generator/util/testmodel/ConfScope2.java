@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator.util.testmodel;
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 public class ConfScope2 extends AbstractConfigurable {
+  private static final long serialVersionUID = -3341288196194211843L;
 
   private ConfScope3 scope31;
   private ConfScope3 scope32;

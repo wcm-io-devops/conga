@@ -39,6 +39,7 @@ import io.wcm.devops.conga.model.util.MapExpander;
  * Defines a file to be generated or downloaded for a role.
  */
 public final class RoleFile extends AbstractModel {
+  private static final long serialVersionUID = -6027099825211623171L;
 
   private static final String VARIANT_MANDATORY_SUFFIX = "*";
 

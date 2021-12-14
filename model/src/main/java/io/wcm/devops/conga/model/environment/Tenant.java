@@ -31,6 +31,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * E.g. vhosts files for Apache Webserver.
  */
 public final class Tenant extends AbstractConfigurable {
+  private static final long serialVersionUID = 3984905428304600647L;
 
   private String tenant;
   private List<String> roles = new ArrayList<>();

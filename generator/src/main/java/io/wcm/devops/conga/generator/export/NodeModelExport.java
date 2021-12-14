@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.rits.cloning.Cloner;
-
 import io.wcm.devops.conga.generator.ContextProperties;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
@@ -34,6 +32,7 @@ import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleData;
 import io.wcm.devops.conga.generator.spi.export.context.ExportNodeRoleTenantData;
 import io.wcm.devops.conga.generator.spi.export.context.NodeModelExportContext;
 import io.wcm.devops.conga.generator.spi.yaml.context.YamlRepresenter;
+import io.wcm.devops.conga.generator.util.ObjectCloner;
 import io.wcm.devops.conga.generator.util.VariableMapResolver;
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -116,7 +115,7 @@ public final class NodeModelExport {
     }
 
     // clone config to make sure it is not tampered by the plugin
-    Map<String, Object> clonedConfig = Cloner.standard().deepClone(config);
+    Map<String, Object> clonedConfig = ObjectCloner.deepClone(config);
 
     // resolve variables in configuration, and remove context properties
     Map<String, Object> resolvedNodeConfig = variableMapResolver.resolve(clonedConfig, false);

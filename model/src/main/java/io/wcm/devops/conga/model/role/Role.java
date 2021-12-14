@@ -31,6 +31,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * The filename of the role YAML file is the role name, it's not included in the model.
  */
 public final class Role extends AbstractConfigurable {
+  private static final long serialVersionUID = 4736362819976273689L;
 
   private List<RoleInherit> inherits = new ArrayList<>();
   private List<RoleVariant> variants = new ArrayList<>();

@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
-import com.rits.cloning.Cloner;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -50,7 +49,7 @@ public final class EnvironmentExpander {
    * @return Environment that contains only nodes with single node names
    */
   public static Environment expandNodes(Environment environment, String environmentName) {
-    Environment clonedEnvironemnt = Cloner.standard().deepClone(environment);
+    Environment clonedEnvironemnt = ObjectCloner.deepClone(environment);
 
     clonedEnvironemnt.setNodes(environment.getNodes().stream()
         .flatMap(node -> getSingleNodes(node, environmentName))
@@ -76,7 +75,7 @@ public final class EnvironmentExpander {
     }
     else if (hasNodes) {
       for (String nodeName : node.getNodes()) {
-        Node clonedNode = Cloner.standard().deepClone(node);
+        Node clonedNode = ObjectCloner.deepClone(node);
         clonedNode.setNode(nodeName);
         clonedNode.setNodes(ImmutableList.of());
         nodes.add(clonedNode);

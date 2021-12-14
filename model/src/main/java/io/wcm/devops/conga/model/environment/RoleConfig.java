@@ -25,6 +25,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * Global role-specific configuration. Configuration defined here applies to all nodes that have this role assigned.
  */
 public final class RoleConfig extends AbstractConfigurable {
+  private static final long serialVersionUID = -8636577741823687304L;
 
   private String role;
 
