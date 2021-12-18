@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import com.google.common.collect.ImmutableList;
-import com.rits.cloning.Cloner;
 
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
@@ -209,7 +208,7 @@ public final class VariableMapResolver {
       // allow to iterate over single values as well
       listObject = ImmutableList.of(listObject);
     }
-    Map<String, Object> variablesClone = new LinkedHashMap<>(Cloner.standard().deepClone(variables));
+    Map<String, Object> variablesClone = new LinkedHashMap<>(ObjectCloner.deepClone(variables));
     List<Object> result = new ArrayList<>();
     int count = 0;
     for (Object item : (List<Object>)listObject) {

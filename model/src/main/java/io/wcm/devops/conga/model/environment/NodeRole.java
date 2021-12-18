@@ -30,6 +30,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * Role assignment for a node in an environment.
  */
 public final class NodeRole extends AbstractConfigurable {
+  private static final long serialVersionUID = 8208217702200393548L;
 
   private String role;
   private String variant;

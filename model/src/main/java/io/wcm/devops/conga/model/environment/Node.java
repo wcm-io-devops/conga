@@ -31,6 +31,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * other deployment target.
  */
 public final class Node extends AbstractConfigurable {
+  private static final long serialVersionUID = -7827167562783775179L;
 
   private String node;
   private List<String> nodes = new ArrayList<>();

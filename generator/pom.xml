@@ -25,7 +25,7 @@
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.14.2</version>
+    <version>1.14.4</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
@@ -36,7 +36,7 @@
   <description>wcm.io DevOps CONGA Configuration Generator.</description>
 
   <properties>
-    <site.url.module.prefix>conga/generator</site.url.module.prefix>
+    <site.url.module.prefix>generator</site.url.module.prefix>
   </properties>
 
   <dependencies>
@@ -44,7 +44,7 @@
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.model</artifactId>
-      <version>1.14.2</version>
+      <version>1.14.4</version>
       <scope>compile</scope>
     </dependency>
 
@@ -72,12 +72,6 @@
     </dependency>
 
     <dependency>
-      <groupId>uk.com.robust-it</groupId>
-      <artifactId>cloning</artifactId>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-jexl3</artifactId>
       <scope>compile</scope>
@@ -98,7 +92,6 @@
   </dependencies>
 
   <build>
-
     <plugins>
 
       <plugin>
@@ -109,16 +102,20 @@
         </configuration>
       </plugin>
 
-      <!-- deploy site because because of generated javadocs -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <skipDeploy>false</skipDeploy>
-        </configuration>
-      </plugin>
-
     </plugins>
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <configuration>
+            <topSiteURL>${site.deploy.url}</topSiteURL>
+          </configuration>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
   </build>
 
   <reporting>
@@ -158,7 +155,7 @@
   <distributionManagement>
     <site>
       <id>${site.deploy.id}</id>
-      <url>${site.deploy.url}${site.url.module.prefix}</url>
+      <url>${site.deploy.url}/${site.url.module.prefix}</url>
     </site>
   </distributionManagement>
 

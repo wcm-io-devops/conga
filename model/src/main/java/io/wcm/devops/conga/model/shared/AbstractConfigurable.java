@@ -21,6 +21,7 @@ package io.wcm.devops.conga.model.shared;
 
 import static io.wcm.devops.conga.model.util.DefaultUtil.defaultEmptyMap;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,8 @@ import io.wcm.devops.conga.model.util.MapExpander;
 /**
  * Abstract {@link Configurable} implementation.
  */
-public abstract class AbstractConfigurable extends AbstractModel implements Configurable {
+public abstract class AbstractConfigurable extends AbstractModel implements Configurable, Serializable {
+  private static final long serialVersionUID = 5009663684342529022L;
 
   private Map<String, Object> config = new HashMap<>();
 

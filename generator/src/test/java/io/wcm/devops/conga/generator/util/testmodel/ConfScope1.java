@@ -25,6 +25,7 @@ import java.util.Map;
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 public class ConfScope1 extends AbstractConfigurable {
+  private static final long serialVersionUID = 2765118713968544969L;
 
   private List<ConfScope2> scope2;
   private Map<String, Object> map;

@@ -44,12 +44,16 @@ See API documentation for the detailed plugin interfaces:
 | `conf`               | .conf        | X           |           |          |                |
 | `unixShellScript`    | .sh          | X           |           |          |                |
 | `windowsShellScript` | .bat, .cmd   | X           |           |          |                |
+| `none`               |              | X           | X         | X        |                |
+
+The `none` plugins allow to disable the default behavior based on the file extension.
 
 #### Multiply plugins
 
 | Plugin name | Description
 |-------------|-------------
 | `tenant`    | Allows to generate a file for each tenant defined in the environment.
+| `none`      | No multiply
 
 #### Value Provider plugins
 
@@ -63,6 +67,7 @@ See API documentation for the detailed plugin interfaces:
 | Plugin name | Description
 |-------------|-------------
 | `yaml`      | Dumps all "model data" (expanded configuration, list of generated files and tenants) from CONGA to "model.yaml" files for each node. This file can be picked up by infrastructure automation tools e.g. Ansible to execute the further deployment steps.
+| `none`      | No export
 
 #### URL File plugins
 

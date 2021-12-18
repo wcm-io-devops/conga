@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator.util.testmodel;
 import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 
 public class SimpleConf extends AbstractConfigurable {
+  private static final long serialVersionUID = 5937540303503036634L;
 
   // no additional properties
 

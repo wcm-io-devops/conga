@@ -57,6 +57,7 @@ Definitions for CONGA:
 * [adaptTo() 2017 Talk: Automate AEM Deployment with Ansible and wcm.io CONGA][adaptto-talk-2017-aem-ansible]
 * [adaptTo() 2017 Lightning Talk: Use CONGA to provision your local AEM instance][adaptto-talk-2017-lightning-provision-local-aem]
 * [adaptTo() 2018 Talk: Maven Archetypes for AEM][adaptto-talk-2018-aem-archetypes]
+* [adaptTo() 2020 Talk: Use Cloud Manager to deploy CONGA-based AEM Applications](https://adapt.to/2020/en/schedule/use-cloud-manager-to-deploy-conga-based-aem-applications.html)
 * [wcm.io Ansible Automation for AEM][aem-ansible]
 
 
