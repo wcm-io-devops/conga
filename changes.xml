@@ -24,6 +24,9 @@
   <body>
 
     <release version="1.14.6" date="not released">
+      <action type="update" dev="sseifert">
+        conga-maven-plugin: Declare maven core dependencies as provided.
+      </action>
       <action type="fix" dev="sseifert">
         conga-cli: Switch from log4j to slf4j-simple for console logging.
       </action>
