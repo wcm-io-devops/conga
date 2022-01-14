@@ -28,24 +28,24 @@ import org.junit.jupiter.api.Test;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-public class RegexQuoteHelperTest {
+class RegexQuoteHelperTest {
 
   private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     helper = new PluginManagerImpl().get(RegexQuoteHelper.NAME, HelperPlugin.class);
   }
 
   @Test
-  public void testApply() throws Exception {
+  void testApply() throws Exception {
     assertHelper("\\Qabc\\E", helper, "abc", new MockOptions());
     assertHelper("\\Qa.b.c\\E", helper, "a.b.c", new MockOptions());
   }
 
   @Test
-  public void testApplyFalsy() throws Exception {
+  void testApplyFalsy() throws Exception {
     assertNull(helper.apply(null, new MockOptions(), null));
   }
 

@@ -47,7 +47,7 @@ import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
 
 
-public class TenantMultiplyTest {
+class TenantMultiplyTest {
 
   private MultiplyPlugin underTest;
 
@@ -58,7 +58,7 @@ public class TenantMultiplyTest {
   private MultiplyContext context;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     PluginManager pluginManager = new PluginManagerImpl();
     underTest = pluginManager.get(TenantMultiply.NAME, MultiplyPlugin.class);
 
@@ -88,13 +88,13 @@ public class TenantMultiplyTest {
   }
 
   @Test
-  public void testNoTenants() {
+  void testNoTenants() {
     List<Map<String, Object>> configs = underTest.multiply(context);
     assertEquals(0, configs.size());
   }
 
   @Test
-  public void testTenantWithoutName() {
+  void testTenantWithoutName() {
     environment.getTenants().add(new Tenant());
 
     assertThrows(GeneratorException.class, () -> {
@@ -103,7 +103,7 @@ public class TenantMultiplyTest {
   }
 
   @Test
-  public void testTenantsWithConfig() {
+  void testTenantsWithConfig() {
     Tenant tenant1 = new Tenant();
     tenant1.setTenant("tenant1");
     tenant1.setConfig(ImmutableMap.of("var1", "v11", "var3", "v33"));
@@ -128,7 +128,7 @@ public class TenantMultiplyTest {
   }
 
   @Test
-  public void testTenantsFilteredByRoles() {
+  void testTenantsFilteredByRoles() {
     Tenant tenant1 = new Tenant();
     tenant1.setTenant("tenant1");
     environment.getTenants().add(tenant1);

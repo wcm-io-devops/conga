@@ -38,10 +38,10 @@ import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-public class AbstractPostProcessorTest {
+class AbstractPostProcessorTest {
 
   @Test
-  public void testApply() throws Exception {
+  void testApply() throws Exception {
     File file = new File("target/generation-test/postProcessor.json");
     FileUtils.copyFile(new File(getClass().getResource("/validators/json/validJson.json").toURI()), file);
 
@@ -71,7 +71,7 @@ public class AbstractPostProcessorTest {
   }
 
   @Test
-  public void testApplyWithoutFileHeader() throws Exception {
+  void testApplyWithoutFileHeader() throws Exception {
     File file = new File("target/generation-test/postProcessor.json");
     FileUtils.copyFile(new File(getClass().getResource("/validators/json/validJson.json").toURI()), file);
 

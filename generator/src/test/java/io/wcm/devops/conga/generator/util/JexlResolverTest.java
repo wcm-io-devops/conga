@@ -33,7 +33,7 @@ import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
-public class JexlResolverTest {
+class JexlResolverTest {
 
   private JexlResolver underTest;
   private Map<String, Object> variables;
@@ -41,7 +41,7 @@ public class JexlResolverTest {
   private Map<String, Object> object2;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(new PluginManagerImpl());
     ValueProviderGlobalContext context = new ValueProviderGlobalContext()
@@ -71,7 +71,7 @@ public class JexlResolverTest {
   }
 
   @Test
-  public void testStaticExpressions() {
+  void testStaticExpressions() {
     assertEquals("abc", underTest.resolve("'abc'", variables));
     assertEquals(12, underTest.resolve("12", variables));
     assertEquals(17, underTest.resolve("12+5", variables));
@@ -81,7 +81,7 @@ public class JexlResolverTest {
   }
 
   @Test
-  public void testVariableExpressions() {
+  void testVariableExpressions() {
     assertEquals("value1", underTest.resolve("var1", variables));
     assertEquals("value1a", underTest.resolve("var1+'a'", variables));
     assertEquals(123, underTest.resolve("var2", variables));
@@ -93,7 +93,7 @@ public class JexlResolverTest {
   }
 
   @Test
-  public void testInvalidExpressions() {
+  void testInvalidExpressions() {
     assertThrows(GeneratorException.class, () -> {
       underTest.resolve("'abc", variables);
     });

@@ -30,30 +30,30 @@ import com.google.common.collect.ImmutableList;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-public class IfNotEqualsHelperTest {
+class IfNotEqualsHelperTest {
 
   private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     helper = new PluginManagerImpl().get(IfNotEqualsHelper.NAME, HelperPlugin.class);
   }
 
   @Test
-  public void testEquals() throws Exception {
+  void testEquals() throws Exception {
     assertHelper("", helper, "abc", new MockOptions("abc"));
     assertHelper("", helper, ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("a", "b", "c")));
   }
 
   @Test
-  public void testNotEquals() throws Exception {
+  void testNotEquals() throws Exception {
     assertHelper(FN_RETURN, helper, "abc", new MockOptions("def"));
     assertHelper(FN_RETURN, helper, ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("d", "e", "f")));
   }
 
   @Test
-  public void testNull() throws Exception {
+  void testNull() throws Exception {
     assertHelper("", helper, null, new MockOptions("def"));
     assertHelper("", helper, "abc", new MockOptions());
     assertHelper("", helper, null, new MockOptions());

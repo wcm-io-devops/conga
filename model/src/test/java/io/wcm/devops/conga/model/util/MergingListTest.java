@@ -27,17 +27,17 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
-public class MergingListTest {
+class MergingListTest {
 
   private MergingList<String> underTest;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     underTest = new MergingList<>();
   }
 
   @Test
-  public void testNoMerging_Duplicates() {
+  void testNoMerging_Duplicates() {
     underTest.addCheckMergeToken("item1");
     underTest.addCheckMergeToken("item2");
     underTest.addCheckMergeToken("item2");
@@ -50,7 +50,7 @@ public class MergingListTest {
   }
 
   @Test
-  public void testMergeStart() {
+  void testMergeStart() {
     underTest.addCheckMergeToken(LIST_MERGE_ENTRY);
     underTest.addCheckMergeToken("item1");
     underTest.addCheckMergeToken("item2");
@@ -62,7 +62,7 @@ public class MergingListTest {
   }
 
   @Test
-  public void testMergeMiddle() {
+  void testMergeMiddle() {
     underTest.addCheckMergeToken("item1");
     underTest.addCheckMergeToken(LIST_MERGE_ENTRY);
     underTest.addCheckMergeToken("item2");
@@ -74,7 +74,7 @@ public class MergingListTest {
   }
 
   @Test
-  public void testMergeMiddle_Duplicates() {
+  void testMergeMiddle_Duplicates() {
     underTest.addCheckMergeToken("item1");
     underTest.addCheckMergeToken(LIST_MERGE_ENTRY);
     underTest.addCheckMergeToken("item2");
@@ -88,7 +88,7 @@ public class MergingListTest {
   }
 
   @Test
-  public void testMergeEnd() {
+  void testMergeEnd() {
     underTest.addCheckMergeToken("item1");
     underTest.addCheckMergeToken("item2");
     underTest.addCheckMergeToken(LIST_MERGE_ENTRY);
@@ -100,7 +100,7 @@ public class MergingListTest {
   }
 
   @Test
-  public void testMergeMultipleTokens() {
+  void testMergeMultipleTokens() {
     underTest.addCheckMergeToken("item1");
     underTest.addCheckMergeToken(LIST_MERGE_ENTRY);
     underTest.addCheckMergeToken("item2");

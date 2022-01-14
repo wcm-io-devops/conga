@@ -38,17 +38,17 @@ import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-public class JsonFileHeaderTest {
+class JsonFileHeaderTest {
 
   private FileHeaderPlugin underTest;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     underTest = new PluginManagerImpl().get(JsonFileHeader.NAME, FileHeaderPlugin.class);
   }
 
   @Test
-  public void testApply() throws Exception {
+  void testApply() throws Exception {
     File file = new File("target/generation-test/fileHeader.json");
     FileUtils.copyFile(new File(getClass().getResource("/validators/json/validJson.json").toURI()), file);
 

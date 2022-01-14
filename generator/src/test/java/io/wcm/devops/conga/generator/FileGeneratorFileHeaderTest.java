@@ -66,7 +66,7 @@ import io.wcm.devops.conga.model.role.RoleFile;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.WARN)
-public class FileGeneratorFileHeaderTest {
+class FileGeneratorFileHeaderTest {
 
   private File destDir;
   private File file;
@@ -81,7 +81,7 @@ public class FileGeneratorFileHeaderTest {
   private PluginManager pluginManager;
 
   @BeforeEach
-  public void setUp(TestInfo testInfo) {
+  void setUp(TestInfo testInfo) {
     destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     file = new File(destDir, "test.txt");
     roleFile = new RoleFile();
@@ -122,7 +122,7 @@ public class FileGeneratorFileHeaderTest {
   }
 
   @Test
-  public void testWithoutFileHeader() throws Exception {
+  void testWithoutFileHeader() throws Exception {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.NEVER);
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -134,7 +134,7 @@ public class FileGeneratorFileHeaderTest {
   }
 
   @Test
-  public void testExplicitFileHeader() throws Exception {
+  void testExplicitFileHeader() throws Exception {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setFileHeader("one");
 
@@ -147,7 +147,7 @@ public class FileGeneratorFileHeaderTest {
   }
 
   @Test
-  public void testImplicitFileHeader() throws Exception {
+  void testImplicitFileHeader() throws Exception {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -159,7 +159,7 @@ public class FileGeneratorFileHeaderTest {
   }
 
   @Test
-  public void testAlwaysFileHeader() throws Exception {
+  void testAlwaysFileHeader() throws Exception {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.ALWAYS);
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -171,7 +171,7 @@ public class FileGeneratorFileHeaderTest {
   }
 
   @Test
-  public void testImplicitAndAlwaysFileHeader() throws Exception {
+  void testImplicitAndAlwaysFileHeader() throws Exception {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
     FileHeaderPlugin two = mockFileHeader("two", "txt", ImplicitApplyOptions.ALWAYS);
 
@@ -185,7 +185,7 @@ public class FileGeneratorFileHeaderTest {
   }
 
   @Test
-  public void testVersions() throws Exception {
+  void testVersions() throws Exception {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setFileHeader("one");
 

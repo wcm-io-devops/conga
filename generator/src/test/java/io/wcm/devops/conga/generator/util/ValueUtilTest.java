@@ -29,79 +29,79 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-public class ValueUtilTest {
+class ValueUtilTest {
 
   @Test
-  public void stringToValue_null() {
+  void stringToValue_null() {
     assertNull(stringToValue(null));
   }
 
   @Test
-  public void stringToValue_string() {
+  void stringToValue_string() {
     assertEquals("abc", stringToValue("abc"));
     assertEquals("Der Jodelkaiser aus dem Ötztal.", stringToValue("Der Jodelkaiser aus dem Ötztal."));
     assertEquals("", stringToValue(""));
   }
 
   @Test
-  public void stringToValue_stringList() {
+  void stringToValue_stringList() {
     assertEquals(ImmutableList.of("abc", "def", "ghi"), stringToValue("abc,def,ghi"));
     assertEquals(ImmutableList.of("abc", " def", " ghi"), stringToValue("abc, def, ghi"));
   }
 
   @Test
-  public void stringToValue_integer() {
+  void stringToValue_integer() {
     assertEquals(0, stringToValue("0"));
     assertEquals(123456, stringToValue("123456"));
     assertEquals(-5000, stringToValue("-5000"));
   }
 
   @Test
-  public void stringToValue_integerList() {
+  void stringToValue_integerList() {
     assertEquals(ImmutableList.of(0, 123456, -5000), stringToValue("0,123456,-5000"));
   }
 
   @Test
-  public void stringToValue_long() {
+  void stringToValue_long() {
     assertEquals(0L, stringToValue("0L"));
     assertEquals(123456L, stringToValue("123456L"));
     assertEquals(1234567890123456L, stringToValue("1234567890123456"));
   }
 
   @Test
-  public void stringToValue_longList() {
+  void stringToValue_longList() {
     assertEquals(ImmutableList.of(0L, 123456L, 1234567890123456L), stringToValue("0L,123456L,1234567890123456"));
   }
 
   @Test
-  public void stringToValue_double() {
+  void stringToValue_double() {
     assertEquals(0.0f, stringToValue("0.0"));
     assertEquals(123.456, (Double)stringToValue("123.456d"), 0.0001);
   }
 
   @Test
-  public void stringToValue_boolean() {
+  void stringToValue_boolean() {
     assertEquals(true, stringToValue("true"));
     assertEquals(false, stringToValue("false"));
   }
 
   @Test
-  public void stringToValue_booleanList() {
+  void stringToValue_booleanList() {
     assertEquals(ImmutableList.of(true, false), stringToValue("true,false"));
   }
 
   @Test
-  public void stringToValue_mixed() {
+  void stringToValue_mixed() {
     assertEquals(ImmutableList.of("abc", 123, true), stringToValue("abc,123,true"));
   }
 
   @Test
-  public void valueToString_null() {
+  void valueToString_null() {
     assertEquals("", valueToString(null));
   }
 
   @Test
-  public void valueToString_primitives() {
+  void valueToString_primitives() {
     assertEquals("", valueToString(""));
     assertEquals("abc", valueToString("abc"));
     assertEquals("123", valueToString(123));
@@ -110,12 +110,12 @@ public class ValueUtilTest {
   }
 
   @Test
-  public void valueToString_list() {
+  void valueToString_list() {
     assertEquals("abc,123,1.23,true", valueToString(ImmutableList.of("abc", 123, 1.23, true)));
   }
 
   @Test
-  public void valueToString_map() {
+  void valueToString_map() {
     assertEquals("prop1=abc,prop2=123", valueToString(ImmutableMap.of("prop1", "abc", "prop2", 123)));
   }
 

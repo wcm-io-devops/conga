@@ -44,7 +44,7 @@ import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueEncryptionContext;
 
 @ExtendWith(MockitoExtension.class)
-public class ModelExportConfigProcessorTest {
+class ModelExportConfigProcessorTest {
 
   private static final Set<String> SENSITIVE_PARAMS = ImmutableSet.of(
       "param1",
@@ -65,7 +65,7 @@ public class ModelExportConfigProcessorTest {
   private ModelExportConfigProcessor underTest;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     // simulate valueEncryptPlugin that prepends {enc} to the value
     when(pluginManager.getAll(ValueEncryptionPlugin.class)).thenReturn(ImmutableList.of(valueEncryptPlugin));
     when(valueEncryptPlugin.isEnabled()).thenReturn(true);
@@ -83,7 +83,7 @@ public class ModelExportConfigProcessorTest {
   }
 
   @Test
-  public void testNestedParams() {
+  void testNestedParams() {
     Map<String, Object> config = ImmutableMap.<String, Object>of(
         "param1", "value1",
         "param2", "value2",
@@ -106,7 +106,7 @@ public class ModelExportConfigProcessorTest {
   }
 
   @Test
-  public void testList() {
+  void testList() {
     Map<String, Object> config = ImmutableMap.<String, Object>of(
         "list1", ImmutableList.of("value1", "value2"),
         "list2", ImmutableList.of(

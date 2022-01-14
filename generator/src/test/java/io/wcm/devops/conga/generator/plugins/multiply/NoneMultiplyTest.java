@@ -36,7 +36,7 @@ import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
 
-public class NoneMultiplyTest {
+class NoneMultiplyTest {
 
   private MultiplyPlugin underTest;
 
@@ -46,7 +46,7 @@ public class NoneMultiplyTest {
   private Environment environment;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     underTest = new PluginManagerImpl().get(NoneMultiply.NAME, MultiplyPlugin.class);
 
     role = new Role();
@@ -58,7 +58,7 @@ public class NoneMultiplyTest {
   }
 
   @Test
-  public void testMultiply() {
+  void testMultiply() {
     MultiplyContext context = new MultiplyContext().role(role).roleFile(roleFile).environment(environment).config(config);
     List<Map<String, Object>> configs = underTest.multiply(context);
 

@@ -65,7 +65,7 @@ import io.wcm.devops.conga.model.role.RoleFile;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.WARN)
-public class FileGeneratorValidatorTest {
+class FileGeneratorValidatorTest {
 
   private File destDir;
   private File file;
@@ -82,7 +82,7 @@ public class FileGeneratorValidatorTest {
   private Logger logger;
 
   @BeforeEach
-  public void setUp(TestInfo testInfo) {
+  void setUp(TestInfo testInfo) {
     destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     file = new File(destDir, "test.txt");
     roleFile = new RoleFile();
@@ -118,7 +118,7 @@ public class FileGeneratorValidatorTest {
   }
 
   @Test
-  public void testWithoutValidator() throws Exception {
+  void testWithoutValidator() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.NEVER);
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -130,7 +130,7 @@ public class FileGeneratorValidatorTest {
   }
 
   @Test
-  public void testOneValidator() throws Exception {
+  void testOneValidator() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setValidators(ImmutableList.of("one"));
 
@@ -143,7 +143,7 @@ public class FileGeneratorValidatorTest {
   }
 
   @Test
-  public void testTwoValidators() throws Exception {
+  void testTwoValidators() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.NEVER);
     ValidatorPlugin two = mockValidator("two", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setValidators(ImmutableList.of("one", "two"));
@@ -158,7 +158,7 @@ public class FileGeneratorValidatorTest {
   }
 
   @Test
-  public void testImplicitValidator() throws Exception {
+  void testImplicitValidator() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -170,7 +170,7 @@ public class FileGeneratorValidatorTest {
   }
 
   @Test
-  public void testAlwaysValidator() throws Exception {
+  void testAlwaysValidator() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.ALWAYS);
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -182,7 +182,7 @@ public class FileGeneratorValidatorTest {
   }
 
   @Test
-  public void testImplicitAndAlwaysValidator() throws Exception {
+  void testImplicitAndAlwaysValidator() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
     ValidatorPlugin two = mockValidator("two", "txt", ImplicitApplyOptions.ALWAYS);
 

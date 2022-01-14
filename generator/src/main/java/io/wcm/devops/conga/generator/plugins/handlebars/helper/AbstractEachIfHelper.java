@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -81,7 +82,7 @@ abstract class AbstractEachIfHelper implements HelperPlugin {
    */
   private Iterable<Object> filterIterable(Iterable<Object> items, String propertyName,Options options) {
     return StreamSupport.stream(items.spliterator(), false)
-        .filter(item -> item != null)
+        .filter(Objects::nonNull)
         .filter(item -> checkProperty(item, propertyName, options))
         .collect(Collectors.toList());
   }

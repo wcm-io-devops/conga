@@ -43,12 +43,12 @@ import io.wcm.devops.conga.model.role.RoleFile;
 import io.wcm.devops.conga.model.role.RoleInherit;
 import io.wcm.devops.conga.model.role.RoleVariant;
 
-public class RoleUtilTest {
+class RoleUtilTest {
 
   private Map<String, Role> roleMap;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     roleMap = new HashMap<>();
 
     /*
@@ -141,14 +141,14 @@ public class RoleUtilTest {
   }
 
   @Test
-  public void testUnknownRole() {
+  void testUnknownRole() {
     assertThrows(GeneratorException.class, () -> {
       RoleUtil.resolveRole("roleX", "context", roleMap);
     });
   }
 
   @Test
-  public void testRole1() {
+  void testRole1() {
     Map<String, Role> resolvedRoles = RoleUtil.resolveRole("role1", "context", roleMap);
     assertEquals(1, resolvedRoles.size());
     Iterator<Role> resolvedRoleIterator = resolvedRoles.values().iterator();
@@ -167,7 +167,7 @@ public class RoleUtilTest {
   }
 
   @Test
-  public void testRole2() {
+  void testRole2() {
     Map<String, Role> resolvedRoles = RoleUtil.resolveRole("role2", "context", roleMap);
     assertEquals(2, resolvedRoles.size());
     Iterator<Role> resolvedRoleIterator = resolvedRoles.values().iterator();
@@ -200,7 +200,7 @@ public class RoleUtilTest {
   }
 
   @Test
-  public void testRole3() {
+  void testRole3() {
     Map<String, Role> resolvedRoles = RoleUtil.resolveRole("role3", "context", roleMap);
     assertEquals(3, resolvedRoles.size());
     Iterator<Role> resolvedRoleIterator = resolvedRoles.values().iterator();
@@ -247,14 +247,14 @@ public class RoleUtilTest {
   }
 
   @Test
-  public void testRole4_InheritWithMissingVariants() {
+  void testRole4_InheritWithMissingVariants() {
     assertThrows(GeneratorException.class, () -> {
       RoleUtil.resolveRole("role4", "context", roleMap);
     });
   }
 
   @Test
-  public void testRole5_CyclicInheritance() {
+  void testRole5_CyclicInheritance() {
     assertThrows(GeneratorException.class, () -> {
       RoleUtil.resolveRole("role5", "context", roleMap);
     });
@@ -364,7 +364,7 @@ public class RoleUtilTest {
   }
 
   @Test
-  public void testMatchesRoleFile() {
+  void testMatchesRoleFile() {
     assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.<String>of()));
     assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.of("v1")));
     assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.of("v1", "v2")));

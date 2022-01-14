@@ -31,18 +31,18 @@ import com.google.common.collect.ImmutableSet;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-public class ContainsHelperTest {
+class ContainsHelperTest {
 
   private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     helper = new PluginManagerImpl().get(ContainsHelper.NAME, HelperPlugin.class);
   }
 
   @Test
-  public void testContains() throws Exception {
+  void testContains() throws Exception {
     assertHelper(FN_RETURN, helper, ImmutableList.of("a", "b", "c"), new MockOptions("a"));
     assertHelper(FN_RETURN, helper, ImmutableSet.of("a", "b", "c"), new MockOptions("b"));
     assertHelper(FN_RETURN, helper, new String[] { "a", "b", "c" }, new MockOptions("a"));
@@ -50,13 +50,13 @@ public class ContainsHelperTest {
   }
 
   @Test
-  public void testNotContains() throws Exception {
+  void testNotContains() throws Exception {
     assertHelper("", helper, ImmutableList.of("a", "b", "c"), new MockOptions("z"));
     assertHelper("", helper, new String[] { "a", "b", "c" }, new MockOptions("z"));
   }
 
   @Test
-  public void testNull() throws Exception {
+  void testNull() throws Exception {
     assertHelper("", helper, null, new MockOptions("def"));
     assertHelper("", helper, ImmutableList.of("a", "b", "c"), new MockOptions());
     assertHelper("", helper, null, new MockOptions());

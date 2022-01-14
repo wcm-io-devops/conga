@@ -189,8 +189,8 @@ class FileGenerator {
 
     // create separator with same length as longest comment entry
     int maxLength = lines.stream()
-        .map(entry -> entry.length())
-        .max(Integer::compare).get();
+        .map(String::length)
+        .max(Integer::compare).orElse(0);
     String separator = StringUtils.repeat("*", maxLength + 4);
 
     formattedLines.add(separator);

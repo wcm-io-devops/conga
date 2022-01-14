@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator.plugins.fileheader;
 import java.io.IOException;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -70,6 +71,8 @@ public final class XmlFileHeader implements FileHeaderPlugin {
       DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
       documentBuilder = documentBuilderFactory.newDocumentBuilder();
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
       transformer = transformerFactory.newTransformer();
     }
     catch (ParserConfigurationException | TransformerConfigurationException ex) {

@@ -35,18 +35,18 @@ import org.junit.jupiter.api.Test;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-public class UrlFileManagerTest {
+class UrlFileManagerTest {
 
   private UrlFileManager underTest;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     UrlFilePluginContext context = new UrlFilePluginContext();
     underTest = new UrlFileManager(new PluginManagerImpl(), context);
   }
 
   @Test
-  public void testGetFile_Absolute() throws Exception {
+  void testGetFile_Absolute() throws Exception {
     File file = new File("src/test/resources/validators/json/noJson.txt");
     try (InputStream is = underTest.getFile("file:" + file.getAbsolutePath())) {
       assertNotNull(is);
@@ -55,7 +55,7 @@ public class UrlFileManagerTest {
   }
 
   @Test
-  public void testGetFile_Relative() throws Exception {
+  void testGetFile_Relative() throws Exception {
     try (InputStream is = underTest.getFile("src/test/resources/validators/json/noJson.txt")) {
       assertNotNull(is);
       assertTrue(IOUtils.toByteArray(is).length > 0);
@@ -63,7 +63,7 @@ public class UrlFileManagerTest {
   }
 
   @Test
-  public void testGetFile_Classpath() throws Exception {
+  void testGetFile_Classpath() throws Exception {
     try (InputStream is = underTest.getFile("classpath:/validators/json/noJson.txt")) {
       assertNotNull(is);
       assertTrue(IOUtils.toByteArray(is).length > 0);
@@ -71,14 +71,14 @@ public class UrlFileManagerTest {
   }
 
   @Test
-  public void testGetFile_Invalid() throws Exception {
+  void testGetFile_Invalid() throws Exception {
     assertThrows(IOException.class, () -> {
       underTest.getFile("other:/x/y/z");
     });
   }
 
   @Test
-  public void testGetFileUrl_Absolute() throws Exception {
+  void testGetFileUrl_Absolute() throws Exception {
     File file = new File("src/test/resources/validators/json/noJson.txt");
     URL url = underTest.getFileUrl("file:" + file.getAbsolutePath());
     try (InputStream is = url.openStream()) {
@@ -88,7 +88,7 @@ public class UrlFileManagerTest {
   }
 
   @Test
-  public void testGetFileUrl_Relative() throws Exception {
+  void testGetFileUrl_Relative() throws Exception {
     URL url = underTest.getFileUrl("src/test/resources/validators/json/noJson.txt");
     try (InputStream is = url.openStream()) {
       assertNotNull(is);
@@ -97,7 +97,7 @@ public class UrlFileManagerTest {
   }
 
   @Test
-  public void testGetFileUrl_Classpath() throws Exception {
+  void testGetFileUrl_Classpath() throws Exception {
     URL url = underTest.getFileUrl("classpath:/validators/json/noJson.txt");
     try (InputStream is = url.openStream()) {
       assertNotNull(is);
@@ -106,7 +106,7 @@ public class UrlFileManagerTest {
   }
 
   @Test
-  public void testGetFileUrl_Invalid() throws Exception {
+  void testGetFileUrl_Invalid() throws Exception {
     assertThrows(IOException.class, () -> {
       underTest.getFileUrl("other:/x/y/z");
     });

@@ -24,10 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class VersionInfoUtilTest {
+class VersionInfoUtilTest {
 
   @Test
-  public void testCleanupSnapshotVersion() {
+  void testCleanupSnapshotVersion() {
     assertEquals("1", cleanupSnapshotVersion("1"));
     assertEquals("1.2.3", cleanupSnapshotVersion("1.2.3"));
     assertEquals("1.1-SNAPSHOT", cleanupSnapshotVersion("1.1-SNAPSHOT"));

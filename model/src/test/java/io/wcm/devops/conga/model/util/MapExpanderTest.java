@@ -29,20 +29,20 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-public class MapExpanderTest {
+class MapExpanderTest {
 
   @Test
-  public void testNull() {
+  void testNull() {
     assertEquals(null, expand(null));
   }
 
   @Test
-  public void testEmpty() {
+  void testEmpty() {
     assertEquals(ImmutableMap.of(), expand(ImmutableMap.of()));
   }
 
   @Test
-  public void testSimple() {
+  void testSimple() {
     assertEquals(ImmutableMap.of("key1", "value1"),
         expand(ImmutableMap.of("key1", "value1")));
 
@@ -51,25 +51,25 @@ public class MapExpanderTest {
   }
 
   @Test
-  public void testSimpleNested() {
+  void testSimpleNested() {
     assertEquals(ImmutableMap.of("key1", "value1", "key2", ImmutableMap.of("key21", "value21")),
         expand(ImmutableMap.of("key1", "value1", "key2", ImmutableMap.of("key21", "value21"))));
   }
 
   @Test
-  public void testOneLevel_1() {
+  void testOneLevel_1() {
     assertEquals(ImmutableMap.of("key1", "value1", "key2", ImmutableMap.of("key21", "value21")),
         expand(ImmutableMap.of("key1", "value1", "key2.key21", "value21")));
   }
 
   @Test
-  public void testOneLevel_2() {
+  void testOneLevel_2() {
     assertEquals(ImmutableMap.of("key1", "value1", "key2", ImmutableMap.of("key21", "value21", "key22", 55)),
         expand(ImmutableMap.of("key1", "value1", "key2.key21", "value21", "key2.key22", 55)));
   }
 
   @Test
-  public void testThreeLevels() {
+  void testThreeLevels() {
     assertEquals(ImmutableMap.of("key1", "value1", "a", ImmutableMap.of("b", ImmutableMap.of(
         "c", ImmutableMap.of("1", "v1", "2", 99),
         "d", ImmutableMap.of("1", true)))),
@@ -77,13 +77,13 @@ public class MapExpanderTest {
   }
 
   @Test
-  public void testMapDeeperLevel() {
+  void testMapDeeperLevel() {
     assertEquals(ImmutableMap.of("key1", ImmutableMap.of("a", ImmutableMap.of("b", ImmutableMap.of("c", "v1")))),
         expand(ImmutableMap.of("key1", ImmutableMap.of("a.b.c", "v1"))));
   }
 
   @Test
-  public void testWithList() {
+  void testWithList() {
     assertEquals(ImmutableMap.of("key1", ImmutableList.of(
         ImmutableMap.of("a", ImmutableMap.of("b", "v1", "c", ImmutableMap.of("d", "v2"))),
         ImmutableMap.of("a", ImmutableMap.of("b", "v3"))
@@ -95,7 +95,7 @@ public class MapExpanderTest {
   }
 
   @Test
-  public void testGetDeep() {
+  void testGetDeep() {
     assertNull(getDeep(ImmutableMap.of(), null));
     assertNull(getDeep(ImmutableMap.of(), "p1"));
     assertNull(getDeep(ImmutableMap.of(), "p1.p2"));
