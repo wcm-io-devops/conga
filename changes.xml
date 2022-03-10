@@ -25,6 +25,9 @@
 
     <release version="1.14.6" date="not released">
       <action type="update" dev="sseifert">
+        Update dependencies.
+      </action>
+      <action type="update" dev="sseifert">
         conga-maven-plugin: Declare maven core dependencies as provided.
       </action>
       <action type="fix" dev="sseifert">
