@@ -33,10 +33,10 @@ import io.wcm.devops.conga.generator.util.testmodel.Root;
 import io.wcm.devops.conga.generator.util.testmodel.SampleNode;
 import io.wcm.devops.conga.generator.util.testmodel.SimpleConf;
 
-public class ConfigInheritanceResolverTest {
+class ConfigInheritanceResolverTest {
 
   @Test
-  public void testResolve() {
+  void testResolve() {
     /*
      object tree:
 

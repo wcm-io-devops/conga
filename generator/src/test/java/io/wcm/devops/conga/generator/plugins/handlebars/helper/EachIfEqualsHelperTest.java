@@ -30,30 +30,30 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-public class EachIfEqualsHelperTest {
+class EachIfEqualsHelperTest {
 
   private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     helper = new PluginManagerImpl().get(EachIfEqualsHelper.NAME, HelperPlugin.class);
   }
 
   @Test
-  public void testNull() throws Exception {
+  void testNull() throws Exception {
     assertHelper("", helper, null, new MockOptions());
     assertHelper("", helper, null, new MockOptions("a"));
   }
 
   @Test
-  public void testSingleValue() throws Exception {
+  void testSingleValue() throws Exception {
     assertHelper("", helper, "v1", new MockOptions());
     assertHelper("", helper, "v1", new MockOptions("a"));
   }
 
   @Test
-  public void testList() throws Exception {
+  void testList() throws Exception {
     assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions());
     assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions("a"));
     assertHelper("", helper, ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", "2")), new MockOptions("a"));

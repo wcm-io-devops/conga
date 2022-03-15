@@ -33,14 +33,13 @@ import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
 import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-
-public class SystemPropertyValueProviderPluginTest {
+class SystemPropertyValueProviderPluginTest {
 
   private ValueProviderPlugin underTest;
   private ValueProviderContext context;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     PluginManager pluginManager = new PluginManagerImpl();
     underTest = pluginManager.get(SystemPropertyValueProviderPlugin.NAME, ValueProviderPlugin.class);
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
@@ -50,7 +49,7 @@ public class SystemPropertyValueProviderPluginTest {
   }
 
   @Test
-  public void testResolve() {
+  void testResolve() {
     String propertyName1 = getClass().getName() + "-test.prop1";
     String propertyName2 = getClass().getName() + "-test.prop2";
     String propertyName3 = getClass().getName() + "-test.prop3";

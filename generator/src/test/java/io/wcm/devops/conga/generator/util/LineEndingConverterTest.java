@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Test;
 
 import io.wcm.devops.conga.model.shared.LineEndings;
 
-public class LineEndingConverterTest {
+class LineEndingConverterTest {
 
   @Test
-  public void testNormalizeToUnix() {
+  void testNormalizeToUnix() {
     assertNull(LineEndingConverter.normalizeToUnix(null));
     assertEquals("abc", LineEndingConverter.normalizeToUnix("abc"));
     assertEquals("abc\ndef\nghi\njkl\n", LineEndingConverter.normalizeToUnix("abc\ndef\nghi\njkl\n"));
@@ -39,28 +39,28 @@ public class LineEndingConverterTest {
   }
 
   @Test
-  public void testConvertToUnix() {
+  void testConvertToUnix() {
     assertNull(LineEndingConverter.convertTo(null, LineEndings.unix));
     assertEquals("abc", LineEndingConverter.convertTo("abc", LineEndings.unix));
     assertEquals("abc\ndef\nghi\n", LineEndingConverter.convertTo("abc\ndef\nghi\n", LineEndings.unix));
   }
 
   @Test
-  public void testConvertToWindows() {
+  void testConvertToWindows() {
     assertNull(LineEndingConverter.convertTo(null, LineEndings.windows));
     assertEquals("abc", LineEndingConverter.convertTo("abc", LineEndings.windows));
     assertEquals("abc\r\ndef\r\nghi\r\n", LineEndingConverter.convertTo("abc\ndef\nghi\n", LineEndings.windows));
   }
 
   @Test
-  public void testConvertToMacOS() {
+  void testConvertToMacOS() {
     assertNull(LineEndingConverter.convertTo(null, LineEndings.macos));
     assertEquals("abc", LineEndingConverter.convertTo("abc", LineEndings.macos));
     assertEquals("abc\rdef\rghi\r", LineEndingConverter.convertTo("abc\ndef\nghi\n", LineEndings.macos));
   }
 
   @Test
-  public void testConvertToNull() {
+  void testConvertToNull() {
     assertNull(LineEndingConverter.convertTo(null, null));
     assertEquals("abc", LineEndingConverter.convertTo("abc", null));
     assertEquals("abc\ndef\nghi\n", LineEndingConverter.convertTo("abc\ndef\nghi\n", null));

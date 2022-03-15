@@ -35,12 +35,12 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
-public class VariableMapResolverTest {
+class VariableMapResolverTest {
 
   private VariableMapResolver underTest;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(new PluginManagerImpl());
     ValueProviderGlobalContext context = new ValueProviderGlobalContext()
@@ -49,7 +49,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testSimple() {
+  void testSimple() {
     Map<String, Object> map = ImmutableMap.of("var1", "v1", "var2", 2,
         "key1", "The ${var1} and ${var2}");
 
@@ -58,7 +58,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testNested() {
+  void testNested() {
     Map<String, Object> map = ImmutableMap.of("var1", "v1", "var2", "${var1}v2", "var3", "${var1}${var2}v3",
         "key1", "The ${var1} and ${var2} and ${var3}");
 
@@ -67,7 +67,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testNestedCyclicReference() {
+  void testNestedCyclicReference() {
     Map<String, Object> map = ImmutableMap.of("var1", "${var2}", "var2", "${var1}");
 
     assertThrows(IllegalArgumentException.class, () -> {
@@ -76,7 +76,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testUnknownVariables() {
+  void testUnknownVariables() {
     Map<String, Object> map = ImmutableMap.of("key1", "The ${var1} and ${var2}");
 
     assertThrows(IllegalArgumentException.class, () -> {
@@ -85,7 +85,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testNestedMap() {
+  void testNestedMap() {
     Map<String, Object> map = ImmutableMap.of("var1", "v1",
         "var2", ImmutableMap.of("var21", "v21", "var22", ImmutableMap.of("var221", "${var1}${var2.var21}")),
         "key1", "The ${var1} and ${var2.var22.var221}");
@@ -96,7 +96,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testNestedList() {
+  void testNestedList() {
     Map<String, Object> map = ImmutableMap.of("var1", "v1",
         "var2", ImmutableList.of("v21", ImmutableMap.of("var221", "${var1}")),
         "key1", "The ${var1} and ${var2}");
@@ -107,7 +107,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testNestedWithEscapedVariable() {
+  void testNestedWithEscapedVariable() {
     Map<String, Object> map = ImmutableMap.of("var1", "\\${novar}", "var2", "${var1}v2", "var3", "${var1}${var2}v3",
         "key1", "The ${var1} and ${var2} and ${var3}");
 
@@ -116,7 +116,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testIterateDirect() {
+  void testIterateDirect() {
     Map<String, Object> map = ImmutableMap.of(
         "var1", "value1",
         "object1", ImmutableMap.of(
@@ -134,7 +134,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testIterateVariable() {
+  void testIterateVariable() {
     Map<String, Object> map = ImmutableMap.of(
         "var1", "value1",
         "listholder", ImmutableList.of(
@@ -161,7 +161,7 @@ public class VariableMapResolverTest {
   }
 
   @Test
-  public void testIterateSingleValue() {
+  void testIterateSingleValue() {
     Map<String, Object> map = ImmutableMap.of(
         "var1", "value1",
         "object1", ImmutableMap.of(LIST_VARIABLE_ITERATE, "${var1}",

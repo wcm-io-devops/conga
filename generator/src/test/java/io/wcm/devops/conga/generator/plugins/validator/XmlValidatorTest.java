@@ -33,18 +33,17 @@ import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-
-public class XmlValidatorTest {
+class XmlValidatorTest {
 
   private ValidatorPlugin underTest;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     underTest = new PluginManagerImpl().get(XmlValidator.NAME, ValidatorPlugin.class);
   }
 
   @Test
-  public void testValid() throws Exception {
+  void testValid() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/validXml.xml").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertTrue(underTest.accepts(fileContext, null));
@@ -52,7 +51,7 @@ public class XmlValidatorTest {
   }
 
   @Test
-  public void testInvalid() throws Exception {
+  void testInvalid() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/invalidXml.xml").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertTrue(underTest.accepts(fileContext, null));
@@ -63,7 +62,7 @@ public class XmlValidatorTest {
   }
 
   @Test
-  public void testInvalidFileExtension() throws Exception {
+  void testInvalidFileExtension() throws Exception {
     File file = new File(getClass().getResource("/validators/xml/noXml.txt").toURI());
     FileContext fileContext = new FileContext().file(file);
     assertFalse(underTest.accepts(fileContext, null));

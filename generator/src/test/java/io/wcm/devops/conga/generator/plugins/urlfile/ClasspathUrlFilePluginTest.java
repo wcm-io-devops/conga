@@ -35,26 +35,26 @@ import org.junit.jupiter.api.Test;
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 
-public class ClasspathUrlFilePluginTest {
+class ClasspathUrlFilePluginTest {
 
   private UrlFilePlugin underTest;
   private UrlFilePluginContext context;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     underTest = new ClasspathUrlFilePlugin();
     context = new UrlFilePluginContext();
   }
 
   @Test
-  public void testAccepts() {
+  void testAccepts() {
     assertTrue(underTest.accepts("classpath:/x/y/z", context));
     assertFalse(underTest.accepts("/x/y/z", context));
     assertFalse(underTest.accepts("other:/x/y/z", context));
   }
 
   @Test
-  public void testGetFile() throws Exception {
+  void testGetFile() throws Exception {
     try (InputStream is = underTest.getFile("classpath:/validators/json/noJson.txt", context)) {
       assertNotNull(is);
       assertTrue(IOUtils.toByteArray(is).length > 0);
@@ -62,14 +62,14 @@ public class ClasspathUrlFilePluginTest {
   }
 
   @Test
-  public void testGetFile_NonExisting() throws Exception {
+  void testGetFile_NonExisting() throws Exception {
     assertThrows(FileNotFoundException.class, () -> {
       underTest.getFile("classpath:/non-exixting-file", context);
     });
   }
 
   @Test
-  public void testGetFileUrl() throws Exception {
+  void testGetFileUrl() throws Exception {
     URL url = underTest.getFileUrl("classpath:/validators/json/noJson.txt", context);
     try (InputStream is = url.openStream()) {
       assertNotNull(is);
@@ -78,7 +78,7 @@ public class ClasspathUrlFilePluginTest {
   }
 
   @Test
-  public void testGetFileUrl_NonExisting() throws Exception {
+  void testGetFileUrl_NonExisting() throws Exception {
     assertThrows(FileNotFoundException.class, () -> {
       underTest.getFileUrl("classpath:/non-exixting-file", context);
     });

@@ -75,6 +75,7 @@ public final class GeneratorOptions {
   private PluginManager pluginManager;
   private Function<Environment, Collection<String>> dependencyVersionBuilder;
   private Map<String, String> containerVersionInfo;
+  @SuppressWarnings("java:S3416") // uses logger for Generator by intention
   private Logger logger = LoggerFactory.getLogger(Generator.class);
 
   /**

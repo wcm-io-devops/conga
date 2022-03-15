@@ -36,13 +36,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-public class GeneratorTest {
+class GeneratorTest {
 
   private Generator underTest;
   private File destDir;
 
   @BeforeEach
-  public void setUp(TestInfo testInfo) throws IOException {
+  void setUp(TestInfo testInfo) throws IOException {
     destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     FileUtils.deleteDirectory(destDir);
     underTest = setupGenerator(destDir);
@@ -50,7 +50,7 @@ public class GeneratorTest {
   }
 
   @Test
-  public void testAllEnvironments() {
+  void testAllEnvironments() {
     File node1Dir = assertDirectory(destDir, "env1/node1");
 
     File text1 = assertFile(node1Dir, "text/test-role1.variant11.env1.node1.txt");

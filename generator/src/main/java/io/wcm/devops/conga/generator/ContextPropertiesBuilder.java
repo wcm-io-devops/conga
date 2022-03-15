@@ -58,16 +58,16 @@ public final class ContextPropertiesBuilder {
   static final Map<String, Object> EMPTY_CONTEXT_VARIABLES = ImmutableMap.<String, Object>builder()
       .put(VERSION, "")
       .put(ENVIRONMENT, "")
-      .put(NODES, Collections.EMPTY_LIST)
-      .put(NODES_BY_ROLE, Collections.EMPTY_MAP)
-      .put(NODES_BY_ROLE_VARIANT, Collections.EMPTY_MAP)
-      .put(TENANTS, Collections.EMPTY_LIST)
-      .put(TENANTS_BY_ROLE, Collections.EMPTY_MAP)
+      .put(NODES, Collections.emptyList())
+      .put(NODES_BY_ROLE, Collections.emptyMap())
+      .put(NODES_BY_ROLE_VARIANT, Collections.emptyMap())
+      .put(TENANTS, Collections.emptyMap())
+      .put(TENANTS_BY_ROLE, Collections.emptyMap())
       .put(ROLE, "")
       .put(ROLE_VARIANT, "")
       .put(NODE, "")
       .put(TENANT, "")
-      .put(TENANT_ROLES, Collections.EMPTY_LIST)
+      .put(TENANT_ROLES, Collections.emptyList())
       .build();
 
   private ContextPropertiesBuilder() {

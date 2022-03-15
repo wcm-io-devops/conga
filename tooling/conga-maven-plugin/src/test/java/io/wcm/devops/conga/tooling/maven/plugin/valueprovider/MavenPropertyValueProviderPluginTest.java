@@ -37,7 +37,7 @@ import io.wcm.devops.conga.generator.util.PluginManager;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 import io.wcm.devops.conga.tooling.maven.plugin.util.MavenContext;
 
-public class MavenPropertyValueProviderPluginTest {
+class MavenPropertyValueProviderPluginTest {
 
   private ValueProviderPlugin underTest;
   private ValueProviderContext context;
@@ -60,7 +60,7 @@ public class MavenPropertyValueProviderPluginTest {
   }
 
   @Test
-  public void testResolve() {
+  void testResolve() {
     String propertyName1 = getClass().getName() + "-test.prop1";
     String propertyName2 = getClass().getName() + "-test.prop2";
     String propertyName3 = getClass().getName() + "-test.prop3";

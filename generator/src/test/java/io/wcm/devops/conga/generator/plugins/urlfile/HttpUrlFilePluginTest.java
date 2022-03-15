@@ -33,19 +33,19 @@ import org.junit.jupiter.api.Test;
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 
-public class HttpUrlFilePluginTest {
+class HttpUrlFilePluginTest {
 
   private UrlFilePlugin underTest;
   private UrlFilePluginContext context;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     underTest = new HttpUrlFilePlugin();
     context = new UrlFilePluginContext();
   }
 
   @Test
-  public void testAccepts() {
+  void testAccepts() {
     assertTrue(underTest.accepts("http://x/y/z", context));
     assertTrue(underTest.accepts("https://x/y/z", context));
     assertFalse(underTest.accepts("/x/y/z", context));
@@ -53,7 +53,7 @@ public class HttpUrlFilePluginTest {
   }
 
   @Test
-  public void testGetFile() throws Exception {
+  void testGetFile() throws Exception {
     try (InputStream is = underTest.getFile("https://wcm.io/", context)) {
       assertNotNull(is);
       assertTrue(IOUtils.toByteArray(is).length > 0);
@@ -61,7 +61,7 @@ public class HttpUrlFilePluginTest {
   }
 
   @Test
-  public void testGetFileUrl() throws Exception {
+  void testGetFileUrl() throws Exception {
     URL url = underTest.getFileUrl("https://wcm.io/", context);
     try (InputStream is = url.openStream()) {
       assertNotNull(is);

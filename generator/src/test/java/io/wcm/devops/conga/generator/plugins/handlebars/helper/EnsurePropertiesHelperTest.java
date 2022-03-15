@@ -30,18 +30,18 @@ import org.junit.jupiter.api.Test;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-public class EnsurePropertiesHelperTest {
+class EnsurePropertiesHelperTest {
 
   private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     helper = new PluginManagerImpl().get(EnsurePropertiesHelper.NAME, HelperPlugin.class);
   }
 
   @Test
-  public void testSet() throws Exception {
+  void testSet() throws Exception {
 
     assertHelper(null, helper, "p1", new MockOptions()
         .withProperty("p1", "v1"));
@@ -55,21 +55,21 @@ public class EnsurePropertiesHelperTest {
   }
 
   @Test
-  public void testNotSetCase1() throws Exception {
+  void testNotSetCase1() throws Exception {
     assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions());
     });
   }
 
   @Test
-  public void testNotSetCase2() throws Exception {
+  void testNotSetCase2() throws Exception {
     assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions("p2", "p3"));
     });
   }
 
   @Test
-  public void testNotSetCase3() throws Exception {
+  void testNotSetCase3() throws Exception {
     assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
           .withProperty("p1", "v1")
@@ -78,7 +78,7 @@ public class EnsurePropertiesHelperTest {
   }
 
   @Test
-  public void testNotSetCase4() throws Exception {
+  void testNotSetCase4() throws Exception {
     assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
           .withProperty("p2", "v1"));

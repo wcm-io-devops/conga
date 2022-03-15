@@ -225,7 +225,7 @@ class EnvironmentGenerator {
           // collect default config from role and it's variant.
           // default config in variants has higher precedence than config in the role itself
           // variants listed first have higher precedence than variants listed last
-          Map<String, Object> roleDefaultConfig = new HashMap<String, Object>();
+          Map<String, Object> roleDefaultConfig = new HashMap<>();
           for (String variant : variants) {
             RoleVariant roleVariant = getRoleVariant(role, variant, roleName, node);
             roleDefaultConfig = MapMerger.merge(roleDefaultConfig, roleVariant.getConfig());

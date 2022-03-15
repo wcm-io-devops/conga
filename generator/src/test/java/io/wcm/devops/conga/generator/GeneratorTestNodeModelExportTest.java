@@ -55,20 +55,20 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.model.util.MapExpander;
 
 @SuppressWarnings("unchecked")
-public class GeneratorTestNodeModelExportTest {
+class GeneratorTestNodeModelExportTest {
 
   private Generator underTest;
   private File destDir;
 
   @BeforeEach
-  public void setUp(TestInfo testInfo) throws IOException {
+  void setUp(TestInfo testInfo) throws IOException {
     destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     FileUtils.deleteDirectory(destDir);
     underTest = setupGenerator(destDir);
   }
 
   @Test
-  public void testAllEnvironments() throws IOException {
+  void testAllEnvironments() throws IOException {
     underTest.generate(new String[0]);
     File node1Dir = assertDirectory(destDir, "env1/node1");
     File model1File = assertFile(node1Dir, "model.yaml");
@@ -119,7 +119,7 @@ public class GeneratorTestNodeModelExportTest {
   }
 
   @Test
-  public void testAllNodes() {
+  void testAllNodes() {
     underTest.generate(new String[0]);
     assertDirectory(destDir, "env1/node1");
     assertDirectory(destDir, "env1/node2");
@@ -129,7 +129,7 @@ public class GeneratorTestNodeModelExportTest {
   }
 
   @Test
-  public void testSelectedNodes() {
+  void testSelectedNodes() {
     underTest.generate(new String[] {}, new String[] { "node1", "node3", "node5" });
     assertDirectory(destDir, "env1/node1");
     assertNotDirectory(destDir, "env1/node2");

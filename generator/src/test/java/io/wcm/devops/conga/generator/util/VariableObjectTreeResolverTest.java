@@ -40,12 +40,12 @@ import io.wcm.devops.conga.generator.util.testmodel.Root;
 import io.wcm.devops.conga.generator.util.testmodel.SampleNode;
 import io.wcm.devops.conga.generator.util.testmodel.SimpleConf;
 
-public class VariableObjectTreeResolverTest {
+class VariableObjectTreeResolverTest {
 
   private VariableObjectTreeResolver underTest;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
         .pluginManager(new PluginManagerImpl());
     ValueProviderGlobalContext context = new ValueProviderGlobalContext()
@@ -54,7 +54,7 @@ public class VariableObjectTreeResolverTest {
   }
 
   @Test
-  public void testResolve() {
+  void testResolve() {
     /*
      object tree:
 

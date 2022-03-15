@@ -30,30 +30,30 @@ import com.google.common.collect.ImmutableMap;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 
-public class EachIfHelperTest {
+class EachIfHelperTest {
 
   private HelperPlugin<Object> helper;
 
   @SuppressWarnings("unchecked")
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     helper = new PluginManagerImpl().get(EachIfHelper.NAME, HelperPlugin.class);
   }
 
   @Test
-  public void testNull() throws Exception {
+  void testNull() throws Exception {
     assertHelper("", helper, null, new MockOptions());
     assertHelper("", helper, null, new MockOptions("a"));
   }
 
   @Test
-  public void testSingleValue() throws Exception {
+  void testSingleValue() throws Exception {
     assertHelper("", helper, "v1", new MockOptions());
     assertHelper("", helper, "v1", new MockOptions("a"));
   }
 
   @Test
-  public void testList() throws Exception {
+  void testList() throws Exception {
     assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions());
     assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions("a"));
     assertHelper("fn({a=1})", helper, ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("b", "2")), new MockOptions("a"));
@@ -61,7 +61,7 @@ public class EachIfHelperTest {
   }
 
   @Test
-  public void testListDeepMap() throws Exception {
+  void testListDeepMap() throws Exception {
     assertHelper("fn({a={b=1}})", helper,
         ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", ImmutableMap.of("b", "1"))), new MockOptions("a.b"));
   }

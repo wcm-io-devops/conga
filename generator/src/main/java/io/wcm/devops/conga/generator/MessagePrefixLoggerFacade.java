@@ -26,6 +26,7 @@ import org.slf4j.Marker;
 /**
  * Logger wrapper that adds the given prefix (e.g. extra whitespaces) in front of every log message.
  */
+@SuppressWarnings("java:S2629")
 class MessagePrefixLoggerFacade implements Logger {
 
   private final Logger delegate;

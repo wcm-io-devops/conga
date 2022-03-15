@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator.plugins.fileheader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -53,8 +54,8 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
       }
       else {
         sanitizedCommentLines = context.getCommentLines().stream()
-            .map(line -> sanitizeComment(line))
-            .filter(line -> line != null)
+            .map(this::sanitizeComment)
+            .filter(Objects::nonNull)
             .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + line + lineBreak)
             .collect(Collectors.toList());
       }

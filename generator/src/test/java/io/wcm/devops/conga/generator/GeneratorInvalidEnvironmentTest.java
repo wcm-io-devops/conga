@@ -28,19 +28,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-public class GeneratorInvalidEnvironmentTest {
+class GeneratorInvalidEnvironmentTest {
 
   private Generator underTest;
   private File destDir;
 
   @BeforeEach
-  public void setUp(TestInfo testInfo) {
+  void setUp(TestInfo testInfo) {
     destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     underTest = setupGenerator(destDir);
   }
 
   @Test
-  public void testInvalidEnvironments() {
+  void testInvalidEnvironments() {
     assertThrows(GeneratorException.class, () -> {
       underTest.generate(new String[] { "unknown" });
     });

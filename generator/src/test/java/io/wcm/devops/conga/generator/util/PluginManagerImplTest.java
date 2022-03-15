@@ -33,30 +33,30 @@ import io.wcm.devops.conga.generator.plugins.multiply.NoneMultiply;
 import io.wcm.devops.conga.generator.plugins.multiply.TenantMultiply;
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 
-public class PluginManagerImplTest {
+class PluginManagerImplTest {
 
   private PluginManager underTest;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     underTest = new PluginManagerImpl();
   }
 
   @Test
-  public void testExistingPlugin() {
+  void testExistingPlugin() {
     MultiplyPlugin plugin = underTest.get(TenantMultiply.NAME, MultiplyPlugin.class);
     assertTrue(plugin instanceof TenantMultiply);
   }
 
   @Test
-  public void testNonExistingPlugin() {
+  void testNonExistingPlugin() {
     assertThrows(GeneratorException.class, () -> {
       underTest.get("unknown", MultiplyPlugin.class);
     });
   }
 
   @Test
-  public void testGetAll() {
+  void testGetAll() {
     List<MultiplyPlugin> plugins = underTest.getAll(MultiplyPlugin.class);
     assertEquals(2, plugins.size());
 

@@ -37,26 +37,26 @@ import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 
-public class FilesystemUrlFilePluginTest {
+class FilesystemUrlFilePluginTest {
 
   private UrlFilePlugin underTest;
   private UrlFilePluginContext context;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     underTest = new FilesystemUrlFilePlugin();
     context = new UrlFilePluginContext();
   }
 
   @Test
-  public void testAccepts() {
+  void testAccepts() {
     assertTrue(underTest.accepts("file:/x/y/z", context));
     assertFalse(underTest.accepts("/x/y/z", context));
     assertFalse(underTest.accepts("other:/x/y/z", context));
   }
 
   @Test
-  public void testAbsoluteFile() throws Exception {
+  void testAbsoluteFile() throws Exception {
     File file = new File("src/test/resources/validators/json/noJson.txt");
     try (InputStream is = underTest.getFile("file:" + file.getAbsolutePath(), context)) {
       assertNotNull(is);
@@ -65,7 +65,7 @@ public class FilesystemUrlFilePluginTest {
   }
 
   @Test
-  public void testRelativeFile() throws Exception {
+  void testRelativeFile() throws Exception {
     try (InputStream is = underTest.getFile("src/test/resources/validators/json/noJson.txt", context)) {
       assertNotNull(is);
       assertTrue(IOUtils.toByteArray(is).length > 0);
@@ -73,7 +73,7 @@ public class FilesystemUrlFilePluginTest {
   }
 
   @Test
-  public void testRelativeFileNode() throws Exception {
+  void testRelativeFileNode() throws Exception {
     context.baseNodeDir(new File("src/test/resources/validators"));
     try (InputStream is = underTest.getFile("file-node:json/noJson.txt", context)) {
       assertNotNull(is);
@@ -82,21 +82,21 @@ public class FilesystemUrlFilePluginTest {
   }
 
   @Test
-  public void testRelativeFileNode_NoNodeBaseDir() throws Exception {
+  void testRelativeFileNode_NoNodeBaseDir() throws Exception {
     assertThrows(GeneratorException.class, () -> {
       underTest.getFile("file-node:json/noJson.txt", context);
     });
   }
 
   @Test
-  public void testGetFile_NonExisting() throws Exception {
+  void testGetFile_NonExisting() throws Exception {
     assertThrows(FileNotFoundException.class, () -> {
       underTest.getFile("file:non-existing-file", context);
     });
   }
 
   @Test
-  public void testGetFileUrl() throws Exception {
+  void testGetFileUrl() throws Exception {
     File file = new File("src/test/resources/validators/json/noJson.txt");
     URL url = underTest.getFileUrl("file:" + file.getAbsolutePath(), context);
     try (InputStream is = url.openStream()) {
@@ -106,7 +106,7 @@ public class FilesystemUrlFilePluginTest {
   }
 
   @Test
-  public void testGetFileUrl_NonExisting() throws Exception {
+  void testGetFileUrl_NonExisting() throws Exception {
     assertThrows(FileNotFoundException.class, () -> {
       underTest.getFileUrl("file:non-existing-file", context);
     });

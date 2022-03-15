@@ -75,7 +75,7 @@ import io.wcm.devops.conga.model.role.RoleFile;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.WARN)
-public class FileGeneratorPostProcessorTest {
+class FileGeneratorPostProcessorTest {
 
   private File destDir;
   private File file;
@@ -95,7 +95,7 @@ public class FileGeneratorPostProcessorTest {
   private Logger logger;
 
   @BeforeEach
-  public void setUp(TestInfo testInfo) {
+  void setUp(TestInfo testInfo) {
     destDir = new File("target/test-" + getClass().getSimpleName() + "-" + testInfo.getTestMethod().get().getName());
     file = new File(destDir, "test.txt");
     roleFile = new RoleFile();
@@ -131,7 +131,7 @@ public class FileGeneratorPostProcessorTest {
   }
 
   @Test
-  public void testWithoutPostProcessor() throws Exception {
+  void testWithoutPostProcessor() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -143,7 +143,7 @@ public class FileGeneratorPostProcessorTest {
   }
 
   @Test
-  public void testOnePostProcessor() throws Exception {
+  void testOnePostProcessor() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setPostProcessors(ImmutableList.of("one"));
 
@@ -156,7 +156,7 @@ public class FileGeneratorPostProcessorTest {
   }
 
   @Test
-  public void testOnePostProcessorWithRewrite() throws Exception {
+  void testOnePostProcessorWithRewrite() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
 
@@ -181,7 +181,7 @@ public class FileGeneratorPostProcessorTest {
   }
 
   @Test
-  public void testOnePostProcessorWithRewrite_WithFileHeaderAndValidator() throws Exception {
+  void testOnePostProcessorWithRewrite_WithFileHeaderAndValidator() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
       @Override
@@ -231,7 +231,7 @@ public class FileGeneratorPostProcessorTest {
   }
 
   @Test
-  public void testTwoPostProcessors() throws Exception {
+  void testTwoPostProcessors() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     PostProcessorPlugin two = mockPostProcessor("two", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setPostProcessors(ImmutableList.of("one", "two"));
@@ -246,7 +246,7 @@ public class FileGeneratorPostProcessorTest {
   }
 
   @Test
-  public void testTwoPostProcessorsWithRewrite() throws Exception {
+  void testTwoPostProcessorsWithRewrite() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
       @Override
@@ -281,7 +281,7 @@ public class FileGeneratorPostProcessorTest {
   }
 
   @Test
-  public void testImplicitPostProcessor() throws Exception {
+  void testImplicitPostProcessor() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -293,7 +293,7 @@ public class FileGeneratorPostProcessorTest {
   }
 
   @Test
-  public void testAlwaysPostProcessor() throws Exception {
+  void testAlwaysPostProcessor() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.ALWAYS);
 
     List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
@@ -305,7 +305,7 @@ public class FileGeneratorPostProcessorTest {
   }
 
   @Test
-  public void testPostProcessorWithRewriteAndImplicit() throws Exception {
+  void testPostProcessorWithRewriteAndImplicit() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
       @Override
