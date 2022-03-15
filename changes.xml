@@ -23,7 +23,7 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 https://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
-    <release version="1.14.6" date="not released">
+    <release version="1.14.6" date="2022-03-15">
       <action type="update" dev="sseifert">
         Update dependencies.
       </action>
