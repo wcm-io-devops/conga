@@ -56,8 +56,6 @@
     <module>generator</module>
     <module>tooling/conga-cli</module>
     <module>tooling/conga-maven-plugin</module>
-    <!-- This is not included in main build due to conga-maven-plugin dependency -->
-    <!--module>example</module-->
   </modules>
 
   <build>
