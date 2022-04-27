@@ -38,6 +38,10 @@
   <properties>
     <maven.version>3.3.9</maven.version>
     <site.url.module.prefix>tooling/conga-maven-plugin</site.url.module.prefix>
+
+    <!-- Enable recording of coverage during execution of maven-invoker-plugin -->
+    <jacoco.propertyName>invoker.mavenOpts</jacoco.propertyName>
+    <jacoco.includes>org.jacoco.maven.*</jacoco.includes>
   </properties>
 
   <prerequisites>
@@ -148,6 +152,49 @@
             <id>generated-helpmojo</id>
             <goals>
               <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+              <goal>prepare-agent-integration</goal>
+              <goal>report</goal>
+              <goal>report-integration</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <version>3.2.2</version>
+        <configuration>
+          <projectsDirectory>src/it</projectsDirectory>
+          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+          <pomIncludes>
+            <pomInclude>*/pom.xml</pomInclude>
+          </pomIncludes>
+          <postBuildHookScript>verify</postBuildHookScript>
+          <streamLogsOnFailures>true</streamLogsOnFailures>
+          <extraArtifacts>
+            <extraArtifact>org.jacoco:org.jacoco.agent:${jacoco-maven-plugin.version}:jar:runtime</extraArtifact>
+          </extraArtifacts>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
             </goals>
           </execution>
         </executions>

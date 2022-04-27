@@ -68,7 +68,6 @@ Definitions for CONGA:
 [usage]: usage.html
 [general-concepts]: general-concepts.html
 [extensibility]: extensibility.html
-[examples]: examples.html
 [yaml-definitions]: yaml-definitions.html
 [handlebars-quickstart]: handlebars-quickstart.html
 [handlebars-helpers]: handlebars-helpers.html
