@@ -37,4 +37,13 @@
   <name>CONGA Packaging Example: Definitions</name>
   <description>Example role definitions and templates.</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>io.wcm.tooling.spotbugs</groupId>
+      <artifactId>io.wcm.tooling.spotbugs.annotations</artifactId>
+      <version>1.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
 </project>
