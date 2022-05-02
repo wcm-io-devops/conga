@@ -223,14 +223,8 @@ public class MavenArtifactHelper {
 
   private Artifact createArtifact(String groupId, String artifactId, String type, String classifier, String version) throws IOException {
 
-    String artifactVersion = version;
-    if (artifactVersion == null) {
-      artifactVersion = resolveArtifactVersion(groupId, artifactId, type, classifier);
-    }
-    String artifactExtension = type;
-    if (artifactExtension == null) {
-      artifactExtension = "jar";
-    }
+    String artifactTypeString = StringUtils.defaultString(type, "jar");
+    String artifactExtension = artifactTypeString;
 
     ArtifactType artifactType = repoSession.getArtifactTypeRegistry().get(artifactExtension);
     if (artifactType != null) {
@@ -240,6 +234,11 @@ public class MavenArtifactHelper {
     // apply custom mapping from artifact type to extension if defined in plugin config
     if (artifactTypeMappings != null && artifactTypeMappings.containsKey(artifactExtension)) {
       artifactExtension = artifactTypeMappings.get(artifactExtension);
+    }
+
+    String artifactVersion = version;
+    if (artifactVersion == null) {
+      artifactVersion = resolveArtifactVersion(groupId, artifactId, artifactTypeString, classifier);
     }
 
     if (StringUtils.isBlank(groupId) || StringUtils.isBlank(artifactId) || StringUtils.isBlank(artifactVersion)) {
