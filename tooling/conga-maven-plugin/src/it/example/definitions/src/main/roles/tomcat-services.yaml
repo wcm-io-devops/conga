@@ -60,8 +60,10 @@ files:
     customOption1: value1
     customOption2: 123
 
-# Download file from maven repository, use artifact filename.
+# Download files from maven repository, use artifact filename.
 # Derive version from maven project.
+- url: mvn:io.wcm.tooling.spotbugs/io.wcm.tooling.spotbugs.annotations
+  dir: download
 - url: mvn:io.wcm.devops/io.wcm.devops.parent_toplevel//xml/site
   dir: download
 
