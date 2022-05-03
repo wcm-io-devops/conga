@@ -141,7 +141,8 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
     tenantMap.put("tenant", context.getVariableStringResolver().resolve(tenantData.getTenant(), tenantData.getConfig()));
     if (!tenantData.getRoles().isEmpty()) {
-      tenantMap.put("roles", tenantData.getRoles());
+      // copy role list for each tenant to avoid alias in YAML export
+      tenantMap.put("roles", new ArrayList<>(tenantData.getRoles()));
     }
     tenantMap.put("config", context.getModelExportConfigProcessor().apply(tenantData.getConfig()));
 

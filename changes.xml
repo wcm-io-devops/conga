@@ -27,6 +27,9 @@
       <action type="fix" dev="sseifert">
         conga-maven-plugin: Fix version resolution for references JAR maven artifacts without explicit type definition.
       </action>
+      <action type="fix" dev="sseifert">
+        YAML model export: Avoid generating YAML alias for tenant roles arrays.
+      </action>
     </release>
 
     <release version="1.14.6" date="2022-03-15">
