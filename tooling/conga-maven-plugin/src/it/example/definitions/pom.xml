@@ -31,30 +31,19 @@
   </parent>
 
   <groupId>io.wcm.devops.conga</groupId>
-  <artifactId>io.wcm.devops.conga.example.environments</artifactId>
-  <packaging>config</packaging>
+  <artifactId>io.wcm.devops.conga.example.definitions</artifactId>
+  <packaging>config-definition</packaging>
 
-  <name>CONGA Packaging Example: Environments</name>
-  <description>Contains environment definitions and generates the configuration.</description>
+  <name>CONGA Packaging Example: Definitions</name>
+  <description>Example role definitions and templates.</description>
 
   <dependencies>
-
-    <!-- Reference role and template definitions from maven artifact -->
     <dependency>
-      <groupId>io.wcm.devops.conga</groupId>
-      <artifactId>io.wcm.devops.conga.example.definitions</artifactId>
-      <version>1-SNAPSHOT</version>
+      <groupId>io.wcm.tooling.spotbugs</groupId>
+      <artifactId>io.wcm.tooling.spotbugs.annotations</artifactId>
+      <version>1.0.0</version>
+      <scope>compile</scope>
     </dependency>
-
-    <!-- Example reference for downloading maven artifact in CONGA -->
-    <dependency>
-      <groupId>io.wcm.devops</groupId>
-      <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-      <version>1.3.0</version>
-      <type>xml</type>
-      <classifier>site</classifier>
-    </dependency>
-
   </dependencies>
 
 </project>

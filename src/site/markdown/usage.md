@@ -8,10 +8,8 @@ Make sure you have installed:
 * Java 8 or higher
 * Apache Maven 3.3 or higher
 
-To start with the example project by cloning this GIT repository:
-https://github.com/wcm-io-devops/conga/
-
-The example project is in a subfolder `example`.
+Example project can be found at:
+https://github.com/wcm-io-devops/conga/tree/develop/tooling/conga-maven-plugin/src/it/example
 
 
 ### Definitions

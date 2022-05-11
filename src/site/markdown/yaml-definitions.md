@@ -10,7 +10,7 @@ Please note that the Java Bean naming conventions are applied: For the property 
 ### Role definitions
 
 Example role definitions:<br/>
-https://github.com/wcm-io-devops/conga/tree/develop/example/definitions/src/main/roles
+https://github.com/wcm-io-devops/conga/tree/develop/tooling/conga-maven-plugin/src/it/example/definitions/src/main/roles
 
 The filename of the role YAML file is the role name.
 
@@ -50,7 +50,7 @@ In this case the current role inherits all configuration and files from the supe
 ### Environment definitions
 
 Example environment definitions:<br/>
-https://github.com/wcm-io-devops/conga/tree/develop/example/environments/src/main/environments
+https://github.com/wcm-io-devops/conga/tree/develop/tooling/conga-maven-plugin/src/it/example/environments/src/main/environments
 
 The filename of the environment YAML file is the environment name.
 

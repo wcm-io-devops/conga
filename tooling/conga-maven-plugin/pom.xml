@@ -25,7 +25,7 @@
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.14.6</version>
+    <version>1.14.8</version>
     <relativePath>../../parent/pom.xml</relativePath>
   </parent>
 
@@ -38,6 +38,13 @@
   <properties>
     <maven.version>3.3.9</maven.version>
     <site.url.module.prefix>tooling/conga-maven-plugin</site.url.module.prefix>
+
+    <!-- Versions -->
+    <maven-plugin-plugin.version>3.6.4</maven-plugin-plugin.version>
+
+    <!-- Enable recording of coverage during execution of maven-invoker-plugin -->
+    <jacoco.propertyName>invoker.mavenOpts</jacoco.propertyName>
+    <jacoco.includes>org.jacoco.maven.*</jacoco.includes>
   </properties>
 
   <prerequisites>
@@ -49,7 +56,7 @@
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.generator</artifactId>
-      <version>1.14.6</version>
+      <version>1.14.8</version>
       <scope>compile</scope>
     </dependency>
 
@@ -113,7 +120,7 @@
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
-        <version>3.6.4</version>
+        <version>${maven-plugin-plugin.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -132,7 +139,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.6.4</version>
+        <version>${maven-plugin-plugin.version}</version>
         <configuration>
           <goalPrefix>conga</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -148,6 +155,87 @@
             <id>generated-helpmojo</id>
             <goals>
               <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Merge Jacoco results from unit tests and integration tests -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>before-unit-test-execution</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <destFile>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</destFile>
+              <propertyName>surefire.jacoco.args</propertyName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>before-integration-test-execution</id>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+             </goals>
+            <configuration>
+              <destFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</destFile>
+              <propertyName>invoker.jacoco.args</propertyName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>merge-unit-and-integration</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}/jacoco-output</directory>
+                  <includes>
+                    <include>*.exec</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>${surefire.jacoco.args}</argLine>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <configuration>
+          <projectsDirectory>src/it</projectsDirectory>
+          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+          <pomIncludes>
+            <pomInclude>*/pom.xml</pomInclude>
+          </pomIncludes>
+          <postBuildHookScript>verify</postBuildHookScript>
+          <streamLogsOnFailures>true</streamLogsOnFailures>
+          <extraArtifacts>
+            <extraArtifact>org.jacoco:org.jacoco.agent:${jacoco-maven-plugin.version}:jar:runtime</extraArtifact>
+          </extraArtifacts>
+          <mavenOpts>${invoker.jacoco.args}</mavenOpts>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
             </goals>
           </execution>
         </executions>
