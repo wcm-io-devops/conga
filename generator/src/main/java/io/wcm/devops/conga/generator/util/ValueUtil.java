@@ -59,7 +59,13 @@ public final class ValueUtil {
       return false;
     }
     else if (NumberUtils.isCreatable(valueString)) {
-      return NumberUtils.createNumber(valueString);
+      Number number = NumberUtils.createNumber(valueString);
+      // edge case: a version number like 1.20 which looks like a double should be treated as string
+      // so convert number back to string, and if it's different keep it as a string
+      if (!StringUtils.equals(number.toString(), valueString)) {
+        return valueString;
+      }
+      return number;
     }
     else {
       return valueString;
