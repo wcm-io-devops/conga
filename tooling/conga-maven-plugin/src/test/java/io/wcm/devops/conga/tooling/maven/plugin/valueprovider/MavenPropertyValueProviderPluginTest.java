@@ -65,10 +65,12 @@ class MavenPropertyValueProviderPluginTest {
     String propertyName2 = getClass().getName() + "-test.prop2";
     String propertyName3 = getClass().getName() + "-test.prop3";
     String propertyJavaVersion = "java.version";
+    String propertyDependency = "dependency.version";
 
     mavenProject.getProperties().setProperty(propertyName1, "value1");
     mavenProject.getProperties().setProperty(propertyName2, "value1,value2,value3");
     mavenProject.getProperties().setProperty(propertyJavaVersion, "my-java-version");
+    mavenProject.getProperties().setProperty(propertyDependency, "1.10");
 
     assertEquals("value1", underTest.resolve(propertyName1, context));
     assertEquals(ImmutableList.of("value1", "value2", "value3"), underTest.resolve(propertyName2, context));
@@ -76,6 +78,8 @@ class MavenPropertyValueProviderPluginTest {
 
     assertNotNull(underTest.resolve(propertyJavaVersion, context));
     assertNotEquals("my-java-version", underTest.resolve(propertyJavaVersion, context));
+
+    assertEquals("1.10", underTest.resolve(propertyDependency, context));
   }
 
 }
