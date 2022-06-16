@@ -63,20 +63,23 @@ class ValueUtilTest {
 
   @Test
   void stringToValue_long() {
-    assertEquals(0L, stringToValue("0L"));
-    assertEquals(123456L, stringToValue("123456L"));
     assertEquals(1234567890123456L, stringToValue("1234567890123456"));
   }
 
   @Test
   void stringToValue_longList() {
-    assertEquals(ImmutableList.of(0L, 123456L, 1234567890123456L), stringToValue("0L,123456L,1234567890123456"));
+    assertEquals(ImmutableList.of(0, 123456, 1234567890123456L), stringToValue("0,123456,1234567890123456"));
   }
 
   @Test
   void stringToValue_double() {
     assertEquals(0.0f, stringToValue("0.0"));
-    assertEquals(123.456, (Double)stringToValue("123.456d"), 0.0001);
+    assertEquals(123.456, ((Number)stringToValue("123.456")).doubleValue(), 0.0001);
+  }
+
+  @Test
+  void stringToValue_versionNumberLookingLikeADouble() {
+    assertEquals("1.20", stringToValue("1.20"));
   }
 
   @Test
