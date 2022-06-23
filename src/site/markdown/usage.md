@@ -64,6 +64,6 @@ You find the generated files at `target/configuration`, they are packed as well 
 It is possible to use CONGA outside Maven from the command line using this prepackaged JAR with all dependencies:
 
 |---|---|---|
-| [CONGA Command Line Interface](https://maven-badges.herokuapp.com/maven-central/io.wcm.devops.conga/io.wcm.devops.conga.tooling.cli) | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.wcm.devops.conga/io.wcm.devops.conga.tooling.cli/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.wcm.devops.conga/io.wcm.devops.conga.tooling.cli) |
+| [CONGA Command Line Interface](https://repo1.maven.org/maven2/io/wcm/devops/conga/io.wcm.devops.conga.tooling.cli) | [![Maven Central](https://img.shields.io/maven-central/v/io.wcm.devops.conga/io.wcm.devops.conga.tooling.cli)](https://repo1.maven.org/maven2/io/wcm/devops/conga/io.wcm.devops.conga.tooling.cli) |
 
 This mode lacks some features like building definition artifacts, versioning etc. So it is recommended to use the Maven plugin whenever possible.
