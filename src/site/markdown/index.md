@@ -2,7 +2,7 @@
 
 Configuration generator for DevOps Teams.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.wcm.devops.conga/conga-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.wcm.devops.conga/conga-maven-plugin)
+[![Maven Central](https://img.shields.io/maven-central/v/io.wcm.devops.conga/conga-maven-plugin)](https://repo1.maven.org/maven2/io/wcm/devops/conga/conga-maven-plugin)
 
 
 ### Documentation
