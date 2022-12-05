@@ -43,7 +43,7 @@
   </ciManagement>
 
   <properties>
-    <jknack.handlebars.version>4.3.0</jknack.handlebars.version>
+    <jknack.handlebars.version>4.3.1</jknack.handlebars.version>
   </properties>
 
   <dependencyManagement>
@@ -105,7 +105,7 @@
       <dependency>
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
-        <version>2.9.1</version>
+        <version>2.10</version>
       </dependency>
 
       <dependency>
