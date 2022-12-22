@@ -7,7 +7,7 @@
 wcm.io DevOps CONGA Configuration Generator.
 
 Documentation: https://devops.wcm.io/conga/<br/>
-Issues: https://wcm-io.atlassian.net/projects/WDCONGA<br/>
+Issues: https://github.com/wcm-io-devops/conga/issues<br/>
 Wiki: https://wcm-io.atlassian.net/wiki/<br/>
 Continuous Integration: https://github.com/wcm-io-devops/conga/actions<br/>
 Commercial support: https://wcm.io/commercial-support.html
