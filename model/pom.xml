@@ -41,6 +41,7 @@
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.resource</artifactId>
       <version>1.14.13-SNAPSHOT</version>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
