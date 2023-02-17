@@ -42,6 +42,11 @@
     <url>https://github.com/wcm-io-devops/conga/actions</url>
   </ciManagement>
 
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/wcm-io/conga/issues/</url>
+  </issueManagement>
+
   <properties>
     <jknack.handlebars.version>4.3.1</jknack.handlebars.version>
   </properties>
