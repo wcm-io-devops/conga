@@ -27,6 +27,9 @@
       <action type="update" dev="sseifert">
         Switch to Java 11 as minimum version.
       </action>
+      <action type="update" dev="sseifert">
+        Update to SnakeYAML 2.0.
+      </action>
     </release>
 
     <release version="1.14.12" date="2022-09-29">

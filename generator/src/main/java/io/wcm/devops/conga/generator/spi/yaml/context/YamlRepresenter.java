@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.spi.yaml.context;
 
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.representer.Represent;
 import org.yaml.snakeyaml.representer.Representer;
 
@@ -26,6 +27,13 @@ import org.yaml.snakeyaml.representer.Representer;
  * SnakeYAML {@link Representer} implementation.
  */
 public final class YamlRepresenter extends Representer {
+
+  /**
+   * Constructor.
+   */
+  public YamlRepresenter() {
+    super(new DumperOptions());
+  }
 
   /**
    * Register a represent.
