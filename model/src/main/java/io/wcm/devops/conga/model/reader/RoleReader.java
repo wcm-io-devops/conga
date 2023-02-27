@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.model.reader;
 
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -37,7 +38,7 @@ public final class RoleReader extends AbstractModelReader<Role> {
   }
 
   private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Role.class);
+    Constructor constructor = new Constructor(Role.class, new LoaderOptions());
     return new Yaml(constructor);
   }
 
