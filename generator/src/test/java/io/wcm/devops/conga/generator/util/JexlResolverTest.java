@@ -67,6 +67,7 @@ class JexlResolverTest {
             "nested2", ImmutableMap.of(
                 "nested2var1", "nested2-value1",
                 "nested2JexlExpr", "${object1.var3 + ';' + var1}")))
+        .put("array1", new String[] { "v1", "v2", "v3" })
         .build();
   }
 
@@ -97,6 +98,11 @@ class JexlResolverTest {
     assertThrows(GeneratorException.class, () -> {
       underTest.resolve("'abc", variables);
     });
+  }
+
+  @Test
+  void testStringUtilsMethod() {
+    assertEquals("v1:v2:v3", underTest.resolve("stringUtils:join(array1,':')", variables));
   }
 
 }
