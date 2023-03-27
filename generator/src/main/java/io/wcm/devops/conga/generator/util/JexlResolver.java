@@ -34,6 +34,7 @@ import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.MapContext;
+import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.apache.commons.lang3.StringUtils;
 
 import io.wcm.devops.conga.generator.GeneratorException;
@@ -55,6 +56,7 @@ final class JexlResolver {
     this.jexl = new JexlBuilder()
         .cache(CACHE_SIZE)
         .namespaces(JEXL_FUNCTION_NS)
+        .permissions(JexlPermissions.UNRESTRICTED)
         .create();
     this.variableMapResolver = variableMapResolver;
   }
