@@ -1,4 +1,5 @@
 io.wcm.devops.conga.generator.plugins.handlebars.helper.ContainsHelper
+io.wcm.devops.conga.generator.plugins.handlebars.helper.DisallowPropertyHelper
 io.wcm.devops.conga.generator.plugins.handlebars.helper.EachIfHelper
 io.wcm.devops.conga.generator.plugins.handlebars.helper.EachIfEqualsHelper
 io.wcm.devops.conga.generator.plugins.handlebars.helper.EnsurePropertiesHelper
