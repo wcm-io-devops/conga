@@ -88,6 +88,15 @@ Ensure that all properties with the given names are set. Build fails if this is 
 ```
 
 
+${symbol_pound}${symbol_pound}${symbol_pound} disallowProperty
+
+Ensure that the given property is *not* set/present. It fails with an error message, if it is present. Optionally, a custom error message can be defined via a second parameter.
+
+```
+{{ensureProperties "group1.prop1" "Property 'group1.prop1' is deprecated, please use 'XYZ' instead."}}
+```
+
+
 
 [handlebars-quickstart]: handlebars-quickstart.html
 [extensibility]: extensibility.html
