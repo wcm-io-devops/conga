@@ -23,7 +23,7 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 https://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
-    <release version="1.16.0" date="not released">
+    <release version="1.16.0" date="2023-07-03">
       <action type="add" dev="sseifert">
         Add new custom Handlebars expressions 'disallowProperty' which allows to block property names no longer supported.
       </action>
