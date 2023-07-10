@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -101,7 +102,7 @@ public final class XmlFileHeader implements FileHeaderPlugin {
       doc.insertBefore(comment, doc.getChildNodes().item(0));
 
       // write file
-      file.getFile().delete();
+      Files.delete(file.getFile().toPath());
       DOMSource source = new DOMSource(doc);
       StreamResult result = new StreamResult(file.getFile());
       transformer.transform(source, result);
