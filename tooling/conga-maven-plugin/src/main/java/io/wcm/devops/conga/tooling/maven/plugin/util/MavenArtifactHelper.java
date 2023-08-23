@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -223,7 +224,7 @@ public class MavenArtifactHelper {
 
   private Artifact createArtifact(String groupId, String artifactId, String type, String classifier, String version) throws IOException {
 
-    String artifactTypeString = StringUtils.defaultString(type, "jar");
+    String artifactTypeString = Objects.toString(type, "jar");
     String artifactExtension = artifactTypeString;
 
     ArtifactType artifactType = repoSession.getArtifactTypeRegistry().get(artifactExtension);
