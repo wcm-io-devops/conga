@@ -103,9 +103,9 @@ public class ValidateMojo extends AbstractCongaMojo {
   private RepositorySystem repoSystem;
   @Component
   private BuildContext buildContext;
-  @Parameter(property = "repositorySystemSession", readonly = true)
+  @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
   private RepositorySystemSession repoSession;
-  @Parameter(property = "project.remoteProjectRepositories", readonly = true)
+  @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
   private List<RemoteRepository> remoteRepos;
   @Parameter(defaultValue = "${session}", readonly = true, required = false)
   private MavenSession session;
