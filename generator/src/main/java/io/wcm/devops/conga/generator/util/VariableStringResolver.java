@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.util;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -186,7 +187,7 @@ public final class VariableStringResolver {
       // resolve variable
       if (variableMatcher.matches()) {
         String valueProviderName = variableMatcher.group(VARIABLE_POS_VALUE_PROVIDER_NAME);
-        String variable = StringUtils.defaultString(variableMatcher.group(VARIABLE_POS_VARIABLE_1), variableMatcher.group(VARIABLE_POS_VARIABLE_2));
+        String variable = Objects.toString(variableMatcher.group(VARIABLE_POS_VARIABLE_1), variableMatcher.group(VARIABLE_POS_VARIABLE_2));
         String defaultValueString = variableMatcher.group(VARIABLE_POS_DEFAULT_VALUE);
 
         Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
@@ -241,7 +242,7 @@ public final class VariableStringResolver {
         // resolve variable
         if (variableMatcher.matches()) {
           String valueProviderName = variableMatcher.group(VARIABLE_POS_VALUE_PROVIDER_NAME);
-          String variable = StringUtils.defaultString(variableMatcher.group(VARIABLE_POS_VARIABLE_1), variableMatcher.group(VARIABLE_POS_VARIABLE_2));
+          String variable = Objects.toString(variableMatcher.group(VARIABLE_POS_VARIABLE_1), variableMatcher.group(VARIABLE_POS_VARIABLE_2));
           String defaultValueString = variableMatcher.group(VARIABLE_POS_DEFAULT_VALUE);
 
           Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
