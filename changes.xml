@@ -23,6 +23,12 @@
     xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 https://maven.apache.org/plugins/maven-changes-plugin/xsd/changes-1.0.0.xsd">
   <body>
 
+    <release version="1.16.4" date="not released">
+      <action type="fix" dev="sseifert">
+        Increase SnakeYAML codepoint limit to 64MB (from default 3MB).
+      </action>
+    </release>
+
     <release version="1.16.2" date="2023-08-31">
       <action type="fix" dev="sseifert">
         conga-maven-plugin: Eliminate warning "Parameter 'repoSession' (user property 'repositorySystemSession') is read-only, must not be used in configuration".

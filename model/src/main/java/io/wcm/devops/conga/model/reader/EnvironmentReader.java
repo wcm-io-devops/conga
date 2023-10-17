@@ -19,11 +19,11 @@
  */
 package io.wcm.devops.conga.model.reader;
 
-import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import io.wcm.devops.conga.model.environment.Environment;
+import io.wcm.devops.conga.model.util.YamlUtil;
 
 /**
  * Reads environment definitions.
@@ -38,7 +38,7 @@ public final class EnvironmentReader extends AbstractModelReader<Environment> {
   }
 
   private static Yaml getYaml() {
-    Constructor constructor = new Constructor(Environment.class, new LoaderOptions());
+    Constructor constructor = new Constructor(Environment.class, YamlUtil.createLoaderOptions());
     return new Yaml(constructor);
   }
 
