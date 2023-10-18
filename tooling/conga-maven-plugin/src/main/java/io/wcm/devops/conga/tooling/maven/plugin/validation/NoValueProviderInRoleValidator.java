@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.plugin.MojoFailureException;
-import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import io.wcm.devops.conga.generator.util.VariableStringResolver;
 import io.wcm.devops.conga.model.reader.AbstractModelReader;
 import io.wcm.devops.conga.model.reader.ModelReader;
+import io.wcm.devops.conga.model.util.YamlUtil;
 import io.wcm.devops.conga.resource.Resource;
 
 /**
@@ -76,7 +76,7 @@ public final class NoValueProviderInRoleValidator implements DefinitionValidator
       super(getYaml());
     }
     private static Yaml getYaml() {
-      Constructor constructor = new Constructor(Map.class, new LoaderOptions());
+      Constructor constructor = new Constructor(Map.class, YamlUtil.createLoaderOptions());
       return new Yaml(constructor);
     }
   }
