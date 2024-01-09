@@ -24,7 +24,7 @@
   <body>
 
     <release version="1.16.6" date="not released">
-      <action type="update" dev="sseifert">
+      <action type="update" dev="sseifert" issue="57">
         Special handling for detecting ".cfg.json" file extensions.
       </action>
     </release>
