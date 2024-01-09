@@ -33,9 +33,12 @@ class FileUtilTest {
     assertTrue(FileUtil.matchesExtension(new File("test.txt"), "txt"));
     assertTrue(FileUtil.matchesExtension(new File("test.part2.txt"), "txt"));
     assertFalse(FileUtil.matchesExtension(new File("test.pdf"), "txt"));
+    assertTrue(FileUtil.matchesExtension(new File("test.json"), "json"));
 
     // special handling for OSGi configuration resource file extension
     assertTrue(FileUtil.matchesExtension(new File("test.cfg.json"), "cfg.json"));
+    assertFalse(FileUtil.matchesExtension(new File("test.cfg.json"), "json"));
+    assertFalse(FileUtil.matchesExtension(new File("test.json"), "cfg.json"));
   }
 
 }
