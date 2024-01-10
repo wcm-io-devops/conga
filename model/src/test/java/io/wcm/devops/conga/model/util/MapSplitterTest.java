@@ -31,34 +31,31 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
 import io.wcm.devops.conga.model.util.MapSplitter.SplitResult;
 
 class MapSplitterTest {
 
-  private static final Map<String, Object> TEST_MAP = ImmutableMap.of(
+  private static final Map<String, Object> TEST_MAP = Map.of(
       "var1", "value1",
       "var2", "value2",
-      "obj1", ImmutableMap.of(
+      "obj1", Map.of(
           "var11", "value11",
           "var12", "value12",
-          "obj13", ImmutableMap.of(
+          "obj13", Map.of(
               "var131", "value131",
               "var132", "value132"),
-          "list14", ImmutableList.of(
+          "list14", List.of(
               "value14a",
               "value14b",
               "value14c")),
-      "list2", ImmutableList.of(
-          ImmutableMap.of(
+      "list2", List.of(
+          Map.of(
               "var21a", "value11a",
               "var22a", "value22a",
-              "obj23a", ImmutableMap.of(
+              "obj23a", Map.of(
                   "var23a1", "value23a1",
                   "var23a2", "value23a2")),
-          ImmutableMap.of(
+          Map.of(
               "var21b", "value11b",
               "var22b", "value22b")));
 
@@ -81,30 +78,30 @@ class MapSplitterTest {
   @Test
   void testKeyStartsWithVar1() {
     result = splitMap(TEST_MAP, entry -> StringUtils.startsWith(entry.getKey(), "var1"));
-    assertEquals(ImmutableMap.of(
+    assertEquals(Map.of(
         "var1", "value1",
-        "obj1", ImmutableMap.of(
+        "obj1", Map.of(
             "var11", "value11",
             "var12", "value12",
-            "obj13", ImmutableMap.of(
+            "obj13", Map.of(
                 "var131", "value131",
                 "var132", "value132"))),
         result.getMatching());
-    assertEquals(ImmutableMap.of(
+    assertEquals(Map.of(
         "var2", "value2",
-        "obj1", ImmutableMap.of(
-            "list14", ImmutableList.of(
+        "obj1", Map.of(
+            "list14", List.of(
                 "value14a",
                 "value14b",
                 "value14c")),
-        "list2", ImmutableList.of(
-            ImmutableMap.of(
+        "list2", List.of(
+            Map.of(
                 "var21a", "value11a",
                 "var22a", "value22a",
-                "obj23a", ImmutableMap.of(
+                "obj23a", Map.of(
                     "var23a1", "value23a1",
                     "var23a2", "value23a2")),
-            ImmutableMap.of(
+            Map.of(
                 "var21b", "value11b",
                 "var22b", "value22b"))),
         result.getUnmatching());
@@ -114,29 +111,29 @@ class MapSplitterTest {
   void testValueStartsWithValue2() {
     result = splitMap(TEST_MAP, entry -> matchesSimpleListValue(entry.getValue(),
         value -> (value instanceof String) && StringUtils.startsWith(value.toString(), "value2")));
-    assertEquals(ImmutableMap.of(
+    assertEquals(Map.of(
         "var2", "value2"),
         result.getMatching());
-    assertEquals(ImmutableMap.of(
+    assertEquals(Map.of(
         "var1", "value1",
-        "obj1", ImmutableMap.of(
+        "obj1", Map.of(
             "var11", "value11",
             "var12", "value12",
-            "obj13", ImmutableMap.of(
+            "obj13", Map.of(
                 "var131", "value131",
                 "var132", "value132"),
-            "list14", ImmutableList.of(
+            "list14", List.of(
                 "value14a",
                 "value14b",
                 "value14c")),
-        "list2", ImmutableList.of(
-            ImmutableMap.of(
+        "list2", List.of(
+            Map.of(
                 "var21a", "value11a",
                 "var22a", "value22a",
-                "obj23a", ImmutableMap.of(
+                "obj23a", Map.of(
                     "var23a1", "value23a1",
                     "var23a2", "value23a2")),
-            ImmutableMap.of(
+            Map.of(
                 "var21b", "value11b",
                 "var22b", "value22b"))),
         result.getUnmatching());
@@ -146,30 +143,30 @@ class MapSplitterTest {
   void testStartsWithValue14() {
     result = splitMap(TEST_MAP, entry -> matchesSimpleListValue(entry.getValue(),
         value -> (value instanceof String) && StringUtils.startsWith(value.toString(), "value14")));
-    assertEquals(ImmutableMap.of(
-        "obj1", ImmutableMap.of(
-            "list14", ImmutableList.of(
+    assertEquals(Map.of(
+        "obj1", Map.of(
+            "list14", List.of(
                 "value14a",
                 "value14b",
                 "value14c"))),
         result.getMatching());
-    assertEquals(ImmutableMap.of(
+    assertEquals(Map.of(
         "var1", "value1",
         "var2", "value2",
-        "obj1", ImmutableMap.of(
+        "obj1", Map.of(
             "var11", "value11",
             "var12", "value12",
-            "obj13", ImmutableMap.of(
+            "obj13", Map.of(
                 "var131", "value131",
                 "var132", "value132")),
-        "list2", ImmutableList.of(
-            ImmutableMap.of(
+        "list2", List.of(
+            Map.of(
                 "var21a", "value11a",
                 "var22a", "value22a",
-                "obj23a", ImmutableMap.of(
+                "obj23a", Map.of(
                     "var23a1", "value23a1",
                     "var23a2", "value23a2")),
-            ImmutableMap.of(
+            Map.of(
                 "var21b", "value11b",
                 "var22b", "value22b"))),
         result.getUnmatching());

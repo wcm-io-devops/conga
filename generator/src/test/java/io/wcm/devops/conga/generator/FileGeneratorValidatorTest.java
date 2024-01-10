@@ -48,8 +48,6 @@ import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
 import io.wcm.devops.conga.generator.spi.ValidatorPlugin;
@@ -92,7 +90,7 @@ class FileGeneratorValidatorTest {
     when(pluginManager.getAll(ValidatorPlugin.class)).thenAnswer(new Answer<List<ValidatorPlugin>>() {
       @Override
       public List<ValidatorPlugin> answer(InvocationOnMock invocation) throws Throwable {
-        return ImmutableList.copyOf(validatorPlugins.values());
+        return List.copyOf(validatorPlugins.values());
       }
     });
     when(pluginManager.get(anyString(), eq(ValidatorPlugin.class))).thenAnswer(new Answer<ValidatorPlugin>() {
@@ -112,16 +110,16 @@ class FileGeneratorValidatorTest {
     VariableMapResolver variableMapResolver = new VariableMapResolver(
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
     underTest = new FileGenerator(options, "env1",
-        "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, null, roleFile, ImmutableMap.<String, Object>of(), template,
-        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of());
+        "role1", List.of("variant1"), "template1",
+        destDir, file, null, null, roleFile, Map.<String, Object>of(), template,
+        variableMapResolver, urlFileManager, pluginContextOptions, List.of());
   }
 
   @Test
   void testWithoutValidator() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.NEVER);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -132,9 +130,9 @@ class FileGeneratorValidatorTest {
   @Test
   void testOneValidator() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.NEVER);
-    roleFile.setValidators(ImmutableList.of("one"));
+    roleFile.setValidators(List.of("one"));
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -146,9 +144,9 @@ class FileGeneratorValidatorTest {
   void testTwoValidators() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.NEVER);
     ValidatorPlugin two = mockValidator("two", "txt", ImplicitApplyOptions.NEVER);
-    roleFile.setValidators(ImmutableList.of("one", "two"));
+    roleFile.setValidators(List.of("one", "two"));
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -161,7 +159,7 @@ class FileGeneratorValidatorTest {
   void testImplicitValidator() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -173,7 +171,7 @@ class FileGeneratorValidatorTest {
   void testAlwaysValidator() throws Exception {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.ALWAYS);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -186,7 +184,7 @@ class FileGeneratorValidatorTest {
     ValidatorPlugin one = mockValidator("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
     ValidatorPlugin two = mockValidator("two", "txt", ImplicitApplyOptions.ALWAYS);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");

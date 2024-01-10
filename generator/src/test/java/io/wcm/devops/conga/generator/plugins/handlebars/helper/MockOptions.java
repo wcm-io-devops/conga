@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.mockito.invocation.InvocationOnMock;
@@ -36,7 +37,6 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.TagType;
 import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Subclass of {@link Options} that mocks all dependencies, but allows to set params.
@@ -75,7 +75,7 @@ final class MockOptions extends Options {
         getInverseTemplate(),
         params,
         new HashMap<>(),
-        ImmutableList.of());
+        List.of());
   }
 
   private static Template getFnTemplate() {

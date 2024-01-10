@@ -22,13 +22,11 @@ package io.wcm.devops.conga.generator.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.ContextPropertiesBuilder;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
@@ -79,46 +77,46 @@ class VariableObjectTreeResolverTest {
     scope21.setScope31(scope31);
     scope21.setScope32(scope32);
     ConfScope2 scope22 = new ConfScope2();
-    scope1.setScope2(ImmutableList.of(scope21, scope22));
+    scope1.setScope2(List.of(scope21, scope22));
     root.setScope1(scope1);
     SimpleConf simple1 = new SimpleConf();
-    scope1.setMap(ImmutableMap.of("simple", simple1));
+    scope1.setMap(Map.of("simple", simple1));
     SampleNode sample = new SampleNode();
     SimpleConf simple2 = new SimpleConf();
     sample.setSimple(simple2);
     scope1.setSample(sample);
 
-    scope1.setConfig(ImmutableMap.of("var1", "v1", "conf", "${var1}"));
+    scope1.setConfig(Map.of("var1", "v1", "conf", "${var1}"));
 
-    scope21.setConfig(ImmutableMap.of("var21", "v21", "conf21", "${var21}"));
+    scope21.setConfig(Map.of("var21", "v21", "conf21", "${var21}"));
 
-    scope22.setConfig(ImmutableMap.of("var22", "v22", "conf22", "${var22}"));
+    scope22.setConfig(Map.of("var22", "v22", "conf22", "${var22}"));
 
-    scope31.setConfig(ImmutableMap.of("var31", "v31", "conf31", "${var31}"));
+    scope31.setConfig(Map.of("var31", "v31", "conf31", "${var31}"));
 
-    scope32.setConfig(ImmutableMap.of("var32", "v32", "conf32", "${var32}"));
+    scope32.setConfig(Map.of("var32", "v32", "conf32", "${var32}"));
 
-    simple1.setConfig(ImmutableMap.of("varS1", "vS1", "confS1", "${varS1}"));
+    simple1.setConfig(Map.of("varS1", "vS1", "confS1", "${varS1}"));
 
-    simple2.setConfig(ImmutableMap.of("varS2", "vS2", "confS2", "${varS2}"));
+    simple2.setConfig(Map.of("varS2", "vS2", "confS2", "${varS2}"));
 
 
     underTest.resolve(root);
 
 
-    assertMap(ImmutableMap.of("var1", "v1", "conf", "v1"), scope1.getConfig());
+    assertMap(Map.of("var1", "v1", "conf", "v1"), scope1.getConfig());
 
-    assertMap(ImmutableMap.of("var21", "v21", "conf21", "v21"), scope21.getConfig());
+    assertMap(Map.of("var21", "v21", "conf21", "v21"), scope21.getConfig());
 
-    assertMap(ImmutableMap.of("var22", "v22", "conf22", "v22"), scope22.getConfig());
+    assertMap(Map.of("var22", "v22", "conf22", "v22"), scope22.getConfig());
 
-    assertMap(ImmutableMap.of("var31", "v31", "conf31", "v31"), scope31.getConfig());
+    assertMap(Map.of("var31", "v31", "conf31", "v31"), scope31.getConfig());
 
-    assertMap(ImmutableMap.of("var32", "v32", "conf32", "v32"), scope32.getConfig());
+    assertMap(Map.of("var32", "v32", "conf32", "v32"), scope32.getConfig());
 
-    assertMap(ImmutableMap.of("varS1", "vS1", "confS1", "vS1"), simple1.getConfig());
+    assertMap(Map.of("varS1", "vS1", "confS1", "vS1"), simple1.getConfig());
 
-    assertMap(ImmutableMap.of("varS2", "vS2", "confS2", "vS2"), simple2.getConfig());
+    assertMap(Map.of("varS2", "vS2", "confS2", "vS2"), simple2.getConfig());
   }
 
   private void assertMap(Map<String, Object> expected, Map<String, Object> actual) {

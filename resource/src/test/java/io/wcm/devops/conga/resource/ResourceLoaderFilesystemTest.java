@@ -33,8 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 class ResourceLoaderFilesystemTest {
 
   private static final String ROOT = "src/test/resources/test-files";
@@ -74,16 +72,16 @@ class ResourceLoaderFilesystemTest {
     assertTrue(StringUtils.endsWith(unifySlashes(col.getCanonicalPath()), "/" + ROOT + "/folder1"),
         "Canonical path " + unifySlashes(col.getCanonicalPath()) + " does not end with /" + ROOT + "/folder1");
 
-    List<Resource> resources = ImmutableList.copyOf(col.getResources());
+    List<Resource> resources = List.copyOf(col.getResources());
     assertEquals(2, resources.size());
     assertEquals("file1.txt", resources.get(0).getName());
     assertEquals("file2.txt", resources.get(1).getName());
 
-    List<ResourceCollection> resourceCollections = ImmutableList.copyOf(col.getResourceCollections());
+    List<ResourceCollection> resourceCollections = List.copyOf(col.getResourceCollections());
     assertEquals(1, resourceCollections.size());
     assertEquals("folder2", resourceCollections.get(0).getName());
 
-    List<Resource> folder2Resources = ImmutableList.copyOf(resourceCollections.get(0).getResources());
+    List<Resource> folder2Resources = List.copyOf(resourceCollections.get(0).getResources());
     assertEquals(1, folder2Resources.size());
     assertEquals("file3.txt", folder2Resources.get(0).getName());
   }
@@ -113,8 +111,8 @@ class ResourceLoaderFilesystemTest {
   void testNonExistingResourceCollection() throws Exception {
     ResourceCollection col = underTest.getResourceCollection(FILE_PREFIX + ROOT + "/invalidFolder");
     assertFalse(col.exists());
-    assertEquals(ImmutableList.of(), ImmutableList.copyOf(col.getResources()));
-    assertEquals(ImmutableList.of(), ImmutableList.copyOf(col.getResourceCollections()));
+    assertEquals(List.of(), List.copyOf(col.getResources()));
+    assertEquals(List.of(), List.copyOf(col.getResourceCollections()));
   }
 
   @Test

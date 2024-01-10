@@ -27,8 +27,6 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableMap;
-
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -52,7 +50,7 @@ class NoneMultiplyTest {
     role = new Role();
     roleFile = new RoleFile();
 
-    config = ImmutableMap.of("var1", "v1");
+    config = Map.of("var1", "v1");
 
     environment = new Environment();
   }

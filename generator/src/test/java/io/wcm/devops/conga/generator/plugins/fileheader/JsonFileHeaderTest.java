@@ -31,8 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
@@ -52,7 +50,7 @@ class JsonFileHeaderTest {
     File file = new File("target/generation-test/fileHeader.json");
     FileUtils.copyFile(new File(getClass().getResource("/validators/json/validJson.json").toURI()), file);
 
-    List<String> lines = ImmutableList.of("Der Jodelkaiser", "aus dem Oetztal", "ist wieder daheim.");
+    List<String> lines = List.of("Der Jodelkaiser", "aus dem Oetztal", "ist wieder daheim.");
     FileHeaderContext context = new FileHeaderContext().commentLines(lines);
     FileContext fileContext = new FileContext().file(file);
 

@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,10 +36,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-
 import io.wcm.devops.conga.generator.spi.ValueEncryptionPlugin;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.ValueEncryptionContext;
@@ -46,7 +43,7 @@ import io.wcm.devops.conga.generator.spi.context.ValueEncryptionContext;
 @ExtendWith(MockitoExtension.class)
 class ModelExportConfigProcessorTest {
 
-  private static final Set<String> SENSITIVE_PARAMS = ImmutableSet.of(
+  private static final Set<String> SENSITIVE_PARAMS = Set.of(
       "param1",
       "group1.param3",
       "group1.group2.param4",
@@ -67,7 +64,7 @@ class ModelExportConfigProcessorTest {
   @BeforeEach
   void setUp() {
     // simulate valueEncryptPlugin that prepends {enc} to the value
-    when(pluginManager.getAll(ValueEncryptionPlugin.class)).thenReturn(ImmutableList.of(valueEncryptPlugin));
+    when(pluginManager.getAll(ValueEncryptionPlugin.class)).thenReturn(List.of(valueEncryptPlugin));
     when(valueEncryptPlugin.isEnabled()).thenReturn(true);
     when(valueEncryptPlugin.encrypt(anyString(), any(), any(ValueEncryptionContext.class))).then(new Answer<Object>() {
       @Override
@@ -84,21 +81,21 @@ class ModelExportConfigProcessorTest {
 
   @Test
   void testNestedParams() {
-    Map<String, Object> config = ImmutableMap.<String, Object>of(
+    Map<String, Object> config = Map.<String, Object>of(
         "param1", "value1",
         "param2", "value2",
-        "group1", ImmutableMap.<String, Object>of(
+        "group1", Map.<String, Object>of(
             "param3", 123,
-            "group2", ImmutableMap.<String, Object>of(
+            "group2", Map.<String, Object>of(
                 "param4", true,
                 "param5", 5L)));
 
-    Map<String, Object> expected = ImmutableMap.<String, Object>of(
+    Map<String, Object> expected = Map.<String, Object>of(
         "param1", "{enc}value1",
         "param2", "value2",
-        "group1", ImmutableMap.<String, Object>of(
+        "group1", Map.<String, Object>of(
             "param3", "{enc}123",
-            "group2", ImmutableMap.<String, Object>of(
+            "group2", Map.<String, Object>of(
                 "param4", "{enc}true",
                 "param5", 5L)));
 
@@ -107,29 +104,29 @@ class ModelExportConfigProcessorTest {
 
   @Test
   void testList() {
-    Map<String, Object> config = ImmutableMap.<String, Object>of(
-        "list1", ImmutableList.of("value1", "value2"),
-        "list2", ImmutableList.of(
-            ImmutableMap.<String, Object>of(
+    Map<String, Object> config = Map.<String, Object>of(
+        "list1", List.of("value1", "value2"),
+        "list2", List.of(
+            Map.<String, Object>of(
                 "param1", "value1a",
                 "param2", 123,
-                "list3", ImmutableList.of(
-                    ImmutableMap.of(
+                "list3", List.of(
+                    Map.of(
                         "param3", "value3"))),
-            ImmutableMap.<String, Object>of(
+            Map.<String, Object>of(
                 "param1", "value1b",
                 "param2", 345)));
 
-    Map<String, Object> expected = ImmutableMap.<String, Object>of(
-        "list1", ImmutableList.of("{enc}value1", "{enc}value2"),
-        "list2", ImmutableList.of(
-            ImmutableMap.<String, Object>of(
+    Map<String, Object> expected = Map.<String, Object>of(
+        "list1", List.of("{enc}value1", "{enc}value2"),
+        "list2", List.of(
+            Map.<String, Object>of(
                 "param1", "{enc}value1a",
                 "param2", 123,
-                "list3", ImmutableList.of(
-                    ImmutableMap.of(
+                "list3", List.of(
+                    Map.of(
                         "param3", "{enc}value3"))),
-            ImmutableMap.<String, Object>of(
+            Map.<String, Object>of(
                 "param1", "{enc}value1b",
                 "param2", 345)));
 

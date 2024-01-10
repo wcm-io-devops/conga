@@ -21,25 +21,25 @@ package io.wcm.devops.conga.tooling.maven.plugin.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
+import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
+import org.junit.jupiter.api.Test;
 
 public class PluginConfigUtilTest {
 
   @Test
   public void testGetConfigMap() {
-    assertEquals(ImmutableMap.of(),
+    assertEquals(Map.of(),
         PluginConfigUtil.getConfigMap(null));
 
-    assertEquals(ImmutableMap.of(
-        "plugin1", ImmutableMap.of(),
-        "plugin2", ImmutableMap.of()),
+    assertEquals(Map.of(
+        "plugin1", Map.of(),
+        "plugin2", Map.of()),
         PluginConfigUtil.getConfigMap("plugin1,plugin2"));
 
-    assertEquals(ImmutableMap.of(
-        "plugin1", ImmutableMap.of("param1", "abc", "param2", 5),
-        "plugin2", ImmutableMap.of("param3", true)),
+    assertEquals(Map.of(
+        "plugin1", Map.of("param1", "abc", "param2", 5),
+        "plugin2", Map.of("param3", true)),
         PluginConfigUtil.getConfigMap("plugin1;param1=abc;param2=5,plugin2;param3=true"));
   }
 

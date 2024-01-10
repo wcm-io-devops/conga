@@ -26,8 +26,6 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
 import io.wcm.devops.conga.generator.spi.context.PostProcessorContext;
@@ -61,7 +59,7 @@ class DummyPostProcessor extends AbstractPostProcessor {
       applyFileHeader(newFileContext, fileHeader, context);
     }
 
-    return ImmutableList.of(newFileContext);
+    return List.of(newFileContext);
   }
 
 }

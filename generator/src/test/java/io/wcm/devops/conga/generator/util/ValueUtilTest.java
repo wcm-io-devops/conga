@@ -24,10 +24,10 @@ import static io.wcm.devops.conga.generator.util.ValueUtil.valueToString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.Test;
+import java.util.List;
+import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import org.junit.jupiter.api.Test;
 
 class ValueUtilTest {
 
@@ -45,8 +45,8 @@ class ValueUtilTest {
 
   @Test
   void stringToValue_stringList() {
-    assertEquals(ImmutableList.of("abc", "def", "ghi"), stringToValue("abc,def,ghi"));
-    assertEquals(ImmutableList.of("abc", " def", " ghi"), stringToValue("abc, def, ghi"));
+    assertEquals(List.of("abc", "def", "ghi"), stringToValue("abc,def,ghi"));
+    assertEquals(List.of("abc", " def", " ghi"), stringToValue("abc, def, ghi"));
   }
 
   @Test
@@ -58,7 +58,7 @@ class ValueUtilTest {
 
   @Test
   void stringToValue_integerList() {
-    assertEquals(ImmutableList.of(0, 123456, -5000), stringToValue("0,123456,-5000"));
+    assertEquals(List.of(0, 123456, -5000), stringToValue("0,123456,-5000"));
   }
 
   @Test
@@ -68,7 +68,7 @@ class ValueUtilTest {
 
   @Test
   void stringToValue_longList() {
-    assertEquals(ImmutableList.of(0, 123456, 1234567890123456L), stringToValue("0,123456,1234567890123456"));
+    assertEquals(List.of(0, 123456, 1234567890123456L), stringToValue("0,123456,1234567890123456"));
   }
 
   @Test
@@ -90,12 +90,12 @@ class ValueUtilTest {
 
   @Test
   void stringToValue_booleanList() {
-    assertEquals(ImmutableList.of(true, false), stringToValue("true,false"));
+    assertEquals(List.of(true, false), stringToValue("true,false"));
   }
 
   @Test
   void stringToValue_mixed() {
-    assertEquals(ImmutableList.of("abc", 123, true), stringToValue("abc,123,true"));
+    assertEquals(List.of("abc", 123, true), stringToValue("abc,123,true"));
   }
 
   @Test
@@ -114,12 +114,12 @@ class ValueUtilTest {
 
   @Test
   void valueToString_list() {
-    assertEquals("abc,123,1.23,true", valueToString(ImmutableList.of("abc", 123, 1.23, true)));
+    assertEquals("abc,123,1.23,true", valueToString(List.of("abc", 123, 1.23, true)));
   }
 
   @Test
   void valueToString_map() {
-    assertEquals("prop1=abc,prop2=123", valueToString(ImmutableMap.of("prop1", "abc", "prop2", 123)));
+    assertEquals("prop1=abc,prop2=123", valueToString(Map.of("prop1", "abc", "prop2", 123)));
   }
 
 }

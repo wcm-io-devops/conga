@@ -21,11 +21,11 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -54,16 +54,16 @@ class EachIfHelperTest {
 
   @Test
   void testList() throws Exception {
-    assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions());
-    assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions("a"));
-    assertHelper("fn({a=1})", helper, ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("b", "2")), new MockOptions("a"));
-    assertHelper("fn({a=1})fn({a=2})", helper, ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", "2")), new MockOptions("a"));
+    assertHelper("", helper, List.of("v1", "v2"), new MockOptions());
+    assertHelper("", helper, List.of("v1", "v2"), new MockOptions("a"));
+    assertHelper("fn({a=1})", helper, List.of(Map.of("a", "1"), Map.of("b", "2")), new MockOptions("a"));
+    assertHelper("fn({a=1})fn({a=2})", helper, List.of(Map.of("a", "1"), Map.of("a", "2")), new MockOptions("a"));
   }
 
   @Test
   void testListDeepMap() throws Exception {
     assertHelper("fn({a={b=1}})", helper,
-        ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", ImmutableMap.of("b", "1"))), new MockOptions("a.b"));
+        List.of(Map.of("a", "1"), Map.of("a", Map.of("b", "1"))), new MockOptions("a.b"));
   }
 
 }

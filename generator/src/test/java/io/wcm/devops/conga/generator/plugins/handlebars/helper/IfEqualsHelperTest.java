@@ -22,10 +22,10 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.MockOptions.FN_RETURN;
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -43,13 +43,13 @@ class IfEqualsHelperTest {
   @Test
   void testEquals() throws Exception {
     assertHelper(FN_RETURN, helper, "abc", new MockOptions("abc"));
-    assertHelper(FN_RETURN, helper, ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("a", "b", "c")));
+    assertHelper(FN_RETURN, helper, List.of("a", "b", "c"), new MockOptions(List.of("a", "b", "c")));
   }
 
   @Test
   void testNotEquals() throws Exception {
     assertHelper("", helper, "abc", new MockOptions("def"));
-    assertHelper("", helper, ImmutableList.of("a", "b", "c"), new MockOptions(ImmutableList.of("d", "e", "f")));
+    assertHelper("", helper, List.of("a", "b", "c"), new MockOptions(List.of("d", "e", "f")));
   }
 
   @Test
