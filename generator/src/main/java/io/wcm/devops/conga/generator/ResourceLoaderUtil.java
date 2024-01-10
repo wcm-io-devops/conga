@@ -79,7 +79,7 @@ final class ResourceLoaderUtil {
     List<URL> classpathUrls = new ArrayList<>();
     for (String dependencyUrl : dependencyUrls) {
       // resolver variables without config map - thus supporting only value providers with external values
-      String resolvedDependencyUrl = variableStringResolver.resolveString(dependencyUrl, ImmutableMap.of());
+      String resolvedDependencyUrl = variableStringResolver.resolveString(dependencyUrl, Map.of());
       try {
         classpathUrls.addAll(urlFileManager.getFileUrlsWithDependencies(resolvedDependencyUrl));
       }

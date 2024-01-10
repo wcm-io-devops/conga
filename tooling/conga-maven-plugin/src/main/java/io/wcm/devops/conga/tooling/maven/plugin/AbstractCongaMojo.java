@@ -54,7 +54,6 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.ManifestException;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.ModelExport;
@@ -172,7 +171,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Component
   protected MavenProjectHelper projectHelper;
 
-  private static final Map<String, String> DEFAULT_ARTIFACT_TYPE_MAPPINGS = ImmutableMap.of(
+  private static final Map<String, String> DEFAULT_ARTIFACT_TYPE_MAPPINGS = Map.of(
       "bundle", "jar",
       "content-package", "zip");
 

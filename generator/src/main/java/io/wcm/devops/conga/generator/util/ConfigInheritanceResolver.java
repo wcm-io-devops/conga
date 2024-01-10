@@ -26,8 +26,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableSet;
-
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
@@ -67,7 +65,7 @@ public final class ConfigInheritanceResolver extends AbstractConfigurableObjectT
     }
     if (model instanceof Role) {
       // do not inherit config of role variants field (WDCONGA-24)
-      ignorePropertyNames = ImmutableSet.of("variants");
+      ignorePropertyNames = Set.of("variants");
     }
     new ConfigInheritanceResolver(ignorePropertyNames).process(model, PROCESSOR, new HashMap<>());
   }

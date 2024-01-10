@@ -158,7 +158,7 @@ class EnvironmentGenerator {
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, options.getVersion(),
             variableObjectTreeResolver, variableStringResolver));
 
-    this.dependencyVersions = options.getDependencyVersionBuilder() != null ? options.getDependencyVersionBuilder().apply(environment) : ImmutableList.of();
+    this.dependencyVersions = options.getDependencyVersionBuilder() != null ? options.getDependencyVersionBuilder().apply(environment) : List.of();
 
     // prepare YAML representer
     yamlRepresenter = new YamlRepresenter();

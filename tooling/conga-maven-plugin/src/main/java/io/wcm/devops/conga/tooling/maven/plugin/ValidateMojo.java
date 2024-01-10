@@ -204,12 +204,12 @@ public class ValidateMojo extends AbstractCongaMojo {
   private <T> List<T> validateFiles(ResourceCollection sourceDir, ResourceCollection rootSourceDir, DefinitionValidator<T> validator,
       Function<ResourceInfo, Boolean> resourceFilter) throws MojoFailureException {
     if (!sourceDir.exists()) {
-      return ImmutableList.of();
+      return List.of();
     }
     SortedSet<Resource> files = sourceDir.getResources();
     SortedSet<ResourceCollection> dirs = sourceDir.getResourceCollections();
     if (files.isEmpty() && dirs.isEmpty()) {
-      return ImmutableList.of();
+      return List.of();
     }
 
     List<T> result = new ArrayList<>();

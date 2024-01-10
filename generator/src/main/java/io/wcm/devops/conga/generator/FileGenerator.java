@@ -510,7 +510,7 @@ class FileGenerator {
       return (List<String>)validators;
     }
     else {
-      return ImmutableList.of();
+      return List.of();
     }
   }
 

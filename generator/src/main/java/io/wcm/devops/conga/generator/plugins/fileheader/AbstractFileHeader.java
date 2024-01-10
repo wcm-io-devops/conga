@@ -50,7 +50,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
 
       List<String> sanitizedCommentLines;
       if (context.getCommentLines() == null) {
-        sanitizedCommentLines = ImmutableList.of();
+        sanitizedCommentLines = List.of();
       }
       else {
         sanitizedCommentLines = context.getCommentLines().stream()
