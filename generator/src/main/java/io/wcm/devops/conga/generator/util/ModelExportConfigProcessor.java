@@ -36,7 +36,7 @@ import io.wcm.devops.conga.generator.spi.context.ValueEncryptionContext;
  * Processes map of CONGA configuration parameters before serializing them in a model export file.
  * Removes CONGA-defined context variables, and encrypts sensitive parameter values if required.
  */
-public class ModelExportConfigProcessor {
+public final class ModelExportConfigProcessor {
 
   private final ValueEncryptionPlugin valueEncryptionPlugin;
   private final ValueEncryptionContext valueEncryptionContext;

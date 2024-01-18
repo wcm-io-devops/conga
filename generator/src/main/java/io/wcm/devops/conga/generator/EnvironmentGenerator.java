@@ -82,7 +82,7 @@ import io.wcm.devops.conga.resource.ResourceLoader;
 /**
  * Generates file for one environment.
  */
-class EnvironmentGenerator {
+final class EnvironmentGenerator {
 
   private final GeneratorOptions options;
   private final String environmentName;
