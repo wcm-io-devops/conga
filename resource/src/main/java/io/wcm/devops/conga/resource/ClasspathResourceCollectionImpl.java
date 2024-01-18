@@ -32,7 +32,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.collect.ImmutableSortedSet;
 
-class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl implements ResourceCollection {
+final class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl implements ResourceCollection {
 
   private final List<URL> fileUrls = new ArrayList<>();
   private final List<String> folderPaths = new ArrayList<>();
