@@ -49,8 +49,6 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.sonatype.plexus.build.incremental.BuildContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.GeneratorOptions;
 import io.wcm.devops.conga.generator.UrlFileManager;
@@ -153,7 +151,7 @@ public class ValidateMojo extends AbstractCongaMojo {
         .logger(new MavenSlf4jLogFacade(getLog()));
 
     // validate that all templates can be compiled
-    HandlebarsManager handlebarsManager = new HandlebarsManager(ImmutableList.of(templateDir), pluginContextOptions);
+    HandlebarsManager handlebarsManager = new HandlebarsManager(List.of(templateDir), pluginContextOptions);
     validateFiles(templateDir, templateDir, new TemplateValidator(templateDir, handlebarsManager));
 
     // validate that roles reference existing templates

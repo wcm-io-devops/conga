@@ -43,8 +43,6 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
-import com.google.common.collect.ImmutableSet;
-
 import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
@@ -83,7 +81,7 @@ public class PackageMojo extends AbstractCongaMojo {
   private void buildGeneratedConfigurationAttachments() throws MojoExecutionException, MojoFailureException {
     Set<String> selectedEnvironments;
     if (environments != null && environments.length > 0) {
-      selectedEnvironments = ImmutableSet.copyOf(environments);
+      selectedEnvironments = Set.copyOf(Arrays.asList(environments));
     }
     else {
       selectedEnvironments = null;

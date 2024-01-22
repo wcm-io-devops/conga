@@ -28,8 +28,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
@@ -159,8 +157,8 @@ public final class RoleUtil {
     Set<String> sensitiveConfigParameters = new HashSet<>();
     sensitiveConfigParameters.addAll(role.getSensitiveConfigParameters());
     sensitiveConfigParameters.addAll(superRole.getSensitiveConfigParameters());
-    role.setSensitiveConfigParameters(ImmutableList.copyOf(sensitiveConfigParameters));
-    superRole.setSensitiveConfigParameters(ImmutableList.copyOf(sensitiveConfigParameters));
+    role.setSensitiveConfigParameters(List.copyOf(sensitiveConfigParameters));
+    superRole.setSensitiveConfigParameters(List.copyOf(sensitiveConfigParameters));
   }
 
   /**
@@ -170,7 +168,7 @@ public final class RoleUtil {
    * @param resolvedRoles Resolved roles
    */
   private static void removeFileDuplicates(Map<String, Role> resolvedRoles) {
-    List<Role> roles = ImmutableList.copyOf(resolvedRoles.values());
+    List<Role> roles = List.copyOf(resolvedRoles.values());
 
     // super roles are first, sub roles last.
     // got from last to first, collect all generated file definitions and remove duplicates

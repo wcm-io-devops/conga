@@ -42,7 +42,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableList;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader;
@@ -423,7 +422,7 @@ class FileGenerator {
   private void applyPostProcessor(Map<String, GeneratedFileContext> consolidatedFiles, PostProcessorPlugin plugin) {
 
     // process all files from given map
-    ImmutableList.copyOf(consolidatedFiles.values()).stream()
+    List.copyOf(consolidatedFiles.values()).stream()
         // do not apply post processor twice
         .filter(fileItem -> !fileItem.getPostProcessors().contains(plugin.getName()))
         .filter(fileItem -> plugin.accepts(fileItem.getFileContext(), postProcessorContext))
@@ -441,7 +440,7 @@ class FileGenerator {
       });
 
     // remove items that do no longer exist
-    ImmutableList.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
+    List.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
       if (!fileItem.getFileContext().getFile().exists()) {
         consolidatedFiles.remove(fileItem.getFileContext().getCanonicalPath());
       }
@@ -469,7 +468,7 @@ class FileGenerator {
     });
 
     // remove items that do no longer exist
-    ImmutableList.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
+    List.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
       if (!fileItem.getFileContext().getFile().exists()) {
         consolidatedFiles.remove(fileItem.getFileContext().getCanonicalPath());
       }

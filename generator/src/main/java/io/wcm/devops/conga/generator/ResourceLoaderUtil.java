@@ -23,13 +23,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
-
-import com.google.common.collect.ImmutableMap;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
@@ -114,7 +113,7 @@ final class ResourceLoaderUtil {
         }
       }
     }
-    return ImmutableMap.copyOf(models);
+    return Collections.unmodifiableMap(models);
   }
 
 }

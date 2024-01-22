@@ -19,6 +19,7 @@
  */
 package io.wcm.devops.conga.generator.util;
 
+import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -26,8 +27,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
@@ -53,22 +52,22 @@ class JexlResolverTest {
     object1 = Map.of("var3", "value3", "object2", object2,
         "nested1var1", "${nested1.nested1var1}",
         "nested2var1", "${nested1.nested2.nested2var1}");
-    variables = ImmutableMap.<String, Object>builder()
-        .put("var1", "value1")
-        .put("var2", 123)
-        .put("object1", object1)
-        .put("refVar1", "${var1}")
-        .put("refVar2", "${var2}")
-        .put("refCombined", "${object1.var3}|${var1}")
-        .put("jexlExpr", "${object1.var3 + ';' + var1}")
-        .put("nested1", Map.of(
+    variables = Map.ofEntries(
+        entry("var1", "value1"),
+        entry("var2", 123),
+        entry("object1", object1),
+        entry("refVar1", "${var1}"),
+        entry("refVar2", "${var2}"),
+        entry("refCombined", "${object1.var3}|${var1}"),
+        entry("jexlExpr", "${object1.var3 + ';' + var1}"),
+        entry("nested1", Map.of(
             "nested1var1", "nested1-value1",
             "nested1JexlExpr", "${object1.var3 + ';' + var1}",
             "nested2", Map.of(
                 "nested2var1", "nested2-value1",
-                "nested2JexlExpr", "${object1.var3 + ';' + var1}")))
-        .put("array1", new String[] { "v1", "v2", "v3" })
-        .build();
+                "nested2JexlExpr", "${object1.var3 + ';' + var1}"))),
+        entry("array1", new String[] { "v1", "v2", "v3" })
+    );
   }
 
   @Test

@@ -30,6 +30,7 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -52,8 +53,6 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.ManifestException;
-
-import com.google.common.collect.ImmutableList;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.ModelExport;
@@ -200,7 +199,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
 
     String[] nodeExportPlugins = StringUtils.split(this.modelExportNode, ",");
     if (nodeExportPlugins != null) {
-      modelExport.setNode(ImmutableList.copyOf(nodeExportPlugins));
+      modelExport.setNode(Arrays.asList(nodeExportPlugins));
     }
 
     return modelExport;

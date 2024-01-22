@@ -23,8 +23,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableList;
-
 /**
  * Resource loader to read resource and resource collections from filesystem or classpath.
  */
@@ -125,12 +123,12 @@ public final class ResourceLoader {
     // check for explicit path specification
     for (ResourceType resourceType : ResourceType.values()) {
       if (StringUtils.startsWith(path, resourceType.getPrefix())) {
-        return ImmutableList.of(resourceType);
+        return List.of(resourceType);
       }
     }
 
     // otherwise check all resource types in order of definition in enum
-    return ImmutableList.copyOf(ResourceType.values());
+    return List.of(ResourceType.values());
   }
 
   ClassLoader getClassLoader() {

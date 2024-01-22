@@ -21,14 +21,13 @@ package io.wcm.devops.conga.generator.plugins.fileheader;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.collect.ImmutableList;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.GeneratorException;
@@ -120,7 +119,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
         int posBlockEnd = content.indexOf(getCommentBlockEnd());
         if (posBlockStart == insertPosition && posBlockEnd > 0) {
           String fileHeader = content.substring(posBlockStart + getCommentBlockStart().length(), posBlockEnd);
-          List<String> lines = ImmutableList.copyOf(StringUtils.split(fileHeader, getLineBreak()));
+          List<String> lines = Arrays.asList(StringUtils.split(fileHeader, getLineBreak()));
           return new FileHeaderContext().commentLines(lines);
         }
       }

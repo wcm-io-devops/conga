@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -34,7 +35,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.helper.EachHelper;
-import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
@@ -67,7 +67,7 @@ abstract class AbstractEachIfHelper implements HelperPlugin {
         }
       }
       else {
-        return apply(ImmutableList.of(context), options, pluginContext);
+        return apply(List.of(context), options, pluginContext);
       }
     }
     return delegate.apply(context, options);
