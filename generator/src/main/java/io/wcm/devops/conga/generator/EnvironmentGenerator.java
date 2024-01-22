@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -383,7 +384,12 @@ final class EnvironmentGenerator {
 
     File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, generatedFileName) : generatedFileName);
     if (file.exists()) {
-      file.delete();
+      try {
+        Files.delete(file.toPath());
+      }
+      catch (IOException ex) {
+        throw new GeneratorException("Unable to delete: " + FileUtil.getCanonicalPath(file), ex);
+      }
     }
 
     FileGenerator fileGenerator = new FileGenerator(options, environmentName,

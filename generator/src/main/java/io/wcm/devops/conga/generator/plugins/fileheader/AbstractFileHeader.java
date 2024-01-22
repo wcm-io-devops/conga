@@ -20,6 +20,7 @@
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -68,7 +69,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
           + StringUtils.defaultString(getBlockSuffix())
           + StringUtils.substring(content, insertPosition);
 
-      file.getFile().delete();
+      Files.delete(file.getFile().toPath());
       FileUtils.write(file.getFile(), content, file.getCharset());
     }
     catch (IOException ex) {

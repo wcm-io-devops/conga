@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -90,7 +91,7 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
     if (!file.exists()) {
       throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
     }
-    file.delete();
+    Files.delete(file.toPath());
   }
 
   private static File getFileInternal(String url, UrlFilePluginContext context) {

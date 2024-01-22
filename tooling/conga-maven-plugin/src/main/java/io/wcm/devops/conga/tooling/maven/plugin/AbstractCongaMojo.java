@@ -30,6 +30,7 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -345,7 +346,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
       getLog().info("Include " + getPathForLog(rootOutputDir, targetFile));
 
       if (targetFile.exists()) {
-        targetFile.delete();
+        Files.delete(targetFile.toPath());
       }
       try (InputStream is = file.getInputStream()) {
         byte[] data = IOUtils.toByteArray(is);

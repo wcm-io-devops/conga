@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -64,7 +65,12 @@ public class GenerateVersionInfoMojo extends AbstractMojo {
 
     File propsFile = new File(outputDir, BuildConstants.FILE_VERSION_INFO);
     if (propsFile.exists()) {
-      propsFile.delete();
+      try {
+        Files.delete(propsFile.toPath());
+      }
+      catch (IOException ex) {
+        throw new MojoExecutionException("Unable to delete file: " + FileUtil.getCanonicalPath(propsFile), ex);
+      }
     }
     Properties versionInfo = VersionInfoUtil.getVersionInfoProperties(project);
     try (OutputStream os = new FileOutputStream(propsFile)) {
