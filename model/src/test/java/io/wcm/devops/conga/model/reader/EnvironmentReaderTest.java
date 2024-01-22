@@ -118,13 +118,13 @@ class EnvironmentReaderTest {
   }
 
   @Test
-  void testEnvironmentWithNullTenant() {
-    assertThrows(ConstructorException.class, () -> {
-      EnvironmentReader reader = new EnvironmentReader();
-      try (InputStream is = getClass().getResourceAsStream("/environment_null_tenant.yaml")) {
+  void testEnvironmentWithNullTenant() throws IOException {
+    EnvironmentReader reader = new EnvironmentReader();
+    try (InputStream is = getClass().getResourceAsStream("/environment_null_tenant.yaml")) {
+      assertThrows(ConstructorException.class, () -> {
         reader.read(is);
-      }
-    });
+      });
+    }
   }
 
   @Test

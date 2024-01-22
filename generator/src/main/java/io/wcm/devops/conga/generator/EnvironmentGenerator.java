@@ -239,8 +239,7 @@ final class EnvironmentGenerator {
           mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
           // collect role and tenant information for export model
-          ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig,
-              role.getSensitiveConfigParameters());
+          ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig);
 
           // generate files
           List<GeneratedFileContext> allFiles = new ArrayList<>();
@@ -319,6 +318,7 @@ final class EnvironmentGenerator {
         .getName();
   }
 
+  @SuppressWarnings("java:S107") // allow many parameters
   private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
       String roleName, List<String> roleVariantNames, String templateName, List<GeneratedFileContext> generatedFiles) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
@@ -365,7 +365,10 @@ final class EnvironmentGenerator {
     }
   }
 
-  @SuppressWarnings("PMD.PreserveStackTrace")
+  @SuppressWarnings({
+      "PMD.PreserveStackTrace",
+      "java:S107" // allow many parameters
+  })
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir,
       String fileName, String url, String symlinkTarget,

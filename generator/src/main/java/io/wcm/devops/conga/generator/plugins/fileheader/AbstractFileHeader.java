@@ -136,6 +136,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
    * @param file File File
    * @return File header or null
    */
+  @SuppressWarnings("java:S3776") // ignore complexity
   protected final FileHeaderContext extractFileHeaderWithLinePrefixes(FileContext file) {
     try {
       if (StringUtils.isNotEmpty(getLineBreak()) && StringUtils.isNotEmpty(getCommentLinePrefix())) {

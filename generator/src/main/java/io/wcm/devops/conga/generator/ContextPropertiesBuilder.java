@@ -82,6 +82,7 @@ public final class ContextPropertiesBuilder {
    * @param variableStringResolver Variable string resolver
    * @return Context variables map
    */
+  @SuppressWarnings("java:S3776") // ignore complexity
   public static Map<String, Object> buildEnvironmentContextVariables(String environmentName,
       Environment environment, String version,
       VariableObjectTreeResolver variableObjectTreeResolver, VariableStringResolver variableStringResolver) {

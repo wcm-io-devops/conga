@@ -54,6 +54,7 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.ManifestException;
+import org.jetbrains.annotations.Nullable;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.ModelExport;
@@ -279,7 +280,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     return jarFile;
   }
 
-  private String[] toArray(List<String> values) {
+  private String @Nullable [] toArray(List<String> values) {
     if (values == null || values.isEmpty()) {
       return null;
     }
