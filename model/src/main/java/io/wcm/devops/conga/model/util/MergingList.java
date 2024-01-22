@@ -25,6 +25,7 @@ import java.util.LinkedList;
  * Special list that marks a list as "mergeable" in downstream and preservers the merge position.
  * @param <T> List type
  */
+@SuppressWarnings("java:S2160") // equals/hashCode is implemented in base class
 final class MergingList<T> extends LinkedList<T> {
   private static final long serialVersionUID = 1L;
 

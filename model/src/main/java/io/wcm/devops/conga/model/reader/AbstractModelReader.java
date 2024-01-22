@@ -43,7 +43,7 @@ public abstract class AbstractModelReader<T> implements ModelReader<T> {
   /**
    * @param yaml YAML
    */
-  public AbstractModelReader(Yaml yaml) {
+  protected AbstractModelReader(Yaml yaml) {
     this.yaml = yaml;
   }
 

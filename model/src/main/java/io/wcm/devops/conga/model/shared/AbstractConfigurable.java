@@ -30,6 +30,7 @@ import io.wcm.devops.conga.model.util.MapExpander;
 /**
  * Abstract {@link Configurable} implementation.
  */
+@SuppressWarnings("java:S1948") // assume the maps are serializable
 public abstract class AbstractConfigurable extends AbstractModel implements Configurable, Serializable {
   private static final long serialVersionUID = 5009663684342529022L;
 

@@ -57,12 +57,11 @@ public final class MapSplitter {
         continue;
       }
 
-      else if (entry.getValue() instanceof List) {
-        if (listHasSubStructures((List<Object>)entry.getValue())) {
-          // process nested "structural" lists
-          processListValue(entry, matching, unmatching, matcher);
-          continue;
-        }
+      else if ((entry.getValue() instanceof List)
+          && listHasSubStructures((List<Object>)entry.getValue())) {
+        // process nested "structural" lists
+        processListValue(entry, matching, unmatching, matcher);
+        continue;
       }
 
       // value is not a structural (map/list) value - apply matching

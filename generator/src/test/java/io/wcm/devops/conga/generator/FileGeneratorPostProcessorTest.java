@@ -202,7 +202,7 @@ class FileGeneratorPostProcessorTest {
         variableMapResolver, urlFileManager, pluginContextOptions, List.of());
 
     FileHeaderPlugin fileHeaderPlugin = mock(FileHeaderPlugin.class);
-    when(pluginManager.get(eq("my-fileheader"), eq(FileHeaderPlugin.class))).thenAnswer(new Answer<FileHeaderPlugin>() {
+    when(pluginManager.get("my-fileheader", FileHeaderPlugin.class)).thenAnswer(new Answer<FileHeaderPlugin>() {
       @Override
       public FileHeaderPlugin answer(InvocationOnMock invocation) throws Throwable {
         return fileHeaderPlugin;
@@ -210,7 +210,7 @@ class FileGeneratorPostProcessorTest {
     });
 
     ValidatorPlugin validatorPlugin = mock(ValidatorPlugin.class);
-    when(pluginManager.get(eq("my-validator"), eq(ValidatorPlugin.class))).thenAnswer(new Answer<ValidatorPlugin>() {
+    when(pluginManager.get("my-validator", ValidatorPlugin.class)).thenAnswer(new Answer<ValidatorPlugin>() {
       @Override
       public ValidatorPlugin answer(InvocationOnMock invocation) throws Throwable {
         return validatorPlugin;

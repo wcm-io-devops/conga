@@ -79,10 +79,9 @@ final class JexlResolver {
     SplitResult splitResult = MapSplitter.splitMap(variables, entry -> {
       if (entry.getValue() instanceof List) {
         for (Object item : (List)entry.getValue()) {
-          if (item instanceof String) {
-            if (hasJexlExpresssions((String)item)) {
-              return false;
-            }
+          if ((item instanceof String)
+              && hasJexlExpresssions((String)item)) {
+            return false;
           }
         }
       }

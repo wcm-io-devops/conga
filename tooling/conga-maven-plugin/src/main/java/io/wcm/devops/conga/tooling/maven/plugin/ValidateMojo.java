@@ -224,6 +224,7 @@ public class ValidateMojo extends AbstractCongaMojo {
     return result;
   }
 
+  @SuppressWarnings("java:S1075") // no filesystem path
   private static String getPathForLog(ResourceCollection rootSourceDir, Resource file) {
     String path = PathUtil.unifySlashes(file.getCanonicalPath());
     String rootPath = PathUtil.unifySlashes(rootSourceDir.getCanonicalPath()) + "/";
