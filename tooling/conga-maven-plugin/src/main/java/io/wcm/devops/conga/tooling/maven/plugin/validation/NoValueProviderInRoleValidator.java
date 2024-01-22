@@ -67,7 +67,7 @@ public final class NoValueProviderInRoleValidator implements DefinitionValidator
 
   private void validate(String value) {
     if (VariableStringResolver.hasValueProviderReference(value)) {
-      throw new RuntimeException("Role definitions must not reference value providers: " + value);
+      throw new IllegalStateException("Role definitions must not reference value providers: " + value);
     }
   }
 
