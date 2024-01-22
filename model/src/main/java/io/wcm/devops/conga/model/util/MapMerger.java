@@ -48,7 +48,11 @@ public final class MapMerger {
    * @param map2 Map 2
    * @return Merged map
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({
+      "unchecked",
+      "java:S3776", // ignore complexity
+      "java:S2234" // parameter arguments switched by intention
+  })
   public static <K> Map<K, Object> merge(Map<K, Object> map1, Map<K, Object> map2) {
     Map<K, Object> merged = new HashMap<>();
     if (map1 == null || map2 == null) {

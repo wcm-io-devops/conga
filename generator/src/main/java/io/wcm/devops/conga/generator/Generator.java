@@ -72,6 +72,7 @@ public final class Generator {
    * @param nodeNames Node names to generate. If none specified all nodes are generated.
    */
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
+  @SuppressWarnings("java:S3776") // ignore complexity
   public void generate(String[] environmentNames, String[] nodeNames) {
     Map<String, Environment> selectedEnvironments = new HashMap<>();
     if (environmentNames == null || environmentNames.length == 0) {

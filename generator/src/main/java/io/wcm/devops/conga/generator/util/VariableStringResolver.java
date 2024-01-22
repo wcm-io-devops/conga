@@ -41,6 +41,7 @@ public final class VariableStringResolver {
    * ${provider::var1}
    * ${provider::Var1:defaultValue}
    */
+  @SuppressWarnings("java:S125") // no commented out code
   private static final String NAME_PATTERN_STRING = "[^\\}\\{\\$\\:()'\"/\\#,;\\+\\*@!\\^\\s]";
   private static final String NAME_PATTERN_STRING_NOT_EMPTY = NAME_PATTERN_STRING + "+";
   private static final String NAME_PATTERN_STRING_OR_EMPTY = NAME_PATTERN_STRING + "*";
@@ -172,6 +173,7 @@ public final class VariableStringResolver {
     }
   }
 
+  @SuppressWarnings("java:S3776") // ignore complexity
   private Object resolveSingle(Matcher matcher, Map<String, Object> variables, int iterationCount) {
     boolean escapedVariable = StringUtils.equals(matcher.group(EXPRESSION_POS_DOLLAR_SIGN), "\\$");
     String expression = matcher.group(EXPRESSION_POS_EXPRESSION);
@@ -224,6 +226,7 @@ public final class VariableStringResolver {
     }
   }
 
+  @SuppressWarnings("java:S3776") // ignore complexity
   private Object resolveMulti(Matcher matcher, Map<String, Object> variables, int iterationCount) {
     StringBuffer sb = new StringBuffer();
     boolean replacedAny = false;

@@ -70,7 +70,7 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
     File file = getFileInternal(url, context);
     if (!file.exists()) {
-      throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
+      throwFileNotFoundException(file);
     }
     return new BufferedInputStream(new FileInputStream(file));
   }
@@ -79,7 +79,7 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
     File file = getFileInternal(url, context);
     if (!file.exists()) {
-      throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
+      throwFileNotFoundException(file);
     }
     return file.toURI().toURL();
   }
@@ -89,7 +89,7 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   public void deleteFile(String url, UrlFilePluginContext context) throws IOException {
     File file = getFileInternal(url, context);
     if (!file.exists()) {
-      throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
+      throwFileNotFoundException(file);
     }
     Files.delete(file.toPath());
   }
@@ -113,6 +113,10 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
       String relativePath = url;
       return new File(context.getBaseDir(), relativePath);
     }
+  }
+
+  private static void throwFileNotFoundException(File file) throws FileNotFoundException {
+    throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
   }
 
 }

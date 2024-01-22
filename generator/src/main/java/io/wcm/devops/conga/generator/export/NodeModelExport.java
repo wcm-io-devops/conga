@@ -71,6 +71,7 @@ public final class NodeModelExport {
    *          environment.
    * @param yamlRepresenter YAML representer
    */
+  @SuppressWarnings("java:S107") // allow many parameters
   public NodeModelExport(File nodeDir, Node node, Environment environment, ModelExport modelExport,
       VariableStringResolver variableStringResolver, VariableMapResolver variableMapResolver,
       Map<String, String> containerVersionInfo, PluginContextOptions pluginContextOptions,
@@ -105,11 +106,9 @@ public final class NodeModelExport {
    * @param role Role name
    * @param roleVariants Role variant name
    * @param config Merged configuration (unresolved)
-   * @param sensitiveConfigParametersList List of configuration parameter names that contain sensitive data
    * @return Node role data
    */
-  public ExportNodeRoleData addRole(String role, List<String> roleVariants, Map<String, Object> config,
-      List<String> sensitiveConfigParametersList) {
+  public ExportNodeRoleData addRole(String role, List<String> roleVariants, Map<String, Object> config) {
     if (!isActive()) {
       return new ExportNodeRoleData();
     }

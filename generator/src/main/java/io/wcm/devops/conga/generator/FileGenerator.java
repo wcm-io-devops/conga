@@ -97,14 +97,13 @@ class FileGenerator {
   static final String POSTPROCESSOR_KEY_FILE_HEADER = "postProcessor.fileHeader";
   static final String POSTPROCESSOR_KEY_VALIDATORS = "postProcessor.validators";
 
-  //CHECKSTYLE:OFF
+  @SuppressWarnings({ "java:S107", "checkstyle:ParameterNumberCheck" }) // allow many parameters
   FileGenerator(GeneratorOptions options, String environmentName,
       String roleName, List<String> roleVariantNames, String templateName,
       File nodeDir, File file, String url, String symlinkTarget,
       RoleFile roleFile, Map<String, Object> config, Template template,
       VariableMapResolver variableMapResolver, UrlFileManager urlFileManager, PluginContextOptions pluginContextOptions,
       Collection<String> dependencyVersions) {
-    //CHECKSTYLE:ON
     this.environmentName = environmentName;
     this.roleName = roleName;
     this.roleVariantNames = roleVariantNames;
@@ -206,6 +205,10 @@ class FileGenerator {
    * @return List of files that where generated directly or indirectly (by post processors).
    */
   @SuppressFBWarnings({ "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" })
+  @SuppressWarnings({
+      "java:S3776", // ignore complexity
+      "java:S2696" // static variable set by intention
+  })
   public Collection<GeneratedFileContext> generate() throws IOException {
     File dir = file.getParentFile();
     if (!dir.exists()) {

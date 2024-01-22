@@ -43,7 +43,10 @@ public final class MapSplitter {
    * @return Result with the first map (matching) with all matching values, and the second map (unmatching) with all
    *         values that do not match.
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({
+      "unchecked",
+      "java:S135" // multiple continue statements
+  })
   public static @NotNull SplitResult splitMap(Map<String, Object> map,
       @NotNull Predicate<Map.Entry<String, Object>> matcher) {
     Map<String, Object> matching = new HashMap<>();

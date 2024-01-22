@@ -77,7 +77,10 @@ public class PackageMojo extends AbstractCongaMojo {
   }
 
 
-  @SuppressWarnings("PMD.UseStringBufferForStringAppends")
+  @SuppressWarnings({
+      "PMD.UseStringBufferForStringAppends",
+      "java:S3776" // ignore complexity
+  })
   private void buildGeneratedConfigurationAttachments() throws MojoExecutionException, MojoFailureException {
     Set<String> selectedEnvironments;
     if (environments != null && environments.length > 0) {
@@ -167,6 +170,7 @@ public class PackageMojo extends AbstractCongaMojo {
    * @param basePath Base path
    * @param directory Directory to include
    */
+  @SuppressWarnings("java:S3776") // ignore complexity
   private void addZipDirectory(String basePath, File directory) throws MojoExecutionException {
     String directoryPath = toZipDirectoryPath(directory);
     if (StringUtils.startsWith(directoryPath, basePath)) {

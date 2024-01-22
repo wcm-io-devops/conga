@@ -279,6 +279,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     return jarFile;
   }
 
+  @SuppressWarnings("java:S1168") // null array is allowed
   private String[] toArray(List<String> values) {
     if (values == null || values.isEmpty()) {
       return null;
