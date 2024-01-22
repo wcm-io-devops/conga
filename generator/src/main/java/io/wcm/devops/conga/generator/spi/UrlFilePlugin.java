@@ -25,8 +25,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 
 /**
@@ -80,7 +78,7 @@ public interface UrlFilePlugin extends Plugin {
    * @throws IOException If the access to the file failed
    */
   default List<URL> getFileUrlsWithDependencies(String url, UrlFilePluginContext context) throws IOException {
-    return ImmutableList.of(getFileUrl(url, context));
+    return List.of(getFileUrl(url, context));
   }
 
   /**

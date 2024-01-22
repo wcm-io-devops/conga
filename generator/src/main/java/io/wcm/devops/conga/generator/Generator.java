@@ -27,8 +27,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import com.google.common.collect.ImmutableList;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.util.FileUtil;
 import io.wcm.devops.conga.model.environment.Environment;
@@ -54,7 +52,7 @@ public final class Generator {
 
     ClassLoader resourceClassLoader = ResourceLoaderUtil.buildClassLoader(options.getContainerClasspathUrls());
     ResourceLoader resourceLoader = new ResourceLoader(resourceClassLoader);
-    List<ResourceCollection> environmentDirs = ImmutableList.of(
+    List<ResourceCollection> environmentDirs = List.of(
         resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + options.getEnvironmentDir()),
         resourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + GeneratorOptions.CLASSPATH_ENVIRONMENTS_DIR));
     this.environments = ResourceLoaderUtil.readModels(environmentDirs, new EnvironmentReader());

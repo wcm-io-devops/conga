@@ -40,9 +40,6 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.NodeModelExport;
@@ -132,10 +129,10 @@ final class EnvironmentGenerator {
     ResourceLoader resourceLoader = new ResourceLoader(resourceClassLoader);
 
     // prepare template and role directories
-    List<ResourceCollection> templateDirs = ImmutableList.of(
+    List<ResourceCollection> templateDirs = List.of(
         resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + options.getTemplateDir()),
         resourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + GeneratorOptions.CLASSPATH_TEMPLATES_DIR));
-    List<ResourceCollection> roleDirs = ImmutableList.of(
+    List<ResourceCollection> roleDirs = List.of(
         resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + options.getRoleDir()),
         resourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + GeneratorOptions.CLASSPATH_ROLES_DIR));
 
@@ -154,7 +151,7 @@ final class EnvironmentGenerator {
     this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginContextOptions);
 
     this.defaultMultiplyPlugin = options.getPluginManager().get(NoneMultiply.NAME, MultiplyPlugin.class);
-    this.environmentContextProperties = ImmutableMap.copyOf(
+    this.environmentContextProperties = Collections.unmodifiableMap(
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, options.getVersion(),
             variableObjectTreeResolver, variableStringResolver));
 
@@ -178,7 +175,7 @@ final class EnvironmentGenerator {
     log.info("");
     log.info("===== Environment '{}' =====", environmentName);
 
-    Set<String> nodeNamesIndex = ArrayUtils.isEmpty(nodeNames) ? Collections.emptySet() : ImmutableSet.copyOf(nodeNames);
+    Set<String> nodeNamesIndex = ArrayUtils.isEmpty(nodeNames) ? Collections.emptySet() : Set.of(nodeNames);
     for (Node node : environment.getNodes()) {
       if (isSelectedNode(node, nodeNamesIndex)) {
         generateNode(node);

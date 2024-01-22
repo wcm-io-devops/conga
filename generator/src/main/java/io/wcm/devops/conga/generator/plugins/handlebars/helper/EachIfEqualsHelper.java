@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 /**
  * Handlebars helper that extends the each helper by iterating only on list items that have a specified property set to
@@ -41,7 +41,7 @@ public final class EachIfEqualsHelper extends AbstractEachIfHelper {
       if (expectedValue == null) {
         return false;
       }
-      return Objects.equal(value, expectedValue);
+      return Objects.equals(value, expectedValue);
     });
   }
 

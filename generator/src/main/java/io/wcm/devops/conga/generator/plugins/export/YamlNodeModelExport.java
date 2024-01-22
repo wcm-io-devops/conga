@@ -24,16 +24,15 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedMap;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.export.NodeModelExportPlugin;
@@ -74,7 +73,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
     Map<String, String> versionInfo = context.getContainerVersionInfo();
     if (versionInfo != null) {
-      modelMap.put("versionInfo", ImmutableSortedMap.copyOf(versionInfo));
+      modelMap.put("versionInfo", Collections.unmodifiableSortedMap(new TreeMap<>(versionInfo)));
     }
 
     // save YAML file
@@ -101,7 +100,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
           Map<String, Object> itemMap = new LinkedHashMap<>();
           itemMap.put("path", cleanupFileName(item.getFileContext().getCanonicalPath(), nodeDirPath));
           if (!item.getPostProcessors().isEmpty()) {
-            itemMap.put("postProcessors", ImmutableList.copyOf(item.getPostProcessors()));
+            itemMap.put("postProcessors", List.copyOf(item.getPostProcessors()));
           }
           Map<String, Object> modelOptions = item.getFileContext().getModelOptions();
           if (modelOptions != null) {
