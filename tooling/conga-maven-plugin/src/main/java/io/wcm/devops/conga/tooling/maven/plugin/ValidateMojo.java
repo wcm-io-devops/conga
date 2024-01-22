@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.SortedSet;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
@@ -200,7 +200,7 @@ public class ValidateMojo extends AbstractCongaMojo {
   }
 
   private <T> List<T> validateFiles(ResourceCollection sourceDir, ResourceCollection rootSourceDir, DefinitionValidator<T> validator,
-      Function<ResourceInfo, Boolean> resourceFilter) throws MojoFailureException {
+      Predicate<ResourceInfo> resourceFilter) throws MojoFailureException {
     if (!sourceDir.exists()) {
       return List.of();
     }
@@ -212,12 +212,12 @@ public class ValidateMojo extends AbstractCongaMojo {
 
     List<T> result = new ArrayList<>();
     for (Resource file : files) {
-      if (resourceFilter.apply(file)) {
+      if (resourceFilter.test(file)) {
         result.add(validator.validate(file, getPathForLog(rootSourceDir, file)));
       }
     }
     for (ResourceCollection dir : dirs) {
-      if (resourceFilter.apply(dir)) {
+      if (resourceFilter.test(dir)) {
         result.addAll(validateFiles(dir, rootSourceDir, validator, resourceFilter));
       }
     }
@@ -269,7 +269,7 @@ public class ValidateMojo extends AbstractCongaMojo {
             throw new GeneratorException("Unable to resolve: " + resolvedDependencyUrl, ex);
           }
         })
-        .flatMap(list -> list.stream())
+        .flatMap(List::stream)
         .collect(Collectors.toList());
   }
 
@@ -295,7 +295,7 @@ public class ValidateMojo extends AbstractCongaMojo {
       org.springframework.core.io.Resource[] resources = resolver.getResources(
           "classpath*:" + GeneratorOptions.CLASSPATH_PREFIX + BuildConstants.FILE_VERSION_INFO);
       return Arrays.stream(resources)
-          .map(resource -> toProperties(resource))
+          .map(this::toProperties)
           .collect(Collectors.toList());
     }
     catch (IOException ex) {
@@ -310,7 +310,7 @@ public class ValidateMojo extends AbstractCongaMojo {
       return props;
     }
     catch (IOException ex) {
-      throw new RuntimeException("Unable to read properties file: " + resource.toString(), ex);
+      throw new IllegalArgumentException("Unable to read properties file: " + resource.toString(), ex);
     }
   }
 

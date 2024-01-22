@@ -32,6 +32,7 @@ import io.wcm.devops.conga.resource.Resource;
 /**
  * Charset-aware TemplateSource for handlebars.
  */
+@SuppressWarnings("java:S2160") // equals/hashCode is implemented in base class
 class CharsetAwareTemplateSource extends AbstractTemplateSource {
 
   private final Resource file;

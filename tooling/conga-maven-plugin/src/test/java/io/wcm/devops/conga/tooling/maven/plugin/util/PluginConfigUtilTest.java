@@ -25,10 +25,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-public class PluginConfigUtilTest {
+class PluginConfigUtilTest {
 
   @Test
-  public void testGetConfigMap() {
+  void testGetConfigMap() {
     assertEquals(Map.of(),
         PluginConfigUtil.getConfigMap(null));
 

@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Expands map with shortcut keys like
@@ -46,7 +48,7 @@ public final class MapExpander {
    * @return Value or null
    */
   @SuppressWarnings("unchecked")
-  public static Object getDeep(Map<String, Object> map, String key) {
+  public static @Nullable Object getDeep(@NotNull Map<String, Object> map, @NotNull String key) {
     if (map.containsKey(key)) {
       return ObjectUtils.defaultIfNull(map.get(key), "");
     }
@@ -67,7 +69,7 @@ public final class MapExpander {
    * @return Expanded amp
    */
   @SuppressWarnings("unchecked")
-  public static Map<String, Object> expand(Map<String, Object> map) {
+  public static @Nullable Map<String, Object> expand(@Nullable Map<String, Object> map) {
     if (map == null) {
       return null;
     }
@@ -89,9 +91,9 @@ public final class MapExpander {
     return expanded;
   }
 
-  private static Map.Entry<String, Object> expandEntry(Map.Entry<String, Object> entry) {
+  private static @NotNull Map.Entry<String, Object> expandEntry(@NotNull Map.Entry<String, Object> entry) {
     if (!StringUtils.contains(entry.getKey(), ".")) {
-      return new MapEntry<String, Object>(entry.getKey(), expandDeep(entry.getValue()));
+      return new MapEntry<>(entry.getKey(), expandDeep(entry.getValue()));
     }
 
     String key = StringUtils.substringBefore(entry.getKey(), ".");
@@ -101,11 +103,11 @@ public final class MapExpander {
     map.put(remaining, expandDeep(entry.getValue()));
     Map<String, Object> expandedMap = expand(map);
 
-    return new MapEntry<String, Object>(key, expandedMap);
+    return new MapEntry<>(key, expandedMap);
   }
 
   @SuppressWarnings("unchecked")
-  private static Object expandDeep(Object object) {
+  private static @Nullable Object expandDeep(@Nullable Object object) {
     if (object instanceof Map) {
       return expand((Map<String, Object>)object);
     }

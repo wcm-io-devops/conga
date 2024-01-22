@@ -34,7 +34,7 @@ import io.wcm.devops.conga.tooling.maven.plugin.BuildConstants;
 public final class VersionInfoUtil {
 
   // match versions like 2.1.2-20180125.094723-16
-  private static final Pattern SNAPSHOT_VERSION_PATTERN = Pattern.compile("(\\d+(\\.\\d+)*)-(\\d{8}\\.\\d{6}\\-\\d+)");
+  private static final Pattern SNAPSHOT_VERSION_PATTERN = Pattern.compile("^(\\d+(\\.\\d+)*+)-(\\d{8}\\.\\d{6}\\-\\d+)$");
 
   private VersionInfoUtil() {
     // static methods only

@@ -309,7 +309,7 @@ class FileGenerator {
     }
     catch (IOException ex) {
       // creates symbolic link failed - log warning and fallback to copying content
-      log.warn("Unable to create symbolic link: " + ex.getMessage());
+      log.warn("Unable to create symbolic link: {}", ex.getMessage());
       return false;
     }
   }
@@ -332,7 +332,7 @@ class FileGenerator {
     }
     catch (IOException ex) {
       // creates symbolic link failed - create text file with link instead (similar to git)
-      log.warn("Created link textfile instead of symbolic link: " + ex.getMessage());
+      log.warn("Created link textfile instead of symbolic link: {}", ex.getMessage());
       FileUtils.write(linkPath.toFile(), relativizedPath.toString(), StandardCharsets.UTF_8);
     }
   }
@@ -447,7 +447,7 @@ class FileGenerator {
     });
 
     // apply post processor configured as implicit ALWAYS
-    consolidatedFiles.values().forEach(fileItem -> {
+    consolidatedFiles.values().forEach(fileItem ->
       pluginManager.getAll(PostProcessorPlugin.class).stream()
           .filter(implicitPlugin -> implicitPlugin.accepts(fileItem.getFileContext(), postProcessorContext))
           .filter(implicitPlugin -> implicitPlugin.implicitApply(fileItem.getFileContext(), postProcessorContext) == ImplicitApplyOptions.ALWAYS)
@@ -464,8 +464,8 @@ class FileGenerator {
               }
               generatedFileContext.postProcessor(implicitPlugin.getName());
             });
-          });
-    });
+          })
+    );
 
     // remove items that do no longer exist
     List.copyOf(consolidatedFiles.values()).forEach(fileItem -> {

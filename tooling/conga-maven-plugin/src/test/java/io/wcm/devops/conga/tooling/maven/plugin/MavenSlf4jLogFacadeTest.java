@@ -24,11 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-
-public class MavenSlf4jLogFacadeTest {
+class MavenSlf4jLogFacadeTest {
 
   @Test
-  public void testFormatMessage() {
+  void testFormatMessage() {
     assertEquals("Der", formatMessage("Der"));
     assertEquals("Der {}", formatMessage("Der {}"));
     assertEquals("Der Jodelkaiser", formatMessage("Der {}", "Jodelkaiser"));

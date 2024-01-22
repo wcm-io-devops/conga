@@ -41,13 +41,10 @@ import io.wcm.devops.conga.model.util.MapMerger;
  */
 public final class ConfigInheritanceResolver extends AbstractConfigurableObjectTreeProcessor<Map<String, Object>> {
 
-  private static final ConfigurableProcessor<Map<String, Object>> PROCESSOR = new ConfigurableProcessor<Map<String, Object>>() {
-    @Override
-    public Map<String, Object> process(Configurable configurable, Map<String, Object> parentConfig) {
-      Map<String, Object> mergedConfig = MapMerger.merge(configurable.getConfig(), parentConfig);
-      configurable.setConfig(mergedConfig);
-      return mergedConfig;
-    }
+  private static final ConfigurableProcessor<Map<String, Object>> PROCESSOR = (configurable, parentConfig) -> {
+    Map<String, Object> mergedConfig = MapMerger.merge(configurable.getConfig(), parentConfig);
+    configurable.setConfig(mergedConfig);
+    return mergedConfig;
   };
 
   private ConfigInheritanceResolver(Set<String> ignorePropertyNames) {
