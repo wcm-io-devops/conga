@@ -62,7 +62,7 @@ public final class MapMerger {
       if (map2 != null) {
         merged.putAll(map2);
       }
-      return merged;<>
+      return merged;
     }
 
     Set<K> allKeys = new HashSet<>();
