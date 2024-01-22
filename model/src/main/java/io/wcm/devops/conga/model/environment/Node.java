@@ -33,6 +33,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 public final class Node extends AbstractConfigurable {
   private static final long serialVersionUID = -7827167562783775179L;
 
+  @SuppressWarnings("java:S1700")
   private String node;
   private List<String> nodes = new ArrayList<>();
   private List<NodeRole> roles = new ArrayList<>();

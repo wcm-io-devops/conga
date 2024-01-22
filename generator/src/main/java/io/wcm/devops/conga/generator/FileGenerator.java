@@ -214,7 +214,9 @@ class FileGenerator {
 
     Collection<GeneratedFileContext> postProcessedFiles;
     if (template != null) {
-      log.info("Generate file {}", getFilenameForLog(fileContext));
+      if (log.isInfoEnabled()) {
+        log.info("Generate file {}", getFilenameForLog(fileContext));
+      }
 
       // generate with template
       generateWithTemplate();
@@ -230,7 +232,9 @@ class FileGenerator {
       // if copying from a local file try to create a symlink instead of coyping it
       boolean symlinkCreated = false;
       if (allowSymlinks && !symlinkCreationFailed && urlFileManager.isLocalFile(url) && !roleFile.isDeleteSource()) {
-        log.info("Symlink file {} from {}", getFilenameForLog(fileContext), url);
+        if (log.isInfoEnabled()) {
+          log.info("Symlink file {} from {}", getFilenameForLog(fileContext), url);
+        }
         if (createSymlinkToLocalFile()) {
           symlinkCreated = true;
         }
@@ -241,7 +245,9 @@ class FileGenerator {
 
       // generate by downloading/copying from URL
       if (!symlinkCreated) {
-        log.info("Copy file {} from {}", getFilenameForLog(fileContext), url);
+        if (log.isInfoEnabled()) {
+          log.info("Copy file {} from {}", getFilenameForLog(fileContext), url);
+        }
         copyFromUrlFile();
       }
 
@@ -386,7 +392,9 @@ class FileGenerator {
   }
 
   private void applyFileHeader(FileContext fileItem, FileHeaderPlugin plugin) {
-    log.debug("  Add {} file header to file {}", plugin.getName(), getFilenameForLog(fileItem));
+    if (log.isDebugEnabled()) {
+      log.debug("  Add {} file header to file {}", plugin.getName(), getFilenameForLog(fileItem));
+    }
     plugin.apply(fileItem, fileHeaderContext);
   }
 
@@ -397,7 +405,9 @@ class FileGenerator {
   }
 
   private void applyValidation(FileContext fileItem, ValidatorPlugin plugin) {
-    log.info("  Validate {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    if (log.isInfoEnabled()) {
+      log.info("  Validate {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    }
     plugin.apply(fileItem, validatorContext);
   }
 
@@ -477,7 +487,9 @@ class FileGenerator {
   }
 
   private List<FileContext> applyPostProcessor(FileContext fileItem, PostProcessorPlugin plugin) {
-    log.info("  Post-process {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    if (log.isInfoEnabled()) {
+      log.info("  Post-process {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    }
 
     List<FileContext> processedFiles = plugin.apply(fileItem, postProcessorContext);
 

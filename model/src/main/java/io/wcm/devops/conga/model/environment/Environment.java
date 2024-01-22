@@ -33,6 +33,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * Defines an environment with a set of nodes and configuration.
  * The filename of the environment YAML file is the environment name, it's not included in the model.
  */
+@SuppressWarnings("java:S1948") // assume the maps are serializable
 public final class Environment extends AbstractConfigurable {
   private static final long serialVersionUID = -3146650632389125273L;
 

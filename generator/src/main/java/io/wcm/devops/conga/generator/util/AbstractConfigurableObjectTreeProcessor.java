@@ -92,7 +92,7 @@ abstract class AbstractConfigurableObjectTreeProcessor<T> {
       }
     }
     catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
-      throw new RuntimeException("Unable to get bean properties from '" + object.getClass().getName() + "'.", ex);
+      throw new IllegalArgumentException("Unable to get bean properties from '" + object.getClass().getName() + "'.", ex);
     }
   }
 
