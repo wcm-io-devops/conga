@@ -137,9 +137,9 @@ public final class MapMerger {
     }
     else {
       mergedList = new MergingList<>();
-      l1.forEach(item -> mergedList.addCheckMergeToken(item));
+      l1.forEach(mergedList::addCheckMergeToken);
     }
-    l2.forEach(item -> mergedList.add(item));
+    l2.forEach(mergedList::add);
     return mergedList;
   }
 

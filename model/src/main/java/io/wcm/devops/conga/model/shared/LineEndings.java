@@ -22,6 +22,7 @@ package io.wcm.devops.conga.model.shared;
 /**
  * Line endings for generated files.
  */
+@SuppressWarnings("java:S115") // naming convention
 public enum LineEndings {
 
   /**

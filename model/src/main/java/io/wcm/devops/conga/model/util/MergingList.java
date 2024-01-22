@@ -35,7 +35,7 @@ final class MergingList<T> extends LinkedList<T> {
   }
 
   MergingList(MergingList<T> mergingList) {
-    mergingList.forEach(item -> super.add(item));
+    mergingList.forEach(super::add);
     this.mergePositionIndex = mergingList.mergePositionIndex;
   }
 

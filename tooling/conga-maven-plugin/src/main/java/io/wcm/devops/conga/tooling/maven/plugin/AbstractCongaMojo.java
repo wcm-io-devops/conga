@@ -359,6 +359,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     }
   }
 
+  @SuppressWarnings("java:S1075") // not a filesystem path
   private String getPathForLog(File rootOutputDir, File file) throws IOException {
     String path = unifySlashes(file.getCanonicalPath());
     String rootPath = unifySlashes(rootOutputDir.getCanonicalPath()) + "/";

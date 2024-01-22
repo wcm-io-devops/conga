@@ -25,7 +25,6 @@ import java.util.List;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.github.jknack.handlebars.EscapingStrategy;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
@@ -61,12 +60,8 @@ public class HandlebarsManager {
           // setup handlebars
           TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
           EscapingStrategyPlugin escapingStrategy = pluginManager.get(options.getEscapingStrategy(), EscapingStrategyPlugin.class);
-          Handlebars handlebars = new Handlebars(templateLoader).with(new EscapingStrategy() {
-            @Override
-            public CharSequence escape(CharSequence value) {
-              return escapingStrategy.escape(value, escapingStrategyContext);
-            }
-          });
+          Handlebars handlebars = new Handlebars(templateLoader)
+              .with(value -> escapingStrategy.escape(value, escapingStrategyContext));
 
           // register helpers provided by JKnack Handlebars implementation
           handlebars.registerHelpers(StringHelpers.class);

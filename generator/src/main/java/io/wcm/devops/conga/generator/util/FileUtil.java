@@ -60,7 +60,7 @@ public final class FileUtil {
    * @return Canonical path
    * @deprecated use {@link FileContext#getCanonicalPath()} instead.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String getCanonicalPath(FileContext fileContext) {
     return fileContext.getCanonicalPath();
   }

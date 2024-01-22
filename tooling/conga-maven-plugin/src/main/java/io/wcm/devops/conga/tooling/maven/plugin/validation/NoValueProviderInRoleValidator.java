@@ -37,7 +37,7 @@ import io.wcm.devops.conga.resource.Resource;
  */
 public final class NoValueProviderInRoleValidator implements DefinitionValidator<Void> {
 
-  private final ModelReader<Map> mapReader = new MapReader();
+  private final ModelReader<Map<String, Object>> mapReader = new MapReader();
 
   @Override
   @SuppressWarnings("PMD.PreserveStackTrace")
@@ -71,7 +71,7 @@ public final class NoValueProviderInRoleValidator implements DefinitionValidator
     }
   }
 
-  private static class MapReader extends AbstractModelReader<Map> {
+  private static class MapReader extends AbstractModelReader<Map<String, Object>> {
     MapReader() {
       super(getYaml());
     }

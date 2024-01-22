@@ -29,13 +29,13 @@ enum ResourceType {
 
   FILE(ResourceLoader.FILE_PREFIX,
       (path, resourceLoader) -> new FileResourceImpl(path),
-      (path, resourceLoader) -> new FileResourceCollectionImpl(path, resourceLoader),
-      resource -> resource instanceof AbstractFileResourceInfoImpl),
+      FileResourceCollectionImpl::new,
+      AbstractFileResourceInfoImpl.class::isInstance),
 
   CLASSPATH(ResourceLoader.CLASSPATH_PREFIX,
-      (path, resourceLoader) -> new ClasspathResourceImpl(path, resourceLoader),
-      (path, resourceLoader) -> new ClasspathResourceCollectionImpl(path, resourceLoader),
-      resource -> resource instanceof AbstractClasspathResourceImpl);
+      ClasspathResourceImpl::new,
+      ClasspathResourceCollectionImpl::new,
+      AbstractClasspathResourceImpl.class::isInstance);
 
   private final String prefix;
   private final BiFunction<String, ResourceLoader, Resource> resourceFactory;

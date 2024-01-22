@@ -90,7 +90,7 @@ public class PackageMojo extends AbstractCongaMojo {
     // collect configuration environment directories
     File configRootDir = getTargetDir();
     List<File> environmentDirs = Arrays.stream(configRootDir.listFiles())
-        .filter(file -> file.isDirectory())
+        .filter(File::isDirectory)
         .filter(dir -> selectedEnvironments == null || selectedEnvironments.contains(dir.getName()))
         .collect(Collectors.toList());
 

@@ -39,12 +39,12 @@ import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.environment.RoleConfig;
 import io.wcm.devops.conga.model.environment.Tenant;
 
-public class EnvironmentReaderTest {
+class EnvironmentReaderTest {
 
   private Environment environment;
 
   @BeforeEach
-  public void setUp() throws IOException {
+  void setUp() throws IOException {
     EnvironmentReader reader = new EnvironmentReader();
     try (InputStream is = getClass().getResourceAsStream("/environment.yaml")) {
       environment = reader.read(is);
@@ -53,7 +53,7 @@ public class EnvironmentReaderTest {
   }
 
   @Test
-  public void testEnvironment() {
+  void testEnvironment() {
     assertEquals(3, environment.getNodes().size());
     assertEquals(1, environment.getRoleConfig().size());
     assertEquals(2, environment.getTenants().size());
@@ -66,7 +66,7 @@ public class EnvironmentReaderTest {
   }
 
   @Test
-  public void testNode() {
+  void testNode() {
     Node node = environment.getNodes().get(0);
 
     assertEquals("importer", node.getNode());
@@ -78,14 +78,14 @@ public class EnvironmentReaderTest {
   }
 
   @Test
-  public void testMultiNode() {
+  void testMultiNode() {
     Node node = environment.getNodes().get(1);
     assertEquals(List.of("services-1", "services-2"), node.getNodes());
     assertEquals(1, node.getRoles().size());
   }
 
   @Test
-  public void testNodeRole() {
+  void testNodeRole() {
     NodeRole role1 = environment.getNodes().get(0).getRoles().get(0);
     assertEquals("tomcat-services", role1.getRole());
     assertEquals("importer", role1.getVariant());
@@ -99,7 +99,7 @@ public class EnvironmentReaderTest {
   }
 
   @Test
-  public void testRoleConfig() {
+  void testRoleConfig() {
     RoleConfig roleConfig = environment.getRoleConfig().get(0);
 
     assertEquals("tomcat-backendconnector", roleConfig.getRole());
@@ -108,7 +108,7 @@ public class EnvironmentReaderTest {
   }
 
   @Test
-  public void testTenant() {
+  void testTenant() {
     Tenant tenant = environment.getTenants().get(0);
 
     assertEquals("tenant1", tenant.getTenant());
@@ -118,7 +118,7 @@ public class EnvironmentReaderTest {
   }
 
   @Test
-  public void testEnvironmentWithNullTenant() {
+  void testEnvironmentWithNullTenant() {
     assertThrows(ConstructorException.class, () -> {
       EnvironmentReader reader = new EnvironmentReader();
       try (InputStream is = getClass().getResourceAsStream("/environment_null_tenant.yaml")) {
@@ -128,12 +128,12 @@ public class EnvironmentReaderTest {
   }
 
   @Test
-  public void testDependencies() {
+  void testDependencies() {
     assertEquals(List.of("url1", "mvn:url2"), environment.getDependencies());
   }
 
   @Test
-  public void testPluginConfig() {
+  void testPluginConfig() {
     Map<String, Map<String, Object>> pluginConfig = environment.getPluginConfig();
     assertNotNull(pluginConfig);
 

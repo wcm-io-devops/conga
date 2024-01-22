@@ -102,7 +102,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
     return null;
   }
 
-  protected int getInsertPosition(@SuppressWarnings("unused") String content) {
+  protected int getInsertPosition(@SuppressWarnings({ "unused", "java:S1172" }) String content) {
     return 0;
   }
 
