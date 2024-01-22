@@ -116,6 +116,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
+        <!-- Stick with 5.x because higher versions require Java Version > 11 -->
         <version>5.3.31</version>
       </dependency>
 
