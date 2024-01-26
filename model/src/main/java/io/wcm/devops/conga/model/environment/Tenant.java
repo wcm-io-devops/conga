@@ -33,6 +33,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
 public final class Tenant extends AbstractConfigurable {
   private static final long serialVersionUID = 3984905428304600647L;
 
+  @SuppressWarnings("java:S1700")
   private String tenant;
   private List<String> roles = new ArrayList<>();
 

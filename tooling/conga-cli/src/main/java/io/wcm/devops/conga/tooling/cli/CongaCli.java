@@ -35,6 +35,7 @@ import io.wcm.devops.conga.generator.util.PluginManagerImpl;
 /**
  * CONGA command line interface.
  */
+@SuppressWarnings("java:S1192") // duplicate string literals
 public final class CongaCli {
 
   /**

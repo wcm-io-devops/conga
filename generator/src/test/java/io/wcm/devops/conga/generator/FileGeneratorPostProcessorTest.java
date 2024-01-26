@@ -52,9 +52,6 @@ import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
@@ -105,7 +102,7 @@ class FileGeneratorPostProcessorTest {
     when(pluginManager.getAll(PostProcessorPlugin.class)).thenAnswer(new Answer<List<PostProcessorPlugin>>() {
       @Override
       public List<PostProcessorPlugin> answer(InvocationOnMock invocation) throws Throwable {
-        return ImmutableList.copyOf(postProcessorPlugins.values());
+        return List.copyOf(postProcessorPlugins.values());
       }
     });
     when(pluginManager.get(anyString(), eq(PostProcessorPlugin.class))).thenAnswer(new Answer<PostProcessorPlugin>() {
@@ -125,19 +122,19 @@ class FileGeneratorPostProcessorTest {
     variableMapResolver = new VariableMapResolver(
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
     underTest = new FileGenerator(options, "env1",
-        "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, null, roleFile, ImmutableMap.<String, Object>of(), template,
-        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of());
+        "role1", List.of("variant1"), "template1",
+        destDir, file, null, null, roleFile, Map.<String, Object>of(), template,
+        variableMapResolver, urlFileManager, pluginContextOptions, List.of());
   }
 
   @Test
   void testWithoutPostProcessor() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
-    assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of());
+    assertItem(result.get(0), "test.txt", Map.of(), Set.of());
 
     verify(one, never()).apply(any(FileContext.class), any(PostProcessorContext.class));
   }
@@ -145,12 +142,12 @@ class FileGeneratorPostProcessorTest {
   @Test
   void testOnePostProcessor() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
-    roleFile.setPostProcessors(ImmutableList.of("one"));
+    roleFile.setPostProcessors(List.of("one"));
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
-    assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of("one"));
+    assertItem(result.get(0), "test.txt", Map.of(), Set.of("one"));
 
     verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
   }
@@ -165,17 +162,17 @@ class FileGeneratorPostProcessorTest {
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
         // delete input file and create new file test.abc instead
         FileContext input = invocation.getArgument(0);
-        assertItem(input, "test.txt", ImmutableMap.of());
+        assertItem(input, "test.txt", Map.of());
         input.getFile().delete();
-        return ImmutableList.of(newFile("test.abc"));
+        return List.of(newFile("test.abc"));
       }
     });
-    roleFile.setPostProcessors(ImmutableList.of("one"));
+    roleFile.setPostProcessors(List.of("one"));
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
-    assertItem(result.get(0), "test.abc", ImmutableMap.of(), ImmutableSet.of("one"));
+    assertItem(result.get(0), "test.abc", Map.of(), Set.of("one"));
 
     verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
   }
@@ -189,23 +186,23 @@ class FileGeneratorPostProcessorTest {
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
         // delete input file and create new file test.abc instead
         FileContext input = invocation.getArgument(0);
-        assertItem(input, "test.txt", ImmutableMap.of());
+        assertItem(input, "test.txt", Map.of());
         input.getFile().delete();
-        return ImmutableList.of(newFile("test.abc"));
+        return List.of(newFile("test.abc"));
       }
     });
-    roleFile.setPostProcessors(ImmutableList.of("one"));
+    roleFile.setPostProcessors(List.of("one"));
 
-    roleFile.setPostProcessorOptions(ImmutableMap.of(
+    roleFile.setPostProcessorOptions(Map.of(
         FileGenerator.POSTPROCESSOR_KEY_FILE_HEADER, "my-fileheader",
-        FileGenerator.POSTPROCESSOR_KEY_VALIDATORS, ImmutableList.of("my-validator")));
+        FileGenerator.POSTPROCESSOR_KEY_VALIDATORS, List.of("my-validator")));
     underTest = new FileGenerator(options, "env1",
-        "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, null, roleFile, ImmutableMap.<String, Object>of(), template,
-        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of());
+        "role1", List.of("variant1"), "template1",
+        destDir, file, null, null, roleFile, Map.<String, Object>of(), template,
+        variableMapResolver, urlFileManager, pluginContextOptions, List.of());
 
     FileHeaderPlugin fileHeaderPlugin = mock(FileHeaderPlugin.class);
-    when(pluginManager.get(eq("my-fileheader"), eq(FileHeaderPlugin.class))).thenAnswer(new Answer<FileHeaderPlugin>() {
+    when(pluginManager.get("my-fileheader", FileHeaderPlugin.class)).thenAnswer(new Answer<FileHeaderPlugin>() {
       @Override
       public FileHeaderPlugin answer(InvocationOnMock invocation) throws Throwable {
         return fileHeaderPlugin;
@@ -213,17 +210,17 @@ class FileGeneratorPostProcessorTest {
     });
 
     ValidatorPlugin validatorPlugin = mock(ValidatorPlugin.class);
-    when(pluginManager.get(eq("my-validator"), eq(ValidatorPlugin.class))).thenAnswer(new Answer<ValidatorPlugin>() {
+    when(pluginManager.get("my-validator", ValidatorPlugin.class)).thenAnswer(new Answer<ValidatorPlugin>() {
       @Override
       public ValidatorPlugin answer(InvocationOnMock invocation) throws Throwable {
         return validatorPlugin;
       }
     });
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
-    assertItem(result.get(0), "test.abc", ImmutableMap.of(), ImmutableSet.of("one"));
+    assertItem(result.get(0), "test.abc", Map.of(), Set.of("one"));
 
     verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
     verify(fileHeaderPlugin, times(1)).apply(any(FileContext.class), any(FileHeaderContext.class));
@@ -234,12 +231,12 @@ class FileGeneratorPostProcessorTest {
   void testTwoPostProcessors() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     PostProcessorPlugin two = mockPostProcessor("two", "txt", ImplicitApplyOptions.NEVER);
-    roleFile.setPostProcessors(ImmutableList.of("one", "two"));
+    roleFile.setPostProcessors(List.of("one", "two"));
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
-    assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of("one", "two"));
+    assertItem(result.get(0), "test.txt", Map.of(), Set.of("one", "two"));
 
     verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
     verify(two, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
@@ -254,9 +251,9 @@ class FileGeneratorPostProcessorTest {
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
         // delete input file and create new file test.abc instead
         FileContext input = invocation.getArgument(0);
-        assertItem(input, "test.txt", ImmutableMap.of());
+        assertItem(input, "test.txt", Map.of());
         input.getFile().delete();
-        return ImmutableList.of(newFile("test.abc"));
+        return List.of(newFile("test.abc"));
       }
     });
 
@@ -266,28 +263,28 @@ class FileGeneratorPostProcessorTest {
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
         // create new file test.def
         FileContext input = invocation.getArgument(0);
-        assertItem(input, "test.abc", ImmutableMap.of());
-        return ImmutableList.of(newFile("test.def"));
+        assertItem(input, "test.abc", Map.of());
+        return List.of(newFile("test.def"));
       }
     });
 
-    roleFile.setPostProcessors(ImmutableList.of("one", "two"));
+    roleFile.setPostProcessors(List.of("one", "two"));
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(2, result.size());
-    assertItem(result.get(0), "test.abc", ImmutableMap.of(), ImmutableSet.of("one", "two"));
-    assertItem(result.get(1), "test.def", ImmutableMap.of(), ImmutableSet.of("two"));
+    assertItem(result.get(0), "test.abc", Map.of(), Set.of("one", "two"));
+    assertItem(result.get(1), "test.def", Map.of(), Set.of("two"));
   }
 
   @Test
   void testImplicitPostProcessor() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
-    assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of("one"));
+    assertItem(result.get(0), "test.txt", Map.of(), Set.of("one"));
 
     verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
   }
@@ -296,10 +293,10 @@ class FileGeneratorPostProcessorTest {
   void testAlwaysPostProcessor() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.ALWAYS);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
-    assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of("one"));
+    assertItem(result.get(0), "test.txt", Map.of(), Set.of("one"));
 
     verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
   }
@@ -312,20 +309,20 @@ class FileGeneratorPostProcessorTest {
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
         // delete input file and create new file test.abc instead
         FileContext input = invocation.getArgument(0);
-        assertItem(input, "test.txt", ImmutableMap.of());
-        return ImmutableList.of(newFile("test.abc"));
+        assertItem(input, "test.txt", Map.of());
+        return List.of(newFile("test.abc"));
       }
     });
     PostProcessorPlugin two = mockPostProcessor("two", "txt", ImplicitApplyOptions.ALWAYS);
     PostProcessorPlugin three = mockPostProcessor("three", "abc", ImplicitApplyOptions.ALWAYS);
 
-    roleFile.setPostProcessors(ImmutableList.of("one"));
+    roleFile.setPostProcessors(List.of("one"));
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(2, result.size());
-    assertItem(result.get(0), "test.txt", ImmutableMap.of(), ImmutableSet.of("one", "two"));
-    assertItem(result.get(1), "test.abc", ImmutableMap.of(), ImmutableSet.of("one", "three"));
+    assertItem(result.get(0), "test.txt", Map.of(), Set.of("one", "two"));
+    assertItem(result.get(1), "test.abc", Map.of(), Set.of("one", "three"));
 
     verify(one, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));
     verify(two, times(1)).apply(any(FileContext.class), any(PostProcessorContext.class));

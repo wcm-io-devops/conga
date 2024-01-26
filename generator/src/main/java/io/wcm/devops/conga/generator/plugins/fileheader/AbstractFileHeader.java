@@ -20,15 +20,15 @@
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.collect.ImmutableList;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.GeneratorException;
@@ -50,7 +50,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
 
       List<String> sanitizedCommentLines;
       if (context.getCommentLines() == null) {
-        sanitizedCommentLines = ImmutableList.of();
+        sanitizedCommentLines = List.of();
       }
       else {
         sanitizedCommentLines = context.getCommentLines().stream()
@@ -69,7 +69,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
           + StringUtils.defaultString(getBlockSuffix())
           + StringUtils.substring(content, insertPosition);
 
-      file.getFile().delete();
+      Files.delete(file.getFile().toPath());
       FileUtils.write(file.getFile(), content, file.getCharset());
     }
     catch (IOException ex) {
@@ -102,7 +102,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
     return null;
   }
 
-  protected int getInsertPosition(@SuppressWarnings("unused") String content) {
+  protected int getInsertPosition(@SuppressWarnings({ "unused", "java:S1172" }) String content) {
     return 0;
   }
 
@@ -120,7 +120,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
         int posBlockEnd = content.indexOf(getCommentBlockEnd());
         if (posBlockStart == insertPosition && posBlockEnd > 0) {
           String fileHeader = content.substring(posBlockStart + getCommentBlockStart().length(), posBlockEnd);
-          List<String> lines = ImmutableList.copyOf(StringUtils.split(fileHeader, getLineBreak()));
+          List<String> lines = Arrays.asList(StringUtils.split(fileHeader, getLineBreak()));
           return new FileHeaderContext().commentLines(lines);
         }
       }
@@ -136,6 +136,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
    * @param file File File
    * @return File header or null
    */
+  @SuppressWarnings("java:S3776") // ignore complexity
   protected final FileHeaderContext extractFileHeaderWithLinePrefixes(FileContext file) {
     try {
       if (StringUtils.isNotEmpty(getLineBreak()) && StringUtils.isNotEmpty(getCommentLinePrefix())) {

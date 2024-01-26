@@ -60,7 +60,7 @@ public final class FileUtil {
    * @return Canonical path
    * @deprecated use {@link FileContext#getCanonicalPath()} instead.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public static String getCanonicalPath(FileContext fileContext) {
     return fileContext.getCanonicalPath();
   }
@@ -110,7 +110,16 @@ public final class FileUtil {
    * @return true if file extension matches
    */
   public static boolean matchesExtension(File file, String extension) {
-    return matchesExtension(FilenameUtils.getExtension(file.getName()), extension);
+    String fileName = file.getName();
+    String fileExtension;
+    // special handling for OSGi configuration resource file extension
+    if (fileName.endsWith(".cfg.json")) {
+      fileExtension = "cfg.json";
+    }
+    else {
+      fileExtension = FilenameUtils.getExtension(fileName);
+    }
+    return matchesExtension(fileExtension, extension);
   }
 
   /**

@@ -29,6 +29,7 @@ import org.slf4j.Marker;
 /**
  * Facade to rout SLF4J logging calls to maven plugin logger.
  */
+@SuppressWarnings("java:S2629")
 class MavenSlf4jLogFacade implements Logger {
 
   private static final Pattern ARGUMENT_PATTERN = Pattern.compile("\\{\\}");

@@ -67,7 +67,7 @@ public final class RoleTemplateFileValidator implements DefinitionValidator<Void
         boolean hasTemplate = StringUtils.isNotEmpty(roleFile.getTemplate());
         boolean hasUrl = StringUtils.isNotEmpty(roleFile.getUrl());
         boolean hasSymlinkTarget = StringUtils.isNotEmpty(roleFile.getSymlinkTarget());
-        if ((hasTemplate && hasUrl) || (hasTemplate & hasSymlinkTarget) || (hasUrl && hasSymlinkTarget)) {
+        if ((hasTemplate && hasUrl) || (hasTemplate && hasSymlinkTarget) || (hasUrl && hasSymlinkTarget)) {
           throw new IllegalArgumentException("Only one of the attributes 'template', 'url', 'symlinkTarget' is allowed for a file definition.");
         }
 

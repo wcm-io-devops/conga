@@ -26,14 +26,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.constructor.ConstructorException;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
@@ -41,12 +39,12 @@ import io.wcm.devops.conga.model.environment.NodeRole;
 import io.wcm.devops.conga.model.environment.RoleConfig;
 import io.wcm.devops.conga.model.environment.Tenant;
 
-public class EnvironmentReaderTest {
+class EnvironmentReaderTest {
 
   private Environment environment;
 
   @BeforeEach
-  public void setUp() throws IOException {
+  void setUp() throws IOException {
     EnvironmentReader reader = new EnvironmentReader();
     try (InputStream is = getClass().getResourceAsStream("/environment.yaml")) {
       environment = reader.read(is);
@@ -55,87 +53,87 @@ public class EnvironmentReaderTest {
   }
 
   @Test
-  public void testEnvironment() {
+  void testEnvironment() {
     assertEquals(3, environment.getNodes().size());
     assertEquals(1, environment.getRoleConfig().size());
     assertEquals(2, environment.getTenants().size());
 
-    assertEquals(ImmutableMap.of(
+    assertEquals(Map.of(
         "topologyConnectorPath", "/connector",
-        "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "4096m")),
-        "topologyConnectors", ImmutableList.of("http://host1${topologyConnectorPath}", "http://host2${topologyConnectorPath}")
+        "jvm", Map.of("heapspace", Map.of("max", "4096m")),
+        "topologyConnectors", List.of("http://host1${topologyConnectorPath}", "http://host2${topologyConnectorPath}")
         ), environment.getConfig());
   }
 
   @Test
-  public void testNode() {
+  void testNode() {
     Node node = environment.getNodes().get(0);
 
     assertEquals("importer", node.getNode());
 
-    assertEquals(ImmutableMap.of("topologyConnectorPath", "/specialConnector",
-        "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "2048m"))), node.getConfig());
+    assertEquals(Map.of("topologyConnectorPath", "/specialConnector",
+        "jvm", Map.of("heapspace", Map.of("max", "2048m"))), node.getConfig());
 
     assertEquals(2, node.getRoles().size());
   }
 
   @Test
-  public void testMultiNode() {
+  void testMultiNode() {
     Node node = environment.getNodes().get(1);
-    assertEquals(ImmutableList.of("services-1", "services-2"), node.getNodes());
+    assertEquals(List.of("services-1", "services-2"), node.getNodes());
     assertEquals(1, node.getRoles().size());
   }
 
   @Test
-  public void testNodeRole() {
+  void testNodeRole() {
     NodeRole role1 = environment.getNodes().get(0).getRoles().get(0);
     assertEquals("tomcat-services", role1.getRole());
     assertEquals("importer", role1.getVariant());
-    assertEquals(ImmutableList.of("importer"), role1.getAggregatedVariants());
-    assertEquals(ImmutableMap.of("topologyConnectors", ImmutableList.of("http://host3${topologyConnectorPath}")), role1.getConfig());
+    assertEquals(List.of("importer"), role1.getAggregatedVariants());
+    assertEquals(Map.of("topologyConnectors", List.of("http://host3${topologyConnectorPath}")), role1.getConfig());
 
     NodeRole role2 = environment.getNodes().get(0).getRoles().get(1);
     assertEquals("tomcat-backendconnector", role2.getRole());
-    assertEquals(ImmutableList.of("var1", "var2"), role2.getVariants());
-    assertEquals(ImmutableList.of("var1", "var2"), role2.getAggregatedVariants());
+    assertEquals(List.of("var1", "var2"), role2.getVariants());
+    assertEquals(List.of("var1", "var2"), role2.getAggregatedVariants());
   }
 
   @Test
-  public void testRoleConfig() {
+  void testRoleConfig() {
     RoleConfig roleConfig = environment.getRoleConfig().get(0);
 
     assertEquals("tomcat-backendconnector", roleConfig.getRole());
 
-    assertEquals(ImmutableMap.of("jvm", ImmutableMap.of("heapspace", ImmutableMap.of("max", "1024m"))), roleConfig.getConfig());
+    assertEquals(Map.of("jvm", Map.of("heapspace", Map.of("max", "1024m"))), roleConfig.getConfig());
   }
 
   @Test
-  public void testTenant() {
+  void testTenant() {
     Tenant tenant = environment.getTenants().get(0);
 
     assertEquals("tenant1", tenant.getTenant());
 
-    assertEquals(ImmutableList.of("website", "application"), tenant.getRoles());
-    assertEquals(ImmutableMap.of("domain", "mysite.de", "website", ImmutableMap.of("hostname", "www.${domain}")), tenant.getConfig());
+    assertEquals(List.of("website", "application"), tenant.getRoles());
+    assertEquals(Map.of("domain", "mysite.de", "website", Map.of("hostname", "www.${domain}")), tenant.getConfig());
   }
 
   @Test
-  public void testEnvironmentWithNullTenant() {
-    assertThrows(ConstructorException.class, () -> {
-      EnvironmentReader reader = new EnvironmentReader();
-      try (InputStream is = getClass().getResourceAsStream("/environment_null_tenant.yaml")) {
+  void testEnvironmentWithNullTenant() throws IOException {
+    EnvironmentReader reader = new EnvironmentReader();
+    try (InputStream is = getClass().getResourceAsStream("/environment_null_tenant.yaml")) {
+      assertThrows(ConstructorException.class, () -> {
         reader.read(is);
-      }
-    });
+      });
+    }
   }
 
   @Test
-  public void testDependencies() {
-    assertEquals(ImmutableList.of("url1", "mvn:url2"), environment.getDependencies());
+  void testDependencies() {
+    assertEquals(List.of("url1", "mvn:url2"), environment.getDependencies());
   }
 
   @Test
-  public void testPluginConfig() {
+  void testPluginConfig() {
     Map<String, Map<String, Object>> pluginConfig = environment.getPluginConfig();
     assertNotNull(pluginConfig);
 

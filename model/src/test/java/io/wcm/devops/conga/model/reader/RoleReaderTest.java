@@ -28,12 +28,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.model.role.Role;
 import io.wcm.devops.conga.model.role.RoleFile;
@@ -69,12 +67,12 @@ class RoleReaderTest {
     List<RoleFile> files = role.getFiles();
     assertEquals(7, files.size());
 
-    assertEquals(ImmutableMap.of(
+    assertEquals(Map.of(
         "var1", "value1",
-        "group1", ImmutableMap.of("var2", "value2"),
-        "tomcat", ImmutableMap.of("port", 8080, "path", "/path/to/tomcat"),
-        "jvm", ImmutableMap.of("heapspace", ImmutableMap.of("min", "512m", "max", "2048m"), "permgenspace", ImmutableMap.of("max", "256m")),
-        "topologyConnectors", ImmutableList.of("http://localhost:8080/libs/sling/topology/connector")
+        "group1", Map.of("var2", "value2"),
+        "tomcat", Map.of("port", 8080, "path", "/path/to/tomcat"),
+        "jvm", Map.of("heapspace", Map.of("min", "512m", "max", "2048m"), "permgenspace", Map.of("max", "256m")),
+        "topologyConnectors", List.of("http://localhost:8080/libs/sling/topology/connector")
     ), role.getConfig());
   }
 
@@ -90,7 +88,7 @@ class RoleReaderTest {
     RoleVariant variant = role.getVariants().get(0);
 
     assertEquals("services", variant.getVariant());
-    assertEquals(ImmutableMap.of("var1", "value1_service"), variant.getConfig());
+    assertEquals(Map.of("var1", "value1_service"), variant.getConfig());
   }
 
   @Test
@@ -100,12 +98,12 @@ class RoleReaderTest {
     assertEquals("systemconfig-importer.txt", file.getFile());
     assertEquals("data/deploy", file.getDir());
     assertEquals("systemconfig-importer.txt.hbs", file.getTemplate());
-    assertEquals(ImmutableList.of("importer", "variant2*", "variant3"), file.getVariants());
+    assertEquals(List.of("importer", "variant2*", "variant3"), file.getVariants());
     assertEquals("${abc}", file.getCondition());
-    assertEquals(ImmutableList.of("sling-provisioning-model"), file.getValidators());
-    assertEquals(ImmutableMap.of("option1", "value1"), file.getValidatorOptions());
-    assertEquals(ImmutableList.of("osgi-config-generator"), file.getPostProcessors());
-    assertEquals(ImmutableMap.of("option2", "value2"), file.getPostProcessorOptions());
+    assertEquals(List.of("sling-provisioning-model"), file.getValidators());
+    assertEquals(Map.of("option1", "value1"), file.getValidatorOptions());
+    assertEquals(List.of("osgi-config-generator"), file.getPostProcessors());
+    assertEquals(Map.of("option2", "value2"), file.getPostProcessorOptions());
     assertEquals("sling-provisioning", file.getFileHeader());
     assertEquals("none", file.getMultiply());
     assertEquals(StandardCharsets.UTF_8.name(), file.getCharset());
@@ -114,7 +112,7 @@ class RoleReaderTest {
 
     RoleFile vhostFile = role.getFiles().get(4);
     assertEquals("tenant", vhostFile.getMultiply());
-    assertEquals(ImmutableMap.of("roles", ImmutableList.of("website")), vhostFile.getMultiplyOptions());
+    assertEquals(Map.of("roles", List.of("website")), vhostFile.getMultiplyOptions());
     assertEquals(LineEndings.unix, vhostFile.getLineEndings());
 
     List<RoleFileVariantMetadata> variantsMetadata = file.getVariantsMetadata();
@@ -132,7 +130,7 @@ class RoleReaderTest {
 
     assertEquals("download", file.getDir());
     assertEquals("classpath://xyz.txt", file.getUrl());
-    assertEquals(ImmutableMap.of("modelOption1", "value1"), file.getModelOptions());
+    assertEquals(Map.of("modelOption1", "value1"), file.getModelOptions());
     assertTrue(file.isDeleteSource());
   }
 
@@ -147,7 +145,7 @@ class RoleReaderTest {
 
   @Test
   void testSensitiveConfigurationParameters() {
-    assertEquals(ImmutableList.of("var1", "group1.var2"), role.getSensitiveConfigParameters());
+    assertEquals(List.of("var1", "group1.var2"), role.getSensitiveConfigParameters());
   }
 
 }

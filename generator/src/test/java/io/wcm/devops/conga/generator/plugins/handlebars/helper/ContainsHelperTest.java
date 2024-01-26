@@ -22,11 +22,11 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.MockOptions.FN_RETURN;
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
+import java.util.List;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -43,22 +43,22 @@ class ContainsHelperTest {
 
   @Test
   void testContains() throws Exception {
-    assertHelper(FN_RETURN, helper, ImmutableList.of("a", "b", "c"), new MockOptions("a"));
-    assertHelper(FN_RETURN, helper, ImmutableSet.of("a", "b", "c"), new MockOptions("b"));
+    assertHelper(FN_RETURN, helper, List.of("a", "b", "c"), new MockOptions("a"));
+    assertHelper(FN_RETURN, helper, Set.of("a", "b", "c"), new MockOptions("b"));
     assertHelper(FN_RETURN, helper, new String[] { "a", "b", "c" }, new MockOptions("a"));
     assertHelper(FN_RETURN, helper, new String[] { "a", "b", "c" }, new MockOptions("b"));
   }
 
   @Test
   void testNotContains() throws Exception {
-    assertHelper("", helper, ImmutableList.of("a", "b", "c"), new MockOptions("z"));
+    assertHelper("", helper, List.of("a", "b", "c"), new MockOptions("z"));
     assertHelper("", helper, new String[] { "a", "b", "c" }, new MockOptions("z"));
   }
 
   @Test
   void testNull() throws Exception {
     assertHelper("", helper, null, new MockOptions("def"));
-    assertHelper("", helper, ImmutableList.of("a", "b", "c"), new MockOptions());
+    assertHelper("", helper, List.of("a", "b", "c"), new MockOptions());
     assertHelper("", helper, null, new MockOptions());
   }
 

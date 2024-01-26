@@ -25,13 +25,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-
-import com.google.common.collect.ImmutableMap;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
@@ -94,7 +93,7 @@ public final class ClassLoaderUtil {
     VariableStringResolver variableStringResolver = new VariableStringResolver(valueProviderGlobalContext, variableMapResolver);
 
     // resolver variables without config map - thus supporting only value providers with external values
-    return variableStringResolver.resolveString(dependencyUrl, ImmutableMap.of());
+    return variableStringResolver.resolveString(dependencyUrl, Map.of());
   }
 
 }

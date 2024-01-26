@@ -21,11 +21,11 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import static io.wcm.devops.conga.generator.plugins.handlebars.helper.TestUtils.assertHelper;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.util.PluginManagerImpl;
@@ -54,11 +54,11 @@ class EachIfEqualsHelperTest {
 
   @Test
   void testList() throws Exception {
-    assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions());
-    assertHelper("", helper, ImmutableList.of("v1", "v2"), new MockOptions("a"));
-    assertHelper("", helper, ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", "2")), new MockOptions("a"));
-    assertHelper("fn({a=1})", helper, ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", "2")), new MockOptions("a", "1"));
-    assertHelper("fn({a=1})fn({a=1})", helper, ImmutableList.of(ImmutableMap.of("a", "1"), ImmutableMap.of("a", "1")), new MockOptions("a", "1"));
+    assertHelper("", helper, List.of("v1", "v2"), new MockOptions());
+    assertHelper("", helper, List.of("v1", "v2"), new MockOptions("a"));
+    assertHelper("", helper, List.of(Map.of("a", "1"), Map.of("a", "2")), new MockOptions("a"));
+    assertHelper("fn({a=1})", helper, List.of(Map.of("a", "1"), Map.of("a", "2")), new MockOptions("a", "1"));
+    assertHelper("fn({a=1})fn({a=1})", helper, List.of(Map.of("a", "1"), Map.of("a", "1")), new MockOptions("a", "1"));
   }
 
 }

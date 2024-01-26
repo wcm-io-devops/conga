@@ -63,7 +63,7 @@ abstract class AbstractFileResourceInfoImpl implements ResourceInfo {
   }
 
   @Override
-  public int compareTo(Resource o) {
+  public int compareTo(ResourceInfo o) {
     return getName().compareTo(o.getName());
   }
 

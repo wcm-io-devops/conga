@@ -45,8 +45,6 @@ import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.tooling.maven.plugin.urlfile.MavenUrlFilePlugin;
@@ -75,7 +73,7 @@ public class MavenArtifactHelper {
     this.repoSession = mavenContext.getRepoSession();
     this.remoteRepos = mavenContext.getRemoteRepos();
     this.artifactTypeMappings = mavenContext.getArtifactTypeMappings();
-    this.environmentDependencyUrls = environment != null ? environment.getDependencies() : ImmutableList.of();
+    this.environmentDependencyUrls = environment != null ? environment.getDependencies() : List.of();
     this.pluginContextOptions = pluginContextOptions;
   }
 

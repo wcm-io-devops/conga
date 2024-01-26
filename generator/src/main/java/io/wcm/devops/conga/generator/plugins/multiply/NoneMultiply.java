@@ -22,8 +22,6 @@ package io.wcm.devops.conga.generator.plugins.multiply;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.spi.MultiplyPlugin;
 import io.wcm.devops.conga.generator.spi.context.MultiplyContext;
 
@@ -44,7 +42,7 @@ public final class NoneMultiply implements MultiplyPlugin {
 
   @Override
   public List<Map<String, Object>> multiply(MultiplyContext context) {
-    return ImmutableList.of(context.getConfig());
+    return List.of(context.getConfig());
   }
 
 }

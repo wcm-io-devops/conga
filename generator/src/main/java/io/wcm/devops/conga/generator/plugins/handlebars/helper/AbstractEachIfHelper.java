@@ -21,11 +21,12 @@ package io.wcm.devops.conga.generator.plugins.handlebars.helper;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -34,7 +35,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import com.github.jknack.handlebars.helper.EachHelper;
-import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
 import io.wcm.devops.conga.generator.spi.handlebars.context.HelperContext;
@@ -43,12 +43,12 @@ import io.wcm.devops.conga.model.util.MapExpander;
 /**
  * Handlebars helper that extends the each helper by iterating only on list items that match a certain condition.
  */
-abstract class AbstractEachIfHelper implements HelperPlugin {
+abstract class AbstractEachIfHelper implements HelperPlugin<Object> {
 
   private final Helper<Object> delegate = new EachHelper();
-  private final BiFunction<Object, Options, Boolean> propertyEvaluator;
+  private final BiPredicate<Object, Options> propertyEvaluator;
 
-  AbstractEachIfHelper(BiFunction<Object, Options, Boolean> propertyEvaluator) {
+  AbstractEachIfHelper(BiPredicate<Object, Options> propertyEvaluator) {
     this.propertyEvaluator = propertyEvaluator;
   }
 
@@ -67,7 +67,7 @@ abstract class AbstractEachIfHelper implements HelperPlugin {
         }
       }
       else {
-        return apply(ImmutableList.of(context), options, pluginContext);
+        return apply(List.of(context), options, pluginContext);
       }
     }
     return delegate.apply(context, options);
@@ -90,7 +90,7 @@ abstract class AbstractEachIfHelper implements HelperPlugin {
   private boolean checkProperty(Object item, String propertyName, Options options) {
     Map<String, Object> propertyMap = toMap(options.propertySet(item));
     Object value = MapExpander.getDeep(propertyMap, propertyName);
-    return propertyEvaluator.apply(value, options);
+    return propertyEvaluator.test(value, options);
   }
 
   private Map<String, Object> toMap(Set<Entry<String, Object>> entries) {

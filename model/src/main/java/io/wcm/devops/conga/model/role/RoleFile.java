@@ -38,6 +38,7 @@ import io.wcm.devops.conga.model.util.MapExpander;
 /**
  * Defines a file to be generated or downloaded for a role.
  */
+@SuppressWarnings("java:S1948") // assume the maps are serializable
 public final class RoleFile extends AbstractModel {
   private static final long serialVersionUID = -6027099825211623171L;
 
@@ -155,7 +156,7 @@ public final class RoleFile extends AbstractModel {
    */
   public List<RoleFileVariantMetadata> getVariantsMetadata() {
     return this.variants.stream()
-        .map(variant -> new RoleFileVariantMetadata(variant))
+        .map(RoleFileVariantMetadata::new)
         .collect(Collectors.toList());
   }
 

@@ -26,8 +26,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableSet;
-
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
 import io.wcm.devops.conga.model.environment.NodeRole;
@@ -43,13 +41,10 @@ import io.wcm.devops.conga.model.util.MapMerger;
  */
 public final class ConfigInheritanceResolver extends AbstractConfigurableObjectTreeProcessor<Map<String, Object>> {
 
-  private static final ConfigurableProcessor<Map<String, Object>> PROCESSOR = new ConfigurableProcessor<Map<String, Object>>() {
-    @Override
-    public Map<String, Object> process(Configurable configurable, Map<String, Object> parentConfig) {
-      Map<String, Object> mergedConfig = MapMerger.merge(configurable.getConfig(), parentConfig);
-      configurable.setConfig(mergedConfig);
-      return mergedConfig;
-    }
+  private static final ConfigurableProcessor<Map<String, Object>> PROCESSOR = (configurable, parentConfig) -> {
+    Map<String, Object> mergedConfig = MapMerger.merge(configurable.getConfig(), parentConfig);
+    configurable.setConfig(mergedConfig);
+    return mergedConfig;
   };
 
   private ConfigInheritanceResolver(Set<String> ignorePropertyNames) {
@@ -67,7 +62,7 @@ public final class ConfigInheritanceResolver extends AbstractConfigurableObjectT
     }
     if (model instanceof Role) {
       // do not inherit config of role variants field (WDCONGA-24)
-      ignorePropertyNames = ImmutableSet.of("variants");
+      ignorePropertyNames = Set.of("variants");
     }
     new ConfigInheritanceResolver(ignorePropertyNames).process(model, PROCESSOR, new HashMap<>());
   }

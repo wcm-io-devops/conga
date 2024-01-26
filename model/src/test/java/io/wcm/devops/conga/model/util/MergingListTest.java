@@ -22,10 +22,10 @@ package io.wcm.devops.conga.model.util;
 import static io.wcm.devops.conga.model.util.MapMerger.LIST_MERGE_ENTRY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
 
 class MergingListTest {
 
@@ -46,7 +46,7 @@ class MergingListTest {
     underTest.add("item5");
     underTest.add("item5");
 
-    assertEquals(ImmutableList.of("item1", "item2", "item4", "item5"), underTest);
+    assertEquals(List.of("item1", "item2", "item4", "item5"), underTest);
   }
 
   @Test
@@ -58,7 +58,7 @@ class MergingListTest {
     underTest.add("item4");
     underTest.add("item5");
 
-    assertEquals(ImmutableList.of("item4", "item5", "item1", "item2"), underTest);
+    assertEquals(List.of("item4", "item5", "item1", "item2"), underTest);
   }
 
   @Test
@@ -70,7 +70,7 @@ class MergingListTest {
     underTest.add("item4");
     underTest.add("item5");
 
-    assertEquals(ImmutableList.of("item1", "item4", "item5", "item2"), underTest);
+    assertEquals(List.of("item1", "item4", "item5", "item2"), underTest);
   }
 
   @Test
@@ -84,7 +84,7 @@ class MergingListTest {
     underTest.add("item1");
     underTest.add("item5");
 
-    assertEquals(ImmutableList.of("item1", "item4", "item5", "item2"), underTest);
+    assertEquals(List.of("item1", "item4", "item5", "item2"), underTest);
   }
 
   @Test
@@ -96,7 +96,7 @@ class MergingListTest {
     underTest.add("item4");
     underTest.add("item5");
 
-    assertEquals(ImmutableList.of("item1", "item2", "item4", "item5"), underTest);
+    assertEquals(List.of("item1", "item2", "item4", "item5"), underTest);
   }
 
   @Test
@@ -109,7 +109,7 @@ class MergingListTest {
     underTest.add("item4");
     underTest.add("item5");
 
-    assertEquals(ImmutableList.of("item1", "item4", "item5", "item2"), underTest);
+    assertEquals(List.of("item1", "item4", "item5", "item2"), underTest);
   }
 
 }

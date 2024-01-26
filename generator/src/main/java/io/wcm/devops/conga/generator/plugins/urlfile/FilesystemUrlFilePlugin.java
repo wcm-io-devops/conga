@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -69,7 +70,7 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
     File file = getFileInternal(url, context);
     if (!file.exists()) {
-      throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
+      throwFileNotFoundException(file);
     }
     return new BufferedInputStream(new FileInputStream(file));
   }
@@ -78,7 +79,7 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
     File file = getFileInternal(url, context);
     if (!file.exists()) {
-      throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
+      throwFileNotFoundException(file);
     }
     return file.toURI().toURL();
   }
@@ -88,9 +89,9 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   public void deleteFile(String url, UrlFilePluginContext context) throws IOException {
     File file = getFileInternal(url, context);
     if (!file.exists()) {
-      throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
+      throwFileNotFoundException(file);
     }
-    file.delete();
+    Files.delete(file.toPath());
   }
 
   private static File getFileInternal(String url, UrlFilePluginContext context) {
@@ -112,6 +113,10 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
       String relativePath = url;
       return new File(context.getBaseDir(), relativePath);
     }
+  }
+
+  private static void throwFileNotFoundException(File file) throws FileNotFoundException {
+    throw new FileNotFoundException("File does not exist: " + FileUtil.getCanonicalPath(file));
   }
 
 }

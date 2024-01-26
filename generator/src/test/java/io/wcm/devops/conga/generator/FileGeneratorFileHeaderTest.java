@@ -49,8 +49,6 @@ import org.mockito.quality.Strictness;
 import org.mockito.stubbing.Answer;
 
 import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.ImplicitApplyOptions;
@@ -91,7 +89,7 @@ class FileGeneratorFileHeaderTest {
     when(pluginManager.getAll(FileHeaderPlugin.class)).thenAnswer(new Answer<List<FileHeaderPlugin>>() {
       @Override
       public List<FileHeaderPlugin> answer(InvocationOnMock invocation) throws Throwable {
-        return ImmutableList.copyOf(fileHeaderPlugins.values());
+        return List.copyOf(fileHeaderPlugins.values());
       }
     });
     when(pluginManager.get(anyString(), eq(FileHeaderPlugin.class))).thenAnswer(new Answer<FileHeaderPlugin>() {
@@ -111,9 +109,9 @@ class FileGeneratorFileHeaderTest {
     VariableMapResolver variableMapResolver = new VariableMapResolver(
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
     underTest = new FileGenerator(options, "env1",
-        "role1", ImmutableList.of("variant1"), "template1",
-        destDir, file, null, null, roleFile, ImmutableMap.<String, Object>of(), template,
-        variableMapResolver, urlFileManager, pluginContextOptions, ImmutableList.of(
+        "role1", List.of("variant1"), "template1",
+        destDir, file, null, null, roleFile, Map.<String, Object>of(), template,
+        variableMapResolver, urlFileManager, pluginContextOptions, List.of(
             "version1/1.0.0",
             "version2/2.0.0-SNAPSHOT",
             "version3/1.2.0-SNAPSHOT",
@@ -125,7 +123,7 @@ class FileGeneratorFileHeaderTest {
   void testWithoutFileHeader() throws Exception {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.NEVER);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -138,7 +136,7 @@ class FileGeneratorFileHeaderTest {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setFileHeader("one");
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -150,7 +148,7 @@ class FileGeneratorFileHeaderTest {
   void testImplicitFileHeader() throws Exception {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -162,7 +160,7 @@ class FileGeneratorFileHeaderTest {
   void testAlwaysFileHeader() throws Exception {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.ALWAYS);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -175,7 +173,7 @@ class FileGeneratorFileHeaderTest {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.WHEN_UNCONFIGURED);
     FileHeaderPlugin two = mockFileHeader("two", "txt", ImplicitApplyOptions.ALWAYS);
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");
@@ -189,7 +187,7 @@ class FileGeneratorFileHeaderTest {
     FileHeaderPlugin one = mockFileHeader("one", "txt", ImplicitApplyOptions.NEVER);
     roleFile.setFileHeader("one");
 
-    List<GeneratedFileContext> result = ImmutableList.copyOf(underTest.generate());
+    List<GeneratedFileContext> result = List.copyOf(underTest.generate());
 
     assertEquals(1, result.size());
     assertItem(result.get(0), "test.txt");

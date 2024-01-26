@@ -26,9 +26,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
-
-import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
@@ -178,7 +177,7 @@ public final class VariableMapResolver {
     boolean replacedAny = mapCopy.remove(LIST_VARIABLE_ITERATE) != null;
     for (Map.Entry<String, Object> entry : mapCopy.entrySet()) {
       Object replacedValue = replaceAny(entry.getValue(), variables);
-      if (entry.getValue() != replacedValue) {
+      if (!Objects.equals(entry.getValue(), replacedValue)) {
         entry.setValue(replacedValue);
         replacedAny = true;
       }
@@ -206,7 +205,7 @@ public final class VariableMapResolver {
     }
     if (!(listObject instanceof List)) {
       // allow to iterate over single values as well
-      listObject = ImmutableList.of(listObject);
+      listObject = List.of(listObject);
     }
     Map<String, Object> variablesClone = new LinkedHashMap<>(ObjectCloner.deepClone(variables));
     List<Object> result = new ArrayList<>();
@@ -256,7 +255,7 @@ public final class VariableMapResolver {
     Map<String, Object> mapCopy = new HashMap<>(map);
     for (Map.Entry<String, Object> entry : mapCopy.entrySet()) {
       Object deescapedValue = deescapeAny(entry.getValue());
-      if (entry.getValue() != deescapedValue) {
+      if (!Objects.equals(entry.getValue(), deescapedValue)) {
         entry.setValue(deescapedValue);
       }
     }

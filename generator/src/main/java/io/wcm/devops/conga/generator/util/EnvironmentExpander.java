@@ -26,8 +26,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
@@ -77,7 +75,7 @@ public final class EnvironmentExpander {
       for (String nodeName : node.getNodes()) {
         Node clonedNode = ObjectCloner.deepClone(node);
         clonedNode.setNode(nodeName);
-        clonedNode.setNodes(ImmutableList.of());
+        clonedNode.setNodes(List.of());
         nodes.add(clonedNode);
       }
     }

@@ -22,7 +22,7 @@ package io.wcm.devops.conga.model.util;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,9 +43,12 @@ public final class MapSplitter {
    * @return Result with the first map (matching) with all matching values, and the second map (unmatching) with all
    *         values that do not match.
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({
+      "unchecked",
+      "java:S135" // multiple continue statements
+  })
   public static @NotNull SplitResult splitMap(Map<String, Object> map,
-      @NotNull Function<Map.Entry<String, Object>, Boolean> matcher) {
+      @NotNull Predicate<Map.Entry<String, Object>> matcher) {
     Map<String, Object> matching = new HashMap<>();
     Map<String, Object> unmatching = new HashMap<>();
 
@@ -57,12 +60,11 @@ public final class MapSplitter {
         continue;
       }
 
-      else if (entry.getValue() instanceof List) {
-        if (listHasSubStructures((List<Object>)entry.getValue())) {
-          // process nested "structural" lists
-          processListValue(entry, matching, unmatching, matcher);
-          continue;
-        }
+      else if ((entry.getValue() instanceof List)
+          && listHasSubStructures((List<Object>)entry.getValue())) {
+        // process nested "structural" lists
+        processListValue(entry, matching, unmatching, matcher);
+        continue;
       }
 
       // value is not a structural (map/list) value - apply matching
@@ -75,9 +77,9 @@ public final class MapSplitter {
   private static void processSimpleValue(@NotNull Map.Entry<String, Object> entry,
       @NotNull Map<String, Object> matching,
       @NotNull Map<String, Object> unmatching,
-      @NotNull Function<Map.Entry<String, Object>, Boolean> matcher) {
+      @NotNull Predicate<Map.Entry<String, Object>> matcher) {
 
-    if (matcher.apply(entry)) {
+    if (matcher.test(entry)) {
       matching.put(entry.getKey(), entry.getValue());
     }
     else {
@@ -89,7 +91,7 @@ public final class MapSplitter {
   private static void processMapValue(@NotNull Map.Entry<String, Object> entry,
       @NotNull Map<String, Object> matching,
       @NotNull Map<String, Object> unmatching,
-      @NotNull Function<Map.Entry<String, Object>, Boolean> matcher) {
+      @NotNull Predicate<Map.Entry<String, Object>> matcher) {
 
     Map<String, Object> map = (Map<String, Object>)entry.getValue();
     SplitResult subResult = splitMap(map, matcher);
@@ -105,7 +107,7 @@ public final class MapSplitter {
   private static void processListValue(@NotNull Map.Entry<String, Object> entry,
       @NotNull Map<String, Object> matching,
       @NotNull Map<String, Object> unmatching,
-      @NotNull Function<Map.Entry<String, Object>, Boolean> matcher) {
+      @NotNull Predicate<Map.Entry<String, Object>> matcher) {
 
     // we cannot split up the list - so it's put to unmatched if at least one list entry is unmatched
     // to make processing easy we convert to list to a map and check of any unmatched
@@ -125,12 +127,11 @@ public final class MapSplitter {
 
   private static boolean listHasSubStructures(@NotNull List<Object> list) {
     return list.stream()
-        .filter(item -> (item instanceof List) || (item instanceof Map))
-        .findFirst().isPresent();
+        .anyMatch(item -> (item instanceof List) || (item instanceof Map));
   }
 
   /**
-   * Result of {@link #splitMap(Map, Function)} method.
+   * Result of {@link #splitMap(Map, Predicate)} method.
    */
   public static final class SplitResult {
 

@@ -28,8 +28,6 @@ import java.util.Set;
 
 import org.yaml.snakeyaml.Yaml;
 
-import com.google.common.collect.ImmutableSet;
-
 import io.wcm.devops.conga.resource.Resource;
 
 /**
@@ -38,14 +36,14 @@ import io.wcm.devops.conga.resource.Resource;
 public abstract class AbstractModelReader<T> implements ModelReader<T> {
 
   private static final String YAML_EXTENSION = "yaml";
-  private static final Set<String> SUPPORTED_EXTENSIONS = ImmutableSet.of(YAML_EXTENSION);
+  private static final Set<String> SUPPORTED_EXTENSIONS = Set.of(YAML_EXTENSION);
 
   private final Yaml yaml;
 
   /**
    * @param yaml YAML
    */
-  public AbstractModelReader(Yaml yaml) {
+  protected AbstractModelReader(Yaml yaml) {
     this.yaml = yaml;
   }
 

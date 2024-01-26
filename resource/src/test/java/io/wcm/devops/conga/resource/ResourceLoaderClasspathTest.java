@@ -32,8 +32,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 class ResourceLoaderClasspathTest {
 
   private static final String ROOT = "/test-files";
@@ -71,16 +69,16 @@ class ResourceLoaderClasspathTest {
     assertEquals(ROOT + "/folder1", col.getPath());
     assertEquals(CLASSPATH_PREFIX + ROOT + "/folder1", col.getCanonicalPath());
 
-    List<Resource> resources = ImmutableList.copyOf(col.getResources());
+    List<Resource> resources = List.copyOf(col.getResources());
     assertEquals(2, resources.size());
     assertEquals("file1.txt", resources.get(0).getName());
     assertEquals("file2.txt", resources.get(1).getName());
 
-    List<ResourceCollection> resourceCollections = ImmutableList.copyOf(col.getResourceCollections());
+    List<ResourceCollection> resourceCollections = List.copyOf(col.getResourceCollections());
     assertEquals(1, resourceCollections.size());
     assertEquals("folder2", resourceCollections.get(0).getName());
 
-    List<Resource> folder2Resources = ImmutableList.copyOf(resourceCollections.get(0).getResources());
+    List<Resource> folder2Resources = List.copyOf(resourceCollections.get(0).getResources());
     assertEquals(1, folder2Resources.size());
     assertEquals("file3.txt", folder2Resources.get(0).getName());
   }
@@ -112,8 +110,8 @@ class ResourceLoaderClasspathTest {
   void testNonExistingResourceCollection() throws Exception {
     ResourceCollection col = underTest.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/invalidFolder");
     assertFalse(col.exists());
-    assertEquals(ImmutableList.of(), ImmutableList.copyOf(col.getResources()));
-    assertEquals(ImmutableList.of(), ImmutableList.copyOf(col.getResourceCollections()));
+    assertEquals(List.of(), List.copyOf(col.getResources()));
+    assertEquals(List.of(), List.copyOf(col.getResourceCollections()));
   }
 
   @Test

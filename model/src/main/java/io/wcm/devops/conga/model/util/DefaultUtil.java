@@ -44,14 +44,14 @@ public final class DefaultUtil {
     if (list != null) {
 
       // do not allow null entries in list
-      if (list.stream().filter(Objects::isNull).findFirst().isPresent()) {
+      if (list.stream().anyMatch(Objects::isNull)) {
         throw new IllegalArgumentException("Null element detected in list.");
       }
 
       return list;
     }
     else {
-      return new ArrayList<T>();
+      return new ArrayList<>();
     }
   }
 
@@ -67,7 +67,7 @@ public final class DefaultUtil {
       return map;
     }
     else {
-      return new HashMap<K, V>();
+      return new HashMap<>();
     }
   }
 

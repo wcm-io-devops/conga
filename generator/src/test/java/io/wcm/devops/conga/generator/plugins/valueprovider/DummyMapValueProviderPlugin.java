@@ -19,10 +19,10 @@
  */
 package io.wcm.devops.conga.generator.plugins.valueprovider;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
+import java.util.Map;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.StringUtils;
 
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
@@ -45,10 +45,10 @@ public class DummyMapValueProviderPlugin implements ValueProviderPlugin {
   @Override
   public Object resolve(String variableName, ValueProviderContext context) {
     if (StringUtils.equals(variableName, "map")) {
-      return ImmutableMap.of(
+      return Map.of(
           "param1", "value1",
           "param2", 5,
-          "listParam", ImmutableList.of("v1", "v2", "v3"));
+          "listParam", List.of("v1", "v2", "v3"));
     }
     else {
       return null;

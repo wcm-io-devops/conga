@@ -50,6 +50,7 @@ class GeneratorTest {
   }
 
   @Test
+  @SuppressWarnings("java:S5961") // number of asserts
   void testAllEnvironments() {
     File node1Dir = assertDirectory(destDir, "env1/node1");
 

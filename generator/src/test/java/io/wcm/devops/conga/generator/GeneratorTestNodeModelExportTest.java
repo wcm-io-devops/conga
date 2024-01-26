@@ -37,6 +37,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +49,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.yaml.snakeyaml.Yaml;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.model.util.MapExpander;
 
@@ -86,14 +84,14 @@ class GeneratorTestNodeModelExportTest {
         "files/sample-copy.txt");
 
     assertFileModelOptions(role1, "files/sample-filesystem.txt",
-        ImmutableMap.<String, Object>of("modelOption1", "value1"));
+        Map.<String, Object>of("modelOption1", "value1"));
 
     assertEquals("globalFromRole1", getConfig(role1, "globalString"));
-    assertEquals(ImmutableList.of("tenantRole1", "tenantRole2"), getTenantRoles(role1, "tenant1"));
+    assertEquals(List.of("tenantRole1", "tenantRole2"), getTenantRoles(role1, "tenant1"));
     assertEquals("\"value1\" äöüß€", getTenantConfig(role1, "tenant1", "defaultString"));
-    assertEquals(ImmutableList.of("tenantRole1"), getTenantRoles(role1, "tenant2"));
+    assertEquals(List.of("tenantRole1"), getTenantRoles(role1, "tenant2"));
     assertEquals("defaultFromTenant2", getTenantConfig(role1, "tenant2", "defaultString"));
-    assertEquals(ImmutableList.of(), getTenantRoles(role1, "tenant3_TenantSuffix"));
+    assertEquals(List.of(), getTenantRoles(role1, "tenant3_TenantSuffix"));
     assertEquals("\"value1\" äöüß€", getTenantConfig(role1, "tenant3_TenantSuffix", "defaultString"));
     assertEquals("tenant1 testVersion1ForFileHeader node1 role1", getTenantConfig(role1, "tenant1", "varWithContext"));
     assertEquals("tenant2 testVersion1ForFileHeader node1 role1", getTenantConfig(role1, "tenant2", "varWithContext"));
@@ -103,11 +101,11 @@ class GeneratorTestNodeModelExportTest {
         "json/test.json");
     assertEquals("globalValue äöüß€", getConfig(role2, "globalString"));
     assertEquals("globalValue äöüß€", getConfig(role2, "globalString"));
-    assertEquals(ImmutableList.of("tenantRole1", "tenantRole2"), getTenantRoles(role2, "tenant1"));
+    assertEquals(List.of("tenantRole1", "tenantRole2"), getTenantRoles(role2, "tenant1"));
     assertEquals("value2", getTenantConfig(role2, "tenant1", "defaultString"));
-    assertEquals(ImmutableList.of("tenantRole1"), getTenantRoles(role2, "tenant2"));
+    assertEquals(List.of("tenantRole1"), getTenantRoles(role2, "tenant2"));
     assertEquals("defaultFromTenant2", getTenantConfig(role2, "tenant2", "defaultString"));
-    assertEquals(ImmutableList.of(), getTenantRoles(role2, "tenant3_TenantSuffix"));
+    assertEquals(List.of(), getTenantRoles(role2, "tenant3_TenantSuffix"));
     assertEquals("value2", getTenantConfig(role2, "tenant3_TenantSuffix", "defaultString"));
     assertEquals("tenant1 testVersion1ForFileHeader node1 role2", getTenantConfig(role2, "tenant1", "varWithContext"));
     assertEquals("tenant2 testVersion1ForFileHeader node1 role2", getTenantConfig(role2, "tenant2", "varWithContext"));
@@ -164,7 +162,7 @@ class GeneratorTestNodeModelExportTest {
     if (files != null) {
       files.forEach(item -> fileNamesFound.add((String)item.get("path")));
     }
-    assertEquals(ImmutableList.copyOf(fileNamesExpected), fileNamesFound);
+    assertEquals(Arrays.asList(fileNamesExpected), fileNamesFound);
   }
 
   private void assertFileModelOptions(Map<String, Object> role, String fileName, Map<String, Object> expectedOptions) {
@@ -212,9 +210,9 @@ class GeneratorTestNodeModelExportTest {
   private List<String> getTenantRoles(Map<String, Object> role, String tenant) {
     Map<String, Object> tenantObject = getTenant(role, tenant);
     if (tenantObject == null) {
-      return ImmutableList.of();
+      return List.of();
     }
-    return (List<String>)ObjectUtils.defaultIfNull(tenantObject.get("roles"), ImmutableList.of());
+    return (List<String>)ObjectUtils.defaultIfNull(tenantObject.get("roles"), List.of());
   }
 
 }

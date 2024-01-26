@@ -22,10 +22,10 @@ package io.wcm.devops.conga.generator.plugins.valueprovider;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
@@ -58,7 +58,7 @@ class SystemPropertyValueProviderPluginTest {
     System.setProperty(propertyName2, "value1,value2,value3");
 
     assertEquals("value1", underTest.resolve(propertyName1, context));
-    assertEquals(ImmutableList.of("value1", "value2", "value3"), underTest.resolve(propertyName2, context));
+    assertEquals(List.of("value1", "value2", "value3"), underTest.resolve(propertyName2, context));
     assertNull(underTest.resolve(propertyName3, context));
 
     System.clearProperty(propertyName1);

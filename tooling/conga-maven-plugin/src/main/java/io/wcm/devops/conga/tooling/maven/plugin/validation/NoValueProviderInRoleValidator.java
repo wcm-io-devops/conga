@@ -37,7 +37,7 @@ import io.wcm.devops.conga.resource.Resource;
  */
 public final class NoValueProviderInRoleValidator implements DefinitionValidator<Void> {
 
-  private final ModelReader<Map> mapReader = new MapReader();
+  private final ModelReader<Map<String, Object>> mapReader = new MapReader();
 
   @Override
   @SuppressWarnings("PMD.PreserveStackTrace")
@@ -67,11 +67,11 @@ public final class NoValueProviderInRoleValidator implements DefinitionValidator
 
   private void validate(String value) {
     if (VariableStringResolver.hasValueProviderReference(value)) {
-      throw new RuntimeException("Role definitions must not reference value providers: " + value);
+      throw new IllegalStateException("Role definitions must not reference value providers: " + value);
     }
   }
 
-  private static class MapReader extends AbstractModelReader<Map> {
+  private static class MapReader extends AbstractModelReader<Map<String, Object>> {
     MapReader() {
       super(getYaml());
     }

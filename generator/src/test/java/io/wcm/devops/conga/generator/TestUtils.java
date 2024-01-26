@@ -28,12 +28,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.generator.plugins.valueprovider.DummyPluginConfigValueProviderPlugin;
@@ -57,14 +56,14 @@ public final class TestUtils {
         .destDir(destDir)
         .version(TEST_VERSION)
         .pluginManager(new PluginManagerImpl())
-        .genericPluginConfig(ImmutableMap.of(
-            DummyPluginConfigValueProviderPlugin.NAME, ImmutableMap.of(
+        .genericPluginConfig(Map.of(
+            DummyPluginConfigValueProviderPlugin.NAME, Map.of(
                 "param1", "value1",
                 "param2", 55,
-                "param3", ImmutableMap.of("param31", "value31", "param32", "value32"))));
+                "param3", Map.of("param31", "value31", "param32", "value32"))));
 
     ModelExport modelExport = new ModelExport();
-    modelExport.setNode(ImmutableList.of("yaml"));
+    modelExport.setNode(List.of("yaml"));
     options.modelExport(modelExport);
 
     return new Generator(options);

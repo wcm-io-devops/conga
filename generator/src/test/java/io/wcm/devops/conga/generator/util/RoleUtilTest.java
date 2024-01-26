@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,9 +34,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.model.role.Role;
@@ -68,74 +66,74 @@ class RoleUtilTest {
 
     Role role1 = new Role();
     role1.setTemplateDir("role1Dir");
-    role1.setConfig(ImmutableMap.<String, Object>of(
+    role1.setConfig(Map.<String, Object>of(
         "param1", "value1.1",
         "param2", 123,
         "param3", true));
-    role1.setFiles(ImmutableList.of(
+    role1.setFiles(List.of(
         buildFile("role1", "file1.1"),
         buildFile("role1", "file1.2"),
         buildUrlFile("role1", "http://file1.3")));
-    role1.setSensitiveConfigParameters(ImmutableList.of("param1"));
+    role1.setSensitiveConfigParameters(List.of("param1"));
     roleMap.put("role1", role1);
 
     Role role2 = new Role();
-    role2.setVariants(ImmutableList.of(
+    role2.setVariants(List.of(
         buildVariant("variant1"),
-        buildVariant("variant2", ImmutableMap.<String, Object>of(
+        buildVariant("variant2", Map.<String, Object>of(
             "varparam1", "varvalue2.1",
             "varparam2", 888))));
     role2.setTemplateDir("role2Dir");
-    role2.setConfig(ImmutableMap.<String, Object>of(
+    role2.setConfig(Map.<String, Object>of(
         "param1", "value2.1",
         "param4", "value2.4"));
-    role2.setFiles(ImmutableList.of(
+    role2.setFiles(List.of(
         buildFile("role2", "file2.1", "variant1"),
         buildFile("role2", "file2.2", "variant2"),
         buildUrlFile("role2", "http://file2.3", "variant1")));
-    role2.setInherits(ImmutableList.of(
+    role2.setInherits(List.of(
         buildInherit("role1")));
-    role2.setSensitiveConfigParameters(ImmutableList.of("param2"));
+    role2.setSensitiveConfigParameters(List.of("param2"));
     roleMap.put("role2", role2);
 
     Role role3 = new Role();
-    role3.setVariants(ImmutableList.of(
+    role3.setVariants(List.of(
         buildVariant("variant1"),
-        buildVariant("variant2", ImmutableMap.<String, Object>of(
+        buildVariant("variant2", Map.<String, Object>of(
             "varparam1", "varvalue3.1")),
-        buildVariant("variant3", ImmutableMap.<String, Object>of(
+        buildVariant("variant3", Map.<String, Object>of(
             "varparam1", "varvalue3.2"))));
     role3.setTemplateDir("role3Dir");
-    role3.setConfig(ImmutableMap.<String, Object>of(
+    role3.setConfig(Map.<String, Object>of(
         "param1", "value3.1",
         "param5", "value3.5"));
-    role3.setFiles(ImmutableList.of(
+    role3.setFiles(List.of(
         buildFile("role3", "file3.1", "variant1"),
         buildFile("role3", "file3.2", "variant2"),
         buildUrlFile("role3", "http://file3.3", "variant2"),
         buildFile("role3", "file1.1"),
         buildUrlFile("role3", "http://file1.3")));
-    role3.setInherits(ImmutableList.of(
+    role3.setInherits(List.of(
         buildInherit("role2")));
     roleMap.put("role3", role3);
 
     Role role4 = new Role();
     role4.setTemplateDir("role4Dir");
-    role4.setConfig(ImmutableMap.<String, Object>of(
+    role4.setConfig(Map.<String, Object>of(
         "param1", "value4.1"));
-    role4.setFiles(ImmutableList.of(
+    role4.setFiles(List.of(
         buildFile("role4", "file4.1")));
-    role4.setInherits(ImmutableList.of(
+    role4.setInherits(List.of(
         buildInherit("role2")));
     roleMap.put("role4", role4);
 
     Role role5 = new Role();
     role5.setTemplateDir("role5Dir");
-    role5.setConfig(ImmutableMap.<String, Object>of(
+    role5.setConfig(Map.<String, Object>of(
         "param1", "value5.1"));
-    role5.setFiles(ImmutableList.of(
+    role5.setFiles(List.of(
         buildFile("role5", "file5.1")));
-    role5.setInherits(ImmutableList.of(
+    role5.setInherits(List.of(
         buildInherit("role5")));
     roleMap.put("role5", role5);
   }
@@ -163,7 +161,7 @@ class RoleUtilTest {
     assertFile(role, "role1", "file1.2");
     assertUrlFile(role, "role1", "http://file1.3");
 
-    assertEquals(ImmutableList.of("param1"), role.getSensitiveConfigParameters());
+    assertEquals(List.of("param1"), role.getSensitiveConfigParameters());
   }
 
   @Test
@@ -192,11 +190,11 @@ class RoleUtilTest {
     assertUrlFile(role2, "role2", "http://file2.3", "variant1");
 
     assertVariant(role2, "variant1");
-    assertVariant(role2, "variant2", ImmutableMap.<String, Object>of(
+    assertVariant(role2, "variant2", Map.<String, Object>of(
         "varparam1", "varvalue2.1",
         "varparam2", 888));
 
-    assertEquals(ImmutableList.of("param1", "param2"), role2.getSensitiveConfigParameters());
+    assertEquals(List.of("param1", "param2"), role2.getSensitiveConfigParameters());
   }
 
   @Test
@@ -232,18 +230,18 @@ class RoleUtilTest {
     assertUrlFile(role3, "role3", "http://file1.3");
 
     assertVariant(role2, "variant1");
-    assertVariant(role2, "variant2", ImmutableMap.<String, Object>of(
+    assertVariant(role2, "variant2", Map.<String, Object>of(
         "varparam1", "varvalue3.1",
         "varparam2", 888));
 
     assertVariant(role3, "variant1");
-    assertVariant(role3, "variant2", ImmutableMap.<String, Object>of(
+    assertVariant(role3, "variant2", Map.<String, Object>of(
         "varparam1", "varvalue3.1",
         "varparam2", 888));
-    assertVariant(role3, "variant3", ImmutableMap.<String, Object>of(
+    assertVariant(role3, "variant3", Map.<String, Object>of(
         "varparam1", "varvalue3.2"));
 
-    assertEquals(ImmutableList.of("param1", "param2"), role3.getSensitiveConfigParameters());
+    assertEquals(List.of("param1", "param2"), role3.getSensitiveConfigParameters());
   }
 
   @Test
@@ -279,7 +277,7 @@ class RoleUtilTest {
     file.setFile(name);
     file.setTemplate(role + "-" + name + ".hbs");
     if (variants.length > 0) {
-      file.setVariants(ImmutableList.copyOf(variants));
+      file.setVariants(Arrays.asList(variants));
     }
     return file;
   }
@@ -289,7 +287,7 @@ class RoleUtilTest {
     RoleFile file = new RoleFile();
     file.setUrl(url);
     if (variants.length > 0) {
-      file.setVariants(ImmutableList.copyOf(variants));
+      file.setVariants(Arrays.asList(variants));
     }
     return file;
   }
@@ -305,7 +303,7 @@ class RoleUtilTest {
     for (RoleFile fileItem : role.getFiles()) {
       if (StringUtils.equals(file, fileItem.getFile())
           && StringUtils.equals(template, fileItem.getTemplate())
-          && ImmutableList.copyOf(variants).equals(fileItem.getVariants())) {
+          && Arrays.asList(variants).equals(fileItem.getVariants())) {
         // item found
         return;
       }
@@ -329,7 +327,7 @@ class RoleUtilTest {
   private void assertUrlFile(Role role, String roleName, String url, String... variants) {
     for (RoleFile fileItem : role.getFiles()) {
       if (StringUtils.equals(url, fileItem.getUrl())
-          && ImmutableList.copyOf(variants).equals(fileItem.getVariants())) {
+          && Arrays.asList(variants).equals(fileItem.getVariants())) {
         // item found
         return;
       }
@@ -349,7 +347,7 @@ class RoleUtilTest {
   }
 
   private void assertVariant(Role role, String variant) {
-    assertVariant(role, variant, ImmutableMap.of());
+    assertVariant(role, variant, Map.of());
   }
 
   private void assertVariant(Role role, String variant, Map<String, Object> config) {
@@ -365,21 +363,21 @@ class RoleUtilTest {
 
   @Test
   void testMatchesRoleFile() {
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.<String>of()));
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.of("v1")));
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.<String>of()), ImmutableList.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.<String>of()), List.<String>of()));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.<String>of()), List.of("v1")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.<String>of()), List.of("v1", "v2")));
 
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of("v1", "v2")));
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1*")), ImmutableList.of("v1", "v2")));
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v2")), ImmutableList.of("v1", "v2")));
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2")), ImmutableList.of("v1", "v2")));
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2")), ImmutableList.of("v2", "v3")));
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1", "v2*")), ImmutableList.of("v2", "v3")));
-    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1*", "v2*")), ImmutableList.of("v1", "v2", "v3")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v1")), List.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v1*")), List.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v2")), List.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v1", "v2")), List.of("v1", "v2")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v1", "v2")), List.of("v2", "v3")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v1", "v2*")), List.of("v2", "v3")));
+    assertTrue(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v1*", "v2*")), List.of("v1", "v2", "v3")));
 
-    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of()));
-    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1")), ImmutableList.of("v2")));
-    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(ImmutableList.of("v1*", "v2*")), ImmutableList.of("v2", "v3")));
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v1")), List.of()));
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v1")), List.of("v2")));
+    assertFalse(RoleUtil.matchesRoleFile(roleFileVariants(List.of("v1*", "v2*")), List.of("v2", "v3")));
   }
 
   private RoleFile roleFileVariants(List<String> variants) {

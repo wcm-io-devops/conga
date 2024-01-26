@@ -42,7 +42,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableList;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader;
@@ -98,14 +97,13 @@ class FileGenerator {
   static final String POSTPROCESSOR_KEY_FILE_HEADER = "postProcessor.fileHeader";
   static final String POSTPROCESSOR_KEY_VALIDATORS = "postProcessor.validators";
 
-  //CHECKSTYLE:OFF
+  @SuppressWarnings({ "java:S107", "checkstyle:ParameterNumberCheck" }) // allow many parameters
   FileGenerator(GeneratorOptions options, String environmentName,
       String roleName, List<String> roleVariantNames, String templateName,
       File nodeDir, File file, String url, String symlinkTarget,
       RoleFile roleFile, Map<String, Object> config, Template template,
       VariableMapResolver variableMapResolver, UrlFileManager urlFileManager, PluginContextOptions pluginContextOptions,
       Collection<String> dependencyVersions) {
-    //CHECKSTYLE:ON
     this.environmentName = environmentName;
     this.roleName = roleName;
     this.roleVariantNames = roleVariantNames;
@@ -207,6 +205,10 @@ class FileGenerator {
    * @return List of files that where generated directly or indirectly (by post processors).
    */
   @SuppressFBWarnings({ "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" })
+  @SuppressWarnings({
+      "java:S3776", // ignore complexity
+      "java:S2696" // static variable set by intention
+  })
   public Collection<GeneratedFileContext> generate() throws IOException {
     File dir = file.getParentFile();
     if (!dir.exists()) {
@@ -215,7 +217,9 @@ class FileGenerator {
 
     Collection<GeneratedFileContext> postProcessedFiles;
     if (template != null) {
-      log.info("Generate file {}", getFilenameForLog(fileContext));
+      if (log.isInfoEnabled()) {
+        log.info("Generate file {}", getFilenameForLog(fileContext));
+      }
 
       // generate with template
       generateWithTemplate();
@@ -231,7 +235,9 @@ class FileGenerator {
       // if copying from a local file try to create a symlink instead of coyping it
       boolean symlinkCreated = false;
       if (allowSymlinks && !symlinkCreationFailed && urlFileManager.isLocalFile(url) && !roleFile.isDeleteSource()) {
-        log.info("Symlink file {} from {}", getFilenameForLog(fileContext), url);
+        if (log.isInfoEnabled()) {
+          log.info("Symlink file {} from {}", getFilenameForLog(fileContext), url);
+        }
         if (createSymlinkToLocalFile()) {
           symlinkCreated = true;
         }
@@ -242,7 +248,9 @@ class FileGenerator {
 
       // generate by downloading/copying from URL
       if (!symlinkCreated) {
-        log.info("Copy file {} from {}", getFilenameForLog(fileContext), url);
+        if (log.isInfoEnabled()) {
+          log.info("Copy file {} from {}", getFilenameForLog(fileContext), url);
+        }
         copyFromUrlFile();
       }
 
@@ -310,7 +318,7 @@ class FileGenerator {
     }
     catch (IOException ex) {
       // creates symbolic link failed - log warning and fallback to copying content
-      log.warn("Unable to create symbolic link: " + ex.getMessage());
+      log.warn("Unable to create symbolic link: {}", ex.getMessage());
       return false;
     }
   }
@@ -333,7 +341,7 @@ class FileGenerator {
     }
     catch (IOException ex) {
       // creates symbolic link failed - create text file with link instead (similar to git)
-      log.warn("Created link textfile instead of symbolic link: " + ex.getMessage());
+      log.warn("Created link textfile instead of symbolic link: {}", ex.getMessage());
       FileUtils.write(linkPath.toFile(), relativizedPath.toString(), StandardCharsets.UTF_8);
     }
   }
@@ -387,7 +395,9 @@ class FileGenerator {
   }
 
   private void applyFileHeader(FileContext fileItem, FileHeaderPlugin plugin) {
-    log.debug("  Add {} file header to file {}", plugin.getName(), getFilenameForLog(fileItem));
+    if (log.isDebugEnabled()) {
+      log.debug("  Add {} file header to file {}", plugin.getName(), getFilenameForLog(fileItem));
+    }
     plugin.apply(fileItem, fileHeaderContext);
   }
 
@@ -398,7 +408,9 @@ class FileGenerator {
   }
 
   private void applyValidation(FileContext fileItem, ValidatorPlugin plugin) {
-    log.info("  Validate {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    if (log.isInfoEnabled()) {
+      log.info("  Validate {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    }
     plugin.apply(fileItem, validatorContext);
   }
 
@@ -423,7 +435,7 @@ class FileGenerator {
   private void applyPostProcessor(Map<String, GeneratedFileContext> consolidatedFiles, PostProcessorPlugin plugin) {
 
     // process all files from given map
-    ImmutableList.copyOf(consolidatedFiles.values()).stream()
+    List.copyOf(consolidatedFiles.values()).stream()
         // do not apply post processor twice
         .filter(fileItem -> !fileItem.getPostProcessors().contains(plugin.getName()))
         .filter(fileItem -> plugin.accepts(fileItem.getFileContext(), postProcessorContext))
@@ -441,14 +453,14 @@ class FileGenerator {
       });
 
     // remove items that do no longer exist
-    ImmutableList.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
+    List.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
       if (!fileItem.getFileContext().getFile().exists()) {
         consolidatedFiles.remove(fileItem.getFileContext().getCanonicalPath());
       }
     });
 
     // apply post processor configured as implicit ALWAYS
-    consolidatedFiles.values().forEach(fileItem -> {
+    consolidatedFiles.values().forEach(fileItem ->
       pluginManager.getAll(PostProcessorPlugin.class).stream()
           .filter(implicitPlugin -> implicitPlugin.accepts(fileItem.getFileContext(), postProcessorContext))
           .filter(implicitPlugin -> implicitPlugin.implicitApply(fileItem.getFileContext(), postProcessorContext) == ImplicitApplyOptions.ALWAYS)
@@ -465,11 +477,11 @@ class FileGenerator {
               }
               generatedFileContext.postProcessor(implicitPlugin.getName());
             });
-          });
-    });
+          })
+    );
 
     // remove items that do no longer exist
-    ImmutableList.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
+    List.copyOf(consolidatedFiles.values()).forEach(fileItem -> {
       if (!fileItem.getFileContext().getFile().exists()) {
         consolidatedFiles.remove(fileItem.getFileContext().getCanonicalPath());
       }
@@ -478,7 +490,9 @@ class FileGenerator {
   }
 
   private List<FileContext> applyPostProcessor(FileContext fileItem, PostProcessorPlugin plugin) {
-    log.info("  Post-process {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    if (log.isInfoEnabled()) {
+      log.info("  Post-process {} for file {}", plugin.getName(), getFilenameForLog(fileItem));
+    }
 
     List<FileContext> processedFiles = plugin.apply(fileItem, postProcessorContext);
 
@@ -510,7 +524,7 @@ class FileGenerator {
       return (List<String>)validators;
     }
     else {
-      return ImmutableList.of();
+      return List.of();
     }
   }
 

@@ -25,14 +25,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import com.google.common.collect.ImmutableSortedSet;
-
-class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl implements ResourceCollection {
+final class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl implements ResourceCollection {
 
   private final List<URL> fileUrls = new ArrayList<>();
   private final List<String> folderPaths = new ArrayList<>();
@@ -83,16 +82,16 @@ class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl impl
 
   @Override
   public SortedSet<Resource> getResources() {
-    return ImmutableSortedSet.copyOf(fileUrls.stream()
+    return fileUrls.stream()
         .map(url -> new ClasspathResourceImpl(url, resourceLoader))
-        .collect(Collectors.toList()));
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 
   @Override
   public SortedSet<ResourceCollection> getResourceCollections() {
-    return ImmutableSortedSet.copyOf(folderPaths.stream()
+    return folderPaths.stream()
         .map(folderPath -> new ClasspathResourceCollectionImpl(folderPath, resourceLoader))
-        .collect(Collectors.toList()));
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 
 }

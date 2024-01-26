@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,9 +41,6 @@ import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.NodeModelExport;
@@ -82,7 +80,7 @@ import io.wcm.devops.conga.resource.ResourceLoader;
 /**
  * Generates file for one environment.
  */
-class EnvironmentGenerator {
+final class EnvironmentGenerator {
 
   private final GeneratorOptions options;
   private final String environmentName;
@@ -132,10 +130,10 @@ class EnvironmentGenerator {
     ResourceLoader resourceLoader = new ResourceLoader(resourceClassLoader);
 
     // prepare template and role directories
-    List<ResourceCollection> templateDirs = ImmutableList.of(
+    List<ResourceCollection> templateDirs = List.of(
         resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + options.getTemplateDir()),
         resourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + GeneratorOptions.CLASSPATH_TEMPLATES_DIR));
-    List<ResourceCollection> roleDirs = ImmutableList.of(
+    List<ResourceCollection> roleDirs = List.of(
         resourceLoader.getResourceCollection(ResourceLoader.FILE_PREFIX + options.getRoleDir()),
         resourceLoader.getResourceCollection(ResourceLoader.CLASSPATH_PREFIX + GeneratorOptions.CLASSPATH_ROLES_DIR));
 
@@ -154,11 +152,11 @@ class EnvironmentGenerator {
     this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginContextOptions);
 
     this.defaultMultiplyPlugin = options.getPluginManager().get(NoneMultiply.NAME, MultiplyPlugin.class);
-    this.environmentContextProperties = ImmutableMap.copyOf(
+    this.environmentContextProperties = Collections.unmodifiableMap(
         ContextPropertiesBuilder.buildEnvironmentContextVariables(environmentName, this.environment, options.getVersion(),
             variableObjectTreeResolver, variableStringResolver));
 
-    this.dependencyVersions = options.getDependencyVersionBuilder() != null ? options.getDependencyVersionBuilder().apply(environment) : ImmutableList.of();
+    this.dependencyVersions = options.getDependencyVersionBuilder() != null ? options.getDependencyVersionBuilder().apply(environment) : List.of();
 
     // prepare YAML representer
     yamlRepresenter = new YamlRepresenter();
@@ -178,7 +176,7 @@ class EnvironmentGenerator {
     log.info("");
     log.info("===== Environment '{}' =====", environmentName);
 
-    Set<String> nodeNamesIndex = ArrayUtils.isEmpty(nodeNames) ? Collections.emptySet() : ImmutableSet.copyOf(nodeNames);
+    Set<String> nodeNamesIndex = ArrayUtils.isEmpty(nodeNames) ? Collections.emptySet() : Set.of(nodeNames);
     for (Node node : environment.getNodes()) {
       if (isSelectedNode(node, nodeNamesIndex)) {
         generateNode(node);
@@ -241,8 +239,7 @@ class EnvironmentGenerator {
           mergedConfig.putAll(ContextPropertiesBuilder.buildCurrentContextVariables(node, nodeRole));
 
           // collect role and tenant information for export model
-          ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig,
-              role.getSensitiveConfigParameters());
+          ExportNodeRoleData exportNodeRoleData = exportModelGenerator.addRole(roleName, variants, mergedConfig);
 
           // generate files
           List<GeneratedFileContext> allFiles = new ArrayList<>();
@@ -321,6 +318,7 @@ class EnvironmentGenerator {
         .getName();
   }
 
+  @SuppressWarnings("java:S107") // allow many parameters
   private void multiplyFiles(Role role, RoleFile roleFile, Map<String, Object> config, File nodeDir, Template template,
       String roleName, List<String> roleVariantNames, String templateName, List<GeneratedFileContext> generatedFiles) {
     MultiplyPlugin multiplyPlugin = defaultMultiplyPlugin;
@@ -367,7 +365,10 @@ class EnvironmentGenerator {
     }
   }
 
-  @SuppressWarnings("PMD.PreserveStackTrace")
+  @SuppressWarnings({
+      "PMD.PreserveStackTrace",
+      "java:S107" // allow many parameters
+  })
   @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir,
       String fileName, String url, String symlinkTarget,
@@ -386,7 +387,12 @@ class EnvironmentGenerator {
 
     File file = new File(nodeDir, dir != null ? FilenameUtils.concat(dir, generatedFileName) : generatedFileName);
     if (file.exists()) {
-      file.delete();
+      try {
+        Files.delete(file.toPath());
+      }
+      catch (IOException ex) {
+        throw new GeneratorException("Unable to delete: " + FileUtil.getCanonicalPath(file), ex);
+      }
     }
 
     FileGenerator fileGenerator = new FileGenerator(options, environmentName,

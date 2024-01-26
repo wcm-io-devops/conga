@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.SortedSet;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
@@ -48,8 +48,6 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.sonatype.plexus.build.incremental.BuildContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-
-import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.GeneratorOptions;
@@ -153,7 +151,7 @@ public class ValidateMojo extends AbstractCongaMojo {
         .logger(new MavenSlf4jLogFacade(getLog()));
 
     // validate that all templates can be compiled
-    HandlebarsManager handlebarsManager = new HandlebarsManager(ImmutableList.of(templateDir), pluginContextOptions);
+    HandlebarsManager handlebarsManager = new HandlebarsManager(List.of(templateDir), pluginContextOptions);
     validateFiles(templateDir, templateDir, new TemplateValidator(templateDir, handlebarsManager));
 
     // validate that roles reference existing templates
@@ -202,30 +200,31 @@ public class ValidateMojo extends AbstractCongaMojo {
   }
 
   private <T> List<T> validateFiles(ResourceCollection sourceDir, ResourceCollection rootSourceDir, DefinitionValidator<T> validator,
-      Function<ResourceInfo, Boolean> resourceFilter) throws MojoFailureException {
+      Predicate<ResourceInfo> resourceFilter) throws MojoFailureException {
     if (!sourceDir.exists()) {
-      return ImmutableList.of();
+      return List.of();
     }
     SortedSet<Resource> files = sourceDir.getResources();
     SortedSet<ResourceCollection> dirs = sourceDir.getResourceCollections();
     if (files.isEmpty() && dirs.isEmpty()) {
-      return ImmutableList.of();
+      return List.of();
     }
 
     List<T> result = new ArrayList<>();
     for (Resource file : files) {
-      if (resourceFilter.apply(file)) {
+      if (resourceFilter.test(file)) {
         result.add(validator.validate(file, getPathForLog(rootSourceDir, file)));
       }
     }
     for (ResourceCollection dir : dirs) {
-      if (resourceFilter.apply(dir)) {
+      if (resourceFilter.test(dir)) {
         result.addAll(validateFiles(dir, rootSourceDir, validator, resourceFilter));
       }
     }
     return result;
   }
 
+  @SuppressWarnings("java:S1075") // no filesystem path
   private static String getPathForLog(ResourceCollection rootSourceDir, Resource file) {
     String path = PathUtil.unifySlashes(file.getCanonicalPath());
     String rootPath = PathUtil.unifySlashes(rootSourceDir.getCanonicalPath()) + "/";
@@ -271,7 +270,7 @@ public class ValidateMojo extends AbstractCongaMojo {
             throw new GeneratorException("Unable to resolve: " + resolvedDependencyUrl, ex);
           }
         })
-        .flatMap(list -> list.stream())
+        .flatMap(List::stream)
         .collect(Collectors.toList());
   }
 
@@ -297,7 +296,7 @@ public class ValidateMojo extends AbstractCongaMojo {
       org.springframework.core.io.Resource[] resources = resolver.getResources(
           "classpath*:" + GeneratorOptions.CLASSPATH_PREFIX + BuildConstants.FILE_VERSION_INFO);
       return Arrays.stream(resources)
-          .map(resource -> toProperties(resource))
+          .map(this::toProperties)
           .collect(Collectors.toList());
     }
     catch (IOException ex) {
@@ -312,7 +311,7 @@ public class ValidateMojo extends AbstractCongaMojo {
       return props;
     }
     catch (IOException ex) {
-      throw new RuntimeException("Unable to read properties file: " + resource.toString(), ex);
+      throw new IllegalArgumentException("Unable to read properties file: " + resource.toString(), ex);
     }
   }
 

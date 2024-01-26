@@ -21,6 +21,7 @@ package io.wcm.devops.conga.generator.plugins.fileheader;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -39,8 +40,6 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-
-import com.google.common.collect.ImmutableList;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.GeneratorException;
@@ -121,7 +120,7 @@ public final class XmlFileHeader implements FileHeaderPlugin {
         Node firstNode = doc.getChildNodes().item(0);
         if (firstNode instanceof Comment) {
           String comment = StringUtils.trim(((Comment)firstNode).getTextContent());
-          List<String> lines = ImmutableList.copyOf(StringUtils.split(comment, "\n"));
+          List<String> lines = Arrays.asList(StringUtils.split(comment, "\n"));
           return new FileHeaderContext().commentLines(lines);
         }
       }

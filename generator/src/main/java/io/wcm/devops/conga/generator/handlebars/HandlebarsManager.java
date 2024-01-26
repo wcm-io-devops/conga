@@ -21,9 +21,10 @@ package io.wcm.devops.conga.generator.handlebars;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import com.github.jknack.handlebars.EscapingStrategy;
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
@@ -31,11 +32,7 @@ import com.github.jknack.handlebars.helper.AssignHelper;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import com.github.jknack.handlebars.helper.StringHelpers;
 import com.github.jknack.handlebars.io.TemplateLoader;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
-import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.handlebars.EscapingStrategyPlugin;
 import io.wcm.devops.conga.generator.spi.handlebars.HelperPlugin;
@@ -55,7 +52,7 @@ public class HandlebarsManager {
   private final HelperContext helperContext;
 
   private final LoadingCache<HandlebarsKey, Handlebars> handlebarsCache =
-      CacheBuilder.newBuilder().build(new CacheLoader<HandlebarsKey, Handlebars>() {
+      Caffeine.newBuilder().build(new CacheLoader<HandlebarsKey, Handlebars>() {
         @SuppressWarnings("unchecked")
         @Override
         public Handlebars load(HandlebarsKey options) throws Exception {
@@ -63,12 +60,8 @@ public class HandlebarsManager {
           // setup handlebars
           TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
           EscapingStrategyPlugin escapingStrategy = pluginManager.get(options.getEscapingStrategy(), EscapingStrategyPlugin.class);
-          Handlebars handlebars = new Handlebars(templateLoader).with(new EscapingStrategy() {
-            @Override
-            public CharSequence escape(CharSequence value) {
-              return escapingStrategy.escape(value, escapingStrategyContext);
-            }
-          });
+          Handlebars handlebars = new Handlebars(templateLoader)
+              .with(value -> escapingStrategy.escape(value, escapingStrategyContext));
 
           // register helpers provided by JKnack Handlebars implementation
           handlebars.registerHelpers(StringHelpers.class);
@@ -108,12 +101,7 @@ public class HandlebarsManager {
    */
   public Handlebars get(String escapingStrategy, String charset) {
     HandlebarsKey key = new HandlebarsKey(escapingStrategy, charset);
-    try {
-      return handlebarsCache.get(key);
-    }
-    catch (ExecutionException ex) {
-      throw new GeneratorException("Unable to get handlebars instance for " + key.toString(), ex);
-    }
+    return handlebarsCache.get(key);
   }
 
 }

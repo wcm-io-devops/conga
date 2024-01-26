@@ -43,8 +43,6 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
-import com.google.common.collect.ImmutableSet;
-
 import io.wcm.devops.conga.generator.util.FileUtil;
 
 /**
@@ -79,11 +77,14 @@ public class PackageMojo extends AbstractCongaMojo {
   }
 
 
-  @SuppressWarnings("PMD.UseStringBufferForStringAppends")
+  @SuppressWarnings({
+      "PMD.UseStringBufferForStringAppends",
+      "java:S3776" // ignore complexity
+  })
   private void buildGeneratedConfigurationAttachments() throws MojoExecutionException, MojoFailureException {
     Set<String> selectedEnvironments;
     if (environments != null && environments.length > 0) {
-      selectedEnvironments = ImmutableSet.copyOf(environments);
+      selectedEnvironments = Set.copyOf(Arrays.asList(environments));
     }
     else {
       selectedEnvironments = null;
@@ -92,7 +93,7 @@ public class PackageMojo extends AbstractCongaMojo {
     // collect configuration environment directories
     File configRootDir = getTargetDir();
     List<File> environmentDirs = Arrays.stream(configRootDir.listFiles())
-        .filter(file -> file.isDirectory())
+        .filter(File::isDirectory)
         .filter(dir -> selectedEnvironments == null || selectedEnvironments.contains(dir.getName()))
         .collect(Collectors.toList());
 
@@ -169,6 +170,7 @@ public class PackageMojo extends AbstractCongaMojo {
    * @param basePath Base path
    * @param directory Directory to include
    */
+  @SuppressWarnings("java:S3776") // ignore complexity
   private void addZipDirectory(String basePath, File directory) throws MojoExecutionException {
     String directoryPath = toZipDirectoryPath(directory);
     if (StringUtils.startsWith(directoryPath, basePath)) {

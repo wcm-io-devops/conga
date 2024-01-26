@@ -21,8 +21,6 @@ package io.wcm.devops.conga.generator.spi.context;
 
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Context for a single {@link io.wcm.devops.conga.generator.spi.ValueProviderPlugin} instance.
  */
@@ -64,7 +62,7 @@ public final class ValueProviderContext extends AbstractPluginContext<ValueProvi
   public Object getValueProviderConfig(String key) {
     Map<String, Object> config = valueProviderGlobalContext.getValueProviderConfig(valueProviderName);
     if (config == null) {
-      config = ImmutableMap.of();
+      config = Map.of();
     }
     return config.get(key);
   }

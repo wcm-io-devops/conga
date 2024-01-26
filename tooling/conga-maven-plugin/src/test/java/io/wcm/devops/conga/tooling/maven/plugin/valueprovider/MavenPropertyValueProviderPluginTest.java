@@ -24,11 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.List;
+
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableList;
 
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
@@ -73,7 +73,7 @@ class MavenPropertyValueProviderPluginTest {
     mavenProject.getProperties().setProperty(propertyDependency, "1.10");
 
     assertEquals("value1", underTest.resolve(propertyName1, context));
-    assertEquals(ImmutableList.of("value1", "value2", "value3"), underTest.resolve(propertyName2, context));
+    assertEquals(List.of("value1", "value2", "value3"), underTest.resolve(propertyName2, context));
     assertNull(underTest.resolve(propertyName3, context));
 
     assertNotNull(underTest.resolve(propertyJavaVersion, context));

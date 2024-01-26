@@ -32,14 +32,13 @@ import static io.wcm.devops.conga.generator.ContextProperties.TENANTS;
 import static io.wcm.devops.conga.generator.ContextProperties.TENANTS_BY_ROLE;
 import static io.wcm.devops.conga.generator.ContextProperties.TENANT_ROLES;
 import static io.wcm.devops.conga.generator.ContextProperties.VERSION;
+import static java.util.Map.entry;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
 
 import io.wcm.devops.conga.generator.util.ObjectCloner;
 import io.wcm.devops.conga.generator.util.VariableObjectTreeResolver;
@@ -55,20 +54,20 @@ import io.wcm.devops.conga.model.util.MapMerger;
  */
 public final class ContextPropertiesBuilder {
 
-  static final Map<String, Object> EMPTY_CONTEXT_VARIABLES = ImmutableMap.<String, Object>builder()
-      .put(VERSION, "")
-      .put(ENVIRONMENT, "")
-      .put(NODES, Collections.emptyList())
-      .put(NODES_BY_ROLE, Collections.emptyMap())
-      .put(NODES_BY_ROLE_VARIANT, Collections.emptyMap())
-      .put(TENANTS, Collections.emptyMap())
-      .put(TENANTS_BY_ROLE, Collections.emptyMap())
-      .put(ROLE, "")
-      .put(ROLE_VARIANT, "")
-      .put(NODE, "")
-      .put(TENANT, "")
-      .put(TENANT_ROLES, Collections.emptyList())
-      .build();
+  static final Map<String, Object> EMPTY_CONTEXT_VARIABLES = Map.ofEntries(
+      entry(VERSION, ""),
+      entry(ENVIRONMENT, ""),
+      entry(NODES, Collections.emptyList()),
+      entry(NODES_BY_ROLE, Collections.emptyMap()),
+      entry(NODES_BY_ROLE_VARIANT, Collections.emptyMap()),
+      entry(TENANTS, Collections.emptyMap()),
+      entry(TENANTS_BY_ROLE, Collections.emptyMap()),
+      entry(ROLE, ""),
+      entry(ROLE_VARIANT, ""),
+      entry(NODE, ""),
+      entry(TENANT, ""),
+      entry(TENANT_ROLES, Collections.emptyList())
+  );
 
   private ContextPropertiesBuilder() {
     // static methods only
@@ -83,6 +82,7 @@ public final class ContextPropertiesBuilder {
    * @param variableStringResolver Variable string resolver
    * @return Context variables map
    */
+  @SuppressWarnings("java:S3776") // ignore complexity
   public static Map<String, Object> buildEnvironmentContextVariables(String environmentName,
       Environment environment, String version,
       VariableObjectTreeResolver variableObjectTreeResolver, VariableStringResolver variableStringResolver) {

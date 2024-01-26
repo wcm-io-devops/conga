@@ -21,10 +21,10 @@ package io.wcm.devops.conga.resource;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.ImmutableSortedSet;
 
 class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCollection {
 
@@ -60,23 +60,23 @@ class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCol
   @Override
   public SortedSet<Resource> getResources() {
     if (!exists()) {
-      return ImmutableSortedSet.of();
+      return Collections.emptySortedSet();
     }
-    return ImmutableSortedSet.copyOf(Arrays.stream(file.listFiles())
-        .filter(child -> child.isFile())
-        .map(child -> new FileResourceImpl(child))
-        .collect(Collectors.toList()));
+    return Arrays.stream(file.listFiles())
+        .filter(File::isFile)
+        .map(FileResourceImpl::new)
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 
   @Override
   public SortedSet<ResourceCollection> getResourceCollections() {
     if (!exists()) {
-      return ImmutableSortedSet.of();
+      return Collections.emptySortedSet();
     }
-    return ImmutableSortedSet.copyOf(Arrays.stream(file.listFiles())
-        .filter(child -> child.isDirectory())
+    return Arrays.stream(file.listFiles())
+        .filter(File::isDirectory)
         .map(child -> new FileResourceCollectionImpl(child, resourceLoader))
-        .collect(Collectors.toList()));
+        .collect(Collectors.toCollection(TreeSet::new));
   }
 
 }

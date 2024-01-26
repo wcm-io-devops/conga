@@ -30,6 +30,8 @@ import static io.wcm.devops.conga.tooling.maven.plugin.BuildConstants.PACKAGING_
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -52,9 +54,6 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.ManifestException;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.ModelExport;
@@ -172,7 +171,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Component
   protected MavenProjectHelper projectHelper;
 
-  private static final Map<String, String> DEFAULT_ARTIFACT_TYPE_MAPPINGS = ImmutableMap.of(
+  private static final Map<String, String> DEFAULT_ARTIFACT_TYPE_MAPPINGS = Map.of(
       "bundle", "jar",
       "content-package", "zip");
 
@@ -201,7 +200,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
 
     String[] nodeExportPlugins = StringUtils.split(this.modelExportNode, ",");
     if (nodeExportPlugins != null) {
-      modelExport.setNode(ImmutableList.copyOf(nodeExportPlugins));
+      modelExport.setNode(Arrays.asList(nodeExportPlugins));
     }
 
     return modelExport;
@@ -280,6 +279,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     return jarFile;
   }
 
+  @SuppressWarnings("java:S1168") // null array is allowed
   private String[] toArray(List<String> values) {
     if (values == null || values.isEmpty()) {
       return null;
@@ -347,7 +347,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
       getLog().info("Include " + getPathForLog(rootOutputDir, targetFile));
 
       if (targetFile.exists()) {
-        targetFile.delete();
+        Files.delete(targetFile.toPath());
       }
       try (InputStream is = file.getInputStream()) {
         byte[] data = IOUtils.toByteArray(is);
@@ -360,6 +360,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     }
   }
 
+  @SuppressWarnings("java:S1075") // not a filesystem path
   private String getPathForLog(File rootOutputDir, File file) throws IOException {
     String path = unifySlashes(file.getCanonicalPath());
     String rootPath = unifySlashes(rootOutputDir.getCanonicalPath()) + "/";

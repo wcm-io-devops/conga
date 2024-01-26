@@ -48,7 +48,11 @@ public final class MapMerger {
    * @param map2 Map 2
    * @return Merged map
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({
+      "unchecked",
+      "java:S3776", // ignore complexity
+      "java:S2234" // parameter arguments switched by intention
+  })
   public static <K> Map<K, Object> merge(Map<K, Object> map1, Map<K, Object> map2) {
     Map<K, Object> merged = new HashMap<>();
     if (map1 == null || map2 == null) {
@@ -137,9 +141,9 @@ public final class MapMerger {
     }
     else {
       mergedList = new MergingList<>();
-      l1.forEach(item -> mergedList.addCheckMergeToken(item));
+      l1.forEach(mergedList::addCheckMergeToken);
     }
-    l2.forEach(item -> mergedList.add(item));
+    l2.forEach(mergedList::add);
     return mergedList;
   }
 

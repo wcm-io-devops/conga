@@ -27,8 +27,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.ImmutableList;
-
 import io.wcm.devops.conga.generator.plugins.fileheader.ConfFileHeader;
 import io.wcm.devops.conga.generator.plugins.fileheader.JsonFileHeader;
 import io.wcm.devops.conga.generator.spi.PostProcessorPlugin;
@@ -45,7 +43,7 @@ class AbstractPostProcessorTest {
     File file = new File("target/generation-test/postProcessor.json");
     FileUtils.copyFile(new File(getClass().getResource("/validators/json/validJson.json").toURI()), file);
 
-    List<String> lines = ImmutableList.of("Der Jodelkaiser", "aus dem Oetztal", "ist wieder daheim.");
+    List<String> lines = List.of("Der Jodelkaiser", "aus dem Oetztal", "ist wieder daheim.");
     FileHeaderContext fileHeader = new FileHeaderContext().commentLines(lines);
     FileContext fileContext = new FileContext().file(file);
     new JsonFileHeader().apply(fileContext, fileHeader);
