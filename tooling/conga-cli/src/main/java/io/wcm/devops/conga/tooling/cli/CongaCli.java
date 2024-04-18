@@ -78,8 +78,8 @@ public final class CongaCli {
     File roleDir = new File(commandLine.getOptionValue("roleDir", "roles"));
     File environmentDir = new File(commandLine.getOptionValue("environmentDir", "environments"));
     File targetDir = new File(commandLine.getOptionValue("target", "target"));
-    String[] environments = StringUtils.split(commandLine.getOptionValue("environments", null), ",");
-    String[] nodes = StringUtils.split(commandLine.getOptionValue("nodes", null), ",");
+    String[] environments = StringUtils.split(commandLine.getOptionValue("environments", (String)null), ",");
+    String[] nodes = StringUtils.split(commandLine.getOptionValue("nodes", (String)null), ",");
 
     GeneratorOptions options = new GeneratorOptions()
         .baseDir(baseDir)
