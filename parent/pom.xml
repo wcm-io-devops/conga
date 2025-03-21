@@ -48,7 +48,7 @@
   </issueManagement>
 
   <properties>
-    <jknack.handlebars.version>4.3.1</jknack.handlebars.version>
+    <jknack.handlebars.version>4.4.0</jknack.handlebars.version>
   </properties>
 
   <dependencyManagement>
