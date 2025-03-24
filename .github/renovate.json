@@ -5,5 +5,9 @@
     "github>wcm-io/renovate-config:automerge-parent",
     "github>wcm-io/renovate-config:automerge-testing",
     "github>wcm-io-devops/renovate-config:automerge-parent"
+  ],
+  "ignoreDeps": [
+    "io.wcm.devops.conga:io.wcm.devops.conga.example",
+    "io.wcm.devops.conga:io.wcm.devops.conga.example.definitions"
   ]
 }
