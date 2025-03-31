@@ -24,6 +24,12 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
+    <release version="1.17.2" date="2025-03-31">
+      <action type="update" dev="sseifert">
+        Update dependencies.
+      </action>
+    </release>
+
     <release version="1.17.0" date="2024-01-26">
       <action type="update" dev="sseifert" issue="57">
         Special handling for detecting ".cfg.json" file extensions.
