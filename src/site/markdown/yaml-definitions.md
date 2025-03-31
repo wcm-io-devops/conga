@@ -219,7 +219,7 @@ Additionally to the variables defined in the configuration parameter maps a set 
 [node-model]: generator/apidocs/io/wcm/devops/conga/model/environment/Node.html
 [tenant-model]: generator/apidocs/io/wcm/devops/conga/model/environment/Tenant.html
 [yaml]: http://yaml.org/
-[snakeyaml]: http://www.snakeyaml.org/
+[snakeyaml]: https://github.com/snakeyaml/snakeyaml
 [extensibility]: extensibility.html
 [artifact-coords-maven]: https://maven.apache.org/pom.html#Maven_Coordinates
 [artifact-coords-paxurl]: https://ops4j1.jira.com/wiki/x/CoA6

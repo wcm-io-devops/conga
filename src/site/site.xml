@@ -19,13 +19,11 @@
   #L%
   -->
 
-<project name="CONGA"
-  xmlns="http://maven.apache.org/DECORATION/1.8.0"
+<site name="CONGA"
+  xmlns="http://maven.apache.org/SITE/2.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 https://maven.apache.org/xsd/decoration-1.8.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/SITE/2.0.0 https://maven.apache.org/xsd/site-2.0.0.xsd">
 
-  <bannerRight>
-    <name><![CDATA[<img src="https://devops.wcm.io/conga/images/conga.png" style="height:120px"/>]]></name>
-  </bannerRight>
+  <bannerRight name="&lt;image src='https://devops.wcm.io/conga/images/conga.png' style='height:120px'/&gt;"/>
 
-</project>
+</site>

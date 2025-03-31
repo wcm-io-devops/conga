@@ -64,7 +64,7 @@ Definitions for CONGA:
 
 [apidocs]: generator/apidocs/
 [plugindocs]: tooling/conga-maven-plugin/plugin-info.html
-[changelog]: changes-report.html
+[changelog]: changes.html
 [usage]: usage.html
 [general-concepts]: general-concepts.html
 [extensibility]: extensibility.html
