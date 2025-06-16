@@ -30,6 +30,8 @@ import java.util.SortedSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.resolver.ResolutionErrorHandler;
@@ -37,8 +39,6 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
