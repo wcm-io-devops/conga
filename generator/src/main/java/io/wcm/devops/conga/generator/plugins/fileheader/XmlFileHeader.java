@@ -119,7 +119,7 @@ public final class XmlFileHeader implements FileHeaderPlugin {
       if (doc.getChildNodes().getLength() > 0) {
         Node firstNode = doc.getChildNodes().item(0);
         if (firstNode instanceof Comment) {
-          String comment = StringUtils.trim(((Comment)firstNode).getTextContent());
+          String comment = StringUtils.trim(firstNode.getTextContent());
           List<String> lines = Arrays.asList(StringUtils.split(comment, "\n"));
           return new FileHeaderContext().commentLines(lines);
         }

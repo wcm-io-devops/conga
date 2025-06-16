@@ -31,15 +31,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
@@ -64,7 +65,8 @@ public class PackageMojo extends AbstractCongaMojo {
   @Parameter(defaultValue = "true")
   private boolean artifactPerEnvironment;
 
-  @Component(role = Archiver.class, hint = "zip")
+  @Inject
+  @Named("zip")
   private ZipArchiver zipArchiver;
 
   @Override

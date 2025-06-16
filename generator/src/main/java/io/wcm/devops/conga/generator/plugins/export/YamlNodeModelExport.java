@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import io.wcm.devops.conga.generator.GeneratorException;
@@ -152,7 +153,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     File file = new File(context.getNodeDir(), MODEL_FILE);
     try (FileOutputStream os = new FileOutputStream(file);
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
-      Yaml yaml = new Yaml(context.getYamlRepresenter());
+      Yaml yaml = new Yaml(context.getYamlRepresenter(), new DumperOptions());
       yaml.dump(modelMap, writer);
     }
     /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
