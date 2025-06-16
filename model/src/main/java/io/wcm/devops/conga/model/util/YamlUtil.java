@@ -27,9 +27,9 @@ import org.yaml.snakeyaml.LoaderOptions;
 public final class YamlUtil {
 
   /*
-   * Increase default codepoint limit from 3MB to 64MB.
+   * Increase default codepoint limit from 3MB to 256MB.
    */
-  private static final int YAML_CODEPOINT_LIMIT = 64 * 1024 * 1024;
+  private static final int YAML_CODEPOINT_LIMIT = 256 * 1024 * 1024;
 
   private YamlUtil() {
     // static methods only

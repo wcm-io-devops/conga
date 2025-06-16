@@ -24,7 +24,11 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
+
     <release version="1.17.4" date="not released">
+      <action type="fix" dev="trichter" issue="125">
+        Increase SnakeYAML codepoint limit to 256MB (from 64MB)
+      </action>
       <action type="update" dev="sseifert">
         CONGA Maven Plugin: Switch to JSR-330 annotations.
       </action>
