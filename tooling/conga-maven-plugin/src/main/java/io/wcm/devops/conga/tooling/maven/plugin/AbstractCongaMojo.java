@@ -46,7 +46,8 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
@@ -157,7 +158,8 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
-  @Component(role = Archiver.class, hint = "jar")
+  @Inject
+  @Named("jar")
   private JarArchiver jarArchiver;
 
   /**
@@ -171,7 +173,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter(property = "session", readonly = true, required = true)
   private MavenSession mavenSession;
 
-  @Component
+  @Inject
   protected MavenProjectHelper projectHelper;
 
   private static final Map<String, String> DEFAULT_ARTIFACT_TYPE_MAPPINGS = Map.of(
