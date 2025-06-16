@@ -96,10 +96,12 @@ public final class Environment extends AbstractConfigurable {
 
   /**
    * Defines a map of configuration parameters for CONGA plugins.
+   *
    * <p>
    * The outer map contains the plugin names as keys, and the configuration for this plugin as value.
    * The inner map contains the key/value pairs for the plugin configuration.
    * </p>
+   *
    * <p>
    * The configurations are merged with the configuration parameters defined in the POM.
    * </p>

@@ -231,6 +231,7 @@ public final class RoleFile extends AbstractModel {
   /**
    * Defines configuration parameters that are passed as options to the post processor plugins.
    * They are merged with the configuration parameters from the configuration inheritance tree.
+   *
    * <p>
    * Two generic parameters are supported for all post processor:
    * </p>

@@ -107,6 +107,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
 
   /**
    * Configuration for value providers.
+   *
    * <p>
    * This uses the same syntax as OSGi manifest headers - example:
    * </p>
@@ -115,6 +116,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
    * valueProviderPluginName1;param1=value1;param2=value2,
    * valueProviderPluginName2;param3=value3
    * </pre>
+   *
    * <p>
    * If you want to define multiple value providers of the same type, you can use an arbitrary value provider name, and
    * specify the plugin name with the optional <code>_plugin_</code> parameter - example:
@@ -131,6 +133,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   /**
    * Plugin-specific configuration. This holds configuration for CONGA plugins that are not part of the built-in set of
    * CONGA plugins (e.g. configuration for the CONGA AEM Plugin).
+   *
    * <p>
    * This uses the same syntax as OSGi manifest headers - example:
    * </p>
