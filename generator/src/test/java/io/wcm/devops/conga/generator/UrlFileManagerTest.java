@@ -71,7 +71,7 @@ class UrlFileManagerTest {
   }
 
   @Test
-  void testGetFile_Invalid() throws Exception {
+  void testGetFile_Invalid() {
     assertThrows(IOException.class, () -> {
       underTest.getFile("other:/x/y/z");
     });
@@ -106,7 +106,7 @@ class UrlFileManagerTest {
   }
 
   @Test
-  void testGetFileUrl_Invalid() throws Exception {
+  void testGetFileUrl_Invalid() {
     assertThrows(IOException.class, () -> {
       underTest.getFileUrl("other:/x/y/z");
     });

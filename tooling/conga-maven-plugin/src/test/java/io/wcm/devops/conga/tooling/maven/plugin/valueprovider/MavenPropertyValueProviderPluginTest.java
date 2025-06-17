@@ -45,7 +45,7 @@ class MavenPropertyValueProviderPluginTest {
   private MavenProject mavenProject;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     mavenProject = new MavenProject();
 
     PluginManager pluginManager = new PluginManagerImpl();

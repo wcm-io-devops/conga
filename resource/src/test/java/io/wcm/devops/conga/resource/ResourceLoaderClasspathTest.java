@@ -61,7 +61,7 @@ class ResourceLoaderClasspathTest {
   }
 
   @Test
-  void testResourceCollection() throws Exception {
+  void testResourceCollection() {
     ResourceCollection col = underTest.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
 
     assertTrue(col.exists());
@@ -100,14 +100,14 @@ class ResourceLoaderClasspathTest {
   }
 
   @Test
-  void testNonExistingResource() throws Exception {
+  void testNonExistingResource() {
     Resource resource = underTest.getResource(CLASSPATH_PREFIX + ROOT + "/folder1/invalid.txt");
     assertFalse(resource.exists());
     assertTrue(resource instanceof ClasspathResourceImpl);
   }
 
   @Test
-  void testNonExistingResourceCollection() throws Exception {
+  void testNonExistingResourceCollection() {
     ResourceCollection col = underTest.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/invalidFolder");
     assertFalse(col.exists());
     assertEquals(List.of(), List.copyOf(col.getResources()));
@@ -115,7 +115,7 @@ class ResourceLoaderClasspathTest {
   }
 
   @Test
-  void testResourceByParentFolder() throws Exception {
+  void testResourceByParentFolder() {
     ResourceCollection col = underTest.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
     Resource resource = underTest.getResource(col, "folder2/file3.txt");
     assertTrue(resource.exists());
@@ -123,7 +123,7 @@ class ResourceLoaderClasspathTest {
   }
 
   @Test
-  void testResourceCollectionByParentFolder() throws Exception {
+  void testResourceCollectionByParentFolder() {
     ResourceCollection colParent = underTest.getResourceCollection(CLASSPATH_PREFIX + ROOT + "/folder1");
     ResourceCollection col = underTest.getResourceCollection(colParent, "folder2");
     assertTrue(col.exists());
@@ -131,13 +131,13 @@ class ResourceLoaderClasspathTest {
   }
 
   @Test
-  void testResourceFromExternalJar() throws Exception {
+  void testResourceFromExternalJar() {
     Resource resource = underTest.getResource(CLASSPATH_PREFIX + "/META-INF/maven/org.apache.commons/commons-lang3/pom.xml");
     assertTrue(resource.exists());
   }
 
   @Test
-  void testResourceCollectionFromExternalJar() throws Exception {
+  void testResourceCollectionFromExternalJar() {
     ResourceCollection col = underTest.getResourceCollection(CLASSPATH_PREFIX + "/META-INF/maven/org.apache.commons/commons-lang3");
     assertTrue(col.exists());
     assertEquals(2, col.getResources().size());
