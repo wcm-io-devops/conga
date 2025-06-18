@@ -25,7 +25,7 @@
   <body>
 
 
-    <release version="1.17.4" date="not released">
+    <release version="1.17.4" date="2025-06-18">
       <action type="fix" dev="trichter" issue="125">
         Increase SnakeYAML codepoint limit to 256MB (from 64MB)
       </action>
