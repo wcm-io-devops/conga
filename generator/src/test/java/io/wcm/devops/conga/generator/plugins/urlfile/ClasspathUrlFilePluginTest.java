@@ -62,7 +62,7 @@ class ClasspathUrlFilePluginTest {
   }
 
   @Test
-  void testGetFile_NonExisting() throws Exception {
+  void testGetFile_NonExisting() {
     assertThrows(FileNotFoundException.class, () -> {
       underTest.getFile("classpath:/non-exixting-file", context);
     });
@@ -78,7 +78,7 @@ class ClasspathUrlFilePluginTest {
   }
 
   @Test
-  void testGetFileUrl_NonExisting() throws Exception {
+  void testGetFileUrl_NonExisting() {
     assertThrows(FileNotFoundException.class, () -> {
       underTest.getFileUrl("classpath:/non-exixting-file", context);
     });

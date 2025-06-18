@@ -46,7 +46,7 @@ class RoleUtilTest {
   private Map<String, Role> roleMap;
 
   @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
     roleMap = new HashMap<>();
 
     /*

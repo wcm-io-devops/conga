@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,11 +49,9 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
-import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.ManifestException;
@@ -107,6 +108,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
 
   /**
    * Configuration for value providers.
+   *
    * <p>
    * This uses the same syntax as OSGi manifest headers - example:
    * </p>
@@ -115,6 +117,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
    * valueProviderPluginName1;param1=value1;param2=value2,
    * valueProviderPluginName2;param3=value3
    * </pre>
+   *
    * <p>
    * If you want to define multiple value providers of the same type, you can use an arbitrary value provider name, and
    * specify the plugin name with the optional <code>_plugin_</code> parameter - example:
@@ -131,6 +134,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   /**
    * Plugin-specific configuration. This holds configuration for CONGA plugins that are not part of the built-in set of
    * CONGA plugins (e.g. configuration for the CONGA AEM Plugin).
+   *
    * <p>
    * This uses the same syntax as OSGi manifest headers - example:
    * </p>
@@ -154,7 +158,8 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
 
-  @Component(role = Archiver.class, hint = "jar")
+  @Inject
+  @Named("jar")
   private JarArchiver jarArchiver;
 
   /**
@@ -168,7 +173,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   @Parameter(property = "session", readonly = true, required = true)
   private MavenSession mavenSession;
 
-  @Component
+  @Inject
   protected MavenProjectHelper projectHelper;
 
   private static final Map<String, String> DEFAULT_ARTIFACT_TYPE_MAPPINGS = Map.of(

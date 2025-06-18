@@ -27,11 +27,17 @@ import java.util.function.Function;
  */
 enum ResourceType {
 
+  /**
+   * File
+   */
   FILE(ResourceLoader.FILE_PREFIX,
       (path, resourceLoader) -> new FileResourceImpl(path),
       FileResourceCollectionImpl::new,
       AbstractFileResourceInfoImpl.class::isInstance),
 
+  /**
+   * Classpath
+   */
   CLASSPATH(ResourceLoader.CLASSPATH_PREFIX,
       ClasspathResourceImpl::new,
       ClasspathResourceCollectionImpl::new,

@@ -109,9 +109,9 @@ public final class ValueUtil {
         if (sb.length() > 0) {
           sb.append(",");
         }
-        sb.append(valueToString(entry.getKey()));
-        sb.append("=");
-        sb.append(valueToString(entry.getValue()));
+        sb.append(valueToString(entry.getKey()))
+            .append("=")
+            .append(valueToString(entry.getValue()));
       }
       return sb.toString();
     }

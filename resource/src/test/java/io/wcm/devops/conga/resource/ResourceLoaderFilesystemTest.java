@@ -63,7 +63,7 @@ class ResourceLoaderFilesystemTest {
   }
 
   @Test
-  void testResourceCollection() throws Exception {
+  void testResourceCollection() {
     ResourceCollection col = underTest.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
 
     assertTrue(col.exists());
@@ -87,28 +87,28 @@ class ResourceLoaderFilesystemTest {
   }
 
   @Test
-  void testResourceAutoDetect() throws Exception {
+  void testResourceAutoDetect() {
     Resource resource = underTest.getResource(ROOT + "/folder1/file1.txt");
     assertTrue(resource.exists());
     assertEquals("file1.txt", resource.getName());
   }
 
   @Test
-  void testNonExistingResource() throws Exception {
+  void testNonExistingResource() {
     Resource resource = underTest.getResource(FILE_PREFIX + ROOT + "/folder1/invalid.txt");
     assertFalse(resource.exists());
     assertTrue(resource instanceof FileResourceImpl);
   }
 
   @Test
-  void testNonExistingResourceAutoDetect() throws Exception {
+  void testNonExistingResourceAutoDetect() {
     Resource resource = underTest.getResource(ROOT + "/folder1/invalid.txt");
     assertFalse(resource.exists());
     assertTrue(resource instanceof FileResourceImpl);
   }
 
   @Test
-  void testNonExistingResourceCollection() throws Exception {
+  void testNonExistingResourceCollection() {
     ResourceCollection col = underTest.getResourceCollection(FILE_PREFIX + ROOT + "/invalidFolder");
     assertFalse(col.exists());
     assertEquals(List.of(), List.copyOf(col.getResources()));
@@ -116,7 +116,7 @@ class ResourceLoaderFilesystemTest {
   }
 
   @Test
-  void testResourceByParentFolder() throws Exception {
+  void testResourceByParentFolder() {
     ResourceCollection col = underTest.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
     Resource resource = underTest.getResource(col, "folder2/file3.txt");
     assertTrue(resource.exists());
@@ -124,7 +124,7 @@ class ResourceLoaderFilesystemTest {
   }
 
   @Test
-  void testResourceCollectionByParentFolder() throws Exception {
+  void testResourceCollectionByParentFolder() {
     ResourceCollection colParent = underTest.getResourceCollection(FILE_PREFIX + ROOT + "/folder1");
     ResourceCollection col = underTest.getResourceCollection(colParent, "folder2");
     assertTrue(col.exists());

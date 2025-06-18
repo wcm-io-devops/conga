@@ -42,7 +42,7 @@ class DisallowPropertyHelperTest {
   }
 
   @Test
-  void testSetCase1() throws Exception {
+  void testSetCase1() {
     assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions()
           .withProperty("p1", "v1"));
@@ -50,7 +50,7 @@ class DisallowPropertyHelperTest {
   }
 
   @Test
-  void testSetCase2() throws Exception {
+  void testSetCase2() {
     IOException ex = assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions("Custom Error Message")
           .withProperty("p1", "v1")

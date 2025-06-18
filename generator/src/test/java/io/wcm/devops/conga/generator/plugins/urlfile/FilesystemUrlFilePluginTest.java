@@ -82,14 +82,14 @@ class FilesystemUrlFilePluginTest {
   }
 
   @Test
-  void testRelativeFileNode_NoNodeBaseDir() throws Exception {
+  void testRelativeFileNode_NoNodeBaseDir() {
     assertThrows(GeneratorException.class, () -> {
       underTest.getFile("file-node:json/noJson.txt", context);
     });
   }
 
   @Test
-  void testGetFile_NonExisting() throws Exception {
+  void testGetFile_NonExisting() {
     assertThrows(FileNotFoundException.class, () -> {
       underTest.getFile("file:non-existing-file", context);
     });
@@ -106,7 +106,7 @@ class FilesystemUrlFilePluginTest {
   }
 
   @Test
-  void testGetFileUrl_NonExisting() throws Exception {
+  void testGetFileUrl_NonExisting() {
     assertThrows(FileNotFoundException.class, () -> {
       underTest.getFileUrl("file:non-existing-file", context);
     });
