@@ -31,6 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.maven.model.Dependency;
 import org.eclipse.aether.artifact.Artifact;
 
@@ -99,7 +100,7 @@ class DependencyVersionBuilder implements Function<Environment, Collection<Strin
    * @return true if configuration definitions found
    */
   private boolean hasCongaDefinitions(Artifact artifact) {
-    if (!StringUtils.equalsAny(artifact.getExtension(), "jar")) {
+    if (!Strings.CS.equalsAny(artifact.getExtension(), "jar")) {
       return false;
     }
     String fileInfo = artifact.toString();
@@ -109,7 +110,7 @@ class DependencyVersionBuilder implements Function<Environment, Collection<Strin
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
           ZipEntry entry = entries.nextElement();
-          if (StringUtils.startsWith(entry.getName(), GeneratorOptions.CLASSPATH_PREFIX)) {
+          if (Strings.CS.startsWith(entry.getName(), GeneratorOptions.CLASSPATH_PREFIX)) {
             return true;
           }
         }

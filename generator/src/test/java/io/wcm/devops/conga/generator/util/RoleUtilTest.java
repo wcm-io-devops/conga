@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -301,8 +301,8 @@ class RoleUtilTest {
   private void assertFile(Role role, String roleName, String file, String... variants) {
     String template = roleName + "-" + file + ".hbs";
     for (RoleFile fileItem : role.getFiles()) {
-      if (StringUtils.equals(file, fileItem.getFile())
-          && StringUtils.equals(template, fileItem.getTemplate())
+      if (Strings.CS.equals(file, fileItem.getFile())
+          && Strings.CS.equals(template, fileItem.getTemplate())
           && Arrays.asList(variants).equals(fileItem.getVariants())) {
         // item found
         return;
@@ -326,7 +326,7 @@ class RoleUtilTest {
   @SuppressWarnings("unused")
   private void assertUrlFile(Role role, String roleName, String url, String... variants) {
     for (RoleFile fileItem : role.getFiles()) {
-      if (StringUtils.equals(url, fileItem.getUrl())
+      if (Strings.CS.equals(url, fileItem.getUrl())
           && Arrays.asList(variants).equals(fileItem.getVariants())) {
         // item found
         return;
@@ -352,7 +352,7 @@ class RoleUtilTest {
 
   private void assertVariant(Role role, String variant, Map<String, Object> config) {
     for (RoleVariant variantItem : role.getVariants()) {
-      if (StringUtils.equals(variant, variantItem.getVariant())
+      if (Strings.CS.equals(variant, variantItem.getVariant())
           && config.equals(variantItem.getConfig())) {
         // item found
         return;

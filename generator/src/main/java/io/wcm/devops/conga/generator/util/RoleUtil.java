@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.model.role.Role;
@@ -137,7 +138,7 @@ public final class RoleUtil {
     for (RoleVariant variant : role.getVariants()) {
       boolean found = false;
       for (RoleVariant superVariant : superRole.getVariants()) {
-        if (StringUtils.equals(superVariant.getVariant(), variant.getVariant())) {
+        if (Strings.CS.equals(superVariant.getVariant(), variant.getVariant())) {
           Map<String, Object> variantMerged = MapMerger.merge(variant.getConfig(), superVariant.getConfig());
           variant.setConfig(variantMerged);
           superVariant.setConfig(variantMerged);

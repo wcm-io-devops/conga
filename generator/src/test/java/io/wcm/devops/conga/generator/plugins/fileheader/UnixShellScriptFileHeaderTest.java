@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -59,9 +60,9 @@ class UnixShellScriptFileHeaderTest {
     underTest.apply(fileContext, context);
 
     String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-    assertTrue(StringUtils.contains(content, "# Der Jodelkaiser\n# aus dem Oetztal\n# ist wieder daheim.\n"));
-    assertTrue(StringUtils.endsWith(content, "\nmyscript"));
-    assertTrue(StringUtils.startsWith(content, "#!/bin/bash\n"));
+    assertTrue(Strings.CS.contains(content, "# Der Jodelkaiser\n# aus dem Oetztal\n# ist wieder daheim.\n"));
+    assertTrue(Strings.CS.endsWith(content, "\nmyscript"));
+    assertTrue(Strings.CS.startsWith(content, "#!/bin/bash\n"));
 
     FileHeaderContext extractContext = underTest.extract(fileContext);
     assertEquals(lines, extractContext.getCommentLines());

@@ -29,6 +29,7 @@ import java.net.URL;
 import java.nio.file.Files;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.GeneratorException;
@@ -56,8 +57,8 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public boolean accepts(String url, UrlFilePluginContext context) {
-    return StringUtils.startsWith(url, PREFIX)
-        || StringUtils.startsWith(url, PREFIX_NODE);
+    return Strings.CS.startsWith(url, PREFIX)
+        || Strings.CS.startsWith(url, PREFIX_NODE);
   }
 
   @Override
@@ -95,11 +96,11 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   }
 
   private static File getFileInternal(String url, UrlFilePluginContext context) {
-    if (StringUtils.startsWith(url, PREFIX)) {
+    if (Strings.CS.startsWith(url, PREFIX)) {
       String absolutePath = StringUtils.substringAfter(url, PREFIX);
       return new File(absolutePath);
     }
-    else if (StringUtils.startsWith(url, PREFIX_NODE)) {
+    else if (Strings.CS.startsWith(url, PREFIX_NODE)) {
       File nodeBaseDir = context.getNodeBaseDir();
       if (nodeBaseDir != null) {
         String relativePath = StringUtils.substringAfter(url, PREFIX_NODE);

@@ -20,7 +20,7 @@
 package io.wcm.devops.conga.resource;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 abstract class AbstractClasspathResourceImpl implements ResourceInfo {
 
@@ -48,7 +48,7 @@ abstract class AbstractClasspathResourceImpl implements ResourceInfo {
   }
 
   protected static String convertPath(String path) {
-    return StringUtils.replace(StringUtils.removeStart(path, "/"), "\\", "/");
+    return Strings.CS.replace(Strings.CS.removeStart(path, "/"), "\\", "/");
   }
 
   @Override

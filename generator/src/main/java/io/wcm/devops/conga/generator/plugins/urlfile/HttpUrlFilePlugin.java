@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
@@ -46,8 +47,8 @@ public class HttpUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public boolean accepts(String url, UrlFilePluginContext context) {
-    return StringUtils.startsWith(url, "http://")
-        || StringUtils.startsWith(url, "https://");
+    return Strings.CS.startsWith(url, "http://")
+        || Strings.CS.startsWith(url, "https://");
   }
 
   @Override

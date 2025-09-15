@@ -39,6 +39,7 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Template;
@@ -390,7 +391,7 @@ class FileGenerator {
       pluginNames.add(pluginName);
     }
     collectFilePlugins(FileHeaderPlugin.class, fileItem, fileHeaderContext, pluginNames)
-        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneFileHeader.NAME))
+        .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneFileHeader.NAME))
         .forEach(plugin -> applyFileHeader(fileItem, plugin));
   }
 
@@ -403,7 +404,7 @@ class FileGenerator {
 
   private void applyValidation(FileContext fileItem, List<String> pluginNames) {
     collectFilePlugins(ValidatorPlugin.class, fileItem, validatorContext, pluginNames)
-        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneValidator.NAME))
+        .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneValidator.NAME))
         .forEach(plugin -> applyValidation(fileItem, plugin));
   }
 

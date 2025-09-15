@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.model.shared.AbstractModel;
 import io.wcm.devops.conga.model.shared.LineEndings;
@@ -355,7 +356,7 @@ public final class RoleFile extends AbstractModel {
     private final boolean mandatory;
 
     RoleFileVariantMetadata(String variant) {
-      if (StringUtils.endsWith(variant, VARIANT_MANDATORY_SUFFIX)) {
+      if (Strings.CS.endsWith(variant, VARIANT_MANDATORY_SUFFIX)) {
         this.variant = StringUtils.substringBeforeLast(variant, VARIANT_MANDATORY_SUFFIX);
         mandatory = true;
       }

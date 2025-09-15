@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.spi.context.ValueProviderGlobalContext;
 
@@ -175,7 +176,7 @@ public final class VariableStringResolver {
 
   @SuppressWarnings("java:S3776") // ignore complexity
   private Object resolveSingle(Matcher matcher, Map<String, Object> variables, int iterationCount) {
-    boolean escapedVariable = StringUtils.equals(matcher.group(EXPRESSION_POS_DOLLAR_SIGN), "\\$");
+    boolean escapedVariable = Strings.CS.equals(matcher.group(EXPRESSION_POS_DOLLAR_SIGN), "\\$");
     String expression = matcher.group(EXPRESSION_POS_EXPRESSION);
 
     // keep escaped variables intact
@@ -231,7 +232,7 @@ public final class VariableStringResolver {
     StringBuffer sb = new StringBuffer();
     boolean replacedAny = false;
     while (matcher.find()) {
-      boolean escapedVariable = StringUtils.equals(matcher.group(EXPRESSION_POS_DOLLAR_SIGN), "\\$");
+      boolean escapedVariable = Strings.CS.equals(matcher.group(EXPRESSION_POS_DOLLAR_SIGN), "\\$");
       String expression = matcher.group(EXPRESSION_POS_EXPRESSION);
 
       // keep escaped variables intact

@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -347,7 +347,7 @@ class FileGeneratorPostProcessorTest {
       @Override
       public Boolean answer(InvocationOnMock invocation) throws Throwable {
         FileContext input = invocation.getArgument(0);
-        return StringUtils.endsWith(input.getFile().getName(), "." + extension);
+        return Strings.CS.endsWith(input.getFile().getName(), "." + extension);
       }
     });
     when(plugin.implicitApply(any(FileContext.class), any(PostProcessorContext.class))).thenReturn(implicitApply);

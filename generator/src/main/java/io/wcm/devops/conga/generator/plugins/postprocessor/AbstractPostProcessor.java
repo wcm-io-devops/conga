@@ -21,7 +21,7 @@ package io.wcm.devops.conga.generator.plugins.postprocessor;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.plugins.fileheader.NoneFileHeader;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
@@ -80,7 +80,7 @@ public abstract class AbstractPostProcessor implements PostProcessorPlugin {
     Optional<FileHeaderPlugin> fileHeaderPlugin = postProcessorContext.getPluginManager()
         .getAll(FileHeaderPlugin.class).stream()
         .filter(plugin -> plugin.accepts(file, dummyFileHeader))
-        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneFileHeader.NAME))
+        .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneFileHeader.NAME))
         .findFirst();
     if (fileHeaderPlugin.isPresent()) {
       return fileHeaderPlugin.get();

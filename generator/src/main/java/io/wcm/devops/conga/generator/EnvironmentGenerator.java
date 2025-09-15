@@ -37,6 +37,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 
 import com.github.jknack.handlebars.Handlebars;
@@ -271,7 +272,7 @@ final class EnvironmentGenerator {
 
   private RoleVariant getRoleVariant(Role role, String variant, String roleName, Node node) {
     for (RoleVariant roleVariant : role.getVariants()) {
-      if (StringUtils.equals(variant, roleVariant.getVariant())) {
+      if (Strings.CS.equals(variant, roleVariant.getVariant())) {
         return roleVariant;
       }
     }
@@ -312,7 +313,7 @@ final class EnvironmentGenerator {
     EscapingStrategyContext context = new EscapingStrategyContext()
         .pluginContextOptions(this.pluginContextOptions);
     return options.getPluginManager().getAll(EscapingStrategyPlugin.class).stream()
-        .filter(plugin -> !StringUtils.equals(plugin.getName(), NoneEscapingStrategy.NAME))
+        .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneEscapingStrategy.NAME))
         .filter(plugin -> plugin.accepts(fileExtension, context))
         .findFirst().orElse(options.getPluginManager().get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class))
         .getName();
@@ -347,7 +348,7 @@ final class EnvironmentGenerator {
       boolean skip = false;
       if (StringUtils.isNotEmpty(roleFile.getCondition())) {
         String condition = variableStringResolver.resolveString(roleFile.getCondition(), resolvedConfig);
-        skip = StringUtils.isBlank(condition) || StringUtils.equalsIgnoreCase(condition, "false");
+        skip = StringUtils.isBlank(condition) || Strings.CI.equals(condition, "false");
       }
 
       if (!skip) {

@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
@@ -60,8 +60,8 @@ public final class UnixShellScriptFileHeader extends AbstractFileHeader {
   @Override
   protected int getInsertPosition(String content) {
     // keep shebang on first line if present
-    if (StringUtils.startsWith(content, "#!")) {
-      return StringUtils.indexOf(content, "\n") + 1;
+    if (Strings.CS.startsWith(content, "#!")) {
+      return Strings.CS.indexOf(content, "\n") + 1;
     }
     return 0;
   }

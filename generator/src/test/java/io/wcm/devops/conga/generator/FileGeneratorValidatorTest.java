@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -204,7 +204,7 @@ class FileGeneratorValidatorTest {
       @Override
       public Boolean answer(InvocationOnMock invocation) throws Throwable {
         FileContext input = invocation.getArgument(0);
-        return StringUtils.endsWith(input.getFile().getName(), "." + extension);
+        return Strings.CS.endsWith(input.getFile().getName(), "." + extension);
       }
     });
     when(plugin.implicitApply(any(FileContext.class), any(ValidatorContext.class))).thenReturn(implicitApply);

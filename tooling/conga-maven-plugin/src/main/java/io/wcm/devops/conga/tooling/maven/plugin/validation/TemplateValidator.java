@@ -22,6 +22,7 @@ package io.wcm.devops.conga.tooling.maven.plugin.validation;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.maven.plugin.MojoFailureException;
 
 import com.github.jknack.handlebars.Handlebars;
@@ -57,7 +58,7 @@ public final class TemplateValidator implements DefinitionValidator<Void> {
       "java:S1075" // uses / by intention
   })
   public Void validate(Resource resource, String pathForLog) throws MojoFailureException {
-    if (StringUtils.equalsIgnoreCase(resource.getFileExtension(), FILE_EXTENSION)) {
+    if (Strings.CI.equals(resource.getFileExtension(), FILE_EXTENSION)) {
       String templatePath = StringUtils.substringAfter(PathUtil.unifySlashes(resource.getCanonicalPath()),
           PathUtil.unifySlashes(templateDir.getCanonicalPath()) + "/");
       Handlebars handlebars = handlebarsManager.get(NoneEscapingStrategy.NAME, StandardCharsets.UTF_8.name());

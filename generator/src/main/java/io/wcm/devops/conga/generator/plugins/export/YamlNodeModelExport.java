@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -163,7 +164,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
 
   private String cleanupFileName(String fileName, String basePath) {
     String relativePath = StringUtils.substring(fileName, basePath.length() + 1);
-    return StringUtils.replace(relativePath, File.separator, "/");
+    return Strings.CS.replace(relativePath, File.separator, "/");
   }
 
 }

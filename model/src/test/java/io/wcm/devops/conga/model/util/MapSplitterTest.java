@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -77,7 +77,7 @@ class MapSplitterTest {
 
   @Test
   void testKeyStartsWithVar1() {
-    result = splitMap(TEST_MAP, entry -> StringUtils.startsWith(entry.getKey(), "var1"));
+    result = splitMap(TEST_MAP, entry -> Strings.CS.startsWith(entry.getKey(), "var1"));
     assertEquals(Map.of(
         "var1", "value1",
         "obj1", Map.of(
@@ -110,7 +110,7 @@ class MapSplitterTest {
   @Test
   void testValueStartsWithValue2() {
     result = splitMap(TEST_MAP, entry -> matchesSimpleListValue(entry.getValue(),
-        value -> (value instanceof String) && StringUtils.startsWith(value.toString(), "value2")));
+        value -> (value instanceof String) && Strings.CS.startsWith(value.toString(), "value2")));
     assertEquals(Map.of(
         "var2", "value2"),
         result.getMatching());
@@ -142,7 +142,7 @@ class MapSplitterTest {
   @Test
   void testStartsWithValue14() {
     result = splitMap(TEST_MAP, entry -> matchesSimpleListValue(entry.getValue(),
-        value -> (value instanceof String) && StringUtils.startsWith(value.toString(), "value14")));
+        value -> (value instanceof String) && Strings.CS.startsWith(value.toString(), "value14")));
     assertEquals(Map.of(
         "obj1", Map.of(
             "list14", List.of(

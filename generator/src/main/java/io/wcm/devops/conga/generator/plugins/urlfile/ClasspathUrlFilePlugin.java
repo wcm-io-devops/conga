@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
@@ -49,13 +50,13 @@ public class ClasspathUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public boolean accepts(String url, UrlFilePluginContext context) {
-    return StringUtils.startsWith(url, PREFIX);
+    return Strings.CS.startsWith(url, PREFIX);
   }
 
   @Override
   public String getFileName(String url, UrlFilePluginContext context) {
     String classpathRef = getClasspathRef(url);
-    if (!StringUtils.contains(classpathRef, "/")) {
+    if (!Strings.CS.contains(classpathRef, "/")) {
       return classpathRef;
     }
     else {
@@ -85,7 +86,7 @@ public class ClasspathUrlFilePlugin implements UrlFilePlugin {
 
   private static String getClasspathRef(String url) {
     String classpathRef = StringUtils.substringAfter(url, PREFIX);
-    if (StringUtils.startsWith(classpathRef, "/")) {
+    if (Strings.CS.startsWith(classpathRef, "/")) {
       classpathRef = StringUtils.substringAfter(classpathRef, "/");
     }
     return classpathRef;

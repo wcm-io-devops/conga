@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
@@ -100,7 +101,7 @@ public final class FileUtil {
    * @return true if file extension matches
    */
   public static boolean matchesExtension(String fileExtension, String extension) {
-    return StringUtils.equalsIgnoreCase(fileExtension, extension);
+    return Strings.CI.equals(fileExtension, extension);
   }
 
   /**

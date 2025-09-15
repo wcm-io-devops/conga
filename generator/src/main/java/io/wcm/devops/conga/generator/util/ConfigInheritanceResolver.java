@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.model.environment.Environment;
 import io.wcm.devops.conga.model.environment.Node;
@@ -91,7 +91,7 @@ public final class ConfigInheritanceResolver extends AbstractConfigurableObjectT
 
   private static Map<String, Object> getGlobalRoleConfig(Environment environment, String roleName) {
     for (RoleConfig roleConfig : environment.getRoleConfig()) {
-      if (StringUtils.equals(roleConfig.getRole(), roleName)) {
+      if (Strings.CS.equals(roleConfig.getRole(), roleName)) {
         return roleConfig.getConfig();
       }
     }

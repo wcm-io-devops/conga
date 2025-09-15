@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -85,7 +86,7 @@ public class MavenArtifactHelper {
    */
   public Artifact resolveArtifact(String artifactCoords) throws IOException {
     Artifact artifact;
-    if (StringUtils.contains(artifactCoords, "/")) {
+    if (Strings.CS.contains(artifactCoords, "/")) {
       artifact = getArtifactFromMavenCoordinatesPaxUrlStyle(artifactCoords);
     }
     else {
@@ -124,7 +125,7 @@ public class MavenArtifactHelper {
     try {
       ArtifactDescriptorResult result = repoSystem.readArtifactDescriptor(repoSession, descriptorRequest);
       for (Dependency dependency : result.getDependencies()) {
-        if (StringUtils.equals(dependency.getScope(), SCOPE_COMPILE)) {
+        if (Strings.CS.equals(dependency.getScope(), SCOPE_COMPILE)) {
           Artifact resolvedArtifact = resolveArtifact(dependency.getArtifact());
           dependencies.add(resolvedArtifact);
         }
@@ -147,7 +148,7 @@ public class MavenArtifactHelper {
     List<Artifact> artifacts = new ArrayList<>();
     for (String dependencyUrl : environmentDependencyUrls) {
       String resolvedDependencyUrl = ClassLoaderUtil.resolveDependencyUrl(dependencyUrl, pluginContextOptions);
-      if (!StringUtils.startsWith(resolvedDependencyUrl, MavenUrlFilePlugin.PREFIX)) {
+      if (!Strings.CS.startsWith(resolvedDependencyUrl, MavenUrlFilePlugin.PREFIX)) {
         continue;
       }
 
@@ -287,10 +288,10 @@ public class MavenArtifactHelper {
   }
 
   private boolean artifactEquals(org.apache.maven.artifact.Artifact dependency, String artifactId, String groupId, String type, String classifier) {
-    return StringUtils.equals(dependency.getGroupId(), groupId)
-        && StringUtils.equals(dependency.getArtifactId(), artifactId)
-        && StringUtils.equals(StringUtils.defaultString(dependency.getClassifier()), StringUtils.defaultString(classifier))
-        && StringUtils.equals(dependency.getType(), type);
+    return Strings.CS.equals(dependency.getGroupId(), groupId)
+        && Strings.CS.equals(dependency.getArtifactId(), artifactId)
+        && Strings.CS.equals(StringUtils.defaultString(dependency.getClassifier()), StringUtils.defaultString(classifier))
+        && Strings.CS.equals(dependency.getType(), type);
   }
 
   private String findVersionInEnvironmentDependencies(String groupId, String artifactId, String packaging, String classifier) throws IOException {
@@ -306,10 +307,10 @@ public class MavenArtifactHelper {
   }
 
   private boolean artifactEquals(Artifact dependency, String groupId, String artifactId, String type, String classifier) {
-    return StringUtils.equals(dependency.getGroupId(), groupId)
-        && StringUtils.equals(dependency.getArtifactId(), artifactId)
-        && StringUtils.equals(StringUtils.defaultString(dependency.getClassifier()), StringUtils.defaultString(classifier))
-        && StringUtils.equals(dependency.getExtension(), type);
+    return Strings.CS.equals(dependency.getGroupId(), groupId)
+        && Strings.CS.equals(dependency.getArtifactId(), artifactId)
+        && Strings.CS.equals(StringUtils.defaultString(dependency.getClassifier()), StringUtils.defaultString(classifier))
+        && Strings.CS.equals(dependency.getExtension(), type);
   }
 
 }

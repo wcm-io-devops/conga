@@ -22,7 +22,7 @@ package io.wcm.devops.conga.generator.plugins.valueprovider;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
@@ -44,7 +44,7 @@ public class DummyMapValueProviderPlugin implements ValueProviderPlugin {
 
   @Override
   public Object resolve(String variableName, ValueProviderContext context) {
-    if (StringUtils.equals(variableName, "map")) {
+    if (Strings.CS.equals(variableName, "map")) {
       return Map.of(
           "param1", "value1",
           "param2", 5,
