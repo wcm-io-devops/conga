@@ -43,7 +43,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -149,7 +149,7 @@ class GeneratorTestNodeModelExportTest {
       return null;
     }
     for (Map<String, Object> item : roles) {
-      if (StringUtils.equals(role, (String)item.get("role"))) {
+      if (Strings.CS.equals(role, (String)item.get("role"))) {
         return item;
       }
     }
@@ -169,7 +169,7 @@ class GeneratorTestNodeModelExportTest {
     List<Map<String, Object>> files = (List<Map<String, Object>>)role.get("files");
     if (files != null) {
       for (Map<String, Object> item : files) {
-        if (StringUtils.equals((String)item.get("path"), fileName)) {
+        if (Strings.CS.equals((String)item.get("path"), fileName)) {
           assertThat(item.entrySet(), (Matcher)hasItems(expectedOptions.entrySet().toArray()));
           return;
         }
@@ -192,7 +192,7 @@ class GeneratorTestNodeModelExportTest {
       return null;
     }
     for (Map<String, Object> item : tenants) {
-      if (StringUtils.equals(tenant, (String)item.get("tenant"))) {
+      if (Strings.CS.equals(tenant, (String)item.get("tenant"))) {
         return item;
       }
     }
@@ -212,7 +212,7 @@ class GeneratorTestNodeModelExportTest {
     if (tenantObject == null) {
       return List.of();
     }
-    return (List<String>)ObjectUtils.defaultIfNull(tenantObject.get("roles"), List.of());
+    return (List<String>)ObjectUtils.getIfNull(tenantObject.get("roles"), List.of());
   }
 
 }

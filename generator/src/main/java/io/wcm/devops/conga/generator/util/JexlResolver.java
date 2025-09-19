@@ -36,6 +36,7 @@ import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.MapContext;
 import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.model.util.MapMerger;
@@ -104,7 +105,7 @@ final class JexlResolver {
     Matcher matcher = MULTI_EXPRESSION_PATTERN.matcher(expressionString);
     while (matcher.find()) {
 
-      boolean escapedVariable = StringUtils.equals(matcher.group(EXPRESSION_POS_DOLLAR_SIGN), "\\$");
+      boolean escapedVariable = Strings.CS.equals(matcher.group(EXPRESSION_POS_DOLLAR_SIGN), "\\$");
       String expression = matcher.group(EXPRESSION_POS_EXPRESSION);
 
       // keep escaped variables intact

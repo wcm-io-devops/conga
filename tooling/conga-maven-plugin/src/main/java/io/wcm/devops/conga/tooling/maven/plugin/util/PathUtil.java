@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.tooling.maven.plugin.util;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Helper methods for handling paths.
@@ -36,7 +36,7 @@ public final class PathUtil {
    * @return Converted path
    */
   public static String unifySlashes(String path) {
-    return StringUtils.replace(path, "\\", "/");
+    return Strings.CS.replace(path, "\\", "/");
   }
 
 }

@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.export.ModelExport;
 import io.wcm.devops.conga.generator.plugins.valueprovider.DummyPluginConfigValueProviderPlugin;
@@ -125,7 +125,7 @@ public final class TestUtils {
   public static void assertContains(File file, String contains, Charset charset) {
     try {
       String fileContent = FileUtils.readFileToString(file, charset);
-      assertTrue(StringUtils.contains(fileContent, contains),
+      assertTrue(Strings.CS.contains(fileContent, contains),
           "File " + FileUtil.getCanonicalPath(file) + " does not contain: " + contains);
     }
     catch (IOException ex) {

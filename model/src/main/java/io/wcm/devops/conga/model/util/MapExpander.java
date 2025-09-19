@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,9 +51,9 @@ public final class MapExpander {
   @SuppressWarnings("unchecked")
   public static @Nullable Object getDeep(@NotNull Map<String, Object> map, @NotNull String key) {
     if (map.containsKey(key)) {
-      return ObjectUtils.defaultIfNull(map.get(key), "");
+      return ObjectUtils.getIfNull(map.get(key), "");
     }
-    if (StringUtils.contains(key, ".")) {
+    if (Strings.CS.contains(key, ".")) {
       String keyPart = StringUtils.substringBefore(key, ".");
       String keySuffix = StringUtils.substringAfter(key, ".");
       Object resultKeyPart = map.get(keyPart);
@@ -92,7 +93,7 @@ public final class MapExpander {
   }
 
   private static @NotNull Map.Entry<String, Object> expandEntry(@NotNull Map.Entry<String, Object> entry) {
-    if (!StringUtils.contains(entry.getKey(), ".")) {
+    if (!Strings.CS.contains(entry.getKey(), ".")) {
       return new MapEntry<>(entry.getKey(), expandDeep(entry.getValue()));
     }
 

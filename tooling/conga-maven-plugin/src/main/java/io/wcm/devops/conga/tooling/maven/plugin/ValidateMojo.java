@@ -34,6 +34,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.maven.artifact.resolver.ResolutionErrorHandler;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.execution.MavenSession;
@@ -169,7 +170,7 @@ public class ValidateMojo extends AbstractCongaMojo {
             return true;
           }
           for (String environment : this.environments) {
-            if (StringUtils.equals(environment, FilenameUtils.getBaseName(resourceInfo.getName()))) {
+            if (Strings.CS.equals(environment, FilenameUtils.getBaseName(resourceInfo.getName()))) {
               return true;
             }
           }

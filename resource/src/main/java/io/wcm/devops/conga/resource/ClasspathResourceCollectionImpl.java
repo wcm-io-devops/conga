@@ -28,7 +28,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 final class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImpl implements ResourceCollection {
@@ -62,7 +62,7 @@ final class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImp
   }
 
   private static boolean isFolder(org.springframework.core.io.Resource classpathResource) throws IOException {
-    return StringUtils.endsWith(classpathResource.getURL().toString(), "/");
+    return Strings.CS.endsWith(classpathResource.getURL().toString(), "/");
   }
 
   @Override

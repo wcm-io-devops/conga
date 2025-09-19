@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -197,10 +198,10 @@ class FileGeneratorFileHeaderTest {
     FileHeaderContext context = contextCaptor.getValue();
 
     String fileHeader = StringUtils.join(context.getCommentLines(), "\n");
-    assertTrue(StringUtils.contains(fileHeader, "version1/1.0.0\n"));
-    assertTrue(StringUtils.contains(fileHeader, "version2/2.0.0-SNAPSHOT\n"));
-    assertTrue(StringUtils.contains(fileHeader, "version3/1.2.0-SNAPSHOT\n"));
-    assertTrue(StringUtils.contains(fileHeader, "version4/2.1.2-SNAPSHOT/suffix\n"));
+    assertTrue(Strings.CS.contains(fileHeader, "version1/1.0.0\n"));
+    assertTrue(Strings.CS.contains(fileHeader, "version2/2.0.0-SNAPSHOT\n"));
+    assertTrue(Strings.CS.contains(fileHeader, "version3/1.2.0-SNAPSHOT\n"));
+    assertTrue(Strings.CS.contains(fileHeader, "version4/2.1.2-SNAPSHOT/suffix\n"));
   }
 
   private void assertItem(GeneratedFileContext item, String expectedFileName) {
@@ -214,7 +215,7 @@ class FileGeneratorFileHeaderTest {
       @Override
       public Boolean answer(InvocationOnMock invocation) throws Throwable {
         FileContext input = invocation.getArgument(0);
-        return StringUtils.endsWith(input.getFile().getName(), "." + extension);
+        return Strings.CS.endsWith(input.getFile().getName(), "." + extension);
       }
     });
     when(plugin.implicitApply(any(FileContext.class), any(FileHeaderContext.class))).thenReturn(implicitApply);

@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.GeneratorException;
@@ -145,10 +146,10 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
         content = content.substring(insertPosition);
 
         String[] contentLines = StringUtils.split(content, getLineBreak());
-        if (contentLines.length > 0 && StringUtils.startsWith(contentLines[0], getCommentLinePrefix())) {
+        if (contentLines.length > 0 && Strings.CS.startsWith(contentLines[0], getCommentLinePrefix())) {
           List<String> lines = new ArrayList<>();
           for (int i = 0; i < contentLines.length; i++) {
-            if (StringUtils.startsWith(contentLines[i], getCommentLinePrefix())) {
+            if (Strings.CS.startsWith(contentLines[i], getCommentLinePrefix())) {
               lines.add(contentLines[i].substring(getCommentLinePrefix().length()));
             }
             else {

@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.fileheader;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.spi.context.FileContext;
 import io.wcm.devops.conga.generator.spi.context.FileHeaderContext;
@@ -49,7 +49,7 @@ public final class JsonFileHeader extends AbstractFileHeader {
 
   @Override
   protected String sanitizeComment(String line) {
-    return StringUtils.replace(StringUtils.replace(line, "/*", "/+"), "*/", "+/");
+    return Strings.CS.replace(Strings.CS.replace(line, "/*", "/+"), "*/", "+/");
   }
 
   @Override

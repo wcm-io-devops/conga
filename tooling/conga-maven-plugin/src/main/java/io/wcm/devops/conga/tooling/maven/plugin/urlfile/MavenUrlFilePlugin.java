@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.eclipse.aether.artifact.Artifact;
 
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
@@ -57,7 +58,7 @@ public class MavenUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public boolean accepts(String url, UrlFilePluginContext context) {
-    return StringUtils.startsWith(url, PREFIX);
+    return Strings.CS.startsWith(url, PREFIX);
   }
 
   @Override

@@ -42,6 +42,7 @@ import javax.inject.Named;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.maven.archiver.MavenArchiveConfiguration;
 import org.apache.maven.archiver.MavenArchiver;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -153,7 +154,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
    * Defaults to <code>bundle</code>-&gt;<code>jar</code>, <code>content-package</code>-&gt;<code>zip</code>.
    */
   @Parameter
-  private Map<String,String> artifactTypeMappings;
+  private Map<String, String> artifactTypeMappings;
 
   @Parameter(property = "project", required = true, readonly = true)
   private MavenProject project;
@@ -241,7 +242,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     File outputFile = buildJarFile(definitionDir);
 
     // set or attach JAR artifact
-    if (StringUtils.equalsAny(project.getPackaging(), PACKAGING_DEFINITION, PACKAGING_CONFIGURATION)) {
+    if (Strings.CS.equalsAny(project.getPackaging(), PACKAGING_DEFINITION, PACKAGING_CONFIGURATION)) {
       project.getArtifact().setFile(outputFile);
     }
     else {
@@ -295,7 +296,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   private String buildJarFileName() {
     StringBuilder sb = new StringBuilder();
     sb.append(project.getBuild().getFinalName());
-    if (!StringUtils.equalsAny(project.getPackaging(), PACKAGING_DEFINITION, PACKAGING_CONFIGURATION)) {
+    if (!Strings.CS.equalsAny(project.getPackaging(), PACKAGING_DEFINITION, PACKAGING_CONFIGURATION)) {
       sb.append("-").append(CLASSIFIER_DEFINITION);
     }
     sb.append(".").append(FILE_EXTENSION_DEFINITION);
@@ -373,7 +374,7 @@ abstract class AbstractCongaMojo extends AbstractMojo {
   }
 
   private String unifySlashes(String path) {
-    return StringUtils.replace(path, "\\", "/");
+    return Strings.CS.replace(path, "\\", "/");
   }
 
 }

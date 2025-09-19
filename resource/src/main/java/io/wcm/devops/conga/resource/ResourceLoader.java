@@ -22,6 +22,7 @@ package io.wcm.devops.conga.resource;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Resource loader to read resource and resource collections from filesystem or classpath.
@@ -122,7 +123,7 @@ public final class ResourceLoader {
 
     // check for explicit path specification
     for (ResourceType resourceType : ResourceType.values()) {
-      if (StringUtils.startsWith(path, resourceType.getPrefix())) {
+      if (Strings.CS.startsWith(path, resourceType.getPrefix())) {
         return List.of(resourceType);
       }
     }
@@ -142,7 +143,7 @@ public final class ResourceLoader {
    */
   private static String removePrefix(String path) {
     for (ResourceType resourceType : ResourceType.values()) {
-      if (StringUtils.startsWith(path, resourceType.getPrefix())) {
+      if (Strings.CS.startsWith(path, resourceType.getPrefix())) {
         return StringUtils.substringAfter(path, resourceType.getPrefix());
       }
     }

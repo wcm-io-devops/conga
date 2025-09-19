@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -107,7 +108,7 @@ public class PackageMojo extends AbstractCongaMojo {
         // classifier is environment name
         // if current project is not a config project, prefix the classifier
         String classifier = environmentDir.getName();
-        if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
+        if (!Strings.CS.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
           classifier = CLASSIFIER_CONFIGURATION + "-" + classifier;
         }
         validateClassifier(classifier);
@@ -127,14 +128,14 @@ public class PackageMojo extends AbstractCongaMojo {
     else {
       // generate an ZIP artifact containing all environments
       String classifier = null;
-      if (!StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
+      if (!Strings.CS.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
         classifier = CLASSIFIER_CONFIGURATION;
       }
       validateClassifier(classifier);
 
       File outputFile = buildZipFile(configRootDir, classifier);
       // set or attach ZIP artifact
-      if (StringUtils.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
+      if (Strings.CS.equals(project.getPackaging(), PACKAGING_CONFIGURATION)) {
         project.getArtifact().setFile(outputFile);
       }
       else {
@@ -175,7 +176,7 @@ public class PackageMojo extends AbstractCongaMojo {
   @SuppressWarnings("java:S3776") // ignore complexity
   private void addZipDirectory(String basePath, File directory) throws MojoExecutionException {
     String directoryPath = toZipDirectoryPath(directory);
-    if (StringUtils.startsWith(directoryPath, basePath)) {
+    if (Strings.CS.startsWith(directoryPath, basePath)) {
       String relativeDirectoryPath = StringUtils.substring(directoryPath, basePath.length());
       File[] files = directory.listFiles();
       if (files != null) {
@@ -202,7 +203,7 @@ public class PackageMojo extends AbstractCongaMojo {
 
   private String toZipDirectoryPath(File directory) {
     String canoncialPath = FileUtil.getCanonicalPath(directory);
-    return StringUtils.replace(canoncialPath, "\\", "/") + "/";
+    return Strings.CS.replace(canoncialPath, "\\", "/") + "/";
   }
 
   private String buildZipFileName(String classifier) {
@@ -217,7 +218,7 @@ public class PackageMojo extends AbstractCongaMojo {
 
   private void validateClassifier(String classifier) throws MojoExecutionException {
     // classifier should not contain dots to make sure separation from extension/packaging types is not affected
-    if (StringUtils.contains(classifier, ".")) {
+    if (Strings.CS.contains(classifier, ".")) {
       throw new MojoExecutionException("Classifier must not contain dots: " + classifier);
     }
   }

@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator.util;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
@@ -65,7 +66,7 @@ public final class VariableResolver {
       result = valueProvider.resolve(variable, valueProviderContext);
 
       // if value provider was not able to resolve variable and variable contains dot try to resolve map
-      if (result == null && StringUtils.contains(variable, ".")) {
+      if (result == null && Strings.CS.contains(variable, ".")) {
         String variableWithoutNesting = StringUtils.substringBefore(variable, ".");
         String nestingVariables = StringUtils.substringAfter(variable, ".");
 

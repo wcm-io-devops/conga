@@ -26,6 +26,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -49,20 +50,20 @@ public final class ValueUtil {
     if (valueString == null) {
       return null;
     }
-    else if (StringUtils.contains(valueString, LIST_SEPARATOR)) {
+    else if (Strings.CS.contains(valueString, LIST_SEPARATOR)) {
       return stringToValueList(valueString);
     }
-    else if (StringUtils.equalsIgnoreCase(valueString, "true")) {
+    else if (Strings.CI.equals(valueString, "true")) {
       return true;
     }
-    else if (StringUtils.equalsIgnoreCase(valueString, "false")) {
+    else if (Strings.CI.equals(valueString, "false")) {
       return false;
     }
     else if (NumberUtils.isCreatable(valueString)) {
       Number number = NumberUtils.createNumber(valueString);
       // edge case: a version number like 1.20 which looks like a double should be treated as string
       // so convert number back to string, and if it's different keep it as a string
-      if (!StringUtils.equals(number.toString(), valueString)) {
+      if (!Strings.CS.equals(number.toString(), valueString)) {
         return valueString;
       }
       return number;

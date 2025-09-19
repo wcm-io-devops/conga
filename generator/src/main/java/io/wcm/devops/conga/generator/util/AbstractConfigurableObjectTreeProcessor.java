@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.model.shared.Configurable;
 
@@ -86,7 +86,7 @@ abstract class AbstractConfigurableObjectTreeProcessor<T> {
       Map<String, String> description = BeanUtils.describe(object);
       for (String propertyName : description.keySet()) {
         Object propertyValue = PropertyUtils.getProperty(object, propertyName);
-        if (!StringUtils.equals(propertyName, "class") && !ignorePropertyNames.contains(propertyName)) {
+        if (!Strings.CS.equals(propertyName, "class") && !ignorePropertyNames.contains(propertyName)) {
           process(propertyValue, processor, parentPayload);
         }
       }

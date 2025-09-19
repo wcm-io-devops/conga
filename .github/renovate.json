@@ -3,6 +3,7 @@
   "extends": [
     "github>wcm-io/renovate-config:maven",
     "github>wcm-io/renovate-config:automerge-parent",
+    "github>wcm-io/renovate-config:automerge-trusted-3rdparty",
     "github>wcm-io/renovate-config:automerge-testing",
     "github>wcm-io-devops/renovate-config:automerge-parent"
   ],

@@ -19,7 +19,7 @@
  */
 package io.wcm.devops.conga.generator.plugins.valueprovider;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import io.wcm.devops.conga.generator.spi.ValueProviderPlugin;
 import io.wcm.devops.conga.generator.spi.context.ValueProviderContext;
@@ -41,7 +41,7 @@ public class DummyPluginConfigValueProviderPlugin implements ValueProviderPlugin
 
   @Override
   public Object resolve(String variableName, ValueProviderContext context) {
-    if (StringUtils.equals(variableName, "config")) {
+    if (Strings.CS.equals(variableName, "config")) {
       return context.getPluginContextOptions().getGenericPluginConfig().get(NAME);
     }
     else {

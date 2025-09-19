@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +52,7 @@ class ResourceLoaderFilesystemTest {
     assertEquals("file1.txt", resource.getName());
     assertEquals("txt", resource.getFileExtension());
     assertEquals(ROOT + "/folder1/file1.txt", unifySlashes(resource.getPath()));
-    assertTrue(StringUtils.endsWith(unifySlashes(resource.getCanonicalPath()), "/" + ROOT + "/folder1/file1.txt"),
+    assertTrue(Strings.CS.endsWith(unifySlashes(resource.getCanonicalPath()), "/" + ROOT + "/folder1/file1.txt"),
         "Canonical path " + unifySlashes(resource.getCanonicalPath()) + " does not end with /" + ROOT + "/folder1/file1.txt");
 
     assertTrue(resource.getLastModified() > 0);
@@ -69,7 +69,7 @@ class ResourceLoaderFilesystemTest {
     assertTrue(col.exists());
     assertEquals("folder1", col.getName());
     assertEquals(ROOT + "/folder1", unifySlashes(col.getPath()));
-    assertTrue(StringUtils.endsWith(unifySlashes(col.getCanonicalPath()), "/" + ROOT + "/folder1"),
+    assertTrue(Strings.CS.endsWith(unifySlashes(col.getCanonicalPath()), "/" + ROOT + "/folder1"),
         "Canonical path " + unifySlashes(col.getCanonicalPath()) + " does not end with /" + ROOT + "/folder1");
 
     List<Resource> resources = List.copyOf(col.getResources());
@@ -132,7 +132,7 @@ class ResourceLoaderFilesystemTest {
   }
 
   private String unifySlashes(String path) {
-    return StringUtils.replace(path, "\\", "/");
+    return Strings.CS.replace(path, "\\", "/");
   }
 
 }
