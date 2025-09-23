@@ -21,7 +21,6 @@ package io.wcm.devops.conga.generator.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,7 +50,7 @@ public final class EnvironmentExpander {
 
     clonedEnvironemnt.setNodes(environment.getNodes().stream()
         .flatMap(node -> getSingleNodes(node, environmentName))
-        .collect(Collectors.toList()));
+        .toList());
 
     return clonedEnvironemnt;
   }

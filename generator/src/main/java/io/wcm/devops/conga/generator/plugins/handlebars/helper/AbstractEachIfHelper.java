@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +83,7 @@ abstract class AbstractEachIfHelper implements HelperPlugin<Object> {
     return StreamSupport.stream(items.spliterator(), false)
         .filter(Objects::nonNull)
         .filter(item -> checkProperty(item, propertyName, options))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private boolean checkProperty(Object item, String propertyName, Options options) {

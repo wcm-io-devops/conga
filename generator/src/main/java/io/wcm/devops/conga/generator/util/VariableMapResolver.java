@@ -122,8 +122,8 @@ public final class VariableMapResolver {
 
   @SuppressWarnings("unchecked")
   private Object replaceAny(Object value, Map<String, Object> variables) {
-    if (value instanceof String) {
-      return replaceObject((String)value, variables);
+    if (value instanceof String stringValue) {
+      return replaceObject(stringValue, variables);
     }
     else if (value instanceof List) {
       return replaceList((List<Object>)value, variables);
@@ -191,13 +191,13 @@ public final class VariableMapResolver {
     }
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "java:S6201" })
   private List<Object> replaceIterate(Map<String, Object> map, Map<String, Object> variables) {
     Object listObject = map.get(LIST_VARIABLE_ITERATE);
-    if (listObject instanceof String) {
-      Matcher matcher = SINGLE_EXPRESSION_PATTERN.matcher((String)listObject);
+    if (listObject instanceof String stringValue) {
+      Matcher matcher = SINGLE_EXPRESSION_PATTERN.matcher(stringValue);
       if (matcher.matches()) {
-        listObject = variableStringResolver.resolve((String)listObject, variables);
+        listObject = variableStringResolver.resolve(stringValue, variables);
         if (listObject == null) {
           throw new IllegalArgumentException("Unable to resolve variable: " + matcher.group(0));
         }
@@ -211,8 +211,9 @@ public final class VariableMapResolver {
     List<Object> result = new ArrayList<>();
     int count = 0;
     for (Object item : (List<Object>)listObject) {
+      count++;
       variablesClone.put(ITEM_VARIABLE, item);
-      variablesClone.put(ITEM_INDEX_VARIABLE, count++);
+      variablesClone.put(ITEM_INDEX_VARIABLE, count);
       result.add(replaceMap(map, variablesClone));
     }
     return result;
@@ -220,8 +221,8 @@ public final class VariableMapResolver {
 
   @SuppressWarnings("unchecked")
   private Object deescapeAny(Object value) {
-    if (value instanceof String) {
-      return deescapeString((String)value);
+    if (value instanceof String stringValue) {
+      return deescapeString(stringValue);
     }
     else if (value instanceof List) {
       return deescapeList((List<Object>)value);

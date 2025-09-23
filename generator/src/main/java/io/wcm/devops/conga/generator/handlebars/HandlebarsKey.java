@@ -53,8 +53,8 @@ final class HandlebarsKey {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj instanceof HandlebarsKey) {
-      return combinedKey.equals(((HandlebarsKey)obj).combinedKey);
+    if (obj instanceof HandlebarsKey key) {
+      return combinedKey.equals(key.combinedKey);
     }
     return false;
   }

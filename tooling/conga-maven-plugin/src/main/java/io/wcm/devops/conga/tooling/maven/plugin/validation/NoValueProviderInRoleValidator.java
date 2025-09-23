@@ -54,14 +54,14 @@ public final class NoValueProviderInRoleValidator implements DefinitionValidator
 
   @SuppressWarnings("unchecked")
   private void process(Object value) {
-    if (value instanceof String) {
-      validate((String)value);
+    if (value instanceof String stringValue) {
+      validate(stringValue);
     }
     else if (value instanceof Map) {
-      ((Map)value).values().forEach(this::process);
+      ((Map<String, Object>)value).values().forEach(this::process);
     }
     else if (value instanceof List) {
-      ((List)value).forEach(this::process);
+      ((List<Object>)value).forEach(this::process);
     }
   }
 

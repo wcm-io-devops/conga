@@ -92,10 +92,10 @@ public final class ValueUtil {
     if (value == null) {
       return "";
     }
-    else if (value instanceof List) {
+    else if (value instanceof List list) {
       StringBuilder sb = new StringBuilder();
-      for (Object item : ((List)value)) {
-        if (sb.length() > 0) {
+      for (Object item : list) {
+        if (!sb.isEmpty()) {
           sb.append(",");
         }
         sb.append(valueToString(item));
@@ -107,7 +107,7 @@ public final class ValueUtil {
       // use sorted map to ensure consistent order of keys
       SortedMap<Object, Object> sortedMap = new TreeMap<>((Map<Object, Object>)value);
       for (Map.Entry<Object, Object> entry : sortedMap.entrySet()) {
-        if (sb.length() > 0) {
+        if (!sb.isEmpty()) {
           sb.append(",");
         }
         sb.append(valueToString(entry.getKey()))

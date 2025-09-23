@@ -115,12 +115,12 @@ public final class MapExpander {
     if (object instanceof List) {
       List<Object> expandedList;
       if (object instanceof MergingList) {
-        expandedList = new MergingList<>((MergingList)object);
+        expandedList = new MergingList<>((MergingList<Object>)object);
       }
       else {
         expandedList = new ArrayList<>();
       }
-      for (Object item : (List)object) {
+      for (Object item : (List<Object>)object) {
         expandedList.add(expandDeep(item));
       }
       return expandedList;

@@ -73,7 +73,7 @@ public final class VariableResolver {
         result = valueProvider.resolve(variableWithoutNesting, valueProviderContext);
 
         if (StringUtils.isNotBlank(nestingVariables) && result instanceof Map) {
-          result = MapExpander.getDeep((Map)result, nestingVariables);
+          result = MapExpander.getDeep((Map<String, Object>)result, nestingVariables);
         }
       }
 

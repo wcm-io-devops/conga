@@ -93,9 +93,9 @@ public final class ModelExportConfigProcessor {
     if (value instanceof Map) {
       return encryptSensitiveValues((Map<String, Object>)value, parameterName + ".");
     }
-    else if (value instanceof List) {
+    else if (value instanceof List<?> valueList) {
       List<Object> list = new ArrayList<>();
-      for (Object itemValue : (List)value) {
+      for (Object itemValue : valueList) {
         list.add(encryptSensitiveValue(parameterName, itemValue));
       }
       return list;

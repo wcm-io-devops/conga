@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -256,7 +255,7 @@ final class EnvironmentGenerator {
           // filter out result files probably deleted by other file definitions
           allFiles = allFiles.stream()
               .filter(generatedFile -> generatedFile.getFileContext().getFile().exists())
-              .collect(Collectors.toList());
+              .toList();
 
           exportNodeRoleData.files(allFiles);
         }

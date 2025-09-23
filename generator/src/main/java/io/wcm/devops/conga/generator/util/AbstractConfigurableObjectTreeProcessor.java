@@ -55,21 +55,20 @@ abstract class AbstractConfigurableObjectTreeProcessor<T> {
    * @param parentPayload Parent payload
    */
   protected void process(Object object, ConfigurableProcessor<T> processor, T parentPayload) {
-    if (object instanceof Map) {
-      for (Object child : ((Map)object).values()) {
+    if (object instanceof Map<?, ?> map) {
+      for (Object child : map.values()) {
         process(child, processor, parentPayload);
       }
       return;
     }
-    if (object instanceof List) {
-      for (Object child : (List)object) {
+    if (object instanceof List<?> list) {
+      for (Object child : list) {
         process(child, processor, parentPayload);
       }
       return;
     }
     T payload;
-    if (object instanceof Configurable) {
-      Configurable configurable = (Configurable)object;
+    if (object instanceof Configurable configurable) {
       payload = processor.process(configurable, parentPayload);
     }
     else {

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
@@ -158,7 +157,7 @@ public final class RoleFile extends AbstractModel {
   public List<RoleFileVariantMetadata> getVariantsMetadata() {
     return this.variants.stream()
         .map(RoleFileVariantMetadata::new)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**

@@ -29,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
@@ -114,7 +113,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
           }
           return itemMap;
         })
-        .collect(Collectors.toList()));
+        .toList());
 
     roleMap.put("config", context.getModelExportConfigProcessor().apply(roleData.getConfig()));
 

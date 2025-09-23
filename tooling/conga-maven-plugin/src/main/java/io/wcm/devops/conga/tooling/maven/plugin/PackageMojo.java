@@ -29,7 +29,6 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -98,7 +97,7 @@ public class PackageMojo extends AbstractCongaMojo {
     List<File> environmentDirs = Arrays.stream(configRootDir.listFiles())
         .filter(File::isDirectory)
         .filter(dir -> selectedEnvironments == null || selectedEnvironments.contains(dir.getName()))
-        .collect(Collectors.toList());
+        .toList();
 
     MavenProject project = getProject();
     if (artifactPerEnvironment) {

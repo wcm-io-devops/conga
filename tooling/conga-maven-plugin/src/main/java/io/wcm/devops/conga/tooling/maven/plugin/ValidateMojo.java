@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -273,7 +272,7 @@ public class ValidateMojo extends AbstractCongaMojo {
           }
         })
         .flatMap(List::stream)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private void validateVersionInfo(Properties currentVersionInfo, Properties dependencyVersionInfo) throws MojoExecutionException {
@@ -299,7 +298,7 @@ public class ValidateMojo extends AbstractCongaMojo {
           "classpath*:" + GeneratorOptions.CLASSPATH_PREFIX + BuildConstants.FILE_VERSION_INFO);
       return Arrays.stream(resources)
           .map(this::toProperties)
-          .collect(Collectors.toList());
+          .toList();
     }
     catch (IOException ex) {
       throw new MojoExecutionException("Unable to get classpath resources: " + ex.getMessage(), ex);
