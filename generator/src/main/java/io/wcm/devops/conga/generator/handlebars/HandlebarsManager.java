@@ -28,9 +28,9 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-import com.github.jknack.handlebars.helper.AssignHelper;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import com.github.jknack.handlebars.helper.StringHelpers;
+import com.github.jknack.handlebars.helper.ext.AssignHelper;
 import com.github.jknack.handlebars.io.TemplateLoader;
 
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
