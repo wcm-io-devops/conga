@@ -78,16 +78,16 @@ final class JexlResolver {
 
     // split out variables with values containing expressions that are not simple variable references
     SplitResult splitResult = MapSplitter.splitMap(variables, entry -> {
-      if (entry.getValue() instanceof List) {
-        for (Object item : (List)entry.getValue()) {
-          if ((item instanceof String)
-              && hasJexlExpresssions((String)item)) {
+      if (entry.getValue() instanceof List<?> list) {
+        for (Object item : list) {
+          if ((item instanceof String value)
+              && hasJexlExpresssions(value)) {
             return false;
           }
         }
       }
-      else if (entry.getValue() instanceof String) {
-        return !hasJexlExpresssions((String)entry.getValue());
+      else if (entry.getValue() instanceof String value) {
+        return !hasJexlExpresssions(value);
       }
       return true;
     });

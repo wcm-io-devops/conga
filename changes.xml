@@ -24,6 +24,12 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
+    <release version="1.18.0" date="2025-09-25">
+      <action type="update" dev="sseifert">
+        Switch to Java 17.
+      </action>
+    </release>
+
     <release version="1.17.6" date="2025-09-19">
       <action type="update" dev="sseifert">
         Update dependencies.

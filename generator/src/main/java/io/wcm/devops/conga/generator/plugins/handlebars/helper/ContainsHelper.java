@@ -57,8 +57,8 @@ public final class ContainsHelper implements HelperPlugin<Object> {
   }
 
   private boolean contains(Object context, Object value) {
-    if (context instanceof Collection) {
-      return ((Collection)context).contains(value);
+    if (context instanceof Collection<?> collection) {
+      return collection.contains(value);
     }
     else if (context.getClass().isArray()) {
       return ArrayUtils.contains((Object[])context, value);

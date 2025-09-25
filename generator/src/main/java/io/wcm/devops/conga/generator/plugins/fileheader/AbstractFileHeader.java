@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +57,7 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
             .map(this::sanitizeComment)
             .filter(Objects::nonNull)
             .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + line + lineBreak)
-            .collect(Collectors.toList());
+            .toList();
       }
 
       int insertPosition = getInsertPosition(content);

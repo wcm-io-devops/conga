@@ -141,8 +141,8 @@ public final class VariableStringResolver {
 
     Object result = resolve(value, variables, 0);
 
-    if (deescapeVariables && (result instanceof String)) {
-      result = deescape((String)result);
+    if (deescapeVariables && (result instanceof String stringValue)) {
+      result = deescape(stringValue);
     }
 
     return result;
@@ -195,9 +195,9 @@ public final class VariableStringResolver {
 
         Object valueObject = variableResolver.resolve(valueProviderName, variable, defaultValueString, variables);
         if (valueObject != null) {
-          if (valueObject instanceof String) {
+          if (valueObject instanceof String stringValue) {
             // try again until all nested references are resolved
-            return resolve((String)valueObject, variables, iterationCount + 1);
+            return resolve(stringValue, variables, iterationCount + 1);
           }
           else {
             return valueObject;

@@ -25,13 +25,13 @@
   <parent>
     <groupId>io.wcm.devops</groupId>
     <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-    <version>2.0.4</version>
+    <version>2.1.0</version>
     <relativePath />
   </parent>
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.parent</artifactId>
-  <version>1.17.6</version>
+  <version>1.18.0</version>
   <packaging>pom</packaging>
 
   <name>CONGA</name>
@@ -48,7 +48,7 @@
   </issueManagement>
 
   <properties>
-    <jknack.handlebars.version>4.3.1</jknack.handlebars.version>
+    <jknack.handlebars.version>4.5.0</jknack.handlebars.version>
   </properties>
 
   <dependencyManagement>
@@ -63,7 +63,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.18.0</version>
+        <version>3.19.0</version>
       </dependency>
 
       <dependency>
@@ -116,8 +116,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <!-- Stick with 5.x because higher versions require Java Version > 11 -->
-        <version>5.3.39</version>
+        <version>6.2.11</version>
       </dependency>
 
       <dependency>

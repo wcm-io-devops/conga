@@ -510,8 +510,8 @@ class FileGenerator {
 
   private String getPostProcessorFileHeader() {
     Object fileHeader = MapExpander.getDeep(postProcessorContext.getOptions(), POSTPROCESSOR_KEY_FILE_HEADER);
-    if (fileHeader instanceof String) {
-      return (String)fileHeader;
+    if (fileHeader instanceof String fileHeaderString) {
+      return fileHeaderString;
     }
     else {
       return null;

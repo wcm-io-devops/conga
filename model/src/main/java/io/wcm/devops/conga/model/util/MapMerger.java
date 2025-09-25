@@ -108,7 +108,7 @@ public final class MapMerger {
   }
 
   private static boolean isMergeable(List<Object> list) {
-    return (list instanceof MergingList && ((MergingList)list).hasMergePosition())
+    return (list instanceof MergingList<?> mergingList && mergingList.hasMergePosition())
         || list.contains(LIST_MERGE_ENTRY);
   }
 
@@ -120,7 +120,7 @@ public final class MapMerger {
   @SuppressWarnings("unchecked")
   private static Object cleanupIfList(Object value) {
     if (value instanceof List) {
-      return mergeList(((List)value), Collections.emptyList());
+      return mergeList(((List<Object>)value), Collections.emptyList());
     }
     else {
       return value;
@@ -133,11 +133,10 @@ public final class MapMerger {
    * @param l2 List 2
    * @return Merged list
    */
-  @SuppressWarnings("unchecked")
   private static List<Object> mergeList(List<Object> l1, List<Object> l2) {
     MergingList<Object> mergedList;
     if (l1 instanceof MergingList) {
-      mergedList = new MergingList<>((MergingList)l1);
+      mergedList = new MergingList<>((MergingList<Object>)l1);
     }
     else {
       mergedList = new MergingList<>();
