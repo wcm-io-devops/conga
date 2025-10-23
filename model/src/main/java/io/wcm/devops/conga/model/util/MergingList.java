@@ -21,6 +21,7 @@ package io.wcm.devops.conga.model.util;
 
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Special list that marks a list as "mergeable" in downstream and preservers the merge position.
@@ -132,7 +133,7 @@ final class MergingList<T> extends LinkedList<T> {
       
       // Merge: Start with new (base), then override with existing (variant)
       // This preserves fields from base that are not in variant
-      Map<Object, Object> mergedMap = new java.util.HashMap<>(newMap);
+      Map<Object, Object> mergedMap = new HashMap<>(newMap);
       mergedMap.putAll(existingMap);
       
       super.set(index, (T)mergedMap);
