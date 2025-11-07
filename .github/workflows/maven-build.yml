@@ -19,10 +19,10 @@ jobs:
         os: [ubuntu-latest]
         distribution: [temurin]
         include:
-          - java: 17
+          - java: 21
             os: windows-latest
             distribution: temurin
-          - java: 17
+          - java: 21
             os: macos-latest
             distribution: temurin
 
