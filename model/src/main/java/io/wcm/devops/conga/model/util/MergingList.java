@@ -19,9 +19,9 @@
  */
 package io.wcm.devops.conga.model.util;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Special list that marks a list as "mergeable" in downstream and preservers the merge position.
@@ -54,7 +54,7 @@ final class MergingList<T> extends LinkedList<T> {
       }
     }
     else {
-      this.addIgnoreDuplicates(item);
+      this.addIgnoreDuplicates(Integer.MAX_VALUE, item);
     }
   }
 
@@ -75,24 +75,8 @@ final class MergingList<T> extends LinkedList<T> {
       return false;
     }
     else {
-      return this.addIgnoreDuplicates(item);
+      return this.addIgnoreDuplicates(Integer.MAX_VALUE, item);
     }
-  }
-
-  private boolean addIgnoreDuplicates(T item) {
-    // Check for key-based duplicate in case of Map objects with "key" field
-    int existingIndex = findIndexByKey(item);
-    if (existingIndex >= 0) {
-      // Item with same key already exists - merge the maps
-      mergeItemAtIndex(existingIndex, item);
-      return false;
-    }
-    // Standard duplicate check
-    if (!this.contains(item)) {
-      super.add(item);
-      return true;
-    }
-    return false;
   }
 
   private boolean addIgnoreDuplicates(int index, T item) {
@@ -130,12 +114,12 @@ final class MergingList<T> extends LinkedList<T> {
     if (existingItem instanceof Map && newItem instanceof Map) {
       Map<Object, Object> existingMap = (Map<Object, Object>)existingItem;
       Map<?, ?> newMap = (Map<?, ?>)newItem;
-      
+
       // Merge: Start with new (base), then override with existing (variant)
       // This preserves fields from base that are not in variant
       Map<Object, Object> mergedMap = new HashMap<>(newMap);
       mergedMap.putAll(existingMap);
-      
+
       super.set(index, (T)mergedMap);
     }
     // For non-Map objects, keep the existing one
@@ -148,7 +132,6 @@ final class MergingList<T> extends LinkedList<T> {
    * @param item Item to check
    * @return Index of existing item with same key, or -1 if not found
    */
-  @SuppressWarnings("unchecked")
   private int findIndexByKey(T item) {
     if (!(item instanceof Map)) {
       return -1;
@@ -158,7 +141,7 @@ final class MergingList<T> extends LinkedList<T> {
     if (itemKey == null) {
       return -1;
     }
-    
+
     for (int i = 0; i < this.size(); i++) {
       T existing = this.get(i);
       if (existing instanceof Map) {

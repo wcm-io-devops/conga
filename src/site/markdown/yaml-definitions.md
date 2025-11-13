@@ -105,7 +105,7 @@ Inheritance order (higher number has higher precedence):
 7. Variant configuration from node
 8. Configuration from multiply plugins, e.g. the tenant-specific configuration
 
-There is a special support when merging list parameter. By default a list value on a deeper lever overwrites a list inherited from a parameter map on a higher level completely. If you insert the keyword `_merge_` as list item on either of the list values, they are merged and the special keyword entry is removed.
+There is a special support when merging list parameter. By default a list value on a deeper lever overwrites a list inherited from a parameter map on a higher level completely. If you insert the keyword `_merge_` as list item on either of the list values, they are merged and the special keyword entry is removed. If a merged list contains child objects with `key` properties, merging logic checks for the keys and merges the list as key-value list.
 
 
 ### Variable references

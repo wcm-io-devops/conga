@@ -266,6 +266,7 @@ class MapMergerTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testMergeList_KeyValueObjects_Override() {
     // Test case for key-value objects: objects with same "key" should merge
     Map<String, Object> baseConfig = map(
@@ -273,22 +274,22 @@ class MapMergerTest {
         "value", "WEB-INF/bootstrap/author WEB-INF/bootstrap/common",
         "comment", "the directories in which the bootstrap files are searched"
     );
-    
+
     Map<String, Object> variantConfig = map(
         "key", "magnolia.bootstrap.dir",
         "value", "C:/user/test/dir"
     );
-    
+
     // When merging with _merge_ token, variant values override base values, but base fields are preserved
     Map<String, Object> result = merge(
         map("proj.magnolia.cms.properties", list(LIST_MERGE_ENTRY, variantConfig)),
         map("proj.magnolia.cms.properties", list(baseConfig))
     );
-    
+
     // Should have only one entry with merged values: value from variant, comment from base
     List<Object> resultList = (List<Object>)result.get("proj.magnolia.cms.properties");
     assertEquals(1, resultList.size());
-    
+
     Map<String, Object> expectedMerged = map(
         "key", "magnolia.bootstrap.dir",
         "value", "C:/user/test/dir",
@@ -298,6 +299,7 @@ class MapMergerTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testMergeList_KeyValueObjects_OverrideComment() {
     // Test that comment can be explicitly overridden if provided in variant
     Map<String, Object> baseConfig = map(
@@ -305,18 +307,18 @@ class MapMergerTest {
         "value", "WEB-INF/bootstrap/author WEB-INF/bootstrap/common",
         "comment", "old comment"
     );
-    
+
     Map<String, Object> variantConfig = map(
         "key", "magnolia.bootstrap.dir",
         "value", "woanders",
         "comment", "new comment"
     );
-    
+
     Map<String, Object> result = merge(
         map("props", list(LIST_MERGE_ENTRY, variantConfig)),
         map("props", list(baseConfig))
     );
-    
+
     // Comment should be overridden because it was explicitly provided in variant
     List<Object> resultList = (List<Object>)result.get("props");
     assertEquals(1, resultList.size());
@@ -324,28 +326,29 @@ class MapMergerTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testMergeList_KeyValueObjects_MultipleKeys() {
     // Test with multiple different keys - they should all be preserved
     Map<String, Object> config1 = map(
         "key", "prop1",
         "value", "value1"
     );
-    
+
     Map<String, Object> config2 = map(
         "key", "prop2",
         "value", "value2"
     );
-    
+
     Map<String, Object> config3 = map(
         "key", "prop3",
         "value", "value3"
     );
-    
+
     Map<String, Object> result = merge(
         map("props", list(LIST_MERGE_ENTRY, config3)),
         map("props", list(config1, config2))
     );
-    
+
     // Should have all three entries
     // When LIST_MERGE_ENTRY is at start of l1, l2 elements are inserted at the beginning
     // Result: [config1, config2, config3]
@@ -357,18 +360,19 @@ class MapMergerTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void testMergeList_KeyValueObjects_MixedOverrideAndNew() {
     // Test with mix of overriding and new keys
     Map<String, Object> config1 = map("key", "prop1", "value", "value1", "comment", "comment1");
     Map<String, Object> config2 = map("key", "prop2", "value", "value2", "comment", "comment2");
     Map<String, Object> config2Override = map("key", "prop2", "value", "value2-override");
     Map<String, Object> config3 = map("key", "prop3", "value", "value3");
-    
+
     Map<String, Object> result = merge(
         map("props", list(LIST_MERGE_ENTRY, config2Override, config3)),
         map("props", list(config1, config2))
     );
-    
+
     // l1 = [LIST_MERGE_ENTRY, config2Override, config3] -> MergingList = [config2Override, config3] with mergePos=0
     // l2 = [config1, config2]
     // When adding l2:
@@ -378,11 +382,11 @@ class MapMergerTest {
     List<Object> resultList = (List<Object>)result.get("props");
     assertEquals(3, resultList.size());
     assertEquals(config1, resultList.get(0));
-    
+
     // config2Override should have merged with config2, keeping comment from config2
     Map<String, Object> expectedConfig2Merged = map("key", "prop2", "value", "value2-override", "comment", "comment2");
     assertEquals(expectedConfig2Merged, resultList.get(1));
-    
+
     assertEquals(config3, resultList.get(2));
   }
 
