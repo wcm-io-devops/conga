@@ -34,6 +34,7 @@ public final class ModelValidator<T> implements DefinitionValidator<T> {
   private final ModelReader<T> modelReader;
 
   /**
+   * Constructor.
    * @param modelName Model name (for log message)
    * @param modelReader Model reader implementation
    */

@@ -44,6 +44,7 @@ public final class TemplateValidator implements DefinitionValidator<Void> {
   private final HandlebarsManager handlebarsManager;
 
   /**
+   * Constructor.
    * @param templateDir Template directory
    * @param handlebarsManager Handlebars Manager
    */
