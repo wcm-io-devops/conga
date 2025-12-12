@@ -43,6 +43,7 @@ public final class RoleTemplateFileValidator implements DefinitionValidator<Void
   private final HandlebarsManager handlebarsManager;
 
   /**
+   * Constructor.
    * @param handlebarsManager Handlebars Manager
    */
   public RoleTemplateFileValidator(HandlebarsManager handlebarsManager) {

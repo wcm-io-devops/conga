@@ -64,6 +64,7 @@ public class MavenArtifactHelper {
   private final PluginContextOptions pluginContextOptions;
 
   /**
+   * Constructor.
    * @param environment CONGA environment
    * @param pluginContextOptions Plugin context options
    */

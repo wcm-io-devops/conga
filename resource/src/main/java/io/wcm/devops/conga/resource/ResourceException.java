@@ -26,6 +26,7 @@ public final class ResourceException extends RuntimeException {
   private static final long serialVersionUID = 1L;
 
   /**
+   * Constructor with message and cause.
    * @param message Message
    * @param cause Cause
    */
@@ -34,6 +35,7 @@ public final class ResourceException extends RuntimeException {
   }
 
   /**
+   * Constructor with message.
    * @param message Message
    */
   public ResourceException(String message) {

@@ -29,6 +29,7 @@ public final class PostProcessorContext extends AbstractPluginContext<PostProces
   private Map<String, Object> options;
 
   /**
+   * Gets options.
    * @return Post processor options
    */
   public Map<String, Object> getOptions() {
@@ -36,6 +37,7 @@ public final class PostProcessorContext extends AbstractPluginContext<PostProces
   }
 
   /**
+   * Sets options.
    * @param value Post processor options
    * @return this
    */

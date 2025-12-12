@@ -40,6 +40,7 @@ public final class PluginContextOptions {
   private Logger logger;
 
   /**
+   * Gets plugin manager.
    * @return Plugin manager
    */
   public PluginManager getPluginManager() {
@@ -47,6 +48,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Sets plugin manager.
    * @param value Plugin manager
    * @return this
    */
@@ -56,6 +58,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Gets URL file manager.
    * @return URL file manager
    */
   public UrlFileManager getUrlFileManager() {
@@ -63,6 +66,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Sets URL file manager.
    * @param value URL file manager
    * @return this
    */
@@ -72,6 +76,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Gets value provider configuration.
    * @return Value provider configuration
    */
   public Map<String, Map<String, Object>> getValueProviderConfig() {
@@ -79,6 +84,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Sets value provider configuration.
    * @param value Value provider configuration
    * @return this
    */
@@ -88,6 +94,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Gets generic plugin configuration.
    * @return Generic plugin configuration
    */
   public Map<String, Map<String, Object>> getGenericPluginConfig() {
@@ -95,6 +102,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Sets generic plugin configuration.
    * @param value Generic plugin configuration
    * @return this
    */
@@ -104,6 +112,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Gets container context.
    * @return Container-specific context object
    */
   public Object getContainerContext() {
@@ -111,6 +120,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Sets container context.
    * @param value Container-specific context object
    * @return this
    */
@@ -120,6 +130,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Gets logger.
    * @return Logger
    */
   public Logger getLogger() {
@@ -127,6 +138,7 @@ public final class PluginContextOptions {
   }
 
   /**
+   * Sets logger.
    * @param value Logger
    * @return this
    */

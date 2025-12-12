@@ -75,6 +75,7 @@ public final class VariableStringResolver {
   private final JexlResolver jexlResolver;
 
   /**
+   * Constructor.
    * @param valueProviderGlobalContext Value provider global context
    * @param variableMapResolver Variable map resolver
    */

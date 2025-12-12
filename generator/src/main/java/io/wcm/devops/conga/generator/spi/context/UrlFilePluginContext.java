@@ -34,6 +34,7 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
   private Environment environment;
 
   /**
+   * Gets base directory.
    * @return Base directory for resolving relative files in filesystem
    */
   public File getBaseDir() {
@@ -41,6 +42,7 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
   }
 
   /**
+   * Sets base directory.
    * @param value Base directory for resolving relative files in filesystem
    * @return this
    */
@@ -50,6 +52,7 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
   }
 
   /**
+   * Gets node base directory.
    * @return Base directory for resolving relative files of the generated files for the current node in filesystem
    */
   public File getNodeBaseDir() {
@@ -57,6 +60,7 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
   }
 
   /**
+   * Sets node base directory.
    * @param value Base directory for resolving relative files of the generated files for the current node in filesystem
    * @return this
    */
@@ -66,6 +70,7 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
   }
 
   /**
+   * Sets resource class loader.
    * @param value Class loader for resources
    * @return this
    */
@@ -75,6 +80,7 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
   }
 
   /**
+   * Gets resource class loader.
    * @return Class loader for resources
    */
   public ClassLoader getResourceClassLoader() {
@@ -82,6 +88,7 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
   }
 
   /**
+   * Gets environment.
    * @return Environment
    */
   public Environment getEnvironment() {
@@ -89,6 +96,7 @@ public final class UrlFilePluginContext extends AbstractPluginContext<UrlFilePlu
   }
 
   /**
+   * Sets environment.
    * @param value Environment
    * @return this
    */

@@ -29,6 +29,7 @@ public final class YamlRepresentContext extends AbstractPluginContext<YamlRepres
   private YamlRepresenter yamlRepresenter;
 
   /**
+   * Gets YAML representer.
    * @return YAML representer
    */
   public YamlRepresenter getYamlRepresenter() {
@@ -36,6 +37,7 @@ public final class YamlRepresentContext extends AbstractPluginContext<YamlRepres
   }
 
   /**
+   * Sets YAML representer.
    * @param value YAML representer
    * @return this
    */

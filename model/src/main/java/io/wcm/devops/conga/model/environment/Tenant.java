@@ -45,6 +45,10 @@ public final class Tenant extends AbstractConfigurable {
     return this.tenant;
   }
 
+  /**
+   * Sets tenant name.
+   * @param tenant Tenant name
+   */
   public void setTenant(String tenant) {
     this.tenant = tenant;
   }
@@ -58,6 +62,10 @@ public final class Tenant extends AbstractConfigurable {
     return this.roles;
   }
 
+  /**
+   * Sets tenant roles.
+   * @param roles List of tenant role names
+   */
   public void setRoles(List<String> roles) {
     this.roles = defaultEmptyList(roles);
   }

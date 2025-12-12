@@ -41,11 +41,13 @@ public interface ResourceCollection extends ResourceInfo {
   ResourceCollection getResourceCollection(String path);
 
   /**
+   * Gets all resources in this collection.
    * @return Resources in this collections.
    */
   SortedSet<Resource> getResources();
 
   /**
+   * Gets all resource collections in this collection.
    * @return Resource collections in this collection.
    */
   SortedSet<ResourceCollection> getResourceCollections();

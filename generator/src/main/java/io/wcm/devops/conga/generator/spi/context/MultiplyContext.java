@@ -40,6 +40,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   private VariableMapResolver variableMapResolver;
 
   /**
+   * Gets role.
    * @return Role
    */
   public Role getRole() {
@@ -47,6 +48,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Sets role.
    * @param value Role
    * @return this
    */
@@ -56,6 +58,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Gets role file.
    * @return Role file
    */
   public RoleFile getRoleFile() {
@@ -63,6 +66,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Sets role file.
    * @param value Role file
    * @return this
    */
@@ -72,6 +76,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Gets environment.
    * @return Environment
    */
   public Environment getEnvironment() {
@@ -79,6 +84,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Sets environment.
    * @param value Environment
    * @return this
    */
@@ -88,6 +94,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Gets config.
    * @return Config
    */
   public Map<String, Object> getConfig() {
@@ -95,6 +102,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Sets config.
    * @param value Config
    * @return this
    */
@@ -104,6 +112,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Gets variable string resolver.
    * @return Variable string resolver
    */
   public VariableStringResolver getVariableStringResolver() {
@@ -111,6 +120,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Sets variable string resolver.
    * @param value Variable string resolver
    * @return this
    */
@@ -120,6 +130,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Gets variable map resolver.
    * @return Variable map resolver
    */
   public VariableMapResolver getVariableMapResolver() {
@@ -127,6 +138,7 @@ public final class MultiplyContext extends AbstractPluginContext<MultiplyContext
   }
 
   /**
+   * Sets variable map resolver.
    * @param value Variable map resolver
    * @return this
    */

@@ -181,26 +181,50 @@ abstract class AbstractCongaMojo extends AbstractMojo {
       "bundle", "jar",
       "content-package", "zip");
 
+  /**
+   * Gets template directory.
+   * @return Template directory
+   */
   protected File getTemplateDir() {
     return templateDir;
   }
 
+  /**
+   * Gets role directory.
+   * @return Role directory
+   */
   protected File getRoleDir() {
     return roleDir;
   }
 
+  /**
+   * Gets environment directory.
+   * @return Environment directory
+   */
   protected File getEnvironmentDir() {
     return environmentDir;
   }
 
+  /**
+   * Gets target directory.
+   * @return Target directory
+   */
   protected File getTargetDir() {
     return target;
   }
 
+  /**
+   * Gets Maven project.
+   * @return Maven project
+   */
   protected MavenProject getProject() {
     return project;
   }
 
+  /**
+   * Gets model export configuration.
+   * @return Model export configuration
+   */
   protected ModelExport getModelExport() {
     ModelExport modelExport = new ModelExport();
 
@@ -212,14 +236,26 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     return modelExport;
   }
 
+  /**
+   * Gets value provider configuration.
+   * @return Value provider configuration
+   */
   protected Map<String, Map<String, Object>> getValueProviderConfig() {
     return PluginConfigUtil.getConfigMap(this.valueProvider);
   }
 
+  /**
+   * Gets plugin configuration.
+   * @return Plugin configuration
+   */
   protected Map<String, Map<String, Object>> getPluginConfig() {
     return PluginConfigUtil.getConfigMap(this.pluginConfig);
   }
 
+  /**
+   * Gets artifact type mappings.
+   * @return Artifact type mappings
+   */
   protected Map<String, String> getArtifactTypeMappings() {
     Map<String, String> mappings = this.artifactTypeMappings;
     if (mappings == null) {

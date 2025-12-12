@@ -29,6 +29,7 @@ public final class ValidatorContext extends AbstractPluginContext<ValidatorConte
   private Map<String, Object> options;
 
   /**
+   * Gets options.
    * @return Validator options
    */
   public Map<String, Object> getOptions() {
@@ -36,6 +37,7 @@ public final class ValidatorContext extends AbstractPluginContext<ValidatorConte
   }
 
   /**
+   * Sets options.
    * @param value Validator options
    * @return this
    */

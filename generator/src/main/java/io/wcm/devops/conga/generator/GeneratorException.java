@@ -26,6 +26,7 @@ public final class GeneratorException extends RuntimeException {
   private static final long serialVersionUID = 1L;
 
   /**
+   * Constructor.
    * @param message Message
    */
   public GeneratorException(String message) {
@@ -33,6 +34,7 @@ public final class GeneratorException extends RuntimeException {
   }
 
   /**
+   * Constructor.
    * @param message Message
    * @param cause Cause
    */

@@ -37,6 +37,10 @@ public final class RoleInherit extends AbstractModel {
     return this.role;
   }
 
+  /**
+   * Sets role name.
+   * @param role Role name
+   */
   public void setRole(String role) {
     this.role = role;
   }

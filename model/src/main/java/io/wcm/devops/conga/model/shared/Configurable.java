@@ -34,6 +34,7 @@ public interface Configurable {
   Map<String, Object> getConfig();
 
   /**
+   * Sets configuration parameters.
    * @param config Configuration parameter map
    */
   void setConfig(Map<String, Object> config);

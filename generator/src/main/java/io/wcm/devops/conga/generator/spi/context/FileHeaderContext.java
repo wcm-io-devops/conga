@@ -29,6 +29,7 @@ public final class FileHeaderContext extends AbstractPluginContext<FileHeaderCon
   private List<String> commentLines;
 
   /**
+   * Gets comment lines.
    * @return Comment lines for file header
    */
   public List<String> getCommentLines() {
@@ -36,6 +37,7 @@ public final class FileHeaderContext extends AbstractPluginContext<FileHeaderCon
   }
 
   /**
+   * Sets comment lines.
    * @param value Comment lines for file header
    * @return this
    */

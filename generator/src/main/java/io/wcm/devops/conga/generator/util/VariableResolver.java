@@ -38,6 +38,7 @@ public final class VariableResolver {
   private final ValueProviderGlobalContext valueProviderGlobalContext;
 
   /**
+   * Constructor.
    * @param context Value provider global context
    */
   public VariableResolver(ValueProviderGlobalContext context) {

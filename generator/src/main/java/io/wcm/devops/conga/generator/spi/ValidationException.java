@@ -26,6 +26,7 @@ public final class ValidationException extends RuntimeException {
   private static final long serialVersionUID = 1L;
 
   /**
+   * Constructor.
    * @param message Message
    */
   public ValidationException(String message) {
@@ -33,6 +34,7 @@ public final class ValidationException extends RuntimeException {
   }
 
   /**
+   * Constructor.
    * @param message Message
    * @param cause Cause
    */

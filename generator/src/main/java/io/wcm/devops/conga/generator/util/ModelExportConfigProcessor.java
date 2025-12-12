@@ -43,6 +43,7 @@ public final class ModelExportConfigProcessor {
   private final Set<String> sensitiveConfigParameters;
 
   /**
+   * Constructor.
    * @param pluginContextOptions Plugin context options
    * @param sensitiveConfigParameters Sensitive config parameter names
    */
