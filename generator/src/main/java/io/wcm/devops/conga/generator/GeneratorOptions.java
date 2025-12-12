@@ -79,6 +79,7 @@ public final class GeneratorOptions {
   private Logger logger = LoggerFactory.getLogger(Generator.class);
 
   /**
+   * Gets base directory.
    * @return Base directory for resolving relative file references
    */
   public File getBaseDir() {
@@ -86,6 +87,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets base directory.
    * @param value Base directory for resolving relative file references
    * @return this
    */
@@ -103,6 +105,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets role directory.
    * @param value Directory with role definitions. Filename without extension = role name.
    * @return this
    */
@@ -120,6 +123,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets template directory.
    * @param value Template base directory
    * @return this
    */
@@ -137,6 +141,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets environment directory.
    * @param value Directory with environment definitions. Filename without extension = environment name.
    * @return this
    */
@@ -154,6 +159,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets destination directory.
    * @param value Destination directory for generated file.
    * @return this
    */
@@ -171,6 +177,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets delete before generate flag.
    * @param value Delete before generate
    * @return this
    */
@@ -188,6 +195,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets version.
    * @param value Version
    * @return this
    */
@@ -205,6 +213,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets allow symlinks flag.
    * @param value Allow symlinks
    * @return this
    */
@@ -222,6 +231,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets model export.
    * @param value Model export
    * @return this
    */
@@ -231,6 +241,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Gets value provider configuration.
    * @return Configuration for value providers.
    *         The outer map uses the value provider plugin name as key, the inner map contain the config properties.
    */
@@ -239,6 +250,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets value provider configuration.
    * @param value Configuration for value providers.
    * @return this
    */
@@ -248,6 +260,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Gets generic plugin configuration.
    * @return Generic plugin configuration.
    */
   public Map<String, Map<String, Object>> getGenericPluginConfig() {
@@ -255,6 +268,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets generic plugin configuration.
    * @param value Generic plugin configuration.
    * @return this
    */
@@ -272,6 +286,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets container context.
    * @param value Container-specific context object
    * @return this
    */
@@ -281,6 +296,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Gets container classpath URLs.
    * @return List of classpath URLs to CONGA artifact dependencies and container classpath elements.
    */
   public List<URL> getContainerClasspathUrls() {
@@ -288,6 +304,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets container classpath URLs.
    * @param value List of URLs to CONGA artifact dependencies defined in the container.
    * @return this
    */
@@ -297,6 +314,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Gets plugin manager.
    * @return Plugin manager
    */
   public PluginManager getPluginManager() {
@@ -304,6 +322,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets plugin manager.
    * @param value Plugin manager
    * @return this
    */
@@ -313,6 +332,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Gets dependency version builder.
    * @return Function to build a list of dependency versions for a given environment
    */
   public Function<Environment, Collection<String>> getDependencyVersionBuilder() {
@@ -320,6 +340,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets dependency version builder.
    * @param value Function to build a list of dependency versions for a given environment
    * @return this
    */
@@ -329,6 +350,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Gets container version info.
    * @return Version information from container, e.g. configured Maven plugin versions
    */
   public Map<String, String> getContainerVersionInfo() {
@@ -336,6 +358,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets container version info.
    * @param value Version information from container, e.g. configured Maven plugin versions
    * @return this
    */
@@ -345,6 +368,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Gets logger.
    * @return Logger
    */
   public Logger getLogger() {
@@ -352,6 +376,7 @@ public final class GeneratorOptions {
   }
 
   /**
+   * Sets logger.
    * @param value Logger
    * @return this
    */

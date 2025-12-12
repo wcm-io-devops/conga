@@ -38,6 +38,7 @@ public class CharsetAwareTemplateLoader extends AbstractTemplateLoader {
   private final String charset;
 
   /**
+   * Constructor.
    * @param templateDirs Template base directories
    * @param charset Charset for reading template files
    */

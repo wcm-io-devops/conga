@@ -25,6 +25,7 @@ package io.wcm.devops.conga.generator.spi;
 public interface Plugin {
 
   /**
+   * Gets plugin name.
    * @return Plugin name to be referenced in definition file
    */
   String getName();

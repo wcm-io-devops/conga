@@ -83,6 +83,7 @@ public class HandlebarsManager {
       });
 
   /**
+   * Constructor.
    * @param templateDirs Template base directories
    * @param pluginContextOptions Plugin context options
    */

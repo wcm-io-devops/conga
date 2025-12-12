@@ -33,6 +33,7 @@ public final class GeneratedFileContext {
   private final Set<String> postProcessors = new LinkedHashSet<>();
 
   /**
+   * Gets file context.
    * @return File context
    */
   public FileContext getFileContext() {
@@ -40,6 +41,7 @@ public final class GeneratedFileContext {
   }
 
   /**
+   * Sets file context.
    * @param value File context
    * @return this
    */
@@ -49,6 +51,7 @@ public final class GeneratedFileContext {
   }
 
   /**
+   * Gets post processor plugin names.
    * @return Post processor plugin names
    */
   public Set<String> getPostProcessors() {
@@ -56,6 +59,7 @@ public final class GeneratedFileContext {
   }
 
   /**
+   * Adds post processor.
    * @param name Post processor plugin name
    * @return this
    */

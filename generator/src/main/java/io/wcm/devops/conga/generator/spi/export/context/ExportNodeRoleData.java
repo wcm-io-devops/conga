@@ -34,6 +34,7 @@ public final class ExportNodeRoleData {
   private List<ExportNodeRoleTenantData> tenantData;
 
   /**
+   * Gets role name.
    * @return Role name
    */
   public String getRole() {
@@ -41,6 +42,7 @@ public final class ExportNodeRoleData {
   }
 
   /**
+   * Sets role name.
    * @param value Role name
    * @return this
    */
@@ -50,6 +52,7 @@ public final class ExportNodeRoleData {
   }
 
   /**
+   * Gets role variant names.
    * @return Role variant names
    */
   public List<String> getRoleVariants() {
@@ -57,6 +60,7 @@ public final class ExportNodeRoleData {
   }
 
   /**
+   * Sets role variant names.
    * @param values Role variant names
    * @return this
    */
@@ -66,6 +70,7 @@ public final class ExportNodeRoleData {
   }
 
   /**
+   * Gets generated files.
    * @return Generated files
    */
   public List<GeneratedFileContext> getFiles() {
@@ -73,6 +78,7 @@ public final class ExportNodeRoleData {
   }
 
   /**
+   * Sets generated files.
    * @param value Generated files
    * @return this
    */
@@ -82,6 +88,7 @@ public final class ExportNodeRoleData {
   }
 
   /**
+   * Gets configuration.
    * @return Configuration
    */
   public Map<String, Object> getConfig() {
@@ -89,6 +96,7 @@ public final class ExportNodeRoleData {
   }
 
   /**
+   * Sets configuration.
    * @param value Configuration
    * @return this
    */
@@ -98,6 +106,7 @@ public final class ExportNodeRoleData {
   }
 
   /**
+   * Gets tenant data.
    * @return Tenant data
    */
   public List<ExportNodeRoleTenantData> getTenantData() {
@@ -105,6 +114,7 @@ public final class ExportNodeRoleData {
   }
 
   /**
+   * Sets tenant data.
    * @param value Tenant data
    * @return this
    */
