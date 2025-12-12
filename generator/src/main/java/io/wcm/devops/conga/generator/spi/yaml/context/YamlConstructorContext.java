@@ -31,6 +31,7 @@ public final class YamlConstructorContext extends AbstractPluginContext<YamlCons
   private Constructor yamlConstructor;
 
   /**
+   * Gets YAML constructor.
    * @return YAML constructor
    */
   public Constructor getYamlConstructor() {
@@ -38,6 +39,7 @@ public final class YamlConstructorContext extends AbstractPluginContext<YamlCons
   }
 
   /**
+   * Sets YAML constructor.
    * @param value YAML constructor
    * @return this
    */

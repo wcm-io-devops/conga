@@ -51,6 +51,7 @@ public final class VariableObjectTreeResolver extends AbstractConfigurableObject
   };
 
   /**
+   * Constructor.
    * @param valueProviderGlobalContext Value provider global context
    */
   public VariableObjectTreeResolver(ValueProviderGlobalContext valueProviderGlobalContext) {

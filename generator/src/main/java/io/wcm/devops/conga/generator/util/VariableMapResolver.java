@@ -58,6 +58,7 @@ public final class VariableMapResolver {
   private final VariableStringResolver variableStringResolver;
 
   /**
+   * Constructor.
    * @param valueProviderGlobalContext Value provider global context
    */
   public VariableMapResolver(ValueProviderGlobalContext valueProviderGlobalContext) {
