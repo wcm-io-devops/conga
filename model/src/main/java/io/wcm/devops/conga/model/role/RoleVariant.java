@@ -37,6 +37,10 @@ public final class RoleVariant extends AbstractConfigurable {
     return this.variant;
   }
 
+  /**
+   * Sets variant name.
+   * @param variant Variant name
+   */
   public void setVariant(String variant) {
     this.variant = variant;
   }

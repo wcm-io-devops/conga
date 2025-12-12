@@ -64,6 +64,10 @@ public final class Role extends AbstractConfigurable {
     return this.variants;
   }
 
+  /**
+   * Sets role variants.
+   * @param variants List of role variant definitions
+   */
   public void setVariants(List<RoleVariant> variants) {
     this.variants = defaultEmptyList(variants);
   }
@@ -77,6 +81,10 @@ public final class Role extends AbstractConfigurable {
     return this.templateDir;
   }
 
+  /**
+   * Sets template directory.
+   * @param templateDirectory Relative path to template files
+   */
   public void setTemplateDir(String templateDirectory) {
     this.templateDir = templateDirectory;
   }
@@ -89,6 +97,10 @@ public final class Role extends AbstractConfigurable {
     return this.files;
   }
 
+  /**
+   * Sets files.
+   * @param files List of file definitions
+   */
   public void setFiles(List<RoleFile> files) {
     this.files = defaultEmptyList(files);
   }
@@ -102,6 +114,10 @@ public final class Role extends AbstractConfigurable {
     return defaultEmptyList(this.sensitiveConfigParameters);
   }
 
+  /**
+   * Sets sensitive configuration parameters.
+   * @param sensitiveProperties List of configuration parameter names
+   */
   public void setSensitiveConfigParameters(List<String> sensitiveProperties) {
     this.sensitiveConfigParameters = sensitiveProperties;
   }
