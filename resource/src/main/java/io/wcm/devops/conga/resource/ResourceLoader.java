@@ -49,6 +49,7 @@ public final class ResourceLoader {
   }
 
   /**
+   * Constructor with custom class loader.
    * @param classLoader Class loader
    */
   public ResourceLoader(ClassLoader classLoader) {
