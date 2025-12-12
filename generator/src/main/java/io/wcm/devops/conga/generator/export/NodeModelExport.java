@@ -59,6 +59,7 @@ public final class NodeModelExport {
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
   /**
+   * Constructor.
    * @param nodeDir Target directory for node
    * @param node Node
    * @param environment Environment
