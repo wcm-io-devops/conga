@@ -47,6 +47,7 @@ public enum LineEndings {
   }
 
   /**
+   * Gets line ending characters.
    * @return Line ending characters
    */
   public String getLineEnding() {

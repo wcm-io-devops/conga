@@ -46,6 +46,10 @@ public final class Node extends AbstractConfigurable {
     return this.node;
   }
 
+  /**
+   * Sets node name.
+   * @param node Node name
+   */
   public void setNode(String node) {
     this.node = node;
   }
@@ -60,6 +64,10 @@ public final class Node extends AbstractConfigurable {
     return this.nodes;
   }
 
+  /**
+   * Sets node names.
+   * @param nodes List of node names
+   */
   public void setNodes(List<String> nodes) {
     this.nodes = defaultEmptyList(nodes);
   }
@@ -72,6 +80,10 @@ public final class Node extends AbstractConfigurable {
     return this.roles;
   }
 
+  /**
+   * Sets roles.
+   * @param roles Role assignments for node
+   */
   public void setRoles(List<NodeRole> roles) {
     this.roles = defaultEmptyList(roles);
   }

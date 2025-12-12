@@ -44,6 +44,10 @@ public final class NodeRole extends AbstractConfigurable {
     return this.role;
   }
 
+  /**
+   * Sets role name.
+   * @param role Role name
+   */
   public void setRole(String role) {
     this.role = role;
   }
@@ -57,6 +61,10 @@ public final class NodeRole extends AbstractConfigurable {
     return this.variant;
   }
 
+  /**
+   * Sets role variant name.
+   * @param variant Role variant name
+   */
   public void setVariant(String variant) {
     this.variant = variant;
   }
@@ -70,6 +78,10 @@ public final class NodeRole extends AbstractConfigurable {
     return this.variants;
   }
 
+  /**
+   * Sets role variant names.
+   * @param variants Role variant names
+   */
   public void setVariants(List<String> variants) {
     this.variants = variants;
   }

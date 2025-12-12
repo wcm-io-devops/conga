@@ -143,10 +143,18 @@ public final class MapSplitter {
       this.unmatching = unmatching;
     }
 
+    /**
+     * Gets matching map entries.
+     * @return Matching map entries
+     */
     public @NotNull Map<String, Object> getMatching() {
       return this.matching;
     }
 
+    /**
+     * Gets unmatching map entries.
+     * @return Unmatching map entries
+     */
     public @NotNull Map<String, Object> getUnmatching() {
       return this.unmatching;
     }

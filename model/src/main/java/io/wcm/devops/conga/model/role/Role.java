@@ -47,6 +47,10 @@ public final class Role extends AbstractConfigurable {
     return this.inherits;
   }
 
+  /**
+   * Sets inheritance relations.
+   * @param inherits List of inheritance relations
+   */
   public void setInherits(List<RoleInherit> inherits) {
     this.inherits = defaultEmptyList(inherits);
   }
