@@ -18,14 +18,13 @@
   limitations under the License.
   #L%
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>io.wcm.devops</groupId>
     <artifactId>io.wcm.devops.parent_toplevel</artifactId>
-    <version>2.1.2</version>
+    <version>2.2.0-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -37,15 +36,15 @@
   <name>CONGA</name>
   <description>Parent POM for all wcm.io CONGA projects.</description>
 
-  <ciManagement>
-    <system>GitHub Actions</system>
-    <url>https://github.com/wcm-io-devops/conga/actions</url>
-  </ciManagement>
-
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/wcm-io-devops/conga/issues/</url>
   </issueManagement>
+
+  <ciManagement>
+    <system>GitHub Actions</system>
+    <url>https://github.com/wcm-io-devops/conga/actions</url>
+  </ciManagement>
 
   <properties>
     <jknack.handlebars.version>4.5.0</jknack.handlebars.version>

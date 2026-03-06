@@ -65,11 +65,11 @@ class DependencyVersionBuilder implements Function<Environment, Collection<Strin
 
       return new TreeSet<>(
           dependencyArtifacts.stream()
-              // include only dependencies with a CONGA-INF/ directory
-              .filter(this::hasCongaDefinitions)
-              // transform to string
-              .map(this::toArtifactCoordsPaxUrlStyle)
-              .collect(Collectors.toSet()));
+            // include only dependencies with a CONGA-INF/ directory
+            .filter(this::hasCongaDefinitions)
+            // transform to string
+            .map(this::toArtifactCoordsPaxUrlStyle)
+            .collect(Collectors.toSet()));
     }
     catch (IOException ex) {
       throw new GeneratorException(ex.getMessage(), ex);

@@ -44,9 +44,9 @@ class VariableStringResolverTest {
   @BeforeEach
   void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(new PluginManagerImpl());
+      .pluginManager(new PluginManagerImpl());
     globalContext = new ValueProviderGlobalContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
     VariableMapResolver variableMapResolver = new VariableMapResolver(globalContext);
     underTest = new VariableStringResolver(globalContext, variableMapResolver);
   }
@@ -162,7 +162,7 @@ class VariableStringResolverTest {
   void testCustomValueProvider() {
     // define value provider name 'customProvider' of type 'system'
     globalContext.getPluginContextOptions()
-        .valueProviderConfig(Map.of("customProvider", Map.of(ValueProviderGlobalContext.PARAM_PLUGIN_NAME, "system")));
+      .valueProviderConfig(Map.of("customProvider", Map.of(ValueProviderGlobalContext.PARAM_PLUGIN_NAME, "system")));
 
     String propertyName1 = getClass().getName() + "-test.propCustom1";
     String propertyName2 = getClass().getName() + "-test.propCustom2";

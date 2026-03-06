@@ -50,15 +50,15 @@ public final class ModelExportConfigProcessor {
   public ModelExportConfigProcessor(PluginContextOptions pluginContextOptions, Set<String> sensitiveConfigParameters) {
     this.valueEncryptionPlugin = getFirstEnabledValueEncryptionPlugin(pluginContextOptions.getPluginManager());
     this.valueEncryptionContext = new ValueEncryptionContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
     this.sensitiveConfigParameters = sensitiveConfigParameters;
   }
 
   private ValueEncryptionPlugin getFirstEnabledValueEncryptionPlugin(PluginManager pluginManager) {
     return pluginManager.getAll(ValueEncryptionPlugin.class)
-        .stream()
-        .filter(ValueEncryptionPlugin::isEnabled)
-        .findFirst().orElse(null);
+      .stream()
+      .filter(ValueEncryptionPlugin::isEnabled)
+      .findFirst().orElse(null);
   }
 
   /**

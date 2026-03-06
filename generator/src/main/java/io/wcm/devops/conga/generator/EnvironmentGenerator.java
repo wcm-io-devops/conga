@@ -111,15 +111,15 @@ final class EnvironmentGenerator {
     this.log = options.getLogger();
 
     this.pluginContextOptions = new PluginContextOptions()
-        .pluginManager(options.getPluginManager())
-        .valueProviderConfig(options.getValueProviderConfig())
-        .genericPluginConfig(mergePluginConfig(environment.getPluginConfig(), options.getGenericPluginConfig()))
-        .containerContext(options.getContainerContext())
-        .logger(this.log);
+      .pluginManager(options.getPluginManager())
+      .valueProviderConfig(options.getValueProviderConfig())
+      .genericPluginConfig(mergePluginConfig(environment.getPluginConfig(), options.getGenericPluginConfig()))
+      .containerContext(options.getContainerContext())
+      .logger(this.log);
 
     // prepare variable resolvers
     ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
-        .pluginContextOptions(this.pluginContextOptions);
+      .pluginContextOptions(this.pluginContextOptions);
     this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
     this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext, variableMapResolver);
     VariableObjectTreeResolver variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
@@ -143,10 +143,10 @@ final class EnvironmentGenerator {
     this.roles.values().forEach(role -> sensitiveConfigParameters.addAll(role.getSensitiveConfigParameters()));
 
     this.urlFilePluginContext = new UrlFilePluginContext()
-        .pluginContextOptions(pluginContextOptions)
-        .baseDir(options.getBaseDir())
-        .resourceClassLoader(resourceClassLoader)
-        .environment(environment);
+      .pluginContextOptions(pluginContextOptions)
+      .baseDir(options.getBaseDir())
+      .resourceClassLoader(resourceClassLoader)
+      .environment(environment);
     this.urlFileManager = new UrlFileManager(options.getPluginManager(), this.urlFilePluginContext);
 
     this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginContextOptions);
@@ -162,8 +162,8 @@ final class EnvironmentGenerator {
     yamlRepresenter = new YamlRepresenter();
     options.getPluginManager().getAll(YamlRepresentPlugin.class).forEach(plugin -> {
       YamlRepresentContext context = new YamlRepresentContext()
-          .pluginContextOptions(pluginContextOptions)
-          .yamlRepresenter(yamlRepresenter);
+        .pluginContextOptions(pluginContextOptions)
+        .yamlRepresenter(yamlRepresenter);
       plugin.register(context);
     });
   }
@@ -254,8 +254,8 @@ final class EnvironmentGenerator {
 
           // filter out result files probably deleted by other file definitions
           allFiles = allFiles.stream()
-              .filter(generatedFile -> generatedFile.getFileContext().getFile().exists())
-              .toList();
+            .filter(generatedFile -> generatedFile.getFileContext().getFile().exists())
+            .toList();
 
           exportNodeRoleData.files(allFiles);
         }
@@ -310,12 +310,12 @@ final class EnvironmentGenerator {
     }
     String fileExtension = FilenameUtils.getExtension(roleFile.getFile());
     EscapingStrategyContext context = new EscapingStrategyContext()
-        .pluginContextOptions(this.pluginContextOptions);
+      .pluginContextOptions(this.pluginContextOptions);
     return options.getPluginManager().getAll(EscapingStrategyPlugin.class).stream()
-        .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneEscapingStrategy.NAME))
-        .filter(plugin -> plugin.accepts(fileExtension, context))
-        .findFirst().orElse(options.getPluginManager().get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class))
-        .getName();
+      .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneEscapingStrategy.NAME))
+      .filter(plugin -> plugin.accepts(fileExtension, context))
+      .findFirst().orElse(options.getPluginManager().get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class))
+      .getName();
   }
 
   @SuppressWarnings("java:S107") // allow many parameters
@@ -327,13 +327,13 @@ final class EnvironmentGenerator {
     }
 
     MultiplyContext multiplyContext = new MultiplyContext()
-        .pluginContextOptions(this.pluginContextOptions)
-        .role(role)
-        .roleFile(roleFile)
-        .environment(environment)
-        .config(config)
-        .variableStringResolver(variableStringResolver)
-        .variableMapResolver(variableMapResolver);
+      .pluginContextOptions(this.pluginContextOptions)
+      .role(role)
+      .roleFile(roleFile)
+      .environment(environment)
+      .config(config)
+      .variableStringResolver(variableStringResolver)
+      .variableMapResolver(variableMapResolver);
 
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     int index = 0;

@@ -88,12 +88,14 @@ class FileGeneratorFileHeaderTest {
     urlFileManager = new UrlFileManager(pluginManager, urlFilePluginContext);
 
     when(pluginManager.getAll(FileHeaderPlugin.class)).thenAnswer(new Answer<List<FileHeaderPlugin>>() {
+
       @Override
       public List<FileHeaderPlugin> answer(InvocationOnMock invocation) throws Throwable {
         return List.copyOf(fileHeaderPlugins.values());
       }
     });
     when(pluginManager.get(anyString(), eq(FileHeaderPlugin.class))).thenAnswer(new Answer<FileHeaderPlugin>() {
+
       @Override
       public FileHeaderPlugin answer(InvocationOnMock invocation) throws Throwable {
         return fileHeaderPlugins.get(invocation.getArgument(0));
@@ -101,12 +103,12 @@ class FileGeneratorFileHeaderTest {
     });
 
     GeneratorOptions options = new GeneratorOptions()
-        .pluginManager(pluginManager)
-        .version("1.0");
+      .pluginManager(pluginManager)
+      .version("1.0");
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(pluginManager)
-        .urlFileManager(urlFileManager)
-        .logger(options.getLogger());
+      .pluginManager(pluginManager)
+      .urlFileManager(urlFileManager)
+      .logger(options.getLogger());
     VariableMapResolver variableMapResolver = new VariableMapResolver(
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
     underTest = new FileGenerator(options, "env1",
@@ -116,8 +118,7 @@ class FileGeneratorFileHeaderTest {
             "version1/1.0.0",
             "version2/2.0.0-SNAPSHOT",
             "version3/1.2.0-SNAPSHOT",
-            "version4/2.1.2-SNAPSHOT/suffix"
-            ));
+            "version4/2.1.2-SNAPSHOT/suffix"));
   }
 
   @Test
@@ -212,6 +213,7 @@ class FileGeneratorFileHeaderTest {
     FileHeaderPlugin plugin = mock(FileHeaderPlugin.class);
     when(plugin.getName()).thenReturn(pluginName);
     when(plugin.accepts(any(FileContext.class), any(FileHeaderContext.class))).thenAnswer(new Answer<Boolean>() {
+
       @Override
       public Boolean answer(InvocationOnMock invocation) throws Throwable {
         FileContext input = invocation.getArgument(0);

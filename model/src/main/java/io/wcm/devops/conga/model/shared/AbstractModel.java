@@ -28,6 +28,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * Abstract model implementation.
  */
 public abstract class AbstractModel implements Serializable {
+
   private static final long serialVersionUID = -8387881912415309523L;
 
   @Override

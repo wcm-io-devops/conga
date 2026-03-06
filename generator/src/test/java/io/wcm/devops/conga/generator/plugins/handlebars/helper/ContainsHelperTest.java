@@ -45,14 +45,20 @@ class ContainsHelperTest {
   void testContains() throws Exception {
     assertHelper(FN_RETURN, helper, List.of("a", "b", "c"), new MockOptions("a"));
     assertHelper(FN_RETURN, helper, Set.of("a", "b", "c"), new MockOptions("b"));
-    assertHelper(FN_RETURN, helper, new String[] { "a", "b", "c" }, new MockOptions("a"));
-    assertHelper(FN_RETURN, helper, new String[] { "a", "b", "c" }, new MockOptions("b"));
+    assertHelper(FN_RETURN, helper, new String[] {
+        "a", "b", "c"
+    }, new MockOptions("a"));
+    assertHelper(FN_RETURN, helper, new String[] {
+        "a", "b", "c"
+    }, new MockOptions("b"));
   }
 
   @Test
   void testNotContains() throws Exception {
     assertHelper("", helper, List.of("a", "b", "c"), new MockOptions("z"));
-    assertHelper("", helper, new String[] { "a", "b", "c" }, new MockOptions("z"));
+    assertHelper("", helper, new String[] {
+        "a", "b", "c"
+    }, new MockOptions("z"));
   }
 
   @Test

@@ -72,8 +72,7 @@ class RoleReaderTest {
         "group1", Map.of("var2", "value2"),
         "tomcat", Map.of("port", 8080, "path", "/path/to/tomcat"),
         "jvm", Map.of("heapspace", Map.of("min", "512m", "max", "2048m"), "permgenspace", Map.of("max", "256m")),
-        "topologyConnectors", List.of("http://localhost:8080/libs/sling/topology/connector")
-    ), role.getConfig());
+        "topologyConnectors", List.of("http://localhost:8080/libs/sling/topology/connector")), role.getConfig());
   }
 
   @Test

@@ -60,8 +60,8 @@ public final class VariableResolver {
     // resolve value from value provider
     if (StringUtils.isNotEmpty(valueProviderName)) {
       ValueProviderContext valueProviderContext = new ValueProviderContext()
-          .valueProviderGlobalContext(valueProviderGlobalContext)
-          .valueProviderName(valueProviderName);
+        .valueProviderGlobalContext(valueProviderGlobalContext)
+        .valueProviderName(valueProviderName);
       ValueProviderPlugin valueProvider = getValueProvider(valueProviderContext);
 
       result = valueProvider.resolve(variable, valueProviderContext);

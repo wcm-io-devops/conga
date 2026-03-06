@@ -63,9 +63,9 @@ class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCol
       return Collections.emptySortedSet();
     }
     return Arrays.stream(file.listFiles())
-        .filter(File::isFile)
-        .map(FileResourceImpl::new)
-        .collect(Collectors.toCollection(TreeSet::new));
+      .filter(File::isFile)
+      .map(FileResourceImpl::new)
+      .collect(Collectors.toCollection(TreeSet::new));
   }
 
   @Override
@@ -74,9 +74,9 @@ class FileResourceCollectionImpl extends FileResourceImpl implements ResourceCol
       return Collections.emptySortedSet();
     }
     return Arrays.stream(file.listFiles())
-        .filter(File::isDirectory)
-        .map(child -> new FileResourceCollectionImpl(child, resourceLoader))
-        .collect(Collectors.toCollection(TreeSet::new));
+      .filter(File::isDirectory)
+      .map(child -> new FileResourceCollectionImpl(child, resourceLoader))
+      .collect(Collectors.toCollection(TreeSet::new));
   }
 
 }

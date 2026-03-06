@@ -43,9 +43,9 @@ class SystemPropertyValueProviderPluginTest {
     PluginManager pluginManager = new PluginManagerImpl();
     underTest = pluginManager.get(SystemPropertyValueProviderPlugin.NAME, ValueProviderPlugin.class);
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(pluginManager);
+      .pluginManager(pluginManager);
     context = new ValueProviderContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
   }
 
   @Test

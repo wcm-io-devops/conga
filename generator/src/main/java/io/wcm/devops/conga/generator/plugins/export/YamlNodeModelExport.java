@@ -96,24 +96,24 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     }
 
     roleMap.put("files", roleData.getFiles().stream()
-        .filter(item -> item.getFileContext().getFile().exists())
-        .map(item -> {
-          Map<String, Object> itemMap = new LinkedHashMap<>();
-          itemMap.put("path", cleanupFileName(item.getFileContext().getCanonicalPath(), nodeDirPath));
-          if (!item.getPostProcessors().isEmpty()) {
-            itemMap.put("postProcessors", List.copyOf(item.getPostProcessors()));
-          }
-          Map<String, Object> modelOptions = item.getFileContext().getModelOptions();
-          if (modelOptions != null) {
-            for (Map.Entry<String, Object> entry : modelOptions.entrySet()) {
-              if (!itemMap.containsKey(entry.getKey())) {
-                itemMap.put(entry.getKey(), entry.getValue());
-              }
+      .filter(item -> item.getFileContext().getFile().exists())
+      .map(item -> {
+        Map<String, Object> itemMap = new LinkedHashMap<>();
+        itemMap.put("path", cleanupFileName(item.getFileContext().getCanonicalPath(), nodeDirPath));
+        if (!item.getPostProcessors().isEmpty()) {
+          itemMap.put("postProcessors", List.copyOf(item.getPostProcessors()));
+        }
+        Map<String, Object> modelOptions = item.getFileContext().getModelOptions();
+        if (modelOptions != null) {
+          for (Map.Entry<String, Object> entry : modelOptions.entrySet()) {
+            if (!itemMap.containsKey(entry.getKey())) {
+              itemMap.put(entry.getKey(), entry.getValue());
             }
           }
-          return itemMap;
-        })
-        .toList());
+        }
+        return itemMap;
+      })
+      .toList());
 
     roleMap.put("config", context.getModelExportConfigProcessor().apply(roleData.getConfig()));
 

@@ -37,7 +37,7 @@ public final class ValueProviderContext extends AbstractPluginContext<ValueProvi
   public ValueProviderContext valueProviderGlobalContext(ValueProviderGlobalContext context) {
     this.valueProviderGlobalContext = context;
     return this
-        .pluginContextOptions(context.getPluginContextOptions());
+      .pluginContextOptions(context.getPluginContextOptions());
   }
 
   /**

@@ -69,10 +69,10 @@ final class ResourceLoaderUtil {
       VariableStringResolver variableStringResolver, GeneratorOptions options) {
 
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
-        .baseDir(options.getBaseDir())
-        .resourceClassLoader(ResourceLoaderUtil.class.getClassLoader())
-        .pluginContextOptions(new PluginContextOptions()
-            .containerContext(options.getContainerContext()));
+      .baseDir(options.getBaseDir())
+      .resourceClassLoader(ResourceLoaderUtil.class.getClassLoader())
+      .pluginContextOptions(new PluginContextOptions()
+        .containerContext(options.getContainerContext()));
     UrlFileManager urlFileManager = new UrlFileManager(options.getPluginManager(), urlFilePluginContext);
 
     List<URL> classpathUrls = new ArrayList<>();

@@ -23,6 +23,7 @@ package io.wcm.devops.conga.generator.spi;
  * Validation failed exception.
  */
 public final class ValidationException extends RuntimeException {
+
   private static final long serialVersionUID = 1L;
 
   /**

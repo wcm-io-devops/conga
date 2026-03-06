@@ -42,9 +42,9 @@ class JexlResolverTest {
   @BeforeEach
   void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(new PluginManagerImpl());
+      .pluginManager(new PluginManagerImpl());
     ValueProviderGlobalContext context = new ValueProviderGlobalContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
     VariableMapResolver variableMapResolver = new VariableMapResolver(context);
 
     underTest = new JexlResolver(variableMapResolver);
@@ -66,8 +66,9 @@ class JexlResolverTest {
             "nested2", Map.of(
                 "nested2var1", "nested2-value1",
                 "nested2JexlExpr", "${object1.var3 + ';' + var1}"))),
-        entry("array1", new String[] { "v1", "v2", "v3" })
-    );
+        entry("array1", new String[] {
+            "v1", "v2", "v3"
+        }));
   }
 
   @Test

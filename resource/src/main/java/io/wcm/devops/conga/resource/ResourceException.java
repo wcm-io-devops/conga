@@ -23,6 +23,7 @@ package io.wcm.devops.conga.resource;
  * Error when accessing resources.
  */
 public final class ResourceException extends RuntimeException {
+
   private static final long serialVersionUID = 1L;
 
   /**

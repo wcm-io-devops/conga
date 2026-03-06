@@ -127,7 +127,7 @@ public final class MapSplitter {
 
   private static boolean listHasSubStructures(@NotNull List<Object> list) {
     return list.stream()
-        .anyMatch(item -> (item instanceof List) || (item instanceof Map));
+      .anyMatch(item -> (item instanceof List) || (item instanceof Map));
   }
 
   /**

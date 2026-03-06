@@ -35,6 +35,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  */
 @SuppressWarnings("java:S1948") // assume the maps are serializable
 public final class Environment extends AbstractConfigurable {
+
   private static final long serialVersionUID = -3146650632389125273L;
 
   private List<Node> nodes = new ArrayList<>();

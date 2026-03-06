@@ -79,11 +79,11 @@ abstract class AbstractEachIfHelper implements HelperPlugin<Object> {
    * @param options Options
    * @return Filtered items
    */
-  private Iterable<Object> filterIterable(Iterable<Object> items, String propertyName,Options options) {
+  private Iterable<Object> filterIterable(Iterable<Object> items, String propertyName, Options options) {
     return StreamSupport.stream(items.spliterator(), false)
-        .filter(Objects::nonNull)
-        .filter(item -> checkProperty(item, propertyName, options))
-        .toList();
+      .filter(Objects::nonNull)
+      .filter(item -> checkProperty(item, propertyName, options))
+      .toList();
   }
 
   private boolean checkProperty(Object item, String propertyName, Options options) {

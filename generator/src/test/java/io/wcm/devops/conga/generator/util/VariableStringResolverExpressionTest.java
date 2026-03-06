@@ -42,9 +42,9 @@ class VariableStringResolverExpressionTest {
   @BeforeEach
   void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(new PluginManagerImpl());
+      .pluginManager(new PluginManagerImpl());
     globalContext = new ValueProviderGlobalContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
 
     VariableMapResolver variableMapResolver = new VariableMapResolver(globalContext);
     underTest = new VariableStringResolver(globalContext, variableMapResolver);

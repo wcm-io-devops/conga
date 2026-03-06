@@ -98,7 +98,9 @@ class FileGenerator {
   static final String POSTPROCESSOR_KEY_FILE_HEADER = "postProcessor.fileHeader";
   static final String POSTPROCESSOR_KEY_VALIDATORS = "postProcessor.validators";
 
-  @SuppressWarnings({ "java:S107", "checkstyle:ParameterNumberCheck" }) // allow many parameters
+  @SuppressWarnings({
+      "java:S107", "checkstyle:ParameterNumberCheck"
+  }) // allow many parameters
   FileGenerator(GeneratorOptions options, String environmentName,
       String roleName, List<String> roleVariantNames, String templateName,
       File nodeDir, File file, String url, String symlinkTarget,
@@ -119,29 +121,29 @@ class FileGenerator {
     this.urlFileManager = urlFileManager;
     this.log = options.getLogger();
     this.fileContext = new FileContext()
-        .file(file)
-        .charset(roleFile.getCharset())
-        .modelOptions(roleFile.getModelOptions())
-        .targetDir(nodeDir);
+      .file(file)
+      .charset(roleFile.getCharset())
+      .modelOptions(roleFile.getModelOptions())
+      .targetDir(nodeDir);
 
     // overlay logger in options with plugin-specific logger
     Logger pluginLogger = new MessagePrefixLoggerFacade(log, "    ");
     PluginContextOptions pluginContextOptionsForPlugin = new PluginContextOptions()
-        .pluginContextOptions(pluginContextOptions)
-        .logger(pluginLogger);
+      .pluginContextOptions(pluginContextOptions)
+      .logger(pluginLogger);
 
 
     this.fileHeaderContext = new FileHeaderContext()
-        .pluginContextOptions(pluginContextOptionsForPlugin)
-        .commentLines(buildFileHeaderCommentLines(options.getVersion(), dependencyVersions));
+      .pluginContextOptions(pluginContextOptionsForPlugin)
+      .commentLines(buildFileHeaderCommentLines(options.getVersion(), dependencyVersions));
 
     this.validatorContext = new ValidatorContext()
-        .pluginContextOptions(pluginContextOptionsForPlugin)
-        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)));
+      .pluginContextOptions(pluginContextOptionsForPlugin)
+      .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getValidatorOptions(), config)));
 
     this.postProcessorContext = new PostProcessorContext()
-        .pluginContextOptions(pluginContextOptionsForPlugin)
-        .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)));
+      .pluginContextOptions(pluginContextOptionsForPlugin)
+      .options(variableMapResolver.resolve(MapMerger.merge(roleFile.getPostProcessorOptions(), config)));
 
     this.config = variableMapResolver.deescape(config);
     this.allowSymlinks = options.isAllowSymlinks();
@@ -188,8 +190,8 @@ class FileGenerator {
 
     // create separator with same length as longest comment entry
     int maxLength = lines.stream()
-        .map(String::length)
-        .max(Integer::compare).orElse(0);
+      .map(String::length)
+      .max(Integer::compare).orElse(0);
     String separator = StringUtils.repeat("*", maxLength + 4);
 
     formattedLines.add(separator);
@@ -205,7 +207,9 @@ class FileGenerator {
    * Generate file(s).
    * @return List of files that where generated directly or indirectly (by post processors).
    */
-  @SuppressFBWarnings({ "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" })
+  @SuppressFBWarnings({
+      "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"
+  })
   @SuppressWarnings({
       "java:S3776", // ignore complexity
       "java:S2696" // static variable set by intention
@@ -371,18 +375,18 @@ class FileGenerator {
     if (pluginNames.isEmpty()) {
       // auto-detect matching plugins if none are defined
       plugins = pluginManager.getAll(pluginClass).stream()
-          .filter(plugin -> plugin.accepts(fileItem, contextObject))
-          .filter(plugin -> plugin.implicitApply(fileItem, contextObject) == ImplicitApplyOptions.WHEN_UNCONFIGURED);
+        .filter(plugin -> plugin.accepts(fileItem, contextObject))
+        .filter(plugin -> plugin.implicitApply(fileItem, contextObject) == ImplicitApplyOptions.WHEN_UNCONFIGURED);
     }
     else {
       // otherwise apply selected plugins
       plugins = pluginNames.stream()
-          .map(name -> pluginManager.get(name, pluginClass));
+        .map(name -> pluginManager.get(name, pluginClass));
     }
     // add plugins that should always apply
     return Stream.concat(plugins, pluginManager.getAll(pluginClass).stream()
-          .filter(plugin -> plugin.accepts(fileItem, contextObject))
-          .filter(plugin -> plugin.implicitApply(fileItem, contextObject) == ImplicitApplyOptions.ALWAYS));
+      .filter(plugin -> plugin.accepts(fileItem, contextObject))
+      .filter(plugin -> plugin.implicitApply(fileItem, contextObject) == ImplicitApplyOptions.ALWAYS));
   }
 
   private void applyFileHeader(FileContext fileItem, String pluginName) {
@@ -391,8 +395,8 @@ class FileGenerator {
       pluginNames.add(pluginName);
     }
     collectFilePlugins(FileHeaderPlugin.class, fileItem, fileHeaderContext, pluginNames)
-        .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneFileHeader.NAME))
-        .forEach(plugin -> applyFileHeader(fileItem, plugin));
+      .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneFileHeader.NAME))
+      .forEach(plugin -> applyFileHeader(fileItem, plugin));
   }
 
   private void applyFileHeader(FileContext fileItem, FileHeaderPlugin plugin) {
@@ -404,8 +408,8 @@ class FileGenerator {
 
   private void applyValidation(FileContext fileItem, List<String> pluginNames) {
     collectFilePlugins(ValidatorPlugin.class, fileItem, validatorContext, pluginNames)
-        .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneValidator.NAME))
-        .forEach(plugin -> applyValidation(fileItem, plugin));
+      .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneValidator.NAME))
+      .forEach(plugin -> applyValidation(fileItem, plugin));
   }
 
   private void applyValidation(FileContext fileItem, ValidatorPlugin plugin) {
@@ -437,20 +441,20 @@ class FileGenerator {
 
     // process all files from given map
     List.copyOf(consolidatedFiles.values()).stream()
-        // do not apply post processor twice
-        .filter(fileItem -> !fileItem.getPostProcessors().contains(plugin.getName()))
-        .filter(fileItem -> plugin.accepts(fileItem.getFileContext(), postProcessorContext))
-        .forEach(fileItem -> {
-          List<FileContext> processedFiles = applyPostProcessor(fileItem.getFileContext(), plugin);
-          fileItem.postProcessor(plugin.getName());
-          processedFiles.forEach(item -> {
-            GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
-            if (generatedFileContext == null) {
-              generatedFileContext = new GeneratedFileContext().fileContext(item);
-              consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
-            }
-            generatedFileContext.postProcessor(plugin.getName());
-          });
+      // do not apply post processor twice
+      .filter(fileItem -> !fileItem.getPostProcessors().contains(plugin.getName()))
+      .filter(fileItem -> plugin.accepts(fileItem.getFileContext(), postProcessorContext))
+      .forEach(fileItem -> {
+        List<FileContext> processedFiles = applyPostProcessor(fileItem.getFileContext(), plugin);
+        fileItem.postProcessor(plugin.getName());
+        processedFiles.forEach(item -> {
+          GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
+          if (generatedFileContext == null) {
+            generatedFileContext = new GeneratedFileContext().fileContext(item);
+            consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
+          }
+          generatedFileContext.postProcessor(plugin.getName());
+        });
       });
 
     // remove items that do no longer exist
@@ -461,25 +465,23 @@ class FileGenerator {
     });
 
     // apply post processor configured as implicit ALWAYS
-    consolidatedFiles.values().forEach(fileItem ->
-      pluginManager.getAll(PostProcessorPlugin.class).stream()
-          .filter(implicitPlugin -> implicitPlugin.accepts(fileItem.getFileContext(), postProcessorContext))
-          .filter(implicitPlugin -> implicitPlugin.implicitApply(fileItem.getFileContext(), postProcessorContext) == ImplicitApplyOptions.ALWAYS)
-          // do not apply post processor twice
-          .filter(implicitPlugin -> !fileItem.getPostProcessors().contains(implicitPlugin.getName()))
-          .forEach(implicitPlugin -> {
-            List<FileContext> processedFiles = applyPostProcessor(fileItem.getFileContext(), implicitPlugin);
-            fileItem.postProcessor(implicitPlugin.getName());
-            processedFiles.forEach(item -> {
-              GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
-              if (generatedFileContext == null) {
-                generatedFileContext = new GeneratedFileContext().fileContext(item);
-                consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
-              }
-              generatedFileContext.postProcessor(implicitPlugin.getName());
-            });
-          })
-    );
+    consolidatedFiles.values().forEach(fileItem -> pluginManager.getAll(PostProcessorPlugin.class).stream()
+      .filter(implicitPlugin -> implicitPlugin.accepts(fileItem.getFileContext(), postProcessorContext))
+      .filter(implicitPlugin -> implicitPlugin.implicitApply(fileItem.getFileContext(), postProcessorContext) == ImplicitApplyOptions.ALWAYS)
+      // do not apply post processor twice
+      .filter(implicitPlugin -> !fileItem.getPostProcessors().contains(implicitPlugin.getName()))
+      .forEach(implicitPlugin -> {
+        List<FileContext> processedFiles = applyPostProcessor(fileItem.getFileContext(), implicitPlugin);
+        fileItem.postProcessor(implicitPlugin.getName());
+        processedFiles.forEach(item -> {
+          GeneratedFileContext generatedFileContext = consolidatedFiles.get(item.getCanonicalPath());
+          if (generatedFileContext == null) {
+            generatedFileContext = new GeneratedFileContext().fileContext(item);
+            consolidatedFiles.put(item.getCanonicalPath(), generatedFileContext);
+          }
+          generatedFileContext.postProcessor(implicitPlugin.getName());
+        });
+      }));
 
     // remove items that do no longer exist
     List.copyOf(consolidatedFiles.values()).forEach(fileItem -> {

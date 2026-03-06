@@ -51,36 +51,37 @@ public class HandlebarsManager {
   private final EscapingStrategyContext escapingStrategyContext;
   private final HelperContext helperContext;
 
-  private final LoadingCache<HandlebarsKey, Handlebars> handlebarsCache =
-      Caffeine.newBuilder().build(new CacheLoader<HandlebarsKey, Handlebars>() {
-        @SuppressWarnings("unchecked")
-        @Override
-        public Handlebars load(HandlebarsKey options) throws Exception {
+  private final LoadingCache<HandlebarsKey, Handlebars> handlebarsCache = Caffeine.newBuilder().build(new CacheLoader<HandlebarsKey, Handlebars>() {
 
-          // setup handlebars
-          TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
-          EscapingStrategyPlugin escapingStrategy = pluginManager.get(options.getEscapingStrategy(), EscapingStrategyPlugin.class);
-          Handlebars handlebars = new Handlebars(templateLoader)
-              .with(value -> escapingStrategy.escape(value, escapingStrategyContext));
+    @SuppressWarnings("unchecked")
+    @Override
+    public Handlebars load(HandlebarsKey options) throws Exception {
 
-          // register helpers provided by JKnack Handlebars implementation
-          handlebars.registerHelpers(StringHelpers.class);
-          handlebars.registerHelpers(ConditionalHelpers.class);
-          handlebars.registerHelper(AssignHelper.NAME, new AssignHelper());
+      // setup handlebars
+      TemplateLoader templateLoader = new CharsetAwareTemplateLoader(templateDirs, options.getCharset());
+      EscapingStrategyPlugin escapingStrategy = pluginManager.get(options.getEscapingStrategy(), EscapingStrategyPlugin.class);
+      Handlebars handlebars = new Handlebars(templateLoader)
+        .with(value -> escapingStrategy.escape(value, escapingStrategyContext));
 
-          // register helper plugins
-          pluginManager.getAll(HelperPlugin.class)
-              .forEach(plugin -> handlebars.registerHelper(plugin.getName(), new Helper<Object>() {
-                @Override
-                public Object apply(Object context, Options helperOptions) throws IOException {
-                  return plugin.apply(context, helperOptions, helperContext);
-                }
-              }));
+      // register helpers provided by JKnack Handlebars implementation
+      handlebars.registerHelpers(StringHelpers.class);
+      handlebars.registerHelpers(ConditionalHelpers.class);
+      handlebars.registerHelper(AssignHelper.NAME, new AssignHelper());
+
+      // register helper plugins
+      pluginManager.getAll(HelperPlugin.class)
+        .forEach(plugin -> handlebars.registerHelper(plugin.getName(), new Helper<Object>() {
+
+          @Override
+          public Object apply(Object context, Options helperOptions) throws IOException {
+            return plugin.apply(context, helperOptions, helperContext);
+          }
+        }));
 
 
-          return handlebars;
-        }
-      });
+      return handlebars;
+    }
+  });
 
   /**
    * Constructor.

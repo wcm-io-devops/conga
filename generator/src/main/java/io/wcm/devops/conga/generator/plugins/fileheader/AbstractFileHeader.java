@@ -54,10 +54,10 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
       }
       else {
         sanitizedCommentLines = context.getCommentLines().stream()
-            .map(this::sanitizeComment)
-            .filter(Objects::nonNull)
-            .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + line + lineBreak)
-            .toList();
+          .map(this::sanitizeComment)
+          .filter(Objects::nonNull)
+          .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + line + lineBreak)
+          .toList();
       }
 
       int insertPosition = getInsertPosition(content);
@@ -132,7 +132,9 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
    * @param content File content
    * @return Insert position
    */
-  protected int getInsertPosition(@SuppressWarnings({ "unused", "java:S1172" }) String content) {
+  protected int getInsertPosition(@SuppressWarnings({
+      "unused", "java:S1172"
+  }) String content) {
     return 0;
   }
 

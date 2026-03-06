@@ -23,6 +23,7 @@ package io.wcm.devops.conga.generator;
  * Exception in generation process.
  */
 public final class GeneratorException extends RuntimeException {
+
   private static final long serialVersionUID = 1L;
 
   /**

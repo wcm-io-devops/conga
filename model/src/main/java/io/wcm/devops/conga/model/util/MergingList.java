@@ -29,6 +29,7 @@ import java.util.Map;
  */
 @SuppressWarnings("java:S2160") // equals/hashCode is implemented in base class
 final class MergingList<T> extends LinkedList<T> {
+
   private static final long serialVersionUID = 1L;
 
   private int mergePositionIndex;

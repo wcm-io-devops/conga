@@ -100,12 +100,14 @@ class FileGeneratorPostProcessorTest {
     urlFileManager = new UrlFileManager(pluginManager, urlFilePluginContext);
 
     when(pluginManager.getAll(PostProcessorPlugin.class)).thenAnswer(new Answer<List<PostProcessorPlugin>>() {
+
       @Override
       public List<PostProcessorPlugin> answer(InvocationOnMock invocation) throws Throwable {
         return List.copyOf(postProcessorPlugins.values());
       }
     });
     when(pluginManager.get(anyString(), eq(PostProcessorPlugin.class))).thenAnswer(new Answer<PostProcessorPlugin>() {
+
       @Override
       public PostProcessorPlugin answer(InvocationOnMock invocation) throws Throwable {
         return postProcessorPlugins.get(invocation.getArgument(0));
@@ -113,12 +115,12 @@ class FileGeneratorPostProcessorTest {
     });
 
     options = new GeneratorOptions()
-        .pluginManager(pluginManager)
-        .version("1.0");
+      .pluginManager(pluginManager)
+      .version("1.0");
     pluginContextOptions = new PluginContextOptions()
-        .pluginManager(pluginManager)
-        .urlFileManager(urlFileManager)
-        .logger(options.getLogger());
+      .pluginManager(pluginManager)
+      .urlFileManager(urlFileManager)
+      .logger(options.getLogger());
     variableMapResolver = new VariableMapResolver(
         new ValueProviderGlobalContext().pluginContextOptions(pluginContextOptions));
     underTest = new FileGenerator(options, "env1",
@@ -181,6 +183,7 @@ class FileGeneratorPostProcessorTest {
   void testOnePostProcessorWithRewrite_WithFileHeaderAndValidator() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
+
       @Override
       @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
@@ -203,6 +206,7 @@ class FileGeneratorPostProcessorTest {
 
     FileHeaderPlugin fileHeaderPlugin = mock(FileHeaderPlugin.class);
     when(pluginManager.get("my-fileheader", FileHeaderPlugin.class)).thenAnswer(new Answer<FileHeaderPlugin>() {
+
       @Override
       public FileHeaderPlugin answer(InvocationOnMock invocation) throws Throwable {
         return fileHeaderPlugin;
@@ -211,6 +215,7 @@ class FileGeneratorPostProcessorTest {
 
     ValidatorPlugin validatorPlugin = mock(ValidatorPlugin.class);
     when(pluginManager.get("my-validator", ValidatorPlugin.class)).thenAnswer(new Answer<ValidatorPlugin>() {
+
       @Override
       public ValidatorPlugin answer(InvocationOnMock invocation) throws Throwable {
         return validatorPlugin;
@@ -246,6 +251,7 @@ class FileGeneratorPostProcessorTest {
   void testTwoPostProcessorsWithRewrite() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
+
       @Override
       @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
@@ -259,6 +265,7 @@ class FileGeneratorPostProcessorTest {
 
     PostProcessorPlugin two = mockPostProcessor("two", "abc", ImplicitApplyOptions.NEVER);
     when(two.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
+
       @Override
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
         // create new file test.def
@@ -305,6 +312,7 @@ class FileGeneratorPostProcessorTest {
   void testPostProcessorWithRewriteAndImplicit() throws Exception {
     PostProcessorPlugin one = mockPostProcessor("one", "txt", ImplicitApplyOptions.NEVER);
     when(one.apply(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<List<FileContext>>() {
+
       @Override
       public List<FileContext> answer(InvocationOnMock invocation) throws Throwable {
         // delete input file and create new file test.abc instead
@@ -344,6 +352,7 @@ class FileGeneratorPostProcessorTest {
     PostProcessorPlugin plugin = mock(PostProcessorPlugin.class);
     when(plugin.getName()).thenReturn(pluginName);
     when(plugin.accepts(any(FileContext.class), any(PostProcessorContext.class))).thenAnswer(new Answer<Boolean>() {
+
       @Override
       public Boolean answer(InvocationOnMock invocation) throws Throwable {
         FileContext input = invocation.getArgument(0);

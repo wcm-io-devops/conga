@@ -95,9 +95,9 @@ public class PackageMojo extends AbstractCongaMojo {
     // collect configuration environment directories
     File configRootDir = getTargetDir();
     List<File> environmentDirs = Arrays.stream(configRootDir.listFiles())
-        .filter(File::isDirectory)
-        .filter(dir -> selectedEnvironments == null || selectedEnvironments.contains(dir.getName()))
-        .toList();
+      .filter(File::isDirectory)
+      .filter(dir -> selectedEnvironments == null || selectedEnvironments.contains(dir.getName()))
+      .toList();
 
     MavenProject project = getProject();
     if (artifactPerEnvironment) {

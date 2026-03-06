@@ -83,15 +83,15 @@ final class ClasspathResourceCollectionImpl extends AbstractClasspathResourceImp
   @Override
   public SortedSet<Resource> getResources() {
     return fileUrls.stream()
-        .map(url -> new ClasspathResourceImpl(url, resourceLoader))
-        .collect(Collectors.toCollection(TreeSet::new));
+      .map(url -> new ClasspathResourceImpl(url, resourceLoader))
+      .collect(Collectors.toCollection(TreeSet::new));
   }
 
   @Override
   public SortedSet<ResourceCollection> getResourceCollections() {
     return folderPaths.stream()
-        .map(folderPath -> new ClasspathResourceCollectionImpl(folderPath, resourceLoader))
-        .collect(Collectors.toCollection(TreeSet::new));
+      .map(folderPath -> new ClasspathResourceCollectionImpl(folderPath, resourceLoader))
+      .collect(Collectors.toCollection(TreeSet::new));
   }
 
 }

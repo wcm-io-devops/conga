@@ -44,12 +44,12 @@ class EnsurePropertiesHelperTest {
   void testSet() throws Exception {
 
     assertHelper(null, helper, "p1", new MockOptions()
-        .withProperty("p1", "v1"));
+      .withProperty("p1", "v1"));
 
-    assertHelper(null, helper, "p1", new MockOptions("p2","p3")
-        .withProperty("p1", "v1")
-        .withProperty("p2", "v2")
-        .withProperty("p3", "v3"));
+    assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
+      .withProperty("p1", "v1")
+      .withProperty("p2", "v2")
+      .withProperty("p3", "v3"));
 
     assertHelper(null, helper, null, new MockOptions());
   }
@@ -72,8 +72,8 @@ class EnsurePropertiesHelperTest {
   void testNotSetCase3() {
     assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
-          .withProperty("p1", "v1")
-          .withProperty("p2", "v2"));
+        .withProperty("p1", "v1")
+        .withProperty("p2", "v2"));
     });
   }
 
@@ -81,7 +81,7 @@ class EnsurePropertiesHelperTest {
   void testNotSetCase4() {
     assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions("p2", "p3")
-          .withProperty("p2", "v1"));
+        .withProperty("p2", "v1"));
     });
   }
 

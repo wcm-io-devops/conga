@@ -49,11 +49,11 @@ class AbstractPostProcessorTest {
     new JsonFileHeader().apply(fileContext, fileHeader);
 
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(new PluginManagerImpl());
+      .pluginManager(new PluginManagerImpl());
 
     PostProcessorPlugin postProcessor = new DummyPostProcessor();
     PostProcessorContext postProcessorContext = new PostProcessorContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
 
     List<FileContext> result = postProcessor.apply(fileContext, postProcessorContext);
 
@@ -76,11 +76,11 @@ class AbstractPostProcessorTest {
     FileContext fileContext = new FileContext().file(file);
 
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(new PluginManagerImpl());
+      .pluginManager(new PluginManagerImpl());
 
     PostProcessorPlugin postProcessor = new DummyPostProcessor();
     PostProcessorContext postProcessorContext = new PostProcessorContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
 
     List<FileContext> result = postProcessor.apply(fileContext, postProcessorContext);
 

@@ -72,9 +72,11 @@ public final class NoValueProviderInRoleValidator implements DefinitionValidator
   }
 
   private static class MapReader extends AbstractModelReader<Map<String, Object>> {
+
     MapReader() {
       super(getYaml());
     }
+
     private static Yaml getYaml() {
       Constructor constructor = new Constructor(Map.class, YamlUtil.createLoaderOptions());
       return new Yaml(constructor);

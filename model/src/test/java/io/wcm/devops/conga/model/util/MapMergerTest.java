@@ -272,19 +272,16 @@ class MapMergerTest {
     Map<String, Object> baseConfig = map(
         "key", "magnolia.bootstrap.dir",
         "value", "WEB-INF/bootstrap/author WEB-INF/bootstrap/common",
-        "comment", "the directories in which the bootstrap files are searched"
-    );
+        "comment", "the directories in which the bootstrap files are searched");
 
     Map<String, Object> variantConfig = map(
         "key", "magnolia.bootstrap.dir",
-        "value", "C:/user/test/dir"
-    );
+        "value", "C:/user/test/dir");
 
     // When merging with _merge_ token, variant values override base values, but base fields are preserved
     Map<String, Object> result = merge(
         map("proj.magnolia.cms.properties", list(LIST_MERGE_ENTRY, variantConfig)),
-        map("proj.magnolia.cms.properties", list(baseConfig))
-    );
+        map("proj.magnolia.cms.properties", list(baseConfig)));
 
     // Should have only one entry with merged values: value from variant, comment from base
     List<Object> resultList = (List<Object>)result.get("proj.magnolia.cms.properties");
@@ -293,8 +290,7 @@ class MapMergerTest {
     Map<String, Object> expectedMerged = map(
         "key", "magnolia.bootstrap.dir",
         "value", "C:/user/test/dir",
-        "comment", "the directories in which the bootstrap files are searched"
-    );
+        "comment", "the directories in which the bootstrap files are searched");
     assertEquals(expectedMerged, resultList.get(0));
   }
 
@@ -305,19 +301,16 @@ class MapMergerTest {
     Map<String, Object> baseConfig = map(
         "key", "magnolia.bootstrap.dir",
         "value", "WEB-INF/bootstrap/author WEB-INF/bootstrap/common",
-        "comment", "old comment"
-    );
+        "comment", "old comment");
 
     Map<String, Object> variantConfig = map(
         "key", "magnolia.bootstrap.dir",
         "value", "woanders",
-        "comment", "new comment"
-    );
+        "comment", "new comment");
 
     Map<String, Object> result = merge(
         map("props", list(LIST_MERGE_ENTRY, variantConfig)),
-        map("props", list(baseConfig))
-    );
+        map("props", list(baseConfig)));
 
     // Comment should be overridden because it was explicitly provided in variant
     List<Object> resultList = (List<Object>)result.get("props");
@@ -331,23 +324,19 @@ class MapMergerTest {
     // Test with multiple different keys - they should all be preserved
     Map<String, Object> config1 = map(
         "key", "prop1",
-        "value", "value1"
-    );
+        "value", "value1");
 
     Map<String, Object> config2 = map(
         "key", "prop2",
-        "value", "value2"
-    );
+        "value", "value2");
 
     Map<String, Object> config3 = map(
         "key", "prop3",
-        "value", "value3"
-    );
+        "value", "value3");
 
     Map<String, Object> result = merge(
         map("props", list(LIST_MERGE_ENTRY, config3)),
-        map("props", list(config1, config2))
-    );
+        map("props", list(config1, config2)));
 
     // Should have all three entries
     // When LIST_MERGE_ENTRY is at start of l1, l2 elements are inserted at the beginning
@@ -370,8 +359,7 @@ class MapMergerTest {
 
     Map<String, Object> result = merge(
         map("props", list(LIST_MERGE_ENTRY, config2Override, config3)),
-        map("props", list(config1, config2))
-    );
+        map("props", list(config1, config2)));
 
     // l1 = [LIST_MERGE_ENTRY, config2Override, config3] -> MergingList = [config2Override, config3] with mergePos=0
     // l2 = [config1, config2]

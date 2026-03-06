@@ -36,8 +36,9 @@ import io.wcm.devops.conga.generator.spi.Plugin;
  */
 public final class PluginManagerImpl implements PluginManager {
 
-  private final LoadingCache<Class<Plugin>, SortedMap<String, Plugin>> pluginCache =
-      Caffeine.newBuilder().build(new CacheLoader<Class<Plugin>, SortedMap<String, Plugin>>() {
+  private final LoadingCache<Class<Plugin>,
+      SortedMap<String, Plugin>> pluginCache = Caffeine.newBuilder().build(new CacheLoader<Class<Plugin>, SortedMap<String, Plugin>>() {
+
         @Override
         public SortedMap<String, Plugin> load(Class<Plugin> pluginClass) throws Exception {
           ServiceLoader<Plugin> loadedPlugins = ServiceLoader.load(pluginClass);

@@ -78,10 +78,10 @@ public abstract class AbstractPostProcessor implements PostProcessorPlugin {
   private FileHeaderPlugin detectFileHeaderPlugin(FileContext file, PostProcessorContext postProcessorContext) {
     FileHeaderContext dummyFileHeader = new FileHeaderContext();
     Optional<FileHeaderPlugin> fileHeaderPlugin = postProcessorContext.getPluginManager()
-        .getAll(FileHeaderPlugin.class).stream()
-        .filter(plugin -> plugin.accepts(file, dummyFileHeader))
-        .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneFileHeader.NAME))
-        .findFirst();
+      .getAll(FileHeaderPlugin.class).stream()
+      .filter(plugin -> plugin.accepts(file, dummyFileHeader))
+      .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneFileHeader.NAME))
+      .findFirst();
     if (fileHeaderPlugin.isPresent()) {
       return fileHeaderPlugin.get();
     }

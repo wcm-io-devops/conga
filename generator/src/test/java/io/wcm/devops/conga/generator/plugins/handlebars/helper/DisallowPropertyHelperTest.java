@@ -45,7 +45,7 @@ class DisallowPropertyHelperTest {
   void testSetCase1() {
     assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions()
-          .withProperty("p1", "v1"));
+        .withProperty("p1", "v1"));
     });
   }
 
@@ -53,9 +53,9 @@ class DisallowPropertyHelperTest {
   void testSetCase2() {
     IOException ex = assertThrows(IOException.class, () -> {
       assertHelper(null, helper, "p1", new MockOptions("Custom Error Message")
-          .withProperty("p1", "v1")
-          .withProperty("p2", "v2")
-          .withProperty("p3", "v3"));
+        .withProperty("p1", "v1")
+        .withProperty("p2", "v2")
+        .withProperty("p3", "v3"));
     });
     assertEquals("Custom Error Message", ex.getMessage());
   }
@@ -73,7 +73,7 @@ class DisallowPropertyHelperTest {
   @Test
   void testNotSetCase3() throws Exception {
     assertHelper(null, helper, "p1", new MockOptions("Custom Error Message")
-        .withProperty("p2", "v1"));
+      .withProperty("p2", "v1"));
   }
 
 }

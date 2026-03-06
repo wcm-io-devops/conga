@@ -51,7 +51,9 @@ public final class RoleTemplateFileValidator implements DefinitionValidator<Void
   }
 
   @Override
-  @SuppressWarnings({ "PMD.PreserveStackTrace", "PMD.ExceptionAsFlowControl" })
+  @SuppressWarnings({
+      "PMD.PreserveStackTrace", "PMD.ExceptionAsFlowControl"
+  })
   public Void validate(Resource resource, String pathForLog) throws MojoFailureException {
     try {
       Role role = modelReader.read(resource);

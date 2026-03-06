@@ -82,13 +82,13 @@ public final class CongaCli {
     String[] nodes = StringUtils.split(commandLine.getOptionValue("nodes", (String)null), ",");
 
     GeneratorOptions options = new GeneratorOptions()
-        .baseDir(baseDir)
-        .roleDir(roleDir)
-        .templateDir(templateDir)
-        .environmentDir(environmentDir)
-        .destDir(targetDir)
-        .deleteBeforeGenerate(true)
-        .pluginManager(new PluginManagerImpl());
+      .baseDir(baseDir)
+      .roleDir(roleDir)
+      .templateDir(templateDir)
+      .environmentDir(environmentDir)
+      .destDir(targetDir)
+      .deleteBeforeGenerate(true)
+      .pluginManager(new PluginManagerImpl());
 
     Generator generator = new Generator(options);
     generator.generate(environments, nodes);

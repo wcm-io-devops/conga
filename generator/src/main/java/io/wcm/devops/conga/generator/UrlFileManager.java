@@ -169,6 +169,7 @@ public final class UrlFileManager {
   }
 
   private interface FileHandler<T> {
+
     T apply(UrlFilePlugin plugin) throws IOException;
   }
 

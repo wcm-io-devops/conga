@@ -111,8 +111,8 @@ public final class ValueUtil {
           sb.append(",");
         }
         sb.append(valueToString(entry.getKey()))
-            .append("=")
-            .append(valueToString(entry.getValue()));
+          .append("=")
+          .append(valueToString(entry.getValue()));
       }
       return sb.toString();
     }
