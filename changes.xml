@@ -24,7 +24,13 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
-   <release version="1.19.0" date="2025-11-17">
+    <release version="1.18.2" date="not released">
+      <action type="update" dev="sseifert">
+        Switch to Java 21.
+      </action>
+    </release>
+
+    <release version="1.19.0" date="2025-11-17">
       <action type="add" dev="bsommerfeld" issue="149">
         Support deep merge of list entries with 'key' field: When merging lists with map objects containing a 'key' field, entries with the same key are now merged instead of replaced, preserving fields from base configuration that are not overridden in variants.
       </action>
