@@ -39,7 +39,7 @@
   </prerequisites>
 
   <properties>
-    <maven.version>3.3.9</maven.version>
+    <maven.version>3.8.6</maven.version>
     <site.url.module.prefix>tooling/conga-maven-plugin</site.url.module.prefix>
 
     <!-- Versions -->
@@ -264,17 +264,11 @@
 
   <reporting>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <configuration>
-          <requirements>
-            <maven>${maven.version}</maven>
-          </requirements>
-        </configuration>
+        <artifactId>maven-plugin-report-plugin</artifactId>
+        <version>${maven-plugin-plugin.version}</version>
       </plugin>
-
     </plugins>
   </reporting>
 

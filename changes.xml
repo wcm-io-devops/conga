@@ -24,7 +24,7 @@
     xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <body>
 
-    <release version="1.18.2" date="not released">
+    <release version="1.19.2" date="not released">
       <action type="update" dev="sseifert">
         Switch to Java 21.
       </action>
