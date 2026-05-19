@@ -56,6 +56,7 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.ManifestException;
+import org.codehaus.plexus.archiver.util.DefaultFileSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.ModelExport;
@@ -300,14 +301,16 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     archive.setForced(true);
 
     // include definitions
-    archiver.getArchiver().addDirectory(contentDirectory);
+    archiver.getArchiver().addFileSet(new DefaultFileSet(contentDirectory));
 
     // include resources
     for (org.apache.maven.model.Resource resource : project.getResources()) {
       File resourceDir = new File(resource.getDirectory());
       if (resourceDir.exists()) {
-        archiver.getArchiver().addDirectory(resourceDir,
-            toArray(resource.getIncludes()), toArray(resource.getExcludes()));
+        DefaultFileSet fileSet = new DefaultFileSet(resourceDir);
+        fileSet.setIncludes(toArray(resource.getIncludes()));
+        fileSet.setExcludes(toArray(resource.getExcludes()));
+        archiver.getArchiver().addFileSet(fileSet);
       }
     }
 
