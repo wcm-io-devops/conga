@@ -53,7 +53,7 @@ public final class VersionInfoUtil {
     if (congaPlugin != null) {
       props.put(congaPlugin.getKey(), congaPlugin.getVersion());
 
-      congaPlugin.getDependencies().stream()
+      congaPlugin.getDependencies()
         .forEach(dependency -> {
           String artifactKey = Plugin.constructKey(dependency.getGroupId(), dependency.getArtifactId());
           props.put(artifactKey, cleanupSnapshotVersion(dependency.getVersion()));

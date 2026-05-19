@@ -92,7 +92,7 @@ public final class ValueUtil {
     if (value == null) {
       return "";
     }
-    else if (value instanceof List list) {
+    else if (value instanceof List<?> list) {
       StringBuilder sb = new StringBuilder();
       for (Object item : list) {
         if (!sb.isEmpty()) {

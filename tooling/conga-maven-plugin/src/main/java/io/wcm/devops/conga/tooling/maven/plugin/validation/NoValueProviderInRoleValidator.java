@@ -40,13 +40,15 @@ public final class NoValueProviderInRoleValidator implements DefinitionValidator
   private final ModelReader<Map<String, Object>> mapReader = new MapReader();
 
   @Override
-  @SuppressWarnings("PMD.PreserveStackTrace")
+  @SuppressWarnings({
+      "PMD.PreserveStackTrace", "PMD.AvoidCatchingGenericException"
+  })
   public Void validate(Resource resource, String pathForLog) throws MojoFailureException {
     try {
       // iterate over whole value and validate all string values that are found
       process(mapReader.read(resource));
     }
-    /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
+    catch (Exception ex) {
       throw new MojoFailureException("Role definition " + pathForLog + " is invalid:\n" + ex.getMessage());
     }
     return null;

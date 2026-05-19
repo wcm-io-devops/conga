@@ -22,6 +22,7 @@ package io.wcm.devops.conga.generator.plugins.urlfile;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,13 +59,13 @@ public class HttpUrlFilePlugin implements UrlFilePlugin {
 
   @Override
   public InputStream getFile(String url, UrlFilePluginContext context) throws IOException {
-    URL result = new URL(url);
+    URL result = URI.create(url).toURL();
     return new BufferedInputStream(result.openStream());
   }
 
   @Override
   public URL getFileUrl(String url, UrlFilePluginContext context) throws IOException {
-    return new URL(url);
+    return URI.create(url).toURL();
   }
 
 }

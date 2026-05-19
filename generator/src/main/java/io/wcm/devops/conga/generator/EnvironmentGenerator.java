@@ -42,7 +42,6 @@ import org.slf4j.Logger;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
@@ -366,10 +365,9 @@ final class EnvironmentGenerator {
   }
 
   @SuppressWarnings({
-      "PMD.PreserveStackTrace",
+      "PMD.PreserveStackTrace", "PMD.AvoidCatchingGenericException",
       "java:S107" // allow many parameters
   })
-  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir,
       String fileName, String url, String symlinkTarget,
       Map<String, Object> config, File nodeDir, Template template,
@@ -419,7 +417,7 @@ final class EnvironmentGenerator {
     catch (ValidationException ex) {
       throw new GeneratorException("File validation failed " + FileUtil.getCanonicalPath(file) + " - " + ex.getMessage());
     }
-    /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
+    catch (Exception ex) {
       throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file) + "\n" + ex.getMessage(), ex);
     }
   }

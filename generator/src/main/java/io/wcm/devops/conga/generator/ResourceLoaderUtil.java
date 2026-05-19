@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.spi.context.PluginContextOptions;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
 import io.wcm.devops.conga.generator.util.ConfigInheritanceResolver;
@@ -53,7 +52,6 @@ final class ResourceLoaderUtil {
    * @param classpathUrls Classpath urls
    * @return Resource loader
    */
-  @SuppressFBWarnings("DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED")
   public static ClassLoader buildClassLoader(List<URL> classpathUrls) {
     return new URLClassLoader(classpathUrls.toArray(new URL[0]));
   }
@@ -97,6 +95,7 @@ final class ResourceLoaderUtil {
    * @return Parsed models
    * @param <T> Model type
    */
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   public static <T> Map<String, T> readModels(List<ResourceCollection> dirs, ModelReader<T> reader) {
     Map<String, T> models = new HashMap<>();
     for (ResourceCollection dir : dirs) {
@@ -107,7 +106,7 @@ final class ResourceLoaderUtil {
             ConfigInheritanceResolver.resolve(model);
             models.put(FilenameUtils.getBaseName(file.getName()), model);
           }
-          /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
+          catch (Exception ex) {
             throw new GeneratorException("Unable to read definition: " + file.getCanonicalPath(), ex);
           }
         }

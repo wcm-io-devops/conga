@@ -149,6 +149,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
     tenants.add(tenantMap);
   }
 
+  @SuppressWarnings("PMD.AvoidCatchingGenericException")
   private void save(Map<String, Object> modelMap, NodeModelExportContext context) {
     File file = new File(context.getNodeDir(), MODEL_FILE);
     try (FileOutputStream os = new FileOutputStream(file);
@@ -156,7 +157,7 @@ public class YamlNodeModelExport implements NodeModelExportPlugin {
       Yaml yaml = new Yaml(context.getYamlRepresenter(), new DumperOptions());
       yaml.dump(modelMap, writer);
     }
-    /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
+    catch (Exception ex) {
       throw new GeneratorException("Unable to write model file: " + FileUtil.getCanonicalPath(file), ex);
     }
   }

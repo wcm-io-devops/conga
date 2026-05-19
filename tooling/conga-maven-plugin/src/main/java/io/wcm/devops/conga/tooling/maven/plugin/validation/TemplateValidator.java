@@ -55,7 +55,7 @@ public final class TemplateValidator implements DefinitionValidator<Void> {
 
   @Override
   @SuppressWarnings({
-      "PMD.PreserveStackTrace",
+      "PMD.PreserveStackTrace", "PMD.AvoidCatchingGenericException",
       "java:S1075" // uses / by intention
   })
   public Void validate(Resource resource, String pathForLog) throws MojoFailureException {
@@ -66,7 +66,7 @@ public final class TemplateValidator implements DefinitionValidator<Void> {
       try {
         handlebars.compile(templatePath);
       }
-      /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
+      catch (Exception ex) {
         throw new MojoFailureException("Template " + pathForLog + " is invalid:\n" + ex.getMessage());
       }
     }
