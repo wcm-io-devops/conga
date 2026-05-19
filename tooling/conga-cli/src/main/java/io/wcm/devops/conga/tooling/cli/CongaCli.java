@@ -20,12 +20,14 @@
 package io.wcm.devops.conga.tooling.cli;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.help.HelpFormatter;
+import org.apache.commons.cli.help.TextHelpAppendable;
 import org.apache.commons.lang3.StringUtils;
 
 import io.wcm.devops.conga.generator.Generator;
@@ -61,15 +63,20 @@ public final class CongaCli {
    * @param args Command line arguments
    * @throws ParseException Parse exceptoin
    */
-  //CHECKSTYLE:OFF
-  public static void main(String[] args) throws ParseException {
-    //CHECKSTYLE:ON
+  @SuppressWarnings({
+      "checkstyle:UncommentedMain",
+      "java:S106" // System.out.println is ok in CLI
+  })
+  public static void main(String[] args) throws ParseException, IOException {
     CommandLine commandLine = new DefaultParser().parse(CLI_OPTIONS, args);
 
     if (commandLine.hasOption("?")) {
-      HelpFormatter formatter = new HelpFormatter();
-      formatter.setWidth(150);
-      formatter.printHelp("java -jar io.wcm.devops.conga.tooling.cli-<version>.jar <arguments>", CLI_OPTIONS);
+      TextHelpAppendable helpAppendable = new TextHelpAppendable(System.out);
+      helpAppendable.setMaxWidth(150);
+      HelpFormatter formatter = HelpFormatter.builder()
+        .setHelpAppendable(helpAppendable)
+        .get();
+      formatter.printHelp("java -jar io.wcm.devops.conga.tooling.cli-<version>.jar <arguments>", null, CLI_OPTIONS, null, false);
       return;
     }
 
