@@ -51,12 +51,12 @@ class MavenPropertyValueProviderPluginTest {
     PluginManager pluginManager = new PluginManagerImpl();
     underTest = pluginManager.get(MavenPropertyValueProviderPlugin.NAME, ValueProviderPlugin.class);
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(pluginManager)
-        .pluginContextOptions(new PluginContextOptions()
-            .containerContext(new MavenContext()
-                .project(mavenProject)));
+      .pluginManager(pluginManager)
+      .pluginContextOptions(new PluginContextOptions()
+        .containerContext(new MavenContext()
+          .project(mavenProject)));
     context = new ValueProviderContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
   }
 
   @Test

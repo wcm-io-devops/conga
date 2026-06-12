@@ -56,6 +56,7 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.ManifestException;
+import org.codehaus.plexus.archiver.util.DefaultFileSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.ModelExport;
@@ -181,26 +182,50 @@ abstract class AbstractCongaMojo extends AbstractMojo {
       "bundle", "jar",
       "content-package", "zip");
 
+  /**
+   * Gets template directory.
+   * @return Template directory
+   */
   protected File getTemplateDir() {
     return templateDir;
   }
 
+  /**
+   * Gets role directory.
+   * @return Role directory
+   */
   protected File getRoleDir() {
     return roleDir;
   }
 
+  /**
+   * Gets environment directory.
+   * @return Environment directory
+   */
   protected File getEnvironmentDir() {
     return environmentDir;
   }
 
+  /**
+   * Gets target directory.
+   * @return Target directory
+   */
   protected File getTargetDir() {
     return target;
   }
 
+  /**
+   * Gets Maven project.
+   * @return Maven project
+   */
   protected MavenProject getProject() {
     return project;
   }
 
+  /**
+   * Gets model export configuration.
+   * @return Model export configuration
+   */
   protected ModelExport getModelExport() {
     ModelExport modelExport = new ModelExport();
 
@@ -212,14 +237,26 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     return modelExport;
   }
 
+  /**
+   * Gets value provider configuration.
+   * @return Value provider configuration
+   */
   protected Map<String, Map<String, Object>> getValueProviderConfig() {
     return PluginConfigUtil.getConfigMap(this.valueProvider);
   }
 
+  /**
+   * Gets plugin configuration.
+   * @return Plugin configuration
+   */
   protected Map<String, Map<String, Object>> getPluginConfig() {
     return PluginConfigUtil.getConfigMap(this.pluginConfig);
   }
 
+  /**
+   * Gets artifact type mappings.
+   * @return Artifact type mappings
+   */
   protected Map<String, String> getArtifactTypeMappings() {
     Map<String, String> mappings = this.artifactTypeMappings;
     if (mappings == null) {
@@ -264,14 +301,16 @@ abstract class AbstractCongaMojo extends AbstractMojo {
     archive.setForced(true);
 
     // include definitions
-    archiver.getArchiver().addDirectory(contentDirectory);
+    archiver.getArchiver().addFileSet(new DefaultFileSet(contentDirectory));
 
     // include resources
     for (org.apache.maven.model.Resource resource : project.getResources()) {
       File resourceDir = new File(resource.getDirectory());
       if (resourceDir.exists()) {
-        archiver.getArchiver().addDirectory(resourceDir,
-            toArray(resource.getIncludes()), toArray(resource.getExcludes()));
+        DefaultFileSet fileSet = new DefaultFileSet(resourceDir);
+        fileSet.setIncludes(toArray(resource.getIncludes()));
+        fileSet.setExcludes(toArray(resource.getExcludes()));
+        archiver.getArchiver().addFileSet(fileSet);
       }
     }
 

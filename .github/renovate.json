@@ -8,6 +8,11 @@
     "github>wcm-io-devops/renovate-config:automerge-parent"
   ],
   "ignoreDeps": [
+    "org.apache.maven:maven-plugin-api",
+    "org.apache.maven:maven-core",
+    "org.apache.maven:maven-model",
+    "org.apache.maven:maven-artifact",
+    "org.apache.maven.plugins:maven-plugin-plugin",
     "io.wcm.devops.conga:io.wcm.devops.conga.example",
     "io.wcm.devops.conga:io.wcm.devops.conga.example.definitions"
   ]

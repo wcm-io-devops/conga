@@ -31,6 +31,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * The filename of the role YAML file is the role name, it's not included in the model.
  */
 public final class Role extends AbstractConfigurable {
+
   private static final long serialVersionUID = 4736362819976273689L;
 
   private List<RoleInherit> inherits = new ArrayList<>();
@@ -47,6 +48,10 @@ public final class Role extends AbstractConfigurable {
     return this.inherits;
   }
 
+  /**
+   * Sets inheritance relations.
+   * @param inherits List of inheritance relations
+   */
   public void setInherits(List<RoleInherit> inherits) {
     this.inherits = defaultEmptyList(inherits);
   }
@@ -60,6 +65,10 @@ public final class Role extends AbstractConfigurable {
     return this.variants;
   }
 
+  /**
+   * Sets role variants.
+   * @param variants List of role variant definitions
+   */
   public void setVariants(List<RoleVariant> variants) {
     this.variants = defaultEmptyList(variants);
   }
@@ -73,6 +82,10 @@ public final class Role extends AbstractConfigurable {
     return this.templateDir;
   }
 
+  /**
+   * Sets template directory.
+   * @param templateDirectory Relative path to template files
+   */
   public void setTemplateDir(String templateDirectory) {
     this.templateDir = templateDirectory;
   }
@@ -85,6 +98,10 @@ public final class Role extends AbstractConfigurable {
     return this.files;
   }
 
+  /**
+   * Sets files.
+   * @param files List of file definitions
+   */
   public void setFiles(List<RoleFile> files) {
     this.files = defaultEmptyList(files);
   }
@@ -98,6 +115,10 @@ public final class Role extends AbstractConfigurable {
     return defaultEmptyList(this.sensitiveConfigParameters);
   }
 
+  /**
+   * Sets sensitive configuration parameters.
+   * @param sensitiveProperties List of configuration parameter names
+   */
   public void setSensitiveConfigParameters(List<String> sensitiveProperties) {
     this.sensitiveConfigParameters = sensitiveProperties;
   }

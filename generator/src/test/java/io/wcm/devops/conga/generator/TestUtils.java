@@ -49,18 +49,18 @@ public final class TestUtils {
 
   public static Generator setupGenerator(File destDir) {
     GeneratorOptions options = new GeneratorOptions()
-        .baseDir(new File("."))
-        .roleDir(new File("src/test/definitions/roles"))
-        .templateDir(new File("src/test/definitions/templates"))
-        .environmentDir(new File("src/test/definitions/environments"))
-        .destDir(destDir)
-        .version(TEST_VERSION)
-        .pluginManager(new PluginManagerImpl())
-        .genericPluginConfig(Map.of(
-            DummyPluginConfigValueProviderPlugin.NAME, Map.of(
-                "param1", "value1",
-                "param2", 55,
-                "param3", Map.of("param31", "value31", "param32", "value32"))));
+      .baseDir(new File("."))
+      .roleDir(new File("src/test/definitions/roles"))
+      .templateDir(new File("src/test/definitions/templates"))
+      .environmentDir(new File("src/test/definitions/environments"))
+      .destDir(destDir)
+      .version(TEST_VERSION)
+      .pluginManager(new PluginManagerImpl())
+      .genericPluginConfig(Map.of(
+          DummyPluginConfigValueProviderPlugin.NAME, Map.of(
+              "param1", "value1",
+              "param2", 55,
+              "param3", Map.of("param31", "value31", "param32", "value32"))));
 
     ModelExport modelExport = new ModelExport();
     modelExport.setNode(List.of("yaml"));

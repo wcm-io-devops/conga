@@ -38,6 +38,7 @@ public final class VariableResolver {
   private final ValueProviderGlobalContext valueProviderGlobalContext;
 
   /**
+   * Constructor.
    * @param context Value provider global context
    */
   public VariableResolver(ValueProviderGlobalContext context) {
@@ -59,8 +60,8 @@ public final class VariableResolver {
     // resolve value from value provider
     if (StringUtils.isNotEmpty(valueProviderName)) {
       ValueProviderContext valueProviderContext = new ValueProviderContext()
-          .valueProviderGlobalContext(valueProviderGlobalContext)
-          .valueProviderName(valueProviderName);
+        .valueProviderGlobalContext(valueProviderGlobalContext)
+        .valueProviderName(valueProviderName);
       ValueProviderPlugin valueProvider = getValueProvider(valueProviderContext);
 
       result = valueProvider.resolve(variable, valueProviderContext);

@@ -66,8 +66,7 @@ public final class ContextPropertiesBuilder {
       entry(ROLE_VARIANT, ""),
       entry(NODE, ""),
       entry(TENANT, ""),
-      entry(TENANT_ROLES, Collections.emptyList())
-  );
+      entry(TENANT_ROLES, Collections.emptyList()));
 
   private ContextPropertiesBuilder() {
     // static methods only

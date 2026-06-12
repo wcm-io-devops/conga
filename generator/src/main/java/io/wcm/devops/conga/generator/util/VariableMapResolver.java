@@ -58,6 +58,7 @@ public final class VariableMapResolver {
   private final VariableStringResolver variableStringResolver;
 
   /**
+   * Constructor.
    * @param valueProviderGlobalContext Value provider global context
    */
   public VariableMapResolver(ValueProviderGlobalContext valueProviderGlobalContext) {
@@ -191,7 +192,9 @@ public final class VariableMapResolver {
     }
   }
 
-  @SuppressWarnings({ "unchecked", "java:S6201" })
+  @SuppressWarnings({
+      "unchecked", "java:S6201"
+  })
   private List<Object> replaceIterate(Map<String, Object> map, Map<String, Object> variables) {
     Object listObject = map.get(LIST_VARIABLE_ITERATE);
     if (listObject instanceof String stringValue) {

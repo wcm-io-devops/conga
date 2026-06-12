@@ -28,12 +28,14 @@ import io.wcm.devops.conga.generator.util.PluginManager;
 
 /**
  * Generic plugin context.
+ * @param <T> Context type
  */
 public abstract class AbstractPluginContext<T> {
 
   private PluginContextOptions pluginContextOptions = new PluginContextOptions();
 
   /**
+   * Gets plugin context options.
    * @return Generic plugin context options
    */
   public final PluginContextOptions getPluginContextOptions() {
@@ -41,6 +43,7 @@ public abstract class AbstractPluginContext<T> {
   }
 
   /**
+   * Sets plugin context options.
    * @param value Generic plugin context options
    * @return this
    */
@@ -51,6 +54,7 @@ public abstract class AbstractPluginContext<T> {
   }
 
   /**
+   * Gets plugin manager.
    * @return Plugin manager
    */
   public final PluginManager getPluginManager() {
@@ -58,6 +62,7 @@ public abstract class AbstractPluginContext<T> {
   }
 
   /**
+   * Gets URL file manager.
    * @return URL file manager
    */
   public final UrlFileManager getUrlFileManager() {
@@ -65,6 +70,7 @@ public abstract class AbstractPluginContext<T> {
   }
 
   /**
+   * Gets generic plugin configuration.
    * @return Generic plugin configuration
    */
   public final Map<String, Map<String, Object>> getGenericPluginConfig() {
@@ -72,6 +78,7 @@ public abstract class AbstractPluginContext<T> {
   }
 
   /**
+   * Gets container context.
    * @return Container-specific context object
    */
   public Object getContainerContext() {
@@ -79,6 +86,7 @@ public abstract class AbstractPluginContext<T> {
   }
 
   /**
+   * Gets logger.
    * @return Logger
    */
   public final Logger getLogger() {

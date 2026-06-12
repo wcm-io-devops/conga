@@ -48,6 +48,7 @@ public final class MavenContext {
   private Map<String, String> artifactTypeMappings;
 
   /**
+   * Gets Maven project.
    * @return Maven project
    */
   public MavenProject getProject() {
@@ -55,6 +56,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets Maven project.
    * @param value Maven project
    * @return this
    */
@@ -64,6 +66,7 @@ public final class MavenContext {
   }
 
   /**
+   * Gets Maven session.
    * @return Maven Session
    */
   public MavenSession getSession() {
@@ -71,6 +74,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets Maven session.
    * @param value Maven Session
    * @return this
    */
@@ -80,6 +84,7 @@ public final class MavenContext {
   }
 
   /**
+   * Gets repository system.
    * @return Repository system
    */
   public org.apache.maven.repository.RepositorySystem getRepositorySystem() {
@@ -87,6 +92,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets repository system.
    * @param value Repository system
    * @return this
    */
@@ -96,6 +102,7 @@ public final class MavenContext {
   }
 
   /**
+   * Gets resolution error handler.
    * @return Resolution error handler
    */
   public ResolutionErrorHandler getResolutionErrorHandler() {
@@ -103,6 +110,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets resolution error handler.
    * @param value Resolution error handler
    * @return this
    */
@@ -112,6 +120,7 @@ public final class MavenContext {
   }
 
   /**
+   * Gets build context.
    * @return Build context
    */
   public BuildContext getBuildContext() {
@@ -119,6 +128,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets build context.
    * @param value Build context
    * @return this
    */
@@ -128,6 +138,7 @@ public final class MavenContext {
   }
 
   /**
+   * Gets log.
    * @return Log
    */
   public Log getLog() {
@@ -135,6 +146,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets log.
    * @param value Log
    * @return this
    */
@@ -144,6 +156,7 @@ public final class MavenContext {
   }
 
   /**
+   * Gets repository system.
    * @return Repository system
    */
   public RepositorySystem getRepoSystem() {
@@ -151,6 +164,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets repository system.
    * @param value Repository system
    * @return this
    */
@@ -160,6 +174,7 @@ public final class MavenContext {
   }
 
   /**
+   * Gets repository session.
    * @return Repository session
    */
   public RepositorySystemSession getRepoSession() {
@@ -167,6 +182,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets repository session.
    * @param value Repository session
    * @return this
    */
@@ -176,6 +192,7 @@ public final class MavenContext {
   }
 
   /**
+   * Gets remote repositories.
    * @return Remote repositories
    */
   public List<RemoteRepository> getRemoteRepos() {
@@ -183,6 +200,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets remote repositories.
    * @param value Remote repositories
    * @return this
    */
@@ -192,6 +210,7 @@ public final class MavenContext {
   }
 
   /**
+   * Gets artifact type mappings.
    * @return Artifact type mappings
    */
   public Map<String, String> getArtifactTypeMappings() {
@@ -199,6 +218,7 @@ public final class MavenContext {
   }
 
   /**
+   * Sets artifact type mappings.
    * @param value Artifact type mappings
    * @return this
    */

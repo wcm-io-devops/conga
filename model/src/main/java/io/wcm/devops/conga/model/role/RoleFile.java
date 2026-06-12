@@ -40,6 +40,7 @@ import io.wcm.devops.conga.model.util.MapExpander;
  */
 @SuppressWarnings("java:S1948") // assume the maps are serializable
 public final class RoleFile extends AbstractModel {
+
   private static final long serialVersionUID = -6027099825211623171L;
 
   private static final String VARIANT_MANDATORY_SUFFIX = "*";
@@ -74,6 +75,10 @@ public final class RoleFile extends AbstractModel {
     return this.file;
   }
 
+  /**
+   * Sets file name.
+   * @param name File name
+   */
   public void setFile(String name) {
     this.file = name;
   }
@@ -89,6 +94,10 @@ public final class RoleFile extends AbstractModel {
     return this.dir;
   }
 
+  /**
+   * Sets directory.
+   * @param dir Directory name
+   */
   public void setDir(String dir) {
     this.dir = dir;
   }
@@ -102,6 +111,10 @@ public final class RoleFile extends AbstractModel {
     return this.template;
   }
 
+  /**
+   * Sets template name.
+   * @param template Template file name
+   */
   public void setTemplate(String template) {
     this.template = template;
   }
@@ -116,6 +129,10 @@ public final class RoleFile extends AbstractModel {
     return this.url;
   }
 
+  /**
+   * Sets download URL.
+   * @param url Download URL
+   */
   public void setUrl(String url) {
     this.url = url;
   }
@@ -130,6 +147,10 @@ public final class RoleFile extends AbstractModel {
     return this.symlinkTarget;
   }
 
+  /**
+   * Sets symlink target.
+   * @param symlinkTarget Symlink target
+   */
   public void setSymlinkTarget(String symlinkTarget) {
     this.symlinkTarget = symlinkTarget;
   }
@@ -147,17 +168,22 @@ public final class RoleFile extends AbstractModel {
     return this.variants;
   }
 
+  /**
+   * Sets role variant names.
+   * @param variants List of role variant names
+   */
   public void setVariants(List<String> variants) {
     this.variants = defaultEmptyList(variants);
   }
 
   /**
+   * Gets variant metadata.
    * @return List of variants with metadata ("*" suffix is parsed)
    */
   public List<RoleFileVariantMetadata> getVariantsMetadata() {
     return this.variants.stream()
-        .map(RoleFileVariantMetadata::new)
-        .toList();
+      .map(RoleFileVariantMetadata::new)
+      .toList();
   }
 
   /**
@@ -170,6 +196,10 @@ public final class RoleFile extends AbstractModel {
     return this.condition;
   }
 
+  /**
+   * Sets condition.
+   * @param condition Condition expression
+   */
   public void setCondition(String condition) {
     this.condition = condition;
   }
@@ -184,6 +214,10 @@ public final class RoleFile extends AbstractModel {
     return this.fileHeader;
   }
 
+  /**
+   * Sets file header plugin name.
+   * @param fileHeader File header plugin name
+   */
   public void setFileHeader(String fileHeader) {
     this.fileHeader = fileHeader;
   }
@@ -198,6 +232,10 @@ public final class RoleFile extends AbstractModel {
     return this.validators;
   }
 
+  /**
+   * Sets validator plugin names.
+   * @param validators List of validator plugin names
+   */
   public void setValidators(List<String> validators) {
     this.validators = defaultEmptyList(validators);
   }
@@ -212,6 +250,10 @@ public final class RoleFile extends AbstractModel {
   }
 
 
+  /**
+   * Sets validator options.
+   * @param validatorOptions Configuration parameters
+   */
   public void setValidatorOptions(Map<String, Object> validatorOptions) {
     this.validatorOptions = defaultEmptyMap(MapExpander.expand(validatorOptions));
   }
@@ -224,6 +266,10 @@ public final class RoleFile extends AbstractModel {
     return this.postProcessors;
   }
 
+  /**
+   * Sets post processor plugin names.
+   * @param postProcessors List of post processor plugin names
+   */
   public void setPostProcessors(List<String> postProcessors) {
     this.postProcessors = defaultEmptyList(postProcessors);
   }
@@ -247,6 +293,10 @@ public final class RoleFile extends AbstractModel {
     return this.postProcessorOptions;
   }
 
+  /**
+   * Sets post processor options.
+   * @param postProcessorOptions Configuration parameters
+   */
   public void setPostProcessorOptions(Map<String, Object> postProcessorOptions) {
     this.postProcessorOptions = defaultEmptyMap(MapExpander.expand(postProcessorOptions));
   }
@@ -261,6 +311,10 @@ public final class RoleFile extends AbstractModel {
     return this.multiply;
   }
 
+  /**
+   * Sets multiply plugin name.
+   * @param multiply Multiply plugin name
+   */
   public void setMultiply(String multiply) {
     this.multiply = multiply;
   }
@@ -274,6 +328,10 @@ public final class RoleFile extends AbstractModel {
     return this.multiplyOptions;
   }
 
+  /**
+   * Sets multiply options.
+   * @param multiplyOptions Configuration parameters
+   */
   public void setMultiplyOptions(Map<String, Object> multiplyOptions) {
     this.multiplyOptions = defaultEmptyMap(MapExpander.expand(multiplyOptions));
   }
@@ -287,6 +345,10 @@ public final class RoleFile extends AbstractModel {
     return this.charset;
   }
 
+  /**
+   * Sets charset.
+   * @param charset Charset name
+   */
   public void setCharset(String charset) {
     this.charset = charset;
   }
@@ -300,6 +362,10 @@ public final class RoleFile extends AbstractModel {
     return this.lineEndings;
   }
 
+  /**
+   * Sets line endings style.
+   * @param lineEndings Line endings style
+   */
   public void setLineEndings(LineEndings lineEndings) {
     this.lineEndings = lineEndings;
   }
@@ -314,6 +380,10 @@ public final class RoleFile extends AbstractModel {
     return this.escapingStrategy;
   }
 
+  /**
+   * Sets escaping strategy plugin name.
+   * @param escapingStrategy Handlebars escaping strategy plugin name
+   */
   public void setEscapingStrategy(String escapingStrategy) {
     this.escapingStrategy = escapingStrategy;
   }
@@ -327,6 +397,10 @@ public final class RoleFile extends AbstractModel {
   }
 
 
+  /**
+   * Sets model options.
+   * @param modelOptions Model options
+   */
   public void setModelOptions(Map<String, Object> modelOptions) {
     this.modelOptions = modelOptions;
   }
@@ -341,6 +415,10 @@ public final class RoleFile extends AbstractModel {
     return this.deleteSource;
   }
 
+  /**
+   * Sets delete source flag.
+   * @param deleteSource true if the source file should be deleted
+   */
   public void setDeleteSource(boolean deleteSource) {
     this.deleteSource = deleteSource;
   }
@@ -366,6 +444,7 @@ public final class RoleFile extends AbstractModel {
     }
 
     /**
+     * Gets variant name.
      * @return Variant name (without "*" suffix)
      */
     public String getVariant() {
@@ -373,6 +452,7 @@ public final class RoleFile extends AbstractModel {
     }
 
     /**
+     * Checks if variant is mandatory.
      * @return true if variant is mandatory (was suffixed with "*")
      */
     public boolean isMandatory() {

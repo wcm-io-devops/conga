@@ -42,7 +42,6 @@ import org.slf4j.Logger;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.export.NodeModelExport;
 import io.wcm.devops.conga.generator.handlebars.HandlebarsManager;
 import io.wcm.devops.conga.generator.plugins.handlebars.escaping.NoneEscapingStrategy;
@@ -111,15 +110,15 @@ final class EnvironmentGenerator {
     this.log = options.getLogger();
 
     this.pluginContextOptions = new PluginContextOptions()
-        .pluginManager(options.getPluginManager())
-        .valueProviderConfig(options.getValueProviderConfig())
-        .genericPluginConfig(mergePluginConfig(environment.getPluginConfig(), options.getGenericPluginConfig()))
-        .containerContext(options.getContainerContext())
-        .logger(this.log);
+      .pluginManager(options.getPluginManager())
+      .valueProviderConfig(options.getValueProviderConfig())
+      .genericPluginConfig(mergePluginConfig(environment.getPluginConfig(), options.getGenericPluginConfig()))
+      .containerContext(options.getContainerContext())
+      .logger(this.log);
 
     // prepare variable resolvers
     ValueProviderGlobalContext valueProviderGlobalContext = new ValueProviderGlobalContext()
-        .pluginContextOptions(this.pluginContextOptions);
+      .pluginContextOptions(this.pluginContextOptions);
     this.variableMapResolver = new VariableMapResolver(valueProviderGlobalContext);
     this.variableStringResolver = new VariableStringResolver(valueProviderGlobalContext, variableMapResolver);
     VariableObjectTreeResolver variableObjectTreeResolver = new VariableObjectTreeResolver(valueProviderGlobalContext);
@@ -143,10 +142,10 @@ final class EnvironmentGenerator {
     this.roles.values().forEach(role -> sensitiveConfigParameters.addAll(role.getSensitiveConfigParameters()));
 
     this.urlFilePluginContext = new UrlFilePluginContext()
-        .pluginContextOptions(pluginContextOptions)
-        .baseDir(options.getBaseDir())
-        .resourceClassLoader(resourceClassLoader)
-        .environment(environment);
+      .pluginContextOptions(pluginContextOptions)
+      .baseDir(options.getBaseDir())
+      .resourceClassLoader(resourceClassLoader)
+      .environment(environment);
     this.urlFileManager = new UrlFileManager(options.getPluginManager(), this.urlFilePluginContext);
 
     this.handlebarsManager = new HandlebarsManager(templateDirs, this.pluginContextOptions);
@@ -162,8 +161,8 @@ final class EnvironmentGenerator {
     yamlRepresenter = new YamlRepresenter();
     options.getPluginManager().getAll(YamlRepresentPlugin.class).forEach(plugin -> {
       YamlRepresentContext context = new YamlRepresentContext()
-          .pluginContextOptions(pluginContextOptions)
-          .yamlRepresenter(yamlRepresenter);
+        .pluginContextOptions(pluginContextOptions)
+        .yamlRepresenter(yamlRepresenter);
       plugin.register(context);
     });
   }
@@ -254,8 +253,8 @@ final class EnvironmentGenerator {
 
           // filter out result files probably deleted by other file definitions
           allFiles = allFiles.stream()
-              .filter(generatedFile -> generatedFile.getFileContext().getFile().exists())
-              .toList();
+            .filter(generatedFile -> generatedFile.getFileContext().getFile().exists())
+            .toList();
 
           exportNodeRoleData.files(allFiles);
         }
@@ -310,12 +309,12 @@ final class EnvironmentGenerator {
     }
     String fileExtension = FilenameUtils.getExtension(roleFile.getFile());
     EscapingStrategyContext context = new EscapingStrategyContext()
-        .pluginContextOptions(this.pluginContextOptions);
+      .pluginContextOptions(this.pluginContextOptions);
     return options.getPluginManager().getAll(EscapingStrategyPlugin.class).stream()
-        .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneEscapingStrategy.NAME))
-        .filter(plugin -> plugin.accepts(fileExtension, context))
-        .findFirst().orElse(options.getPluginManager().get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class))
-        .getName();
+      .filter(plugin -> !Strings.CS.equals(plugin.getName(), NoneEscapingStrategy.NAME))
+      .filter(plugin -> plugin.accepts(fileExtension, context))
+      .findFirst().orElse(options.getPluginManager().get(NoneEscapingStrategy.NAME, EscapingStrategyPlugin.class))
+      .getName();
   }
 
   @SuppressWarnings("java:S107") // allow many parameters
@@ -327,13 +326,13 @@ final class EnvironmentGenerator {
     }
 
     MultiplyContext multiplyContext = new MultiplyContext()
-        .pluginContextOptions(this.pluginContextOptions)
-        .role(role)
-        .roleFile(roleFile)
-        .environment(environment)
-        .config(config)
-        .variableStringResolver(variableStringResolver)
-        .variableMapResolver(variableMapResolver);
+      .pluginContextOptions(this.pluginContextOptions)
+      .role(role)
+      .roleFile(roleFile)
+      .environment(environment)
+      .config(config)
+      .variableStringResolver(variableStringResolver)
+      .variableMapResolver(variableMapResolver);
 
     List<Map<String, Object>> muliplyConfigs = multiplyPlugin.multiply(multiplyContext);
     int index = 0;
@@ -366,10 +365,9 @@ final class EnvironmentGenerator {
   }
 
   @SuppressWarnings({
-      "PMD.PreserveStackTrace",
+      "PMD.PreserveStackTrace", "PMD.AvoidCatchingGenericException",
       "java:S107" // allow many parameters
   })
-  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   private Collection<GeneratedFileContext> generateFile(RoleFile roleFile, String dir,
       String fileName, String url, String symlinkTarget,
       Map<String, Object> config, File nodeDir, Template template,
@@ -419,7 +417,7 @@ final class EnvironmentGenerator {
     catch (ValidationException ex) {
       throw new GeneratorException("File validation failed " + FileUtil.getCanonicalPath(file) + " - " + ex.getMessage());
     }
-    /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
+    catch (Exception ex) {
       throw new GeneratorException("Unable to generate file: " + FileUtil.getCanonicalPath(file) + "\n" + ex.getMessage(), ex);
     }
   }

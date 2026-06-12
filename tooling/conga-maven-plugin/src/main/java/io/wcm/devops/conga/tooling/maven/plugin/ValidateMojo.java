@@ -125,31 +125,31 @@ public class ValidateMojo extends AbstractCongaMojo {
     PluginManager pluginManager = new PluginManagerImpl();
 
     MavenContext mavenContext = new MavenContext()
-        .project(project)
-        .session(session)
-        .setRepositorySystem(repositorySystem)
-        .resolutionErrorHandler(resolutionErrorHandler)
-        .buildContext(buildContext)
-        .log(getLog())
-        .repoSystem(repoSystem)
-        .repoSession(repoSession)
-        .remoteRepos(remoteRepos)
-        .artifactTypeMappings(getArtifactTypeMappings());
+      .project(project)
+      .session(session)
+      .setRepositorySystem(repositorySystem)
+      .resolutionErrorHandler(resolutionErrorHandler)
+      .buildContext(buildContext)
+      .log(getLog())
+      .repoSystem(repoSystem)
+      .repoSession(repoSession)
+      .remoteRepos(remoteRepos)
+      .artifactTypeMappings(getArtifactTypeMappings());
 
     UrlFilePluginContext urlFilePluginContext = new UrlFilePluginContext()
-        .baseDir(project.getBasedir())
-        .resourceClassLoader(mavenProjectClassLoader)
-        .pluginContextOptions(new PluginContextOptions()
-          .containerContext(mavenContext));
+      .baseDir(project.getBasedir())
+      .resourceClassLoader(mavenProjectClassLoader)
+      .pluginContextOptions(new PluginContextOptions()
+        .containerContext(mavenContext));
     UrlFileManager urlFileManager = new UrlFileManager(pluginManager, urlFilePluginContext);
 
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(pluginManager)
-        .urlFileManager(urlFileManager)
-        .valueProviderConfig(getValueProviderConfig())
-        .genericPluginConfig(getPluginConfig())
-        .containerContext(mavenContext)
-        .logger(new MavenSlf4jLogFacade(getLog()));
+      .pluginManager(pluginManager)
+      .urlFileManager(urlFileManager)
+      .valueProviderConfig(getValueProviderConfig())
+      .genericPluginConfig(getPluginConfig())
+      .containerContext(mavenContext)
+      .logger(new MavenSlf4jLogFacade(getLog()));
 
     // validate that all templates can be compiled
     HandlebarsManager handlebarsManager = new HandlebarsManager(List.of(templateDir), pluginContextOptions);
@@ -179,16 +179,16 @@ public class ValidateMojo extends AbstractCongaMojo {
     // validate version information - for each environment separately
     for (Environment environment : environmentList) {
       UrlFilePluginContext environmentUrlFilePluginContext = new UrlFilePluginContext()
-          .baseDir(project.getBasedir())
-          .resourceClassLoader(mavenProjectClassLoader)
-          .environment(environment)
-          .pluginContextOptions(new PluginContextOptions()
-              .containerContext(mavenContext));
+        .baseDir(project.getBasedir())
+        .resourceClassLoader(mavenProjectClassLoader)
+        .environment(environment)
+        .pluginContextOptions(new PluginContextOptions()
+          .containerContext(mavenContext));
       UrlFileManager environmentUrlFileManager = new UrlFileManager(pluginManager, environmentUrlFilePluginContext);
 
       PluginContextOptions environmentPluginContextOptions = new PluginContextOptions()
-          .pluginContextOptions(pluginContextOptions)
-          .urlFileManager(environmentUrlFileManager);
+        .pluginContextOptions(pluginContextOptions)
+        .urlFileManager(environmentUrlFileManager);
       validateVersionInfo(environment, mavenProjectClasspathUrls, environmentPluginContextOptions);
     }
   }
@@ -262,17 +262,17 @@ public class ValidateMojo extends AbstractCongaMojo {
 
   private List<URL> getEnvironmentClasspathUrls(List<String> dependencyUrls, PluginContextOptions pluginContextOptions) {
     return dependencyUrls.stream()
-        .map(dependencyUrl -> {
-          String resolvedDependencyUrl = ClassLoaderUtil.resolveDependencyUrl(dependencyUrl, pluginContextOptions);
-          try {
-            return pluginContextOptions.getUrlFileManager().getFileUrlsWithDependencies(resolvedDependencyUrl);
-          }
-          catch (IOException ex) {
-            throw new GeneratorException("Unable to resolve: " + resolvedDependencyUrl, ex);
-          }
-        })
-        .flatMap(List::stream)
-        .toList();
+      .map(dependencyUrl -> {
+        String resolvedDependencyUrl = ClassLoaderUtil.resolveDependencyUrl(dependencyUrl, pluginContextOptions);
+        try {
+          return pluginContextOptions.getUrlFileManager().getFileUrlsWithDependencies(resolvedDependencyUrl);
+        }
+        catch (IOException ex) {
+          throw new GeneratorException("Unable to resolve: " + resolvedDependencyUrl, ex);
+        }
+      })
+      .flatMap(List::stream)
+      .toList();
   }
 
   private void validateVersionInfo(Properties currentVersionInfo, Properties dependencyVersionInfo) throws MojoExecutionException {
@@ -297,8 +297,8 @@ public class ValidateMojo extends AbstractCongaMojo {
       org.springframework.core.io.Resource[] resources = resolver.getResources(
           "classpath*:" + GeneratorOptions.CLASSPATH_PREFIX + BuildConstants.FILE_VERSION_INFO);
       return Arrays.stream(resources)
-          .map(this::toProperties)
-          .toList();
+        .map(this::toProperties)
+        .toList();
     }
     catch (IOException ex) {
       throw new MojoExecutionException("Unable to get classpath resources: " + ex.getMessage(), ex);

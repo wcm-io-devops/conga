@@ -32,6 +32,7 @@ import io.wcm.devops.conga.resource.Resource;
 
 /**
  * Shared functionality for model readers.
+ * @param <T> Model type
  */
 public abstract class AbstractModelReader<T> implements ModelReader<T> {
 
@@ -41,6 +42,7 @@ public abstract class AbstractModelReader<T> implements ModelReader<T> {
   private final Yaml yaml;
 
   /**
+   * Constructor.
    * @param yaml YAML
    */
   protected AbstractModelReader(Yaml yaml) {

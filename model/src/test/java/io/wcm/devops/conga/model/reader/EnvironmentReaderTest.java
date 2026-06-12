@@ -61,8 +61,7 @@ class EnvironmentReaderTest {
     assertEquals(Map.of(
         "topologyConnectorPath", "/connector",
         "jvm", Map.of("heapspace", Map.of("max", "4096m")),
-        "topologyConnectors", List.of("http://host1${topologyConnectorPath}", "http://host2${topologyConnectorPath}")
-        ), environment.getConfig());
+        "topologyConnectors", List.of("http://host1${topologyConnectorPath}", "http://host2${topologyConnectorPath}")), environment.getConfig());
   }
 
   @Test

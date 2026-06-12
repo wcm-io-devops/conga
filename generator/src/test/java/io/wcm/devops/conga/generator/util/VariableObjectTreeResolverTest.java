@@ -45,9 +45,9 @@ class VariableObjectTreeResolverTest {
   @BeforeEach
   void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(new PluginManagerImpl());
+      .pluginManager(new PluginManagerImpl());
     ValueProviderGlobalContext context = new ValueProviderGlobalContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
     underTest = new VariableObjectTreeResolver(context);
   }
 
@@ -55,7 +55,7 @@ class VariableObjectTreeResolverTest {
   void testResolve() {
     /*
      object tree:
-
+    
      Root
        +- scope1
           +- [

@@ -39,7 +39,7 @@ class ConfigInheritanceResolverTest {
   void testResolve() {
     /*
      object tree:
-
+    
      Root
        +- scope1
           +- [

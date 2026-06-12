@@ -31,6 +31,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * other deployment target.
  */
 public final class Node extends AbstractConfigurable {
+
   private static final long serialVersionUID = -7827167562783775179L;
 
   @SuppressWarnings("java:S1700")
@@ -46,6 +47,10 @@ public final class Node extends AbstractConfigurable {
     return this.node;
   }
 
+  /**
+   * Sets node name.
+   * @param node Node name
+   */
   public void setNode(String node) {
     this.node = node;
   }
@@ -60,6 +65,10 @@ public final class Node extends AbstractConfigurable {
     return this.nodes;
   }
 
+  /**
+   * Sets node names.
+   * @param nodes List of node names
+   */
   public void setNodes(List<String> nodes) {
     this.nodes = defaultEmptyList(nodes);
   }
@@ -72,6 +81,10 @@ public final class Node extends AbstractConfigurable {
     return this.roles;
   }
 
+  /**
+   * Sets roles.
+   * @param roles Role assignments for node
+   */
   public void setRoles(List<NodeRole> roles) {
     this.roles = defaultEmptyList(roles);
   }

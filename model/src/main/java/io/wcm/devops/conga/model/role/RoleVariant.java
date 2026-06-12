@@ -25,6 +25,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  * Defines a named variant of a role.
  */
 public final class RoleVariant extends AbstractConfigurable {
+
   private static final long serialVersionUID = 8927953093805130622L;
 
   private String variant;
@@ -37,6 +38,10 @@ public final class RoleVariant extends AbstractConfigurable {
     return this.variant;
   }
 
+  /**
+   * Sets variant name.
+   * @param variant Variant name
+   */
   public void setVariant(String variant) {
     this.variant = variant;
   }

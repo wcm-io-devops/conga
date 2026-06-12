@@ -59,6 +59,7 @@ public final class NodeModelExport {
   private final List<ExportNodeRoleData> roleData = new ArrayList<>();
 
   /**
+   * Constructor.
    * @param nodeDir Target directory for node
    * @param node Node
    * @param environment Environment
@@ -132,16 +133,16 @@ public final class NodeModelExport {
       Map<String, Object> resolvedTenantConfig = variableMapResolver.resolve(tenantConfig, false);
 
       tenantData.add(new ExportNodeRoleTenantData()
-          .tenant(tenant.getTenant())
-          .roles(tenant.getRoles())
-          .config(resolvedTenantConfig));
+        .tenant(tenant.getTenant())
+        .roles(tenant.getRoles())
+        .config(resolvedTenantConfig));
     }
 
     ExportNodeRoleData item = new ExportNodeRoleData()
-        .role(role)
-        .roleVariant(roleVariants)
-        .config(resolvedNodeConfig)
-        .tenantData(tenantData);
+      .role(role)
+      .roleVariant(roleVariants)
+      .config(resolvedNodeConfig)
+      .tenantData(tenantData);
     roleData.add(item);
     return item;
   }
@@ -156,16 +157,16 @@ public final class NodeModelExport {
 
     for (NodeModelExportPlugin plugin : nodeModelExportPlugins) {
       plugin.export(new NodeModelExportContext()
-          .pluginContextOptions(pluginContextOptions)
-          .node(node)
-          .environment(environment)
-          .roleData(roleData)
-          .nodeDir(nodeDir)
-          .variableStringResolver(variableStringResolver)
-          .variableMapResolver(variableMapResolver)
-          .containerVersionInfo(containerVersionInfo)
-          .sensitiveConfigParameters(sensitiveConfigParameters)
-          .yamlRepresenter(yamlRepresenter));
+        .pluginContextOptions(pluginContextOptions)
+        .node(node)
+        .environment(environment)
+        .roleData(roleData)
+        .nodeDir(nodeDir)
+        .variableStringResolver(variableStringResolver)
+        .variableMapResolver(variableMapResolver)
+        .containerVersionInfo(containerVersionInfo)
+        .sensitiveConfigParameters(sensitiveConfigParameters)
+        .yamlRepresenter(yamlRepresenter));
     }
   }
 

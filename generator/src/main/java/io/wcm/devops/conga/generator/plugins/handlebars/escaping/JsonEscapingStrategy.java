@@ -47,15 +47,12 @@ public class JsonEscapingStrategy implements EscapingStrategyPlugin {
    * but without explicitly escaping unicode chars. The escaping of forward slashes is removed as well also part of the
    * JSON specifiction. Both for better readability.
    */
-  private static final CharSequenceTranslator ESCAPE_JSON =
-      new AggregateTranslator(
-          new LookupTranslator(
-              Map.of(
-                  "\"", "\\\"",
-                  "\\", "\\\\"
-              )),
-            new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE)
-          );
+  private static final CharSequenceTranslator ESCAPE_JSON = new AggregateTranslator(
+      new LookupTranslator(
+          Map.of(
+              "\"", "\\\"",
+              "\\", "\\\\")),
+      new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE));
 
   @Override
   public String getName() {

@@ -109,44 +109,44 @@ public class GenerateMojo extends AbstractCongaMojo {
   public void execute() throws MojoExecutionException, MojoFailureException {
 
     MavenContext mavenContext = new MavenContext()
-        .project(project)
-        .session(session)
-        .setRepositorySystem(repositorySystem)
-        .resolutionErrorHandler(resolutionErrorHandler)
-        .buildContext(buildContext)
-        .log(getLog())
-        .repoSystem(repoSystem)
-        .repoSession(repoSession)
-        .remoteRepos(remoteRepos)
-        .artifactTypeMappings(getArtifactTypeMappings());
+      .project(project)
+      .session(session)
+      .setRepositorySystem(repositorySystem)
+      .resolutionErrorHandler(resolutionErrorHandler)
+      .buildContext(buildContext)
+      .log(getLog())
+      .repoSystem(repoSystem)
+      .repoSession(repoSession)
+      .remoteRepos(remoteRepos)
+      .artifactTypeMappings(getArtifactTypeMappings());
 
     PluginManager pluginManager = new PluginManagerImpl();
 
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(pluginManager)
-        .valueProviderConfig(getValueProviderConfig())
-        .genericPluginConfig(getPluginConfig())
-        .containerContext(mavenContext)
-        .logger(new MavenSlf4jLogFacade(getLog()));
+      .pluginManager(pluginManager)
+      .valueProviderConfig(getValueProviderConfig())
+      .genericPluginConfig(getPluginConfig())
+      .containerContext(mavenContext)
+      .logger(new MavenSlf4jLogFacade(getLog()));
 
     GeneratorOptions options = new GeneratorOptions()
-        .baseDir(project.getBasedir())
-        .roleDir(getRoleDir())
-        .templateDir(getTemplateDir())
-        .environmentDir(getEnvironmentDir())
-        .destDir(getTargetDir())
-        .deleteBeforeGenerate(deleteBeforeGenerate)
-        .version(project.getVersion())
-        .setAllowSymlinks(allowSymlinks)
-        .modelExport(getModelExport())
-        .valueProviderConfig(getValueProviderConfig())
-        .genericPluginConfig(getPluginConfig())
-        .containerContext(mavenContext)
-        .containerClasspathUrls(ClassLoaderUtil.getMavenProjectClasspathUrls(project))
-        .pluginManager(pluginManager)
-        .dependencyVersionBuilder(new DependencyVersionBuilder(pluginContextOptions))
-        .containerVersionInfo(buildContainerVersionInfo())
-        .logger(new MavenSlf4jLogFacade(getLog()));
+      .baseDir(project.getBasedir())
+      .roleDir(getRoleDir())
+      .templateDir(getTemplateDir())
+      .environmentDir(getEnvironmentDir())
+      .destDir(getTargetDir())
+      .deleteBeforeGenerate(deleteBeforeGenerate)
+      .version(project.getVersion())
+      .setAllowSymlinks(allowSymlinks)
+      .modelExport(getModelExport())
+      .valueProviderConfig(getValueProviderConfig())
+      .genericPluginConfig(getPluginConfig())
+      .containerContext(mavenContext)
+      .containerClasspathUrls(ClassLoaderUtil.getMavenProjectClasspathUrls(project))
+      .pluginManager(pluginManager)
+      .dependencyVersionBuilder(new DependencyVersionBuilder(pluginContextOptions))
+      .containerVersionInfo(buildContainerVersionInfo())
+      .logger(new MavenSlf4jLogFacade(getLog()));
 
     Generator generator = new Generator(options);
     generator.generate(environments, nodes);

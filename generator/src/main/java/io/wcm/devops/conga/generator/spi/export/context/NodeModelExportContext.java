@@ -50,6 +50,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   private YamlRepresenter yamlRepresenter;
 
   /**
+   * Gets node.
    * @return Node
    */
   public Node getNode() {
@@ -57,6 +58,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets node.
    * @param value Node
    * @return this
    */
@@ -66,6 +68,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets environment.
    * @return Environment
    */
   public Environment getEnvironment() {
@@ -73,6 +76,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets environment.
    * @param value Environment
    * @return this
    */
@@ -82,6 +86,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets node role data.
    * @return Node role data
    */
   public List<ExportNodeRoleData> getRoleData() {
@@ -89,6 +94,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets node role data.
    * @param value Node role data
    * @return this
    */
@@ -98,6 +104,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets node directory.
    * @return Node files target directory
    */
   public File getNodeDir() {
@@ -105,6 +112,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets node directory.
    * @param value Node files target directory
    * @return this
    */
@@ -114,6 +122,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets config.
    * @return Plugin config
    */
   public Map<String, Object> getConfig() {
@@ -121,6 +130,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets config.
    * @param value Plugin config
    * @return this
    */
@@ -130,6 +140,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets variable string resolver.
    * @return Variable string resolver
    */
   public VariableStringResolver getVariableStringResolver() {
@@ -137,6 +148,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets variable string resolver.
    * @param value Variable string resolver
    * @return this
    */
@@ -146,6 +158,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets variable map resolver.
    * @return Variable map resolver
    */
   public VariableMapResolver getVariableMapResolver() {
@@ -153,6 +166,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets variable map resolver.
    * @param value Variable map resolver
    * @return this
    */
@@ -162,6 +176,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets container version info.
    * @return Version information from container, e.g. configured Maven plugin versions
    */
   public Map<String, String> getContainerVersionInfo() {
@@ -169,6 +184,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets container version info.
    * @param value Version information from container, e.g. configured Maven plugin versions
    * @return this
    */
@@ -178,6 +194,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets sensitive config parameters.
    * @return List of configuration parameter names that contain sensitive data.
    */
   public Set<String> getSensitiveConfigParameters() {
@@ -185,6 +202,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets sensitive config parameters.
    * @param value List of configuration parameter names that contain sensitive data
    * @return this
    */
@@ -194,6 +212,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets model export config processor.
    * @return Model export configuration processor
    */
   public ModelExportConfigProcessor getModelExportConfigProcessor() {
@@ -204,6 +223,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Gets YAML representer.
    * @return YAML representer
    */
   public YamlRepresenter getYamlRepresenter() {
@@ -211,6 +231,7 @@ public final class NodeModelExportContext extends AbstractPluginContext<NodeMode
   }
 
   /**
+   * Sets YAML representer.
    * @param value YAML representer
    * @return this
    */

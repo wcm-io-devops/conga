@@ -40,9 +40,9 @@ class VariableMapResolverTest {
   @BeforeEach
   void setUp() {
     PluginContextOptions pluginContextOptions = new PluginContextOptions()
-        .pluginManager(new PluginManagerImpl());
+      .pluginManager(new PluginManagerImpl());
     ValueProviderGlobalContext context = new ValueProviderGlobalContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
     underTest = new VariableMapResolver(context);
   }
 

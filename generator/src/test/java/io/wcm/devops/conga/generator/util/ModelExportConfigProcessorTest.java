@@ -49,8 +49,7 @@ class ModelExportConfigProcessorTest {
       "group1.group2.param4",
       "list1",
       "list2.param1",
-      "list2.list3.param3"
-      );
+      "list2.list3.param3");
 
   @Mock
   private PluginManager pluginManager;
@@ -67,6 +66,7 @@ class ModelExportConfigProcessorTest {
     when(pluginManager.getAll(ValueEncryptionPlugin.class)).thenReturn(List.of(valueEncryptPlugin));
     when(valueEncryptPlugin.isEnabled()).thenReturn(true);
     when(valueEncryptPlugin.encrypt(anyString(), any(), any(ValueEncryptionContext.class))).then(new Answer<Object>() {
+
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
         Object value = invocation.getArgument(1);
@@ -75,7 +75,7 @@ class ModelExportConfigProcessorTest {
     });
 
     pluginContextOptions = new PluginContextOptions()
-        .pluginManager(pluginManager);
+      .pluginManager(pluginManager);
     underTest = new ModelExportConfigProcessor(pluginContextOptions, SENSITIVE_PARAMS);
   }
 

@@ -25,21 +25,25 @@ package io.wcm.devops.conga.resource;
 public interface ResourceInfo extends Comparable<ResourceInfo> {
 
   /**
+   * Checks if this resource exists.
    * @return true if resource exists
    */
   boolean exists();
 
   /**
+   * Gets the name of this resource.
    * @return File name (without path)
    */
   String getName();
 
   /**
+   * Gets the path of this resource.
    * @return Full path for file
    */
   String getPath();
 
   /**
+   * Gets the canonical path of this resource.
    * @return Canonical path for file that is absolute and unique.
    */
   String getCanonicalPath();

@@ -45,6 +45,7 @@ public final class UrlFileManager {
   private static final Pattern URL_WITH_PREFIX = Pattern.compile("^[a-zA-Z]+:.*$");
 
   /**
+   * Constructor.
    * @param pluginManager Plugin manager
    * @param context URL file plugin context
    */
@@ -168,6 +169,7 @@ public final class UrlFileManager {
   }
 
   private interface FileHandler<T> {
+
     T apply(UrlFilePlugin plugin) throws IOException;
   }
 

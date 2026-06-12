@@ -43,21 +43,22 @@ public final class ModelExportConfigProcessor {
   private final Set<String> sensitiveConfigParameters;
 
   /**
+   * Constructor.
    * @param pluginContextOptions Plugin context options
    * @param sensitiveConfigParameters Sensitive config parameter names
    */
   public ModelExportConfigProcessor(PluginContextOptions pluginContextOptions, Set<String> sensitiveConfigParameters) {
     this.valueEncryptionPlugin = getFirstEnabledValueEncryptionPlugin(pluginContextOptions.getPluginManager());
     this.valueEncryptionContext = new ValueEncryptionContext()
-        .pluginContextOptions(pluginContextOptions);
+      .pluginContextOptions(pluginContextOptions);
     this.sensitiveConfigParameters = sensitiveConfigParameters;
   }
 
   private ValueEncryptionPlugin getFirstEnabledValueEncryptionPlugin(PluginManager pluginManager) {
     return pluginManager.getAll(ValueEncryptionPlugin.class)
-        .stream()
-        .filter(ValueEncryptionPlugin::isEnabled)
-        .findFirst().orElse(null);
+      .stream()
+      .filter(ValueEncryptionPlugin::isEnabled)
+      .findFirst().orElse(null);
   }
 
   /**

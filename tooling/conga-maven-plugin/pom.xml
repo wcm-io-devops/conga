@@ -18,14 +18,13 @@
   limitations under the License.
   #L%
   -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.19.0</version>
+    <version>1.20.0</version>
     <relativePath>../../parent/pom.xml</relativePath>
   </parent>
 
@@ -35,8 +34,12 @@
   <name>CONGA Maven Plugin</name>
   <description>wcm.io DevOps CONGA - CONfiguration GenerAtor Maven Plugin</description>
 
+  <prerequisites>
+    <maven>${maven.version}</maven>
+  </prerequisites>
+
   <properties>
-    <maven.version>3.3.9</maven.version>
+    <maven.version>3.8.6</maven.version>
     <site.url.module.prefix>tooling/conga-maven-plugin</site.url.module.prefix>
 
     <!-- Versions -->
@@ -47,16 +50,12 @@
     <jacoco.includes>org.jacoco.maven.*</jacoco.includes>
   </properties>
 
-  <prerequisites>
-    <maven>${maven.version}</maven>
-  </prerequisites>
-
   <dependencies>
 
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.generator</artifactId>
-      <version>1.19.0</version>
+      <version>1.20.0</version>
       <scope>compile</scope>
     </dependency>
 
@@ -110,7 +109,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>4.0.2</version>
+      <version>4.0.3</version>
       <scope>compile</scope>
     </dependency>
 
@@ -121,7 +120,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-archiver</artifactId>
-        <version>3.6.5</version>
+        <version>3.6.6</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
@@ -185,7 +184,7 @@
             <id>before-integration-test-execution</id>
             <goals>
               <goal>prepare-agent-integration</goal>
-             </goals>
+            </goals>
             <configuration>
               <destFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</destFile>
               <propertyName>invoker.jacoco.args</propertyName>
@@ -193,10 +192,10 @@
           </execution>
           <execution>
             <id>merge-unit-and-integration</id>
-            <phase>post-integration-test</phase>
             <goals>
               <goal>merge</goal>
             </goals>
+            <phase>post-integration-test</phase>
             <configuration>
               <fileSets>
                 <fileSet>
@@ -265,17 +264,11 @@
 
   <reporting>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <configuration>
-          <requirements>
-            <maven>${maven.version}</maven>
-          </requirements>
-        </configuration>
+        <artifactId>maven-plugin-report-plugin</artifactId>
+        <version>${maven-plugin-plugin.version}</version>
       </plugin>
-
     </plugins>
   </reporting>
 

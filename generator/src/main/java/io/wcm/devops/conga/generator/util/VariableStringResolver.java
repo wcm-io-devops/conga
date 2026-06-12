@@ -75,6 +75,7 @@ public final class VariableStringResolver {
   private final JexlResolver jexlResolver;
 
   /**
+   * Constructor.
    * @param valueProviderGlobalContext Value provider global context
    * @param variableMapResolver Variable map resolver
    */
@@ -212,9 +213,9 @@ public final class VariableStringResolver {
       else {
         Object valueObject = jexlResolver.resolve(expression, variables);
         if (valueObject != null) {
-          if (valueObject instanceof String) {
+          if (valueObject instanceof String valueObjectString) {
             // try again until all nested references are resolved
-            return resolve((String)valueObject, variables, iterationCount + 1);
+            return resolve(valueObjectString, variables, iterationCount + 1);
           }
           else {
             return valueObject;

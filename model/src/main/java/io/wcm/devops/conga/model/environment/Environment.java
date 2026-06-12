@@ -35,6 +35,7 @@ import io.wcm.devops.conga.model.shared.AbstractConfigurable;
  */
 @SuppressWarnings("java:S1948") // assume the maps are serializable
 public final class Environment extends AbstractConfigurable {
+
   private static final long serialVersionUID = -3146650632389125273L;
 
   private List<Node> nodes = new ArrayList<>();
@@ -51,6 +52,10 @@ public final class Environment extends AbstractConfigurable {
     return this.nodes;
   }
 
+  /**
+   * Sets nodes.
+   * @param nodes List of nodes
+   */
   public void setNodes(List<Node> nodes) {
     this.nodes = defaultEmptyList(nodes);
   }
@@ -64,6 +69,10 @@ public final class Environment extends AbstractConfigurable {
     return this.roleConfig;
   }
 
+  /**
+   * Sets role configurations.
+   * @param roleConfig Configurations per role
+   */
   public void setRoleConfig(List<RoleConfig> roleConfig) {
     this.roleConfig = defaultEmptyList(roleConfig);
   }
@@ -77,6 +86,10 @@ public final class Environment extends AbstractConfigurable {
     return this.tenants;
   }
 
+  /**
+   * Sets tenants.
+   * @param tenants List of tenants
+   */
   public void setTenants(List<Tenant> tenants) {
     this.tenants = defaultEmptyList(tenants);
   }
@@ -90,6 +103,10 @@ public final class Environment extends AbstractConfigurable {
     return this.dependencies;
   }
 
+  /**
+   * Sets dependencies.
+   * @param dependencies List of dependencies
+   */
   public void setDependencies(List<String> dependencies) {
     this.dependencies = defaultEmptyList(dependencies);
   }
@@ -112,6 +129,7 @@ public final class Environment extends AbstractConfigurable {
   }
 
   /**
+   * Sets plugin configuration.
    * @param pluginConfig Plugin configuration parameter map
    */
   public void setPluginConfig(Map<String, Map<String, Object>> pluginConfig) {

@@ -29,16 +29,19 @@ import org.apache.commons.io.FilenameUtils;
 public interface Resource extends ResourceInfo {
 
   /**
+   * Gets the last modification date of this resource.
    * @return Last modification date
    */
   long getLastModified();
 
   /**
+   * Gets the content of this resource.
    * @return File content as input stream
    */
   InputStream getInputStream();
 
   /**
+   * Gets the file extension of this resource.
    * @return File extension
    */
   default String getFileExtension() {

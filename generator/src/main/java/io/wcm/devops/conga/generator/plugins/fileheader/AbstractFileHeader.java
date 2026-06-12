@@ -54,10 +54,10 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
       }
       else {
         sanitizedCommentLines = context.getCommentLines().stream()
-            .map(this::sanitizeComment)
-            .filter(Objects::nonNull)
-            .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + line + lineBreak)
-            .toList();
+          .map(this::sanitizeComment)
+          .filter(Objects::nonNull)
+          .map(line -> StringUtils.defaultString(getCommentLinePrefix()) + line + lineBreak)
+          .toList();
       }
 
       int insertPosition = getInsertPosition(content);
@@ -78,31 +78,63 @@ public abstract class AbstractFileHeader implements FileHeaderPlugin {
     return null;
   }
 
+  /**
+   * Sanitizes comment line.
+   * @param line Comment line
+   * @return Sanitized comment line
+   */
   protected String sanitizeComment(String line) {
     return line;
   }
 
+  /**
+   * Gets line break character(s).
+   * @return Line break character(s)
+   */
   protected String getLineBreak() {
     return "\n";
   }
 
+  /**
+   * Gets comment block start.
+   * @return Comment block start string
+   */
   protected String getCommentBlockStart() {
     return null;
   }
 
+  /**
+   * Gets comment block end.
+   * @return Comment block end string
+   */
   protected String getCommentBlockEnd() {
     return null;
   }
 
+  /**
+   * Gets comment line prefix.
+   * @return Comment line prefix string
+   */
   protected String getCommentLinePrefix() {
     return null;
   }
 
+  /**
+   * Gets block suffix.
+   * @return Block suffix string
+   */
   protected String getBlockSuffix() {
     return null;
   }
 
-  protected int getInsertPosition(@SuppressWarnings({ "unused", "java:S1172" }) String content) {
+  /**
+   * Gets insert position for file header.
+   * @param content File content
+   * @return Insert position
+   */
+  protected int getInsertPosition(@SuppressWarnings({
+      "unused", "java:S1172"
+  }) String content) {
     return 0;
   }
 

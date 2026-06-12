@@ -25,6 +25,7 @@ import io.wcm.devops.conga.model.shared.AbstractModel;
  * Defines an inheritance relation to another role.
  */
 public final class RoleInherit extends AbstractModel {
+
   private static final long serialVersionUID = -7870095532845063259L;
 
   private String role;
@@ -37,6 +38,10 @@ public final class RoleInherit extends AbstractModel {
     return this.role;
   }
 
+  /**
+   * Sets role name.
+   * @param role Role name
+   */
   public void setRole(String role) {
     this.role = role;
   }

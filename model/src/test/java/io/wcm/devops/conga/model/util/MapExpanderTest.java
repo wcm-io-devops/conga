@@ -86,12 +86,10 @@ class MapExpanderTest {
   void testWithList() {
     assertEquals(Map.of("key1", List.of(
         Map.of("a", Map.of("b", "v1", "c", Map.of("d", "v2"))),
-        Map.of("a", Map.of("b", "v3"))
-        )),
+        Map.of("a", Map.of("b", "v3")))),
         expand(Map.of("key1", List.of(
             Map.of("a.b", "v1", "a.c.d", "v2"),
-            Map.of("a.b", "v3")
-            ))));
+            Map.of("a.b", "v3")))));
   }
 
   @Test

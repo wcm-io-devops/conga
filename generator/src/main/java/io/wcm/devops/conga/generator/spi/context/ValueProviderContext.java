@@ -30,16 +30,18 @@ public final class ValueProviderContext extends AbstractPluginContext<ValueProvi
   private String valueProviderName;
 
   /**
+   * Sets value provider global context.
    * @param context Global value provider context
    * @return this
    */
   public ValueProviderContext valueProviderGlobalContext(ValueProviderGlobalContext context) {
     this.valueProviderGlobalContext = context;
     return this
-        .pluginContextOptions(context.getPluginContextOptions());
+      .pluginContextOptions(context.getPluginContextOptions());
   }
 
   /**
+   * Sets value provider name.
    * @param value Value provider name
    * @return this
    */
@@ -49,6 +51,7 @@ public final class ValueProviderContext extends AbstractPluginContext<ValueProvi
   }
 
   /**
+   * Gets value provider name.
    * @return Value provider name
    */
   public String getValueProviderName() {
@@ -56,6 +59,7 @@ public final class ValueProviderContext extends AbstractPluginContext<ValueProvi
   }
 
   /**
+   * Gets value provider config.
    * @param key Configuration parameter name
    * @return Configuration for the current value provider. Never null.
    */

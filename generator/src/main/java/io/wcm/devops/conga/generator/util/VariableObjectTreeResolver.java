@@ -37,6 +37,7 @@ public final class VariableObjectTreeResolver extends AbstractConfigurableObject
   // payload not used for this processor
   @SuppressWarnings("java:S1604") // not possible to use lambda here
   private final ConfigurableProcessor<Object> processor = new ConfigurableProcessor<Object>() {
+
     @Override
     public Object process(Configurable configurable, Object payload) {
       Map<String, Object> config = new HashMap<>(configurable.getConfig());
@@ -51,6 +52,7 @@ public final class VariableObjectTreeResolver extends AbstractConfigurableObject
   };
 
   /**
+   * Constructor.
    * @param valueProviderGlobalContext Value provider global context
    */
   public VariableObjectTreeResolver(ValueProviderGlobalContext valueProviderGlobalContext) {

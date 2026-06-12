@@ -37,6 +37,7 @@ public final class ValueProviderGlobalContext extends AbstractPluginContext<Valu
   public static final String PARAM_PLUGIN_NAME = "_plugin_";
 
   /**
+   * Gets value provider configuration.
    * @return Configuration for value providers.
    *         The outer map uses the value provider plugin name as key, the inner map contain the config properties.
    *         Never null.
@@ -50,6 +51,7 @@ public final class ValueProviderGlobalContext extends AbstractPluginContext<Valu
   }
 
   /**
+   * Gets value provider configuration.
    * @param valueProviderName Value provider name
    * @return Configuration for the given value provider. Never null.
    */

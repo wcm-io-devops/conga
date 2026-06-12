@@ -43,6 +43,7 @@ public final class RoleTemplateFileValidator implements DefinitionValidator<Void
   private final HandlebarsManager handlebarsManager;
 
   /**
+   * Constructor.
    * @param handlebarsManager Handlebars Manager
    */
   public RoleTemplateFileValidator(HandlebarsManager handlebarsManager) {
@@ -50,7 +51,9 @@ public final class RoleTemplateFileValidator implements DefinitionValidator<Void
   }
 
   @Override
-  @SuppressWarnings({ "PMD.PreserveStackTrace", "PMD.ExceptionAsFlowControl" })
+  @SuppressWarnings({
+      "PMD.PreserveStackTrace", "PMD.ExceptionAsFlowControl", "PMD.AvoidCatchingGenericException"
+  })
   public Void validate(Resource resource, String pathForLog) throws MojoFailureException {
     try {
       Role role = modelReader.read(resource);
@@ -73,7 +76,7 @@ public final class RoleTemplateFileValidator implements DefinitionValidator<Void
 
       }
     }
-    /*CHECKSTYLE:OFF*/ catch (Exception ex) { /*CHECKSTYLE:ON*/
+    catch (Exception ex) {
       throw new MojoFailureException("Role definition " + pathForLog + " is invalid:\n" + ex.getMessage());
     }
     return null;

@@ -44,6 +44,7 @@ public final class Generator {
   private final Map<String, Environment> environments;
 
   /**
+   * Constructor.
    * @param options Generator options
    */
   public Generator(GeneratorOptions options) {

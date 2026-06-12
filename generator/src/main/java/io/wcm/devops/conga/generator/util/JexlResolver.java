@@ -55,10 +55,10 @@ final class JexlResolver {
 
   JexlResolver(VariableMapResolver variableMapResolver) {
     this.jexl = new JexlBuilder()
-        .cache(CACHE_SIZE)
-        .namespaces(JEXL_FUNCTION_NS)
-        .permissions(JexlPermissions.UNRESTRICTED)
-        .create();
+      .cache(CACHE_SIZE)
+      .namespaces(JEXL_FUNCTION_NS)
+      .permissions(JexlPermissions.UNRESTRICTED)
+      .create();
     this.variableMapResolver = variableMapResolver;
   }
 

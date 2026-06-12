@@ -49,8 +49,8 @@ public final class EnvironmentExpander {
     Environment clonedEnvironemnt = ObjectCloner.deepClone(environment);
 
     clonedEnvironemnt.setNodes(environment.getNodes().stream()
-        .flatMap(node -> getSingleNodes(node, environmentName))
-        .toList());
+      .flatMap(node -> getSingleNodes(node, environmentName))
+      .toList());
 
     return clonedEnvironemnt;
   }

@@ -32,6 +32,7 @@ public final class ExportNodeRoleTenantData {
   private Map<String, Object> config;
 
   /**
+   * Gets tenant.
    * @return Tenant
    */
   public String getTenant() {
@@ -39,6 +40,7 @@ public final class ExportNodeRoleTenantData {
   }
 
   /**
+   * Sets tenant.
    * @param value Tenant
    * @return this
    */
@@ -48,6 +50,7 @@ public final class ExportNodeRoleTenantData {
   }
 
   /**
+   * Gets roles.
    * @return Roles
    */
   public List<String> getRoles() {
@@ -55,6 +58,7 @@ public final class ExportNodeRoleTenantData {
   }
 
   /**
+   * Sets roles.
    * @param value Roles
    * @return this
    */
@@ -64,6 +68,7 @@ public final class ExportNodeRoleTenantData {
   }
 
   /**
+   * Gets configuration.
    * @return Configuration
    */
   public Map<String, Object> getConfig() {
@@ -71,6 +76,7 @@ public final class ExportNodeRoleTenantData {
   }
 
   /**
+   * Sets configuration.
    * @param value Configuration
    * @return this
    */

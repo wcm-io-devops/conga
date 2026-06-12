@@ -82,12 +82,14 @@ final class MockOptions extends Options {
     Template template = mock(Template.class);
     try {
       when(template.apply(any(Context.class))).then(new Answer<String>() {
+
         @Override
         public String answer(InvocationOnMock invocation) throws Throwable {
           return getFnForContext(invocation.getArgument(0));
         }
       });
       when(template.apply(any())).then(new Answer<String>() {
+
         @Override
         public String answer(InvocationOnMock invocation) throws Throwable {
           Object arg = invocation.getArgument(0);

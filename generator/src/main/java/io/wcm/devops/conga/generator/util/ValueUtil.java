@@ -92,7 +92,7 @@ public final class ValueUtil {
     if (value == null) {
       return "";
     }
-    else if (value instanceof List list) {
+    else if (value instanceof List<?> list) {
       StringBuilder sb = new StringBuilder();
       for (Object item : list) {
         if (!sb.isEmpty()) {
@@ -111,8 +111,8 @@ public final class ValueUtil {
           sb.append(",");
         }
         sb.append(valueToString(entry.getKey()))
-            .append("=")
-            .append(valueToString(entry.getValue()));
+          .append("=")
+          .append(valueToString(entry.getValue()));
       }
       return sb.toString();
     }

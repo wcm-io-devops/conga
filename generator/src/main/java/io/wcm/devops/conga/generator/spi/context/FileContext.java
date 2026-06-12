@@ -38,6 +38,7 @@ public final class FileContext {
   private File targetDir;
 
   /**
+   * Gets file.
    * @return File
    */
   public File getFile() {
@@ -45,6 +46,7 @@ public final class FileContext {
   }
 
   /**
+   * Sets file.
    * @param value File
    * @return this
    */
@@ -55,6 +57,7 @@ public final class FileContext {
   }
 
   /**
+   * Gets canonical path.
    * @return Canonical path
    */
   public String getCanonicalPath() {
@@ -62,6 +65,7 @@ public final class FileContext {
   }
 
   /**
+   * Gets charset.
    * @return Charset
    */
   public String getCharset() {
@@ -69,6 +73,7 @@ public final class FileContext {
   }
 
   /**
+   * Sets charset.
    * @param value Charset
    * @return this
    */
@@ -78,6 +83,7 @@ public final class FileContext {
   }
 
   /**
+   * Sets charset.
    * @param value Charset
    * @return this
    */
@@ -87,6 +93,7 @@ public final class FileContext {
   }
 
   /**
+   * Gets model options.
    * @return Model options
    */
   public Map<String, Object> getModelOptions() {
@@ -94,6 +101,7 @@ public final class FileContext {
   }
 
   /**
+   * Sets model options.
    * @param value Model options
    * @return this
    */
@@ -103,6 +111,7 @@ public final class FileContext {
   }
 
   /**
+   * Gets target directory.
    * @return Target directory for generated configuration
    */
   public File getTargetDir() {
@@ -110,6 +119,7 @@ public final class FileContext {
   }
 
   /**
+   * Sets target directory.
    * @param value Target directory for generated configuration
    * @return this
    */

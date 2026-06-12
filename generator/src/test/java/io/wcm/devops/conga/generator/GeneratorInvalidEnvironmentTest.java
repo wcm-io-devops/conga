@@ -42,7 +42,9 @@ class GeneratorInvalidEnvironmentTest {
   @Test
   void testInvalidEnvironments() {
     assertThrows(GeneratorException.class, () -> {
-      underTest.generate(new String[] { "unknown" });
+      underTest.generate(new String[] {
+          "unknown"
+      });
     });
   }
 
