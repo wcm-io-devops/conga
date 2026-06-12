@@ -24,13 +24,13 @@
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.20.0</version>
+    <version>1.20.1-SNAPSHOT</version>
     <relativePath>parent/pom.xml</relativePath>
   </parent>
 
   <groupId>io.wcm.devops.conga</groupId>
   <artifactId>io.wcm.devops.conga.root</artifactId>
-  <version>1.20.0</version>
+  <version>1.20.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>CONGA</name>
