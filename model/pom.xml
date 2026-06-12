@@ -24,7 +24,7 @@
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.19.1-SNAPSHOT</version>
+    <version>1.20.0</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.resource</artifactId>
-      <version>1.19.1-SNAPSHOT</version>
+      <version>1.20.0</version>
       <scope>compile</scope>
     </dependency>
 
