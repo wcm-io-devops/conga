@@ -31,7 +31,6 @@ import java.nio.file.Files;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.UrlFilePlugin;
 import io.wcm.devops.conga.generator.spi.context.UrlFilePluginContext;
@@ -86,7 +85,6 @@ public class FilesystemUrlFilePlugin implements UrlFilePlugin {
   }
 
   @Override
-  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   public void deleteFile(String url, UrlFilePluginContext context) throws IOException {
     File file = getFileInternal(url, context);
     if (!file.exists()) {
