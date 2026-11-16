@@ -41,7 +41,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.wcm.devops.conga.generator.GeneratorException;
 import io.wcm.devops.conga.generator.spi.FileHeaderPlugin;
 import io.wcm.devops.conga.generator.spi.context.FileContext;
@@ -91,7 +90,6 @@ public final class XmlFileHeader implements FileHeaderPlugin {
   }
 
   @Override
-  @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
   public Void apply(FileContext file, FileHeaderContext context) {
     try {
       Document doc = documentBuilder.parse(file.getFile());

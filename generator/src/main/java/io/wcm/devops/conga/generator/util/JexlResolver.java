@@ -33,6 +33,7 @@ import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.JexlFeatures;
 import org.apache.commons.jexl3.MapContext;
 import org.apache.commons.jexl3.introspection.JexlPermissions;
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +59,8 @@ final class JexlResolver {
       .cache(CACHE_SIZE)
       .namespaces(JEXL_FUNCTION_NS)
       .permissions(JexlPermissions.UNRESTRICTED)
+      // allow instantiating classes via new(...) which is disabled by default since JEXL 3.7.0
+      .features(new JexlFeatures().newInstance(true))
       .create();
     this.variableMapResolver = variableMapResolver;
   }

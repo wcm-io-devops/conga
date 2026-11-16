@@ -24,7 +24,7 @@
   <parent>
     <groupId>io.wcm.devops.conga</groupId>
     <artifactId>io.wcm.devops.conga.parent</artifactId>
-    <version>1.20.0</version>
+    <version>1.20.2</version>
     <relativePath>../../parent/pom.xml</relativePath>
   </parent>
 
@@ -43,7 +43,7 @@
     <site.url.module.prefix>tooling/conga-maven-plugin</site.url.module.prefix>
 
     <!-- Versions -->
-    <maven-plugin-plugin.version>3.15.2</maven-plugin-plugin.version>
+    <maven-plugin-plugin.version>3.16.0</maven-plugin-plugin.version>
 
     <!-- Enable recording of coverage during execution of maven-invoker-plugin -->
     <jacoco.propertyName>invoker.mavenOpts</jacoco.propertyName>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>io.wcm.devops.conga</groupId>
       <artifactId>io.wcm.devops.conga.generator</artifactId>
-      <version>1.20.0</version>
+      <version>1.20.2</version>
       <scope>compile</scope>
     </dependency>
 
@@ -109,7 +109,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>4.0.3</version>
+      <version>4.2.0</version>
       <scope>compile</scope>
     </dependency>
 
